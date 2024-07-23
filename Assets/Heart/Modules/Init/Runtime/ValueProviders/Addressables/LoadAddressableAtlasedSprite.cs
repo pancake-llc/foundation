@@ -79,7 +79,7 @@ namespace Sisus.Init.ValueProviders
 			Debug.Log($"IsValid:{atlasedSprite.IsValid()}, RuntimeKeyIsValid:{atlasedSprite.RuntimeKeyIsValid()}, SubObjectName:{atlasedSprite.SubObjectName}, IsDone:{atlasedSprite.IsDone}, Status:{(atlasedSprite.IsValid() ? atlasedSprite.OperationHandle.Status : AsyncOperationStatus.None)}, editorAsset:{(atlasedSprite.editorAsset == null ? "null" : atlasedSprite.editorAsset.name)}, HasValue:{(this as INullGuard).EvaluateNullGuard(null)}");
 			#endif
 
-			#if DEBUG || SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(!atlasedSprite.RuntimeKeyIsValid())
 			{
 				Debug.LogWarning($"Invalid Runtime Key - {GetType().Name}.GetForAsync({client.GetType().Name}) failed.\n{atlasedSprite}", client);
@@ -132,7 +132,7 @@ namespace Sisus.Init.ValueProviders
 			}
 
 			#if DEV_MODE && UNITY_EDITOR
-			Debug.Log($"name:\"{name}\" isSharedInstance:{isSharedInstance}"); // IDEA: Could also detect by naming pattern? E.g. leave name blank, unless shared instance? Or use custom prefix, like "TEMP_" or "DISPOSABLE_" or "InitArg_" or "_Disposable".
+			Debug.Log($"name:\"{name}\" isSharedInstance:{isSharedInstance}");
 			#endif
 
 			if(isSharedInstance)
@@ -143,7 +143,7 @@ namespace Sisus.Init.ValueProviders
 			string setName = name;
 			string key = atlasedSprite.RuntimeKey?.ToString();
 
-			if(atlasedSprite.editorAsset is Object asset && asset != null)
+			if(atlasedSprite.editorAsset is Object asset && asset)
 			{
 				setName = asset.name;
 			}
@@ -262,7 +262,7 @@ namespace Sisus.Init.ValueProviders
 
 			if(atlasedSprite.OperationHandle.IsValid() && atlasedSprite.OperationHandle.OperationException is not null)
 			{
-				return NullGuardResult.ExceptionOccurred;
+				return NullGuardResult.ValueProviderException;
 			}
 
 			Sprite sprite = spriteAtlas.GetSprite(atlasedSprite.SubObjectName);

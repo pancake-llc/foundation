@@ -51,7 +51,7 @@ namespace Sisus.Init
 			var firstArgument = await this.firstArgument.GetValueAsync(null, Context.MainThread);
 			var secondArgument = await this.secondArgument.GetValueAsync(null, Context.MainThread);
 
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(disposeArgumentsOnDestroy != Arguments.None)
 			{
 				if(disposeArgumentsOnDestroy.HasFlag(Arguments.First)) OptimizeValueProviderNameForDebugging(this, this.firstArgument);
@@ -63,11 +63,11 @@ namespace Sisus.Init
 			if(IsRuntimeNullGuardActive) ValidateArgumentsAtRuntime(firstArgument, secondArgument);
 			#endif
 
-            if(target == null)
-            {
-                Create.Instance(out target, firstArgument, secondArgument);
+			if(target == null)
+			{
+				Create.Instance(out target, firstArgument, secondArgument);
 				return target;
-            }
+			}
 			
 			if(target is ScriptableObject<TFirstArgument, TSecondArgument> scriptableObjectT)
 			{

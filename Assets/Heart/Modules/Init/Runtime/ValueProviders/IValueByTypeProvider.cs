@@ -44,10 +44,6 @@ namespace Sisus.Init
 		/// <see langword="true"/> if can potentially provide a value of the given type to the client
 		/// at runtime; otherwise, <see langword="false"/>.
 		/// </returns>
-		bool CanProvideValue<TValue>([AllowNull] Component client)
-			#if UNITY_2021_3_OR_NEWER
-			=> TryGetFor<TValue>(client, out _)
-			#endif
-			;
+		bool CanProvideValue<TValue>([AllowNull] Component client) => TryGetFor<TValue>(client, out _);
 	}
 }

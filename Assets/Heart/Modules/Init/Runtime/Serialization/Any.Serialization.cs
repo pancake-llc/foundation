@@ -64,31 +64,31 @@ namespace Sisus.Init.Serialization
 
 	[Serializable]
 	public abstract class Serializable<T> : IValueProvider<object>, IComparable, IComparable<T>, IConvertible, IEquatable<T> where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>
-    {
-        public T value;
+	{
+		public T value;
 		public T Value => value;
 		object IValueProvider<object>.Value => value;
 		object IValueProvider.Value => value;
 
 		public int CompareTo(object obj) => value.CompareTo(obj);
-        public int CompareTo(T other) => value.CompareTo(other);
-        public bool Equals(T other) => value.Equals(other);
-        public TypeCode GetTypeCode() => value.GetTypeCode();
-        public bool ToBoolean(IFormatProvider provider) => ((IConvertible)value).ToBoolean(provider);
-        public byte ToByte(IFormatProvider provider) => ((IConvertible)value).ToByte(provider);
-        public char ToChar(IFormatProvider provider) => ((IConvertible)value).ToChar(provider);
-        public DateTime ToDateTime(IFormatProvider provider) => ((IConvertible)value).ToDateTime(provider);
-        public decimal ToDecimal(IFormatProvider provider) => ((IConvertible)value).ToDecimal(provider);
-        public double ToDouble(IFormatProvider provider) => ((IConvertible)value).ToDouble(provider);
-        public short ToInt16(IFormatProvider provider) => ((IConvertible)value).ToInt16(provider);
-        public int ToInt32(IFormatProvider provider) => ((IConvertible)value).ToInt32(provider);
-        public long ToInt64(IFormatProvider provider) => ((IConvertible)value).ToInt64(provider);
-        public sbyte ToSByte(IFormatProvider provider) => ((IConvertible)value).ToSByte(provider);
-        public float ToSingle(IFormatProvider provider) => ((IConvertible)value).ToSingle(provider);
-        public string ToString(IFormatProvider provider) => value.ToString(provider);
-        public object ToType(Type conversionType, IFormatProvider provider) => ((IConvertible)value).ToType(conversionType, provider);
-        public ushort ToUInt16(IFormatProvider provider) => ((IConvertible)value).ToUInt16(provider);
-        public uint ToUInt32(IFormatProvider provider) => ((IConvertible)value).ToUInt32(provider);
-        public ulong ToUInt64(IFormatProvider provider) => ((IConvertible)value).ToUInt64(provider);
-    }
+		public int CompareTo(T other) => value.CompareTo(other);
+		public bool Equals(T other) => value.Equals(other);
+		public TypeCode GetTypeCode() => value.GetTypeCode();
+		public bool ToBoolean(IFormatProvider provider) => ((IConvertible)value).ToBoolean(provider);
+		public byte ToByte(IFormatProvider provider) => ((IConvertible)value).ToByte(provider);
+		public char ToChar(IFormatProvider provider) => ((IConvertible)value).ToChar(provider);
+		public DateTime ToDateTime(IFormatProvider provider) => ((IConvertible)value).ToDateTime(provider);
+		public decimal ToDecimal(IFormatProvider provider) => ((IConvertible)value).ToDecimal(provider);
+		public double ToDouble(IFormatProvider provider) => ((IConvertible)value).ToDouble(provider);
+		public short ToInt16(IFormatProvider provider) => ((IConvertible)value).ToInt16(provider);
+		public int ToInt32(IFormatProvider provider) => ((IConvertible)value).ToInt32(provider);
+		public long ToInt64(IFormatProvider provider) => ((IConvertible)value).ToInt64(provider);
+		public sbyte ToSByte(IFormatProvider provider) => ((IConvertible)value).ToSByte(provider);
+		public float ToSingle(IFormatProvider provider) => ((IConvertible)value).ToSingle(provider);
+		public string ToString(IFormatProvider provider) => value.ToString(provider);
+		public object ToType(Type conversionType, IFormatProvider provider) => ((IConvertible)value).ToType(conversionType, provider);
+		public ushort ToUInt16(IFormatProvider provider) => ((IConvertible)value).ToUInt16(provider);
+		public uint ToUInt32(IFormatProvider provider) => ((IConvertible)value).ToUInt32(provider);
+		public ulong ToUInt64(IFormatProvider provider) => ((IConvertible)value).ToUInt64(provider);
+	}
 }

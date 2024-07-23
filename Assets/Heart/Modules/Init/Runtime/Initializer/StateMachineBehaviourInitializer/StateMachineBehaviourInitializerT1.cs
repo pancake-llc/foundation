@@ -44,7 +44,7 @@ namespace Sisus.Init
 		{
 			var argument = await this.argument.GetValueAsync(this, Context.MainThread);
 
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(disposeArgumentsOnDestroy == Arguments.First) OptimizeValueProviderNameForDebugging(this, this.argument);
 			#endif
 
@@ -55,7 +55,7 @@ namespace Sisus.Init
 			var behaviours = target.GetBehaviours<TStateMachineBehaviour>();
 			int count = behaviours.Length;
 			
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(count == 0) throw new MissingComponentException($"No {typeof(TStateMachineBehaviour).Name} was found in the Animator on '{name}'.", null);
 			#endif
 

@@ -8,14 +8,13 @@ using Event = UnityEngine.Event;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
-	[InitializeOnLoad]
 	internal sealed class DropdownWindow : EditorWindow
 	{
 		private static class Styles
 		{
 			public static GUIStyle background = "grey_border";
-			public static GUIStyle previewHeader = new GUIStyle(EditorStyles.label);
-			public static GUIStyle previewText = new GUIStyle(EditorStyles.wordWrappedLabel);
+			private static GUIStyle previewHeader = new(EditorStyles.label);
+			private static GUIStyle previewText = new(EditorStyles.wordWrappedLabel);
 
 			static Styles()
 			{
@@ -28,23 +27,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		internal static DropdownWindow instance = null;
-		internal static IEnumerable<string> names;
+		internal static DropdownWindow instance;
+		private static IEnumerable<string> names;
 		internal static IEnumerable<object> values;
-		internal static IEnumerable<string> selectedValues;
-		internal static string menuTitle;
+		private static IEnumerable<string> selectedValues;
+		private static string menuTitle;
 
-		internal string searchString => search;
-		internal Action<object> valueSelected;
-
-		public event Action<DropdownWindow> onSelected;
-
-		public AdvancedDropdownDataSource dataSource;
-
-		private AdvancedDropdownGUI gui = new AdvancedDropdownGUI();
+		private Action<object> valueSelected;
+		private AdvancedDropdownDataSource dataSource;
+		private AdvancedDropdownGUI gui = new();
 		private AdvancedDropdownItem currentlyRenderedTree;
 		private string search = "";
-
 		private AdvancedDropdownItem animationTree;
 		private float newAnimTarget = 0;
 		private long ticksLastFrame = 0;
@@ -52,10 +45,8 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		[NonSerialized]
 		private bool dirtyList = true;
-
-		public bool ShowHeader { get; set; } = true;
-
-		private bool IsSearchFieldDisabled { get; }
+		private bool showHeader = true;
+		private bool isSearchFieldDisabled = false;
 
 		private bool HasSearch => !string.IsNullOrEmpty(search);
 
@@ -64,7 +55,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			dirtyList = true;
 			dataSource = new DataSource(names, selectedValues, menuTitle);
 			instance = this;
-			ShowHeader = true;
+			showHeader = true;
 		}
 
 		private void OnDisable() => instance = null;
@@ -176,7 +167,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private void OnGUISearch()
 		{
-			gui.DrawSearchField(IsSearchFieldDisabled, search, (newSearch) =>
+			gui.DrawSearchField(isSearchFieldDisabled, search, (newSearch) =>
 			{
 				dataSource.RebuildSearch(newSearch);
 				currentlyRenderedTree =
@@ -248,20 +239,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		private void CloseWindow()
-		{
-			if(onSelected != null)
-			{
-				onSelected(this);
-			}
-
-			Close();
-		}
-
-		internal string GetIdOfSelectedItem()
-		{
-			return currentlyRenderedTree.GetSelectedChild().Id;
-		}
+		private void CloseWindow() => Close();
 
 		private void DrawDropdown(float anim, AdvancedDropdownItem group)
 		{
@@ -269,7 +247,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			areaPosition.height -= 1;
 			GUILayout.BeginArea(gui.GetAnimRect(areaPosition, anim));
 
-			if(ShowHeader)
+			if(showHeader)
 			{
 				gui.DrawHeader(group, GoToParent);
 			}
@@ -365,22 +343,16 @@ namespace Sisus.Init.EditorOnly.Internal
 			animationTree = parent;
 		}
 
-		public int GetSelectedIndex()
-		{
-			return currentlyRenderedTree.GetSelectedChildIndex();
-		}
-
 		[DidReloadScripts]
 		private static void OnScriptReload() => CloseAllOpenWindows();
 
 		private static void CloseAllOpenWindows()
 		{
-			var windows = Resources.FindObjectsOfTypeAll(typeof(DropdownWindow));
-			foreach(var window in windows)
+			foreach(var window in Resources.FindObjectsOfTypeAll<DropdownWindow>())
 			{
 				try
 				{
-					((EditorWindow)window).Close();
+					window.Close();
 				}
 				catch
 				{

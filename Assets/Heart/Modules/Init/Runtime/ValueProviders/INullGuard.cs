@@ -10,7 +10,7 @@ namespace Sisus.Init
 	public interface INullGuard
 	{
 		/// <summary>
-		/// Gets a value indicating whether or not null guard passes for this object or not, and if not,
+		/// Gets a value indicating whether null guard passes for this object or not, and if not,
 		/// what was the cause of the failure.
 		/// </summary>
 		/// <param name="client">

@@ -4,12 +4,12 @@ using UnityEditor;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
-    /// <summary>
-    /// Extension methods for <see cref="UnityEditor.SerializedObject"/>.
-    /// </summary>
-    internal static class SerializedObjectExtensions
+	/// <summary>
+	/// Extension methods for <see cref="UnityEditor.SerializedObject"/>.
+	/// </summary>
+	internal static class SerializedObjectExtensions
 	{
-        private static readonly FieldInfo getNativeObjectPtrField;
+		private static readonly FieldInfo getNativeObjectPtrField;
 
 		static SerializedObjectExtensions() => getNativeObjectPtrField = typeof(SerializedObject).GetField("m_NativeObjectPtr", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 

@@ -1,4 +1,5 @@
 ﻿//#define DEBUG_ENABLED
+//#define DEBUG_CROSS_SCENE_REFERENCES
 
 using System;
 using System.Collections;
@@ -26,13 +27,12 @@ namespace Sisus.Init.EditorOnly.Internal
 	/// that allows assigning any value to the property.
 	/// </summary>
 	[CustomPropertyDrawer(typeof(IAny), useForChildren: true)]
-    internal sealed class AnyPropertyDrawer : PropertyDrawer
-    {
+	internal sealed class AnyPropertyDrawer : PropertyDrawer
+	{
 		public const string ServiceLabel = "Service";
 		private const float DROPDOWN_BUTTON_WIDTH = DropdownButton.ADD_ICON_WIDTH;
 
 		private static readonly GUILayoutOption[] oneGUILayoutOption = new GUILayoutOption[1];
-		public static bool CurrentlyDrawnItemFailedNullGuard => CurrentlyDrawnItemNullGuardResult != NullGuardResult.Passed;
 		public static NullGuardResult CurrentlyDrawnItemNullGuardResult { get; private set; }
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		public static event Action<SerializedProperty, Type> UserSelectedTypeChanged;
 
 		private const float controlOffset = 3f;
-		private static readonly GUIContent valueText = new GUIContent("Value");
+		private static readonly GUIContent valueText = new("Value");
 
 		private static readonly Dictionary<Type, Dictionary<Type, bool>> isAssignableCaches = new();
 
@@ -56,7 +56,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		public override void OnGUI(Rect position, SerializedProperty anyProperty, GUIContent label)
-        {
+		{
 			var targetObject = anyProperty.serializedObject.targetObject;
 			if(!statesByTarget.TryGetValue(targetObject, out var states))
 			{
@@ -72,7 +72,6 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				state = new State(anyProperty, fieldInfo);
 				states.Add(anyProperty.propertyPath, state);
-				LayoutUtility.Repaint();
 			}
 			else if(state.ValueHasChanged() || !state.IsValid() || state.anyProperty.serializedObject != anyProperty.serializedObject)
 			{
@@ -86,7 +85,6 @@ namespace Sisus.Init.EditorOnly.Internal
 				state = new State(anyProperty, fieldInfo);
 				states[anyProperty.propertyPath] = state;
 				UserSelectedTypeChanged?.Invoke(anyProperty, state.valueType);
-				LayoutUtility.Repaint();
 			}
 			else
 			{
@@ -95,12 +93,12 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			height = DrawValueField(position, anyProperty, state, label);
 			anyProperty.serializedObject.ApplyModifiedProperties();
-        }
+		}
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) => height;
 
 		internal static bool TryGetAssignableType(Object draggedObject, Object targetObject, Type anyType, Type valueType, out Type assignableType)
-        {
+		{
 			if(draggedObject == null)
 			{
 				assignableType = null;
@@ -108,18 +106,30 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			if(draggedObject is GameObject gameObject && valueType != typeof(GameObject) && valueType != typeof(Object) && valueType != typeof(object))
-            {
-				foreach(var component in gameObject.GetComponents<Component>())
-                {
+			{
+				Type bestMatch = null;
+				foreach(var component in gameObject.GetComponentsNonAlloc<Component>())
+				{
 					if(TryGetAssignableType(component, targetObject, anyType, valueType, out assignableType))
-                    {
-						return true;
-                    }
-                }
+					{
+						if(assignableType == valueType)
+						{
+							return true;
+						}
 
-				assignableType = null;
-				return false;
-            }
+						bestMatch = assignableType;
+					}
+				}
+
+				if(bestMatch is null)
+				{
+					assignableType = null;
+					return false;
+				}
+
+				assignableType = bestMatch;
+				return true;
+			}
 
 			if(!isAssignableCaches.TryGetValue(anyType, out var isAssignableCache))
 			{
@@ -139,13 +149,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			isAssignableCache.Add(draggedType, isAssignable);
 			assignableType = isAssignable ? draggedObject.GetType() : null;
 			return isAssignable;
-        }
+		}
 
 		public static Type GetAnyTypeFromField(FieldInfo fieldInfo)
 		{
 			var fieldType = fieldInfo.FieldType;
 			if(fieldType.IsArray)
-            {
+			{
 				return fieldType.GetElementType();
 			}
 
@@ -165,7 +175,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static int lastDraggedObjectCount = 0;
 
 		private float DrawValueField(Rect position, SerializedProperty anyProperty, State state, GUIContent label)
-        {
+		{
 			// Repaint whenever dragged object references change because
 			// the controls can change in reaction to objects being dragged.
 			if(lastDraggedObjectCount != DragAndDrop.objectReferences.Length)
@@ -190,7 +200,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			GUI.color = Color.white;
 
 			if(state.isService && !hasSerializedValue && !IsDraggingObjectReferenceThatIsAssignableToProperty(firstTargetObject, state.anyType, state.valueType))
-            {
+			{
 				bool clicked = ServiceTagEditorUtility.Draw(position, label, anyProperty);
 				EditorGUI.indentLevel = indentLevelWas;
 
@@ -200,7 +210,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				return EditorGUIUtility.singleLineHeight;
-            }
+			}
 
 			if(state.valueProviderGUI != null)
 			{
@@ -211,9 +221,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(state.propertyDrawerOverride != null)
 			{
-				if(CurrentlyDrawnItemFailedNullGuard)
+				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 				{
-					GUI.color = Color.red;
+					GUI.color = setGUIColor;
 				}
 
 				DrawUsingCustomPropertyDrawer(label, state);
@@ -224,9 +234,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			#if ODIN_INSPECTOR
 			if(state.odinDrawer != null)
 			{
-				if(CurrentlyDrawnItemFailedNullGuard)
+				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 				{
-					GUI.color = Color.red;
+					GUI.color = setGUIColor;
 				}
 
 				DrawUsingOdin(state);
@@ -237,12 +247,12 @@ namespace Sisus.Init.EditorOnly.Internal
 			#endif
 
 			if(drawAsObjectField)
-            {
+			{
 				EditorGUI.BeginProperty(position, label, referenceProperty);
 				var controlRect = EditorGUI.PrefixLabel(position, label);
 				bool drawTypeDropdown = state.drawTypeDropdownButton && objectReferenceValueIsNull && (!draggingAssignableObject || !managedValueIsNull);
 				if(drawTypeDropdown)
-                {
+				{
 					controlRect = DrawTypeDropdown(controlRect, state, false);
 				}
 
@@ -263,9 +273,9 @@ namespace Sisus.Init.EditorOnly.Internal
 								state.crossSceneReferenceDrawer = new CrossSceneReferenceGUI(state.objectFieldType);
 							}
 
-							if(CurrentlyDrawnItemFailedNullGuard)
+							if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 							{
-								GUI.color = Color.red;
+								GUI.color = setGUIColor;
 							}
 
 							state.crossSceneReferenceDrawer.OnGUI(controlRect, referenceProperty, GUIContent.none);
@@ -281,12 +291,12 @@ namespace Sisus.Init.EditorOnly.Internal
 					else if(GetScene(referenceValue) is Scene referenceScene && referenceScene.IsValid() && referenceScene != GetScene(firstTargetObject))
 					{
 						#if DEV_MODE && DEBUG_CROSS_SCENE_REFERENCES
-						Debug.Log($"Cross scene reference detected. {referenceValue.name} scene != {GetScene(firstTargetObject)}");
+						Debug.Log($"Cross scene reference detected. {referenceValue.name} ({referenceValue.GetType().Name}) scene != {GetScene(firstTargetObject)}");
 						#endif
 
 						var referenceGameObject = GetGameObject(referenceValue);
 						bool isCrossSceneReferenceable = false;
-						foreach(var refTag in referenceGameObject.GetComponents<RefTag>())
+						foreach(var refTag in referenceGameObject.GetComponentsNonAlloc<RefTag>())
 						{
 							if(refTag.Target == referenceValue)
 							{
@@ -315,9 +325,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				if(state.draggedObjectIsAssignable.HasValue && state.draggedObjectIsAssignable.Value
 					&& GetScene(DragAndDrop.objectReferences[0]) != GetScene(firstTargetObject))
 				{
-					if(CurrentlyDrawnItemFailedNullGuard)
+					if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 					{
-						GUI.color = Color.red;
+						GUI.color = setGUIColor;
 					}
 
 					Object setReferenceValue = EditorGUI.ObjectField(controlRect, GUIContent.none, referenceValue, state.objectFieldType, true);
@@ -340,7 +350,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 							var referenceGameObject = GetGameObject(setReferenceValue);
 							bool isCrossSceneReferenceable = false;
-							foreach(var refTag in referenceGameObject.GetComponents<RefTag>()) // Could reuse a list to avoid allocating so much
+							foreach(var refTag in referenceGameObject.GetComponentsNonAlloc<RefTag>())
 							{
 								if(refTag.Target == setReferenceValue)
 								{
@@ -381,9 +391,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 				else
 				{
-					if(CurrentlyDrawnItemFailedNullGuard)
+					if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 					{
-						GUI.color = Color.red;
+						GUI.color = setGUIColor;
 					}
 
 					DrawObjectField(controlRect, referenceValue, state);
@@ -407,11 +417,11 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				EditorGUI.EndProperty();
 				return EditorGUIUtility.singleLineHeight;
-            }
+			}
 
 			bool drawDiscardButton = state.drawDiscardButton;
 			if(drawDiscardButton)
-            {
+			{
 				var discardRect = position;
 				discardRect.x = position.xMax - DiscardButton.Width;
 				state.discardValueButton.Draw(discardRect);
@@ -419,13 +429,15 @@ namespace Sisus.Init.EditorOnly.Internal
 				position.width -= DiscardButton.Width;
 			}
 
+			bool drawTypeDropdownButton = state.drawTypeDropdownButton;
+
 			// Elements with foldouts are drawn better, when not drawing PrefixLabel manually,
 			// so prefer that, if type dropdown does not need to be drawn.
-			if(!state.drawTypeDropdownButton && !draggingAssignableObject && valueProperty.propertyType is not SerializedPropertyType.ObjectReference)
+			if(!drawTypeDropdownButton && !draggingAssignableObject && valueProperty.propertyType is not SerializedPropertyType.ObjectReference)
 			{
-				if(CurrentlyDrawnItemFailedNullGuard)
+				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 				{
-					GUI.color = Color.red;
+					GUI.color = setGUIColor;
 				}
 
 				EditorGUI.PropertyField(position, valueProperty, label, true);
@@ -451,9 +463,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					DrawTypeDropdown(dropdownRect, state, true);
 				}
 
-				if(CurrentlyDrawnItemFailedNullGuard)
+				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 				{
-					GUI.color = Color.red;
+					GUI.color = setGUIColor;
 				}
 
 				EditorGUI.PropertyField(position, valueProperty, label, true);
@@ -467,8 +479,6 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				return EditorGUI.GetPropertyHeight(valueProperty, label, true);
 			}
-
-			bool drawTypeDropdownButton = state.drawTypeDropdownButton;
 
 			float labelWidthWas = EditorGUIUtility.labelWidth;
 			Rect remainingRect;
@@ -490,14 +500,11 @@ namespace Sisus.Init.EditorOnly.Internal
 				prefixRect.xMax = remainingRect.x;
 				DrawObjectField(prefixRect, referenceValue, state);
 			}
-			else if(drawTypeDropdownButton && !managedValueIsNull && (state.valueHasChildProperties || valueProperty.isExpanded))
+			else if(drawTypeDropdownButton && !managedValueIsNull && valueProperty.HasFoldoutInInspector(managedValue.GetType()))
 			{
 				var dropdownRect = position;
 				float labelWidth = EditorGUIUtility.labelWidth;
 				dropdownRect.x += labelWidth;
-				const float ARRAY_SIZE_CONTROL_WIDTH = 200f;
-				dropdownRect.width -= labelWidth + ARRAY_SIZE_CONTROL_WIDTH;
-
 				if(dropdownRect.width >= EditorGUIUtility.singleLineHeight)
 				{
 					DrawTypeDropdown(dropdownRect, state, false);
@@ -514,21 +521,21 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			if(valueProperty == null)
-            {
+			{
 				return EditorGUIUtility.singleLineHeight;
 			}
 
 			if(valueProperty.propertyType != SerializedPropertyType.ManagedReference)
-            {
+			{
 				EditorGUI.indentLevel = 0;
 				if(drawTypeDropdownButton)
 				{
 					remainingRect = DrawTypeDropdown(remainingRect, state, false);
 				}
 
-				if(CurrentlyDrawnItemFailedNullGuard)
+				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 				{
-					GUI.color = Color.red;
+					GUI.color = setGUIColor;
 				}
 
 				EditorGUI.PropertyField(remainingRect, valueProperty, label, true);
@@ -537,12 +544,12 @@ namespace Sisus.Init.EditorOnly.Internal
 				EditorGUI.indentLevel = indentLevelWas;
 				EditorGUIUtility.labelWidth = labelWidthWas;
 				return EditorGUI.GetPropertyHeight(valueProperty, label, true);
-            }
+			}
 
 			if(state.valueType == typeof(object))
-            {
+			{
 				switch(valueProperty.type)
-                {
+				{
 					case "managedReference<Int32>":
 						SetManagedValue(valueProperty, new _Integer() { value = (int)managedValue }, "Set Int Value");
 						valueProperty.serializedObject.ApplyModifiedProperties();
@@ -556,17 +563,17 @@ namespace Sisus.Init.EditorOnly.Internal
 						EditorGUI.BeginProperty(remainingRect, label, valueProperty);
 						var intWas = ((_Integer)managedValue).value;
 						var setInt = EditorGUI.IntField(remainingRect, label, intWas);
-                        if(intWas != setInt)
-                        {
-                            SetManagedValue(valueProperty, new _Integer() { value = setInt }, "Set Int Value");
-                        }
-                        EditorGUI.EndProperty();
-                        valueProperty.serializedObject.ApplyModifiedProperties();
+						if(intWas != setInt)
+						{
+							SetManagedValue(valueProperty, new _Integer() { value = setInt }, "Set Int Value");
+						}
+						EditorGUI.EndProperty();
+						valueProperty.serializedObject.ApplyModifiedProperties();
 
 						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
 						EditorGUIUtility.labelWidth = labelWidthWas;
-                        return EditorGUIUtility.singleLineHeight;
+						return EditorGUIUtility.singleLineHeight;
 					case "managedReference<Type>":
 						SetManagedValue(valueProperty, new _Type((Type)managedValue, null), "Set Type Value");
 						valueProperty.serializedObject.ApplyModifiedProperties();
@@ -574,7 +581,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						EditorGUI.indentLevel = indentLevelWas;
 						EditorGUIUtility.labelWidth = labelWidthWas;
 						return EditorGUIUtility.singleLineHeight;
-                    case "managedReference<Boolean>":
+					case "managedReference<Boolean>":
 						SetManagedValue(valueProperty, new _Boolean() { value = (bool)managedValue }, "Set Boolean Value");
 						valueProperty.serializedObject.ApplyModifiedProperties();
 						GUI.color = guiColorWas;
@@ -588,15 +595,15 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 
 						EditorGUI.BeginProperty(remainingRect, label, valueProperty);
-                        var boolWas = ((_Boolean)managedValue).value;
+						var boolWas = ((_Boolean)managedValue).value;
 						var setBool = EditorGUI.Toggle(remainingRect, label, boolWas);
-                        if(boolWas != setBool)
-                        {
-                            SetManagedValue(valueProperty, new _Boolean() { value = setBool }, "Set Boolean Value");
-                        }
-                        EditorGUI.EndProperty();
-                        valueProperty.serializedObject.ApplyModifiedProperties();
-                        GUI.color = guiColorWas;
+						if(boolWas != setBool)
+						{
+							SetManagedValue(valueProperty, new _Boolean() { value = setBool }, "Set Boolean Value");
+						}
+						EditorGUI.EndProperty();
+						valueProperty.serializedObject.ApplyModifiedProperties();
+						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
 						EditorGUIUtility.labelWidth = labelWidthWas;
 						return EditorGUIUtility.singleLineHeight;
@@ -614,16 +621,16 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 
 						EditorGUI.BeginProperty(remainingRect, label, valueProperty);
-                        var floatWas = ((_Float)managedValue).value;
-                        var setFloat = EditorGUI.FloatField(remainingRect, label, floatWas);
-                        if(floatWas != setFloat)
-                        {
-                            SetManagedValue(valueProperty, new _Float() { value = setFloat }, "Set Float Value");
-                        }
+						var floatWas = ((_Float)managedValue).value;
+						var setFloat = EditorGUI.FloatField(remainingRect, label, floatWas);
+						if(floatWas != setFloat)
+						{
+							SetManagedValue(valueProperty, new _Float() { value = setFloat }, "Set Float Value");
+						}
 
-                        EditorGUI.EndProperty();
+						EditorGUI.EndProperty();
 
-                        GUI.color = guiColorWas;
+						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
 						EditorGUIUtility.labelWidth = labelWidthWas;
 						return EditorGUIUtility.singleLineHeight;
@@ -678,7 +685,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						EditorGUI.indentLevel = indentLevelWas;
 						EditorGUIUtility.labelWidth = labelWidthWas;
 						return EditorGUIUtility.singleLineHeight;
-                    case "managedReference<Color>":
+					case "managedReference<Color>":
 						if(drawTypeDropdownButton)
 						{
 							remainingRect = DrawTypeDropdown(remainingRect, state, false);
@@ -697,7 +704,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						EditorGUI.indentLevel = indentLevelWas;
 						EditorGUIUtility.labelWidth = labelWidthWas;
 						return EditorGUIUtility.singleLineHeight;
-                    case "managedReference<Vector2>":
+					case "managedReference<Vector2>":
 						if(drawTypeDropdownButton)
 						{
 							remainingRect = DrawTypeDropdown(remainingRect, state, false);
@@ -787,8 +794,8 @@ namespace Sisus.Init.EditorOnly.Internal
 						EditorGUI.indentLevel = indentLevelWas;
 						EditorGUIUtility.labelWidth = labelWidthWas;
 						return EditorGUIUtility.singleLineHeight;
-                }
-            }
+				}
+			}
 
 			if(drawTypeDropdownButton)
 			{
@@ -798,9 +805,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					label = GUIContent.none;
 				}
 
-				if(CurrentlyDrawnItemFailedNullGuard && managedValueIsNull)
+				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 				{
-					GUI.color = Color.red;
+					GUI.color = setGUIColor;
 				}
 
 				DrawTypeDropdown(remainingRect, state, true);
@@ -809,34 +816,34 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			if(managedValueIsNull)
-            {
+			{
 				GUI.color = guiColorWas;
 				EditorGUI.indentLevel = indentLevelWas;
 				EditorGUIUtility.labelWidth = labelWidthWas;
 				return EditorGUIUtility.singleLineHeight;
-            }
+			}
 
-            var assignedInstanceType = managedValue.GetType();
-            if(assignedInstanceType is null)
-            {
+			var assignedInstanceType = managedValue.GetType();
+			if(assignedInstanceType is null)
+			{
 				GUI.color = guiColorWas;
 				EditorGUI.indentLevel = indentLevelWas;
 				EditorGUIUtility.labelWidth = labelWidthWas;
 				return EditorGUIUtility.singleLineHeight;
-            }
+			}
 
 			bool isSerializableByUnity = TypeUtility.IsSerializableByUnity(assignedInstanceType);
 
-            if(!isSerializableByUnity)
-            {
+			if(!isSerializableByUnity)
+			{
 				var boxPosition = position;
-                boxPosition.y += position.height;
-                EditorGUI.HelpBox(boxPosition, assignedInstanceType.Name + " is missing the [Serializable] attribute.", MessageType.Info);
-                GUI.color = guiColorWas;
+				boxPosition.y += position.height;
+				EditorGUI.HelpBox(boxPosition, assignedInstanceType.Name + " is missing the [Serializable] attribute.", MessageType.Info);
+				GUI.color = guiColorWas;
 				EditorGUI.indentLevel = indentLevelWas;
 				EditorGUIUtility.labelWidth = labelWidthWas;
 				return EditorGUIUtility.singleLineHeight * 2f;
-            }
+			}
 
 			if(state.valueHasChildProperties)
 			{
@@ -858,7 +865,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			EditorGUI.indentLevel = indentLevelWas;
 			EditorGUIUtility.labelWidth = labelWidthWas;
 			return EditorGUIUtility.singleLineHeight + EditorGUI.GetPropertyHeight(valueProperty, valueText, true);
-        }
+		}
 
 		void DrawObjectField(Rect controlRect, Object referenceValue, State state)
 		{
@@ -874,6 +881,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				if(newReferenceValue is GameObject gameObject)
 				{
+
+
 					newReferenceValue = Find.In(gameObject, state.valueType) as Object;
 					if(newReferenceValue == null)
 					{
@@ -957,8 +966,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			return TryGetAssignableType(DragAndDrop.objectReferences[0], targetObject, anyType, valueType, out _);
 		}
 
-        private static void SetManagedValue<T>([DisallowNull] SerializedProperty valueProperty, T setValue, string undoText)
-        {
+		private static void SetManagedValue<T>([DisallowNull] SerializedProperty valueProperty, T setValue, string undoText)
+		{
 			var targets = valueProperty.serializedObject.targetObjects;
 
 			Undo.RecordObjects(targets, undoText);
@@ -966,10 +975,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			valueProperty.managedReferenceValue = setValue;
 
 			foreach(var target in targets)
-            {
-                EditorUtility.SetDirty(target);
-            }
-        }
+			{
+				EditorUtility.SetDirty(target);
+			}
+	}
 
 		/// <summary>
 		/// Can an <see cref="Object"/> type value be assigned to a field of type <paramref name="valueType"/>?
@@ -981,7 +990,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// <returns> <see langword="true"/> if <paramref name="valueType"/> is <see cref="object"/>, <see cref="Object"/>
 		/// or an interface type implemented by any non-abstact <see cref="Object"/>-derived class;
 		/// otherwise, <see langword="false"/>. </returns>
-        public static bool CanAssignUnityObjectToField([DisallowNull] Type valueType)
+		public static bool CanAssignUnityObjectToField([DisallowNull] Type valueType)
 		{
 			if(valueType == typeof(object) || typeof(Object).IsAssignableFrom(valueType))
 			{
@@ -1003,7 +1012,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		public static bool CanAssignNonUnityObjectToField([DisallowNull] Type valueType)
-        {
+		{
 			if(typeof(Object).IsAssignableFrom(valueType))
 			{
 				return false;
@@ -1036,11 +1045,11 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		private static Rect DrawTypeDropdown(Rect rect, [DisallowNull] State state, bool fullWidth)
-        {
+		{
 			float totalWidth = rect.width;
 			float width = rect.width;
 			if(!fullWidth)
-            {
+			{
 				GUIContent buttonLabel = state.typeDropdownButton.buttonLabel;
 				if(buttonLabel.text.Length > 0)
 				{
@@ -1065,11 +1074,12 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			// If GUI is tinted red by null argument guard, but value selected in the dropdown is not Null,
 			// then we don't tint the type dropdown value red, as that would be misleading, but only the value that follows it.
-			if(GUI.color == Color.red && state.typeDropdownButton.buttonLabel.text.Length == 0)
+			if(state.typeDropdownButton.buttonLabel.text.Length == 0 && (GUI.color == InitializerEditorUtility.NullGuardFailedColor || GUI.color == InitializerEditorUtility.NullGuardWarningColor))
 			{
+				var guiColorWas = GUI.color;
 				GUI.color = Color.white;
 				state.typeDropdownButton.Draw(rect);
-				GUI.color = Color.red;
+				GUI.color = guiColorWas;
 			}
 			else
 			{
@@ -1085,7 +1095,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			remainingRect.width = totalWidth - width - controlOffset;
 
 			return remainingRect;
-        }
+		}
 
 		private static Scene GetScene(Object target) => target is Component component && component != null ? component.gameObject.scene : target is GameObject gameObject && gameObject != null ? gameObject.scene : default;
 		private static GameObject GetGameObject(Object target) => target is Component component && component != null ? component.gameObject : target as GameObject;
@@ -1145,9 +1155,6 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private sealed class State
 		{
-			private static readonly MethodInfo evaluateNullGuardMethod;
-			private static readonly object[] evaluateNullGuardMethodArgs = new object[] { null };
-
 			public readonly Type anyType;
 			public readonly Type valueType;
 			public readonly IEqualityComparer equalityComparer;
@@ -1228,8 +1235,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			
 			static State()
 			{
-				evaluateNullGuardMethod = typeof(INullGuard).GetMethod(nameof(INullGuard.EvaluateNullGuard));
-
 				EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 				EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 				ObjectChangeEvents.changesPublished -= OnChangesPublished;
@@ -1260,7 +1265,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				if(valuePropertyIsNull) { Debug.Log($"{anyProperty.propertyPath} value SerializedProperty is null. Probably because Unity can't serialize field of type {valueType} with the SerializeReferenceAttribute."); }
 				#endif
 
-				valueHasChildProperties = !valuePropertyIsNull && (valueProperty.hasChildren && valueProperty.propertyType != SerializedPropertyType.String);
+				valueHasChildProperties = !valuePropertyIsNull && valueProperty.hasChildren && valueProperty.propertyType != SerializedPropertyType.String;
 				canBeUnityObject = CanAssignUnityObjectToField(valueType);
 				canBeNonUnityObject = !valuePropertyIsNull && CanAssignNonUnityObjectToField(valueType);
 
@@ -1336,10 +1341,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			public void Update(bool forceDeepUpdate = false)
 			{
 				var nullGuardActive = InitParameterGUI.NowDrawing?.NullArgumentGuardActive ?? false;
-				if(nullGuardActive)
+				if(nullGuardActive && anyProperty.GetValue() is INullGuard nullGuard)
 				{
-					evaluateNullGuardMethodArgs[0] = anyProperty.serializedObject.targetObject as Component;
-					CurrentlyDrawnItemNullGuardResult = (NullGuardResult)evaluateNullGuardMethod.Invoke(anyProperty.GetValue(), evaluateNullGuardMethodArgs);
+					CurrentlyDrawnItemNullGuardResult = nullGuard.EvaluateNullGuard(anyProperty.serializedObject.targetObject as Component);
 				}
 				else
 				{
@@ -1438,6 +1442,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			/// <returns> <see langword="false"/> if menu has no items. </returns>
 			private void RebuildDefiningTypeAndDiscardButtons(out bool drawTypeDropdownButton, out bool drawDiscardButton)
 			{
+				LayoutUtility.Repaint();
 				var typeOptions = GetTypeOptions();
 				var valueProviderOptions = GetAllInitArgMenuItemValueProviderTypes(valueType);
 				bool hasMoreThanOneNonValueProviderOption = typeOptions.Skip(1).Any();
@@ -1463,8 +1468,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				var managedValue = valueProperty?.GetValue();
 				bool managedValueIsNull = managedValue is null;
 				var instanceType = !managedValueIsNull ? managedValue.GetType()
-								 : typeof(Object).IsAssignableFrom(valueType) ? valueType
-								 : null;
+									: typeof(Object).IsAssignableFrom(valueType) ? valueType
+									: null;
 
 				string buttonText = GetItemContent(instanceType).fullPath;
 				int buttonTextLastPartStart = buttonText.LastIndexOf('/');
@@ -1476,7 +1481,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				IEnumerable<Type> selectedTypes = Enumerable.Repeat(instanceType, 1);
 				const string menuTitle = "Select Value";
 
-				if(!managedValueIsNull && (valueHasChildProperties || valueProperty.isExpanded))
+				if(!managedValueIsNull && (valueProperty.isExpanded || valueHasChildProperties || TypeUtility.IsSerializableByUnity(instanceType)))
 				{
 					typeDropdownButton = new TypeDropdownButton(GUIContent.none, new GUIContent(buttonText), typeOptions, selectedTypes, OnSelectedItemChanged, menuTitle, GetItemContent);
 					discardValueButton = null;
@@ -1558,13 +1563,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			private static IEnumerable<Type> GetAllInitArgMenuItemValueProviderTypes(Type valueType)
 			{
 				return ValueProviderEditorUtility.GetAllValueProviderMenuItemTargetTypes()
-												 .Where(t => t.GetCustomAttribute<ValueProviderMenuAttribute>() is ValueProviderMenuAttribute attribute
-												 && (attribute.IsAny.Length == 0 || Array.Exists(attribute.IsAny, t => t.IsAssignableFrom(valueType)))
-												 && (attribute.NotAny.Length == 0 || !Array.Exists(attribute.NotAny, t => t.IsAssignableFrom(valueType)))
-												 && MatchesAny(valueType, attribute.WhereAny)
-												 && MatchesAll(valueType, attribute.WhereAll)
-												 && (attribute.WhereNone == Is.Unconstrained || !MatchesAny(valueType, attribute.WhereNone)))
-												 .OrderBy(t => t.Name);
+													.Where(t => t.GetCustomAttribute<ValueProviderMenuAttribute>() is ValueProviderMenuAttribute attribute
+													&& (attribute.IsAny.Length == 0 || Array.Exists(attribute.IsAny, t => t.IsAssignableFrom(valueType)))
+													&& (attribute.NotAny.Length == 0 || !Array.Exists(attribute.NotAny, t => t.IsAssignableFrom(valueType)))
+													&& MatchesAny(valueType, attribute.WhereAny)
+													&& MatchesAll(valueType, attribute.WhereAll)
+													&& (attribute.WhereNone == Is.Unconstrained || !MatchesAny(valueType, attribute.WhereNone)))
+													.OrderBy(t => t.Name);
 
 				static bool MatchesAny(Type valueType, Is whereAny)
 				{
@@ -1574,17 +1579,17 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					if((whereAny.HasFlag(Is.Class)			&& valueType.IsClass) ||
-					   (whereAny.HasFlag(Is.ValueType)		&& valueType.IsValueType) ||
-					   (whereAny.HasFlag(Is.Concrete)		&& !valueType.IsAbstract) ||
-					   (whereAny.HasFlag(Is.Abstract)		&& valueType.IsAbstract) ||
-					   (whereAny.HasFlag(Is.BuiltIn)		&& (valueType.IsPrimitive || valueType == typeof(string) || valueType == typeof(object))) ||
-					   (whereAny.HasFlag(Is.Interface)		&& valueType.IsInterface) ||
-					   (whereAny.HasFlag(Is.Component)		&& Find.typesToComponentTypes.ContainsKey(valueType)) ||
-					   (whereAny.HasFlag(Is.WrappedObject)	&& Find.typeToWrapperTypes.ContainsKey(valueType)) ||
-					   (whereAny.HasFlag(Is.SceneObject)	&& Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject))) ||
-					   (whereAny.HasFlag(Is.Asset)			&& Find.typesToFindableTypes.ContainsKey(valueType)) ||
-					   (whereAny.HasFlag(Is.Service)		&& ServiceUtility.IsServiceDefiningType(valueType)) ||
-					   (whereAny.HasFlag(Is.Collection)		&& TypeUtility.IsCommonCollectionType(valueType)))
+						(whereAny.HasFlag(Is.ValueType)		&& valueType.IsValueType) ||
+						(whereAny.HasFlag(Is.Concrete)		&& !valueType.IsAbstract) ||
+						(whereAny.HasFlag(Is.Abstract)		&& valueType.IsAbstract) ||
+						(whereAny.HasFlag(Is.BuiltIn)		&& (valueType.IsPrimitive || valueType == typeof(string) || valueType == typeof(object))) ||
+						(whereAny.HasFlag(Is.Interface)		&& valueType.IsInterface) ||
+						(whereAny.HasFlag(Is.Component)		&& Find.typesToComponentTypes.ContainsKey(valueType)) ||
+						(whereAny.HasFlag(Is.WrappedObject)	&& Find.typeToWrapperTypes.ContainsKey(valueType)) ||
+						(whereAny.HasFlag(Is.SceneObject)	&& Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject))) ||
+						(whereAny.HasFlag(Is.Asset)			&& Find.typesToFindableTypes.ContainsKey(valueType)) ||
+						(whereAny.HasFlag(Is.Service)		&& ServiceUtility.IsServiceDefiningType(valueType)) ||
+						(whereAny.HasFlag(Is.Collection)		&& TypeUtility.IsCommonCollectionType(valueType)))
 					{
 						return true;
 					}
@@ -1610,15 +1615,15 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					if((!whereAll.HasFlag(Is.Class)			|| valueType.IsClass) &&
-					   (!whereAll.HasFlag(Is.ValueType)		|| valueType.IsValueType) &&
-					   (!whereAll.HasFlag(Is.Concrete)		|| !valueType.IsAbstract) &&
-					   (!whereAll.HasFlag(Is.Abstract)		|| valueType.IsAbstract) &&
-					   (!whereAll.HasFlag(Is.Interface)		|| valueType.IsInterface) &&
-					   (!whereAll.HasFlag(Is.Component)		|| Find.typesToComponentTypes.ContainsKey(valueType)) &&
-					   (!whereAll.HasFlag(Is.WrappedObject)	|| Find.typeToWrapperTypes.ContainsKey(valueType)) &&
-					   (!whereAll.HasFlag(Is.SceneObject)	|| Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject))) &&
-					   (!whereAll.HasFlag(Is.Asset)			|| Find.typesToFindableTypes.ContainsKey(valueType)) &&
-					   (!whereAll.HasFlag(Is.Service)		|| ServiceUtility.IsServiceDefiningType(valueType)))
+						(!whereAll.HasFlag(Is.ValueType)		|| valueType.IsValueType) &&
+						(!whereAll.HasFlag(Is.Concrete)		|| !valueType.IsAbstract) &&
+						(!whereAll.HasFlag(Is.Abstract)		|| valueType.IsAbstract) &&
+						(!whereAll.HasFlag(Is.Interface)		|| valueType.IsInterface) &&
+						(!whereAll.HasFlag(Is.Component)		|| Find.typesToComponentTypes.ContainsKey(valueType)) &&
+						(!whereAll.HasFlag(Is.WrappedObject)	|| Find.typeToWrapperTypes.ContainsKey(valueType)) &&
+						(!whereAll.HasFlag(Is.SceneObject)	|| Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject))) &&
+						(!whereAll.HasFlag(Is.Asset)			|| Find.typesToFindableTypes.ContainsKey(valueType)) &&
+						(!whereAll.HasFlag(Is.Service)		|| ServiceUtility.IsServiceDefiningType(valueType)))
 					{
 						return true;
 					}
@@ -1654,7 +1659,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 					}
 					else if(setType.GetCustomAttribute<ValueProviderMenuAttribute>() is ValueProviderMenuAttribute attribute
-						 && typeof(ScriptableObject).IsAssignableFrom(setType))
+							&& typeof(ScriptableObject).IsAssignableFrom(setType))
 					{
 						var instancesInProject = AssetDatabase.FindAssets("t:" + setType.Name)
 													.Select(guid => AssetDatabase.LoadAssetAtPath<ScriptableObject>(AssetDatabase.GUIDToAssetPath(guid)))
@@ -1686,8 +1691,8 @@ namespace Sisus.Init.EditorOnly.Internal
 						#endif
 
 						referenceProperty.objectReferenceValue = useSingleSharedInstance
-															   ? instancesInProject[0]
-															   : ScriptableObject.CreateInstance(setType);
+																? instancesInProject[0]
+																: ScriptableObject.CreateInstance(setType);
 					}
 				}
 				else if(valueProperty.propertyType != SerializedPropertyType.ManagedReference)
@@ -1724,16 +1729,14 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						valueProperty.vector2IntValue = Vector2Int.zero;
 					}
+					#if UNITY_LOCALIZATION
 					else if(setType == typeof(LocalizedString))
 					{
 						var localizedString = ScriptableObject.CreateInstance<LocalizedString>();
+						localizedString.value.TableReference = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.DefaultTable;
 						referenceProperty.objectReferenceValue = localizedString;
 					}
-					else if(setType == typeof(LocalizedFontAsset))
-					{
-						var localizedFontAsset = ScriptableObject.CreateInstance<LocalizedFontAsset>();
-						referenceProperty.objectReferenceValue = localizedFontAsset;
-					}
+					#endif
 				}
 				else if(typeof(Type).IsAssignableFrom(setType))
 				{
@@ -1971,5 +1974,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 		}
+
+		public static bool TryGetNullArgumentGuardBasedControlTint(out Color color) => InitializerEditorUtility.TryGetTintForNullGuardResult(CurrentlyDrawnItemNullGuardResult, out color);
 	}
 }

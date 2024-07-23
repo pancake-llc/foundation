@@ -86,7 +86,7 @@ namespace Sisus.Init
 		bool IInitializable.Init(Context context)
 		{
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				AutoInitInEditMode<WrapperInitializerBase<TWrapper, TWrapped, TArgument>, TWrapped, TArgument>(this);
 			}
@@ -124,5 +124,5 @@ namespace Sisus.Init
 		private protected sealed override void Reset() => Reset<WrapperInitializerBase<TWrapper, TWrapped, TArgument>, TWrapped, TArgument>(this, gameObject);
 		private protected override void OnValidate() => Validate(this, gameObject, Argument);
 		#endif
-    }
+	}
 }

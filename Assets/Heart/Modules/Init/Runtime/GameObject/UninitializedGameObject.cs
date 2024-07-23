@@ -20,7 +20,7 @@ namespace Sisus.Init
 	/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
 	/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
 	public struct UninitializedGameObject<TFirstComponent, TSecondComponent> where TFirstComponent : Component where TSecondComponent : Component
-    {
+	{
 		internal GameObject gameObject;
 		internal bool setActive;
 		internal Components<TFirstComponent, TSecondComponent> components;
@@ -35,9 +35,9 @@ namespace Sisus.Init
 		internal void OnAfterInitialized()
 		{
 			if(setActive)
-            {
+			{
 				gameObject.SetActive(true);
-            }
+			}
 		}
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="this"> GameObject being created with two components. </param>
 		public static implicit operator TFirstComponent(UninitializedGameObject<TFirstComponent, TSecondComponent> @this)
-        {
+		{
 			return @this.Init2().first;
 		}
 

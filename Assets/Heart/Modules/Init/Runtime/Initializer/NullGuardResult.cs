@@ -38,7 +38,13 @@ namespace Sisus.Init
 		/// An exception was encountered while trying to retrieve one or more arguments.
 		/// </summary>
 		[Tooltip("An exception was thrown while trying to retrieve the value of this value provider.")]
-		ExceptionOccurred,
+		ValueProviderException,
+
+		/// <summary>
+		/// An exception was encountered while trying to retrieve one or more arguments.
+		/// </summary>
+		[Tooltip("An exception was thrown by the client when receiving the arguments.")]
+		ClientException,
 
 		/// <summary>
 		/// No arguments are null, but one or more arguments are a value provider which has

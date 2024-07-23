@@ -13,7 +13,16 @@ namespace Sisus.Init.EditorOnly
 	{
 		bool WasJustReset { get; set; }
 		bool ShowNullArgumentGuard { get; }
+		/// <summary>
+		/// Does this initializer have null argument guard support?
+		/// <para>
+		/// This should return <see langword="true"/> if it is possible for the user to enable
+		/// null argument guard on this initializer, even if the user has opted to turn it off.
+		/// </para>
+		/// </summary>
 		bool CanInitTargetWhenInactive { get; }
+
+		bool CanGuardAgainstNull { get; }
 		NullArgumentGuard NullArgumentGuard { get; set; }
 		string NullGuardFailedMessage { get; set; }
 		NullGuardResult EvaluateNullGuard();

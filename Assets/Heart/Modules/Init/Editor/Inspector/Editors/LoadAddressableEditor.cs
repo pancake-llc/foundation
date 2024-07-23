@@ -1,6 +1,7 @@
 #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Sisus.Init.EditorOnly.Internal;
 using Sisus.Init.ValueProviders;
 using UnityEditor;
 using UnityEngine;
@@ -18,13 +19,12 @@ namespace Sisus.Init.EditorOnly
 			{
 				var guiColorWas = GUI.color;
 				NullGuardResult nullGuardResult = target is INullGuard nullGuard ? nullGuard.EvaluateNullGuard(null) : NullGuardResult.Passed;
-				bool tintRed = nullGuardResult != NullGuardResult.Passed;
 
 				if(label is null)
 				{
-					if(tintRed)
+					if(InitializerEditorUtility.TryGetTintForNullGuardResult(nullGuardResult, out Color setGuiColor))
 					{
-						GUI.color = Color.red;
+						GUI.color = setGuiColor;
 					}
 
 					EditorGUILayout.PropertyField(property, true);
@@ -36,9 +36,9 @@ namespace Sisus.Init.EditorOnly
 					EditorGUI.BeginProperty(rect, label, property);
 					rect = EditorGUI.PrefixLabel(rect, label);
 
-					if(tintRed)
+					if(InitializerEditorUtility.TryGetTintForNullGuardResult(nullGuardResult, out Color setGuiColor))
 					{
-						GUI.color = Color.red;
+						GUI.color = setGuiColor;
 					}
 
 					EditorGUI.PropertyField(rect, property, GUIContent.none, true);

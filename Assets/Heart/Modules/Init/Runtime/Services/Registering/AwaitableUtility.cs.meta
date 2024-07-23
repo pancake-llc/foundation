@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 87c9d328e0b28f74290ce7b8bc8e1d75
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.4
+  assetPath: Packages/com.sisus.init-args/Scripts/Services/Registering/AwaitableUtility.cs
+  uploadId: 679684

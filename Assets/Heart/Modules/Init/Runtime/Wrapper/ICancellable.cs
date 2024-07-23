@@ -1,25 +1,22 @@
-﻿using UnityEngine;
+﻿using Sisus.Init.Internal;
+using UnityEngine;
 
 namespace Sisus.Init
 {
 	/// <summary>
-	/// Represents an object that can be requested to cancel any
-	/// asynchrounous operations that may be running on it.
+	/// Represents an object that can be requested to cancel any asynchronous operations that may be running on it.
 	/// <para>
-	/// When this interface is implemented by an object that is wrapped by a
-	/// <see cref="IWrapper"/> component, <see cref="IsCancellationRequested"/>
-	/// will become <see langword="true"/> when the wrapper is destroyed.
+	/// When this interface is implemented by an object that is wrapped by a <see cref="IWrapper"/> component,
+	/// <see cref="IsCancellationRequested"/> will become <see langword="true"/> when the wrapper is destroyed.
 	/// </para>
 	/// </summary>
 	public interface ICancellable
 	{
 		#if UNITY_EDITOR
 		/// <summary>
-		/// Gets or sets whether the default implementation of <see cref="IsCancellationRequested"/>
-		/// should return <see langword="true"/> during Edit Mode in the editor.
-		/// <para>
-		/// This property only exists in the editor.
-		/// </para>
+		/// Gets or sets whether the default implementation of <see cref="IsCancellationRequested"/> should return
+		/// <see langword="true"/> during Edit Mode in the editor.
+		/// <para> This property only exists in the editor. </para>
 		/// </summary>
 		static bool CancelAllByDefaultInEditMode { get; set; } = true;
 		#endif
@@ -62,7 +59,7 @@ namespace Sisus.Init
 				// Ignored in the default implementation.
 
 				// This can be implemented if there is a need to control
-				// the value of the property during tests, for example..
+				// the value of the property during tests, for example.
 			} 
 		}
 	}

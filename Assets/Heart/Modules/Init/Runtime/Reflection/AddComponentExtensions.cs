@@ -43,9 +43,9 @@ namespace Sisus.Init.Reflection
 			TComponent result = typeof(TComponent) == typeof(Transform) ? gameObject.GetComponent<TComponent>() : gameObject.AddComponent<TComponent>();
 
 			if(arguments == null)
-            {
+			{
 				return result;
-            }
+			}
 
 			foreach(var (name, value) in arguments)
 			{
@@ -82,9 +82,9 @@ namespace Sisus.Init.Reflection
 			TComponent result = typeof(TComponent) == typeof(Transform) ? gameObject.GetComponent<TComponent>() : gameObject.AddComponent<TComponent>();
 
 			if(arguments == null)
-            {
+			{
 				return result;
-            }
+			}
 
 			foreach(var argument in arguments)
 			{

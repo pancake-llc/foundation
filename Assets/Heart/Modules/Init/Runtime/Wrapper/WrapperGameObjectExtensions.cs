@@ -24,15 +24,17 @@ namespace Sisus.Init
 		/// </exception>
 		public static IWrapper Add<TWrapped>([DisallowNull] this GameObject gameObject, TWrapped wrapped)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(wrapped is null)
-            {
+			{
 				if(gameObject == null)
 				{
 					throw new ArgumentNullException($"The wrapped object which you want to add to the GameObject is null.");
 				}
+
 				throw new ArgumentNullException($"The wrapped object which you want to add to the GameObject \"{gameObject.name}\" is null.");
 			}
+
 			if(gameObject == null)
 			{
 				throw new ArgumentNullException($"The GameObject to which you want to add the wrapped object {wrapped.GetType().Name} is null.");
@@ -97,10 +99,10 @@ namespace Sisus.Init
 		}
 
 		[return: MaybeNull]
-        public static TWrapper Add<TWrapper, TWrapped>([DisallowNull] this GameObject gameObject)
-            where TWrapper : MonoBehaviour, IWrapper<TWrapped> where TWrapped : class, new()
-        {
-            return gameObject.AddComponent<TWrapper, TWrapped>(new TWrapped());
-        }
-    }
+		public static TWrapper Add<TWrapper, TWrapped>([DisallowNull] this GameObject gameObject)
+			where TWrapper : MonoBehaviour, IWrapper<TWrapped> where TWrapped : class, new()
+		{
+			return gameObject.AddComponent<TWrapper, TWrapped>(new TWrapped());
+		}
+	}
 }

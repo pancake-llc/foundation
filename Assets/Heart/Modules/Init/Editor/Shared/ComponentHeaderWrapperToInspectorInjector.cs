@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 using static Sisus.Init.EditorOnly.InspectorContents;
 
 namespace Sisus.Init.EditorOnly
@@ -33,15 +32,18 @@ namespace Sisus.Init.EditorOnly
 
 		private static void AfterGameObjectHeaderGUI([DisallowNull] Editor gameObjectEditor)
 		{
-			foreach(var editorAndHeader in GetComponentHeaderElementsFromEditorWindowOf(gameObjectEditor))
+			foreach(var editorsAndHeaders in GetComponentHeaderElementsFromInspectorWindows(gameObjectEditor))
 			{
-				ComponentHeaderWrapper.WrapIfNotAlreadyWrapped(editorAndHeader, true);
+				foreach(var editorAndHeader in editorsAndHeaders)
+				{
+					ComponentHeaderWrapper.WrapIfNotAlreadyWrapped(editorAndHeader, true);
+				}
 			}
 		}
 
 		private static void AfterComponentPropertiesHeaderGUI([DisallowNull] Editor componentEditor)
 		{
-			if(GetComponentHeaderElementFromPropertyEditorOf(componentEditor) is (Editor, IMGUIContainer) editorAndHeader)
+			foreach(var editorAndHeader in GetComponentHeaderElementFromPropertyEditorWindows(componentEditor))
 			{
 				ComponentHeaderWrapper.WrapIfNotAlreadyWrapped(editorAndHeader, false);
 			}

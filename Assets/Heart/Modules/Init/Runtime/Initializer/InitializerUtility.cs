@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -10,26 +11,26 @@ using static Sisus.NullExtensions;
 using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
-using System.Linq;
 using Sisus.Init.EditorOnly;
 using Sisus.Init.ValueProviders;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using static Sisus.Init.EditorOnly.AutoInitUtility;
 using static Sisus.Init.ServiceUtility;
 using Debug = UnityEngine.Debug;
-
-#if UNITY_2021_1_OR_NEWER
-using UnityEditor.SceneManagement;
-#else
-using UnityEditor.Experimental.SceneManagement;
-#endif
-
 #endif
 
 namespace Sisus.Init.Internal
 {
-	public static class InitializerUtility
+	/// <summary>
+	/// Utility methods related to initializers.
+	/// </summary>
+	internal static class InitializerUtility
 	{
+		private static readonly List<Type> listWithNoTypes = new(0);
+		private static readonly List<Type> listWithOneType = new(1);
+		private static readonly List<Type> listWithTwoTypes = new(2);
+
 		internal const int MAX_INIT_ARGUMENT_COUNT = 12;
 
 		internal const string InitArgumentMetadataClassName = "Init";
@@ -68,38 +69,6 @@ namespace Sisus.Init.Internal
 			{ typeof(IInitializer<,,,,,,,,,,,,>), 12 }
 		};
 
-		internal static readonly Dictionary<Type, int> argumentCountsByIInitializableTypeDefinition = new(12)
-		{
-			{ typeof(IInitializable<>), 1 },
-			{ typeof(IInitializable<,>), 2 },
-			{ typeof(IInitializable<,,>), 3 },
-			{ typeof(IInitializable<,,,>), 4 },
-			{ typeof(IInitializable<,,,,>), 5 },
-			{ typeof(IInitializable<,,,,,>), 6 },
-			{ typeof(IInitializable<,,,,,,>), 7 },
-			{ typeof(IInitializable<,,,,,,,>), 8 },
-			{ typeof(IInitializable<,,,,,,,,>), 9 },
-			{ typeof(IInitializable<,,,,,,,,,>), 10 },
-			{ typeof(IInitializable<,,,,,,,,,,>), 11 },
-			{ typeof(IInitializable<,,,,,,,,,,,>), 12 }
-		};
-
-		internal static readonly Dictionary<Type, int> argumentCountsByIArgsTypeDefinition = new(12)
-		{
-			{ typeof(IArgs<>), 1 },
-			{ typeof(IArgs<,>), 2 },
-			{ typeof(IArgs<,,>), 3 },
-			{ typeof(IArgs<,,,>), 4 },
-			{ typeof(IArgs<,,,,>), 5 },
-			{ typeof(IArgs<,,,,,>), 6 },
-			{ typeof(IArgs<,,,,,,>), 7 },
-			{ typeof(IArgs<,,,,,,,>), 8 },
-			{ typeof(IArgs<,,,,,,,,>), 9 },
-			{ typeof(IArgs<,,,,,,,,,>), 10 },
-			{ typeof(IArgs<,,,,,,,,,,>), 11 },
-			{ typeof(IArgs<,,,,,,,,,,,>), 12 }
-		};
-
 		internal static readonly Dictionary<Type, int> argumentCountsByIServiceInitializerTypeDefinition = new(12)
 		{
 			{ typeof(IServiceInitializer<,>), 1 },
@@ -113,7 +82,19 @@ namespace Sisus.Init.Internal
 			{ typeof(IServiceInitializer<,,,,,,,,,>), 9 },
 			{ typeof(IServiceInitializer<,,,,,,,,,,>), 10 },
 			{ typeof(IServiceInitializer<,,,,,,,,,,,>), 11 },
-			{ typeof(IServiceInitializer<,,,,,,,,,,,,>), 12 }
+			{ typeof(IServiceInitializer<,,,,,,,,,,,,>), 12 },
+			{ typeof(IServiceInitializerAsync<,>), 1 },
+			{ typeof(IServiceInitializerAsync<,,>), 2 },
+			{ typeof(IServiceInitializerAsync<,,,>), 3 },
+			{ typeof(IServiceInitializerAsync<,,,,>), 4 },
+			{ typeof(IServiceInitializerAsync<,,,,,>), 5 },
+			{ typeof(IServiceInitializerAsync<,,,,,,>), 6 },
+			{ typeof(IServiceInitializerAsync<,,,,,,,>), 7 },
+			{ typeof(IServiceInitializerAsync<,,,,,,,,>), 8 },
+			{ typeof(IServiceInitializerAsync<,,,,,,,,,>), 9 },
+			{ typeof(IServiceInitializerAsync<,,,,,,,,,,>), 10 },
+			{ typeof(IServiceInitializerAsync<,,,,,,,,,,,>), 11 },
+			{ typeof(IServiceInitializerAsync<,,,,,,,,,,,,>), 12 }
 		};
 
 		internal static readonly Dictionary<Type, int> argumentCountsByIXArgumentsTypeDefinition = new(12)
@@ -132,32 +113,44 @@ namespace Sisus.Init.Internal
 			{ typeof(ITwelveArguments), 12 }
 		};
 
-		private static readonly List<IInitializer> initializers = new();
-
-		public static Type GetIInitializableType(int argumentCount)
+		/// <summary>
+		/// NOTE: Never cache or modify the list returned by this method!
+		/// </summary>
+		[return: NotNull]
+		public static List<Type> GetInitializerTypes(Component component)
 		{
-			foreach((Type type, int count) in argumentCountsByIInitializableTypeDefinition)
+			var targetType = component.GetType();
+			var requiredInterfaceType = typeof(IInitializer<>).MakeGenericType(targetType);
+			List<Type> results = listWithNoTypes;
+
+			#if UNITY_EDITOR
+			foreach(var type in TypeCache.GetTypesDerivedFrom<IInitializer>())
+			#else
+			foreach(var type in TypeUtility.GetAllTypesThreadSafe(targetType.Assembly, false))
+			#endif
 			{
-				if(count == argumentCount)
+				if (!requiredInterfaceType.IsAssignableFrom(type))
 				{
-					return type;
+					continue;
 				}
+
+				if(results == listWithNoTypes)
+				{
+					results = listWithOneType;
+				}
+				else if(results == listWithOneType)
+				{
+					results = listWithTwoTypes;
+				}
+				else if(results == listWithTwoTypes)
+				{
+					results = new(3);
+				}
+
+				results.Add(type);
 			}
 
-			return null;
-		}
-
-		public static Type GetIInitializableType(Type[] genericArguments) => GetIInitializableType(genericArguments.Length)?.MakeGenericType(genericArguments);
-
-		public static IEnumerable<Type> GetInitializerTypes(Component component)
-		{
-			foreach(var type in TypeUtility.GetDerivedTypes<IInitializer>())
-			{
-				if(IsInitializerFor(type, component))
-				{
-					yield return type;
-				}
-			}
+			return results;
 		}
 
 		public static bool HasInitializer([DisallowNull] object client)
@@ -175,54 +168,68 @@ namespace Sisus.Init.Internal
 			return false;
 		}
 
+		public static bool HasInitializer([DisallowNull] ScriptableObject client) => client is IInitializable initializable && initializable.HasInitializer;
+
 		public static bool HasInitializer([DisallowNull] Component initializable)
 		{
-			if(initializable == null)
+			if(!initializable)
 			{
 				return false;
 			}
 
-			initializable.GetComponents(initializers);
-			foreach(var someInitializer in initializers)
+			foreach(var someInitializer in initializable.gameObject.GetComponentsNonAlloc<IInitializer>())
 			{
 				if(someInitializer.Target == initializable)
 				{
-					initializers.Clear();
 					return true;
 				}
 			}
 
-			initializers.Clear();
-            return false;
+			return false;
+		}
+
+		public static bool HasCustomInitArguments([DisallowNull] Component initializable)
+		{
+			if(!initializable)
+			{
+				return false;
+			}
+
+			foreach(var someInitializer in initializable.gameObject.GetComponentsNonAlloc<IInitializer>())
+			{
+				if(someInitializer.Target == initializable)
+				{
+					return someInitializer.ProvidesCustomInitArguments;
+				}
+			}
+
+			return false;
 		}
 
 		public static bool TryGetInitializer([DisallowNull] Component initializable, out IInitializer initializer)
-        {
-			if(initializable == null)
+		{
+			if(!initializable)
 			{
 				initializer = null;
 				return false;
 			}
 
-			initializable.GetComponents(initializers);
-			foreach(var someInitializer in initializers)
+			foreach(var someInitializer in initializable.gameObject.GetComponentsNonAlloc<IInitializer>())
 			{
 				if(someInitializer.Target == initializable)
 				{
 					initializer = someInitializer;
-					initializers.Clear();
 					return true;
 				}
 			}
 
 			initializer = null;
-			initializers.Clear();
-            return false;
-        }
+			return false;
+		}
 
 		public static bool TryGetInitializer(Object initializable, out IInitializer initializer)
-        {
-			if(initializable == null)
+		{
+			if(!initializable)
 			{
 				initializer = null;
 				return false;
@@ -234,85 +241,51 @@ namespace Sisus.Init.Internal
 				return false;
 			}
 
-			component.GetComponents(initializers);
-			foreach(var someInitializer in initializers)
+			foreach(var someInitializer in component.gameObject.GetComponentsNonAlloc<IInitializer>())
 			{
 				if(someInitializer.Target == component)
 				{
 					initializer = someInitializer;
-					initializers.Clear();
 					return true;
 				}
 			}
 
 			initializer = null;
-			initializers.Clear();
-            return false;
-        }
-
-		public static bool TryGetInitializer(object initializable, out IInitializer initializer)
-        {
-			if(initializable is not Component component || !component)
-			{
-				initializer = null;
-				return false;
-			}
-
-			component.GetComponents(initializers);
-			foreach(var someInitializer in initializers)
-			{
-				if(someInitializer.Target == component)
-				{
-					initializer = someInitializer;
-					initializers.Clear();
-					return true;
-				}
-			}
-
-			initializer = null;
-			initializers.Clear();
-            return false;
-        }
-
-        /// <summary>
-        /// Does the client derive from base class that can handle automatically initializing itself with all services?
-        /// </summary>
-        public static bool CanSelfInitializeWithoutInitializer([DisallowNull] object client) => client is Component component && CanSelfInitializeWithoutInitializer(component);
-        
-		/// <summary>
-        /// Does the client derive from base class that can handle automatically initializing itself with all services?
-        /// </summary>
-		public static bool CanSelfInitializeWithoutInitializer([DisallowNull] Component client) => TypeUtility.DerivesFromGenericBaseType(client.GetType());
-
-		private static bool IsInitializerFor(Type initializerType, Component component)
-		{
-			if(initializerType.IsAbstract)
-			{
-				return false;
-			}
-
-			Type clientType = component.GetType();
-
-			for(var baseType = initializerType; baseType != null; baseType = baseType.BaseType)
-			{
-				if(!baseType.IsGenericType)
-				{
-					continue;
-				}
-
-				var arguments = baseType.GetGenericArguments();
-				if(arguments.Length < 2)
-				{
-					continue;
-				}
-
-				if(arguments[0] == clientType)
-				{
-					return true;
-				}
-			}
-
 			return false;
+		}
+
+		// public static bool TryGetInitializer(object initializable, out IInitializer initializer)
+		// {
+		// 	if(initializable is not Component component || !component)
+		// 	{
+		// 		initializer = null;
+		// 		return false;
+		// 	}
+		//
+		// 	foreach(var someInitializer in component.gameObject.GetComponentsNonAlloc<IInitializer>())
+		// 	{
+		// 		if(someInitializer.Target == component)
+		// 		{
+		// 			initializer = someInitializer;
+		// 			return true;
+		// 		}
+		// 	}
+		//
+		// 	initializer = null;
+		// 	return false;
+		// }
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void InvokeAtEndOfFrameIfNotAsset([DisallowNull] Component target, [DisallowNull] Action action)
+		{
+			#if UNITY_EDITOR
+			if(target.gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
+			{
+				return;
+			}
+			#endif
+
+			Updater.InvokeAtEndOfFrame(action);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -331,7 +304,7 @@ namespace Sisus.Init.Internal
 			{
 				releaser.Release(initializer, argument.value);
 			}
-			else if(argument.reference != null)
+			else if(argument.reference)
 			{
 				Object.Destroy(argument.reference);
 			}
@@ -341,21 +314,97 @@ namespace Sisus.Init.Internal
 		public static void OptimizeValueProviderNameForDebugging<TInitializer, TArgument>([DisallowNull] TInitializer initializer, Any<TArgument> argument) where TInitializer : Object, IInitializer
 		{
 			#if UNITY_EDITOR
-			if(!Application.isPlaying)
+			if(!Application.isPlaying || AssetDatabase.IsMainAsset(argument.reference) || AssetDatabase.IsSubAsset(argument.reference))
 			{
 				return;
 			}
 			#endif
 
-			if(argument.reference != null && argument.reference.name.Length == 0)
+			if(argument.reference && argument.reference.name.Length == 0)
 			{
 				argument.reference.name = typeof(TInitializer).Name + "." + typeof(TArgument).Name;
 			}
 		}
 
+		#if DEBUG
+		/// <summary>
+		/// Gets a value indicating whether the target itself should validate that initialization arguments it receives
+		/// at runtime are not null?
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public static bool ShouldSelfGuardAgainstNull([DisallowNull] MonoBehaviour target)
+		{
+			#if UNITY_EDITOR
+			// If null argument guard has been disabled by the user, then target should not guard itself against null.
+			if(!requestNullArgumentGuardFlags(target).IsEnabled(NullArgumentGuard.RuntimeException))
+			{
+				return false;
+			}
+
+			// If null argument guard has been enabled by the user, and target has no initializer attached,
+			// then target should guard itself against null.
+			if(!TryGetInitializer(target, out var initializer))
+			{
+				return true;
+			}
+
+			// If we can not determine whether initializer can guard against null, then we should play it safe
+			// and target should guard itself against null.
+			if(initializer is not IInitializerEditorOnly initializerEditorOnly)
+			{
+				return true;
+			}
+
+			// If initializer already guards the target against null, then there's no need for the target to do it.
+			return !initializerEditorOnly.CanGuardAgainstNull;
+			#else
+			// In development builds we can not determine whether the user has disabled null argument guard for the
+			// target, since that information is stored in the script's metadata, which is only accessible in the editor.
+			// As such targets should never guard themselves against null at runtime. An initializer is needed for this.
+			return false;
+			#endif
+		}
+		#endif
+
+		public static bool ShouldSelfGuardAgainstNull([DisallowNull] ScriptableObject target)
+		{
+			#if UNITY_EDITOR
+			// If null argument guard has been disabled by the user, then target should not guard itself against null.
+			if(!requestNullArgumentGuardFlags(target).IsEnabled(NullArgumentGuard.RuntimeException))
+			{
+				return false;
+			}
+
+			// If null argument guard has been enabled by the user, and target has no initializer attached,
+			// then target should guard itself against null.
+			if(!TryGetInitializer(target, out var initializer))
+			{
+				return true;
+			}
+
+			// If we can not determine whether initializer can guard against null, then we should play it safe
+			// and target should guard itself against null.
+			if(initializer is not IInitializerEditorOnly initializerEditorOnly)
+			{
+				return true;
+			}
+
+			// If initializer already guards the target against null, then there's no need for the target to do it.
+			return !initializerEditorOnly.CanGuardAgainstNull;
+			#else
+			// In development builds we can not determine whether the user has disabled null argument guard for the
+			// target, since that information is stored in the script's metadata, which is only accessible in the editor.
+			// As such targets should never guard themselves against null at runtime. An initializer is needed for this.
+			return false;
+			#endif
+		}
+
 		#if UNITY_EDITOR
-		private static readonly List<string> missingArgumentTypes = new List<string>();
-		private static readonly List<Component> components = new List<Component>();
+		// Delegate is injected from an Editor-only assembly.
+		internal static Func<Object, NullArgumentGuard> requestNullArgumentGuardFlags;
+		private static readonly List<string> missingArgumentTypes = new(0);
+		private static readonly List<Component> components = new();
 
 		public static void Validate<TInitializer, TArgument>([DisallowNull] TInitializer initializer, [AllowNull] GameObject gameObject, Any<TArgument> argument) where TInitializer : Object, IInitializerEditorOnly
 			=> OnMainThread(()=> Validate_NotThreadSafe(initializer, gameObject, argument));
@@ -437,13 +486,13 @@ namespace Sisus.Init.Internal
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static bool ShouldReleaseValueOnDestroy<TArgument>(Any<TArgument> argument)
-			=> argument.reference is ScriptableObject scriptableObject && scriptableObject != null
+			=> argument.reference is ScriptableObject scriptableObject && scriptableObject
 			&& (scriptableObject is IValueProvider or IValueByTypeProvider or IValueByTypeProviderAsync)
 			&& (argument.reference is IValueByTypeReleaser or IValueReleaser<TArgument> ||
-			   (argument.reference is IValueProvider && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(scriptableObject))));
+				(argument.reference is IValueProvider && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(scriptableObject))));
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static bool IsAsyncValueProvider<TArgument>(Any<TArgument> argument) => ValueProviderUtility.IsAsyncValueProvider(argument.reference) && argument.reference != null;
+		private static bool IsAsyncValueProvider<TArgument>(Any<TArgument> argument) => ValueProviderUtility.IsAsyncValueProvider(argument.reference) && argument.reference;
 		#endif
 
 		internal static MissingInitArgumentsException GetMissingInitArgumentsException([DisallowNull] Type initializerType, [DisallowNull] Type clientType, Type argumentType = null)
@@ -453,10 +502,10 @@ namespace Sisus.Init.Internal
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name}.");
 			}
 
-			foreach(var serviceAttribute in argumentType.GetCustomAttributes<ServiceAttribute>())
+			if(argumentType.GetCustomAttributes<ServiceAttribute>().FirstOrDefault() is ServiceAttribute serviceAttribute)
 			{
 				var definingType = serviceAttribute.definingType;
-				if(definingType != null)
+				if(definingType is not null)
 				{
 					if(!definingType.IsAssignableFrom(argumentType))
 					{
@@ -479,14 +528,26 @@ namespace Sisus.Init.Internal
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its instance was still null.");
 			}
 
-			string classThatDerivesFromImplementsOrIs = !argumentType.IsAbstract && !TypeUtility.IsBaseType(argumentType) ? "the class" : argumentType.IsInterface ? "a class that implements" : "a class that derives from";
+			bool userCanModifyClass = clientType.Namespace is not string clientNamespace || !clientNamespace.StartsWith("Unity");
+			string derivesFromImplementsOrIs = !userCanModifyClass
+												? (!argumentType.IsAbstract && !TypeUtility.IsBaseType(argumentType) ? "a component of type" : argumentType.IsInterface ? "a component that implements" : "a component that derives from")
+												: (!argumentType.IsAbstract && !TypeUtility.IsBaseType(argumentType) ? "the class" : argumentType.IsInterface ? "a class that implements" : "a class that derives from");
 
 			if(!typeof(Component).IsAssignableFrom(argumentType))
 			{
-				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a value using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {classThatDerivesFromImplementsOrIs} {argumentType.Name}.\nIf you have already done one of these things, initialization could be failing due to circular dependencies ({clientType.Name} initialization depends on {argumentType.Name} existing and {argumentType.Name} initialization depends on {clientType.Name} existing.");
+				if(!userCanModifyClass)
+				{
+					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a value using the Inspector or select the 'Make Service Of Type...' item in the context menu of {derivesFromImplementsOrIs} {argumentType.Name}.");
+				}
+
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a value using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {derivesFromImplementsOrIs} {argumentType.Name}.\nIf you have already done one of these things, initialization could also be failing due to circular dependencies (e.g. ({clientType.Name} depends on {argumentType.Name}, and {argumentType.Name} depends on {clientType.Name}).");
+			}
+			else if(!userCanModifyClass)
+			{
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector.");
 			}
 
-			return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {classThatDerivesFromImplementsOrIs} {argumentType.Name}.");
+			return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {derivesFromImplementsOrIs} {argumentType.Name}.");
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -529,7 +590,7 @@ namespace Sisus.Init.Internal
 
 		internal static void Validate_NotThreadSafe<TInitializer, TArgument>(TInitializer initializer, [AllowNull] GameObject gameObject, Any<TArgument> argument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -549,7 +610,7 @@ namespace Sisus.Init.Internal
 
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument>(TInitializer initializer, GameObject gameObject, Any<TFirstArgument> firstArgument, Any<TSecondArgument> secondArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -575,7 +636,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument>(TInitializer initializer, GameObject gameObject,
 			Any<TFirstArgument> firstArgument, Any<TSecondArgument> secondArgument, Any<TThirdArgument> thirdArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -604,7 +665,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(TInitializer initializer, GameObject gameObject,
 			Any<TFirstArgument> firstArgument, Any<TSecondArgument> secondArgument, Any<TThirdArgument> thirdArgument, Any<TFourthArgument> fourthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -636,7 +697,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(TInitializer initializer, GameObject gameObject,
 			Any<TFirstArgument> firstArgument, Any<TSecondArgument> secondArgument, Any<TThirdArgument> thirdArgument, Any<TFourthArgument> fourthArgument, Any<TFifthArgument> fifthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -671,7 +732,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(TInitializer initializer, GameObject gameObject,
 			Any<TFirstArgument> firstArgument, Any<TSecondArgument> secondArgument, Any<TThirdArgument> thirdArgument, Any<TFourthArgument> fourthArgument, Any<TFifthArgument> fifthArgument, Any<TSixthArgument> sixthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -708,7 +769,7 @@ namespace Sisus.Init.Internal
 
 		internal static void Validate_NotThreadSafe<TInitializer, TArgument>(TInitializer initializer, GameObject gameObject, TArgument argument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -727,7 +788,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -747,7 +808,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -768,7 +829,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -790,7 +851,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -813,7 +874,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -837,7 +898,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -862,7 +923,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -888,7 +949,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -915,7 +976,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -943,7 +1004,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -972,7 +1033,7 @@ namespace Sisus.Init.Internal
 		internal static void Validate_NotThreadSafe<TInitializer, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>(TInitializer initializer, GameObject gameObject,
 		TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -1002,7 +1063,7 @@ namespace Sisus.Init.Internal
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static bool TryValidate_Initializer<TInitializer>(TInitializer initializer, GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return false;
 			}
@@ -1061,7 +1122,7 @@ namespace Sisus.Init.Internal
 
 		private static void Validate_Initializer<TInitializer>(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly
 		{
-			if(initializer == null)
+			if(!initializer)
 			{
 				return;
 			}
@@ -1073,7 +1134,7 @@ namespace Sisus.Init.Internal
 			}
 
 			var client = initializer.Target;
-			if(client == null)
+			if(!client)
 			{
 				if(initializer is ScriptableObject scriptableObject && AssetDatabase.IsSubAsset(scriptableObject))
 				{
@@ -1083,23 +1144,22 @@ namespace Sisus.Init.Internal
 				return;
 			}
 
-			if(gameObject == null || initializer.WasJustReset || initializer.MultipleInitializersPerTargetAllowed || !gameObject.activeInHierarchy)
+			if(!gameObject || initializer.WasJustReset || initializer.MultipleInitializersPerTargetAllowed || !gameObject.activeInHierarchy)
 			{
 				return;
 			}
 
-			gameObject.GetComponents(initializers);
+			using var initializers = gameObject.GetComponentsNonAlloc<IInitializer>();
 			int count = initializers.Count;
 			if(initializers.Count <= 1)
 			{
-				initializers.Clear();
 				return;
 			}
 
 			for(int i = 0; i < count; i++)
 			{
 				var someInitializer = initializers[i];
-				if(someInitializer == initializer)
+				if(ReferenceEquals(someInitializer, initializer))
 				{
 					continue;
 				}
@@ -1107,15 +1167,12 @@ namespace Sisus.Init.Internal
 				var someInitializerClient = someInitializer.Target;
 				if(someInitializerClient == client)
 				{
-					initializers.Clear();
 					Debug.LogWarning($"Only one Initializer per object is supported but {client.GetType().Name} on '{client.name}' has multiple Initializers targeting it. Clearing Target of surplus Initializer.", initializer as Object);
 					initializer.Target = null;
 					EditorUtility.SetDirty(client);
 					return;
 				}
 			}
-
-			initializers.Clear();
 		}
 
 		/// <summary>
@@ -1147,18 +1204,18 @@ namespace Sisus.Init.Internal
 		[return: NotNull]
 		internal static TWrapper InitWrapper<TWrapper, TWrapped>([DisallowNull] GameObject gameObject, [AllowNull] TWrapper target, TWrapped wrappedObject)
 			where TWrapper : MonoBehaviour, IWrapper<TWrapped>
-        {
-            if(target == null)
-            {
+		{
+			if(!target)
+			{
 				return gameObject.AddComponent<TWrapper, TWrapped>(wrappedObject);
-            }
+			}
 
-            if(!target.gameObject.scene.IsValid())
-            {
+			if(!target.gameObject.scene.IsValid())
+			{
 				return target.Instantiate(wrappedObject);
-            }
+			}
 
-            target.Init(wrappedObject);
+			target.Init(wrappedObject);
 			return target;
 		}
 
@@ -1169,14 +1226,14 @@ namespace Sisus.Init.Internal
 				=> nullArgumentGuard.IsDisabled(NullArgumentGuard.EditModeWarning)
 				|| (nullArgumentGuard.IsDisabled(NullArgumentGuard.EnabledForPrefabs)
 					&& initializer is Component component
-					&& (PrefabUtility.IsPartOfPrefabAsset(component.gameObject) || PrefabStageUtility.GetPrefabStage(component.gameObject) != null));
+					&& (PrefabUtility.IsPartOfPrefabAsset(component.gameObject) || PrefabStageUtility.GetPrefabStage(component.gameObject)));
 
 		internal static void ValidateTargetOnMainThread<TStateMachineBehaviourInitializer, TStateMachineBehaviour>(TStateMachineBehaviourInitializer initializer)
 				where TStateMachineBehaviourInitializer : MonoBehaviour, IInitializer, IValueProvider<TStateMachineBehaviour>, IInitializerEditorOnly
 				where TStateMachineBehaviour : StateMachineBehaviour
 		{
 			var target = initializer.Target as Animator;
-			if(target != null && target.GetBehaviour<TStateMachineBehaviour>() == null)
+			if(target && !target.GetBehaviour<TStateMachineBehaviour>())
 			{
 				Debug.LogWarning($"AnimatorController of {target.GetType().Name} on '{target.name}' no longer contains a StateMachineBehaviour of type {typeof(TStateMachineBehaviour).Name}. Clearing Target of Initializer.", target);
 				initializer.Target = null;
@@ -1196,11 +1253,11 @@ namespace Sisus.Init.Internal
 		internal static void Reset<TInitializer, TClient, TArgument>(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 1);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 1);
 
 			var argument =  initializer.Argument;
 
-			Reset_Argument(ref argument, 0, true, initializer);
+			Reset_Argument(ref argument, 0, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref argument);
 
@@ -1211,13 +1268,13 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 2);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 2);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument);
 
@@ -1229,15 +1286,15 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 3);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 3);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
 			var thirdArgument =  initializer.ThirdArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument);
 
@@ -1250,17 +1307,17 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 4);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 4);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
 			var thirdArgument =  initializer.ThirdArgument;
 			var fourthArgument =  initializer.FourthArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument);
 
@@ -1274,7 +1331,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 5);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 5);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1282,11 +1339,11 @@ namespace Sisus.Init.Internal
 			var fourthArgument =  initializer.FourthArgument;
 			var fifthArgument =  initializer.FifthArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument);
 
@@ -1301,7 +1358,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 6);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 6);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1310,12 +1367,12 @@ namespace Sisus.Init.Internal
 			var fifthArgument =  initializer.FifthArgument;
 			var sixthArgument =  initializer.SixthArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
-			Reset_Argument(ref sixthArgument, 5, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref sixthArgument, 5, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument, ref sixthArgument);
 
@@ -1331,7 +1388,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 7);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 7);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1341,13 +1398,13 @@ namespace Sisus.Init.Internal
 			var sixthArgument =  initializer.SixthArgument;
 			var seventhArgument =  initializer.SeventhArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
-			Reset_Argument(ref sixthArgument, 5, true, initializer);
-			Reset_Argument(ref seventhArgument, 6, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref sixthArgument, 5, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref seventhArgument, 6, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument, ref sixthArgument, ref seventhArgument);
 
@@ -1364,7 +1421,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 8);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 8);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1375,14 +1432,14 @@ namespace Sisus.Init.Internal
 			var seventhArgument =  initializer.SeventhArgument;
 			var eighthArgument =  initializer.EighthArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
-			Reset_Argument(ref sixthArgument, 5, true, initializer);
-			Reset_Argument(ref seventhArgument, 6, true, initializer);
-			Reset_Argument(ref eighthArgument, 7, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref sixthArgument, 5, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref seventhArgument, 6, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref eighthArgument, 7, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument, ref sixthArgument, ref seventhArgument, ref eighthArgument);
 
@@ -1400,7 +1457,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 9);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 9);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1412,15 +1469,15 @@ namespace Sisus.Init.Internal
 			var eighthArgument =  initializer.EighthArgument;
 			var ninthArgument =  initializer.NinthArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
-			Reset_Argument(ref sixthArgument, 5, true, initializer);
-			Reset_Argument(ref seventhArgument, 6, true, initializer);
-			Reset_Argument(ref eighthArgument, 7, true, initializer);
-			Reset_Argument(ref ninthArgument, 8, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref sixthArgument, 5, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref seventhArgument, 6, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref eighthArgument, 7, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref ninthArgument, 8, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument, ref sixthArgument, ref seventhArgument, ref eighthArgument, ref ninthArgument);
 
@@ -1439,7 +1496,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 10);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 10);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1452,16 +1509,16 @@ namespace Sisus.Init.Internal
 			var ninthArgument =  initializer.NinthArgument;
 			var tenthArgument =  initializer.TenthArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
-			Reset_Argument(ref sixthArgument, 5, true, initializer);
-			Reset_Argument(ref seventhArgument, 6, true, initializer);
-			Reset_Argument(ref eighthArgument, 7, true, initializer);
-			Reset_Argument(ref ninthArgument, 8, true, initializer);
-			Reset_Argument(ref tenthArgument, 9, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref sixthArgument, 5, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref seventhArgument, 6, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref eighthArgument, 7, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref ninthArgument, 8, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref tenthArgument, 9, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument, ref sixthArgument, ref seventhArgument, ref eighthArgument, ref ninthArgument, ref tenthArgument);
 
@@ -1481,7 +1538,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 11);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 11);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1495,17 +1552,17 @@ namespace Sisus.Init.Internal
 			var tenthArgument =  initializer.TenthArgument;
 			var eleventhArgument =  initializer.EleventhArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
-			Reset_Argument(ref sixthArgument, 5, true, initializer);
-			Reset_Argument(ref seventhArgument, 6, true, initializer);
-			Reset_Argument(ref eighthArgument, 7, true, initializer);
-			Reset_Argument(ref ninthArgument, 8, true, initializer);
-			Reset_Argument(ref tenthArgument, 9, true, initializer);
-			Reset_Argument(ref eleventhArgument, 10, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref sixthArgument, 5, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref seventhArgument, 6, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref eighthArgument, 7, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref ninthArgument, 8, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref tenthArgument, 9, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref eleventhArgument, 10, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument, ref sixthArgument, ref seventhArgument, ref eighthArgument, ref ninthArgument, ref tenthArgument, ref eleventhArgument);
 
@@ -1526,7 +1583,7 @@ namespace Sisus.Init.Internal
 			(TInitializer initializer, [AllowNull] GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
 		{
 			Reset_Initializer<TInitializer, TClient>(initializer, gameObject);
-			TryPrepareArgumentsForAutoInit<TClient>(initializer, 12);
+			bool shouldAutoInitArguments = TryPrepareArgumentsForAutoInit<TClient>(initializer, 12);
 
 			var firstArgument =  initializer.FirstArgument;
 			var secondArgument =  initializer.SecondArgument;
@@ -1541,18 +1598,18 @@ namespace Sisus.Init.Internal
 			var eleventhArgument =  initializer.EleventhArgument;
 			var twelfthArgument  =  initializer.TwelfthArgument;
 
-			Reset_Argument(ref firstArgument, 0, true, initializer);
-			Reset_Argument(ref secondArgument, 1, true, initializer);
-			Reset_Argument(ref thirdArgument, 2, true, initializer);
-			Reset_Argument(ref fourthArgument, 3, true, initializer);
-			Reset_Argument(ref fifthArgument, 4, true, initializer);
-			Reset_Argument(ref sixthArgument, 5, true, initializer);
-			Reset_Argument(ref seventhArgument, 6, true, initializer);
-			Reset_Argument(ref eighthArgument, 7, true, initializer);
-			Reset_Argument(ref ninthArgument, 8, true, initializer);
-			Reset_Argument(ref tenthArgument, 9, true, initializer);
-			Reset_Argument(ref eleventhArgument, 10, true, initializer);
-			Reset_Argument(ref twelfthArgument, 11, true, initializer);
+			Reset_Argument(ref firstArgument, 0, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref secondArgument, 1, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref thirdArgument, 2, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fourthArgument, 3, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref fifthArgument, 4, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref sixthArgument, 5, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref seventhArgument, 6, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref eighthArgument, 7, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref ninthArgument, 8, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref tenthArgument, 9, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref eleventhArgument, 10, shouldAutoInitArguments, initializer);
+			Reset_Argument(ref twelfthArgument, 11, shouldAutoInitArguments, initializer);
 
 			initializer.OnReset(ref firstArgument, ref secondArgument, ref thirdArgument, ref fourthArgument, ref fifthArgument, ref sixthArgument, ref seventhArgument, ref eighthArgument, ref ninthArgument, ref tenthArgument, ref eleventhArgument, ref twelfthArgument);
 
@@ -1720,7 +1777,7 @@ namespace Sisus.Init.Internal
 		}
 
 		internal static void Reset_Initializer<TInitializer, TClient>([DisallowNull] TInitializer initializer, GameObject gameObject) where TInitializer : Object, IInitializerEditorOnly<TClient>
-        {
+		{
 			initializer.WasJustReset = true;
 
 			if(gameObject is null)
@@ -1731,16 +1788,14 @@ namespace Sisus.Init.Internal
 
 			if(TryFindTargetForInitializer(gameObject, typeof(TClient), out Component setTarget, initializer.MultipleInitializersPerTargetAllowed))
 			{
-	            initializer.Target = setTarget;
+				initializer.Target = setTarget;
 			}
 
 			UpdateHideFlags(initializer, gameObject);
-        }
+		}
 
 		private static bool TryFindTargetForInitializer(GameObject gameObject, Type clientType, out Component result, bool multipleInitializersPerTargetAllowed)
 		{
-			gameObject.GetComponents(initializers);
-
 			if(!Find.typesToComponentTypes.TryGetValue(clientType, out var componentTypes))
 			{
 				if(typeof(StateMachineBehaviour).IsAssignableFrom(clientType))
@@ -1760,6 +1815,7 @@ namespace Sisus.Init.Internal
 				}
 			}
 
+			using var initializers = gameObject.GetComponentsNonAlloc<IInitializer>();
 
 			foreach(Type componentType in componentTypes)
 			{
@@ -1791,7 +1847,7 @@ namespace Sisus.Init.Internal
 			}
 		}
 
-		private static void Reset_Argument<TArgument, TInitializer>(ref TArgument argument, int argumentIndex, bool canAutoInitArguments, [DisallowNull] TInitializer initializer) where TInitializer : IInitializer
+		private static void Reset_Argument<TArgument, TInitializer>(ref TArgument argument, int argumentIndex, bool shouldAutoInitArguments, [DisallowNull] TInitializer initializer) where TInitializer : IInitializer
 		{
 			if(IsServiceDefiningType<TArgument>())
 			{
@@ -1799,8 +1855,8 @@ namespace Sisus.Init.Internal
 				return;
 			}
 
-			if(canAutoInitArguments)
-            {
+			if(shouldAutoInitArguments)
+			{
 				argument = GetAutoInitArgument<TInitializer, TArgument>(initializer, argumentIndex);
 
 				if(initializer is Component component)
@@ -1821,10 +1877,10 @@ namespace Sisus.Init.Internal
 			}
 
 			if(typeof(TArgument).IsValueType)
-            {
+			{
 				argument = default;
 				return;
-            }
+			}
 
 			if(typeof(Object).IsAssignableFrom(typeof(TArgument)) || typeof(Type).IsAssignableFrom(typeof(TArgument)))
 			{
@@ -1838,25 +1894,25 @@ namespace Sisus.Init.Internal
 			}
 
 			Type onlyConcreteType = null;
-			foreach(Type derivedType in TypeUtility.GetDerivedTypes<TArgument>())
+			foreach(Type derivedType in TypeCache.GetTypesDerivedFrom<TArgument>())
 			{
 				if(derivedType.IsAbstract)
-                {
+				{
 					continue;
-                }
+				}
 
-				if(onlyConcreteType != null)
-                {
+				if(onlyConcreteType is not null)
+				{
 					return;
-                }
+				}
 
 				onlyConcreteType = derivedType;
 			}
 
 			if(onlyConcreteType is null || typeof(Object).IsAssignableFrom(onlyConcreteType) || typeof(Type).IsAssignableFrom(onlyConcreteType))
-            {
+			{
 				return;
-            }
+			}
 
 			argument = CreateInstance<TArgument>(onlyConcreteType);
 		}
@@ -1890,14 +1946,14 @@ namespace Sisus.Init.Internal
 		private static TArgument CreateInstance<TArgument>() => CreateInstance<TArgument>(typeof(TArgument));
 
 		private static TArgument CreateInstance<TArgument>(Type instanceType)
-        {
+		{
 			if(typeof(Type).IsAssignableFrom(instanceType))
-            {
+			{
 				#if DEV_MODE
 				Debug.LogWarning($"Can not create instance of a {instanceType.FullName} using FormatterServices.GetUninitializedObject.");
 				#endif
 				return default;
-            }
+			}
 
 			try
 			{
@@ -1907,14 +1963,14 @@ namespace Sisus.Init.Internal
 			{
 				return (TArgument)FormatterServices.GetUninitializedObject(instanceType);
 			}
-        }
+		}
 
 		public static void OnInitializableReset(MonoBehaviour initializable)
 		{
 			var type = initializable.GetType();
 			foreach(var initializerOnGameObject in initializable.GetComponents<IInitializer>())
 			{
-				if(initializerOnGameObject.Target == null && initializerOnGameObject.TargetIsAssignableOrConvertibleToType(type))
+				if(!initializerOnGameObject.Target && initializerOnGameObject.TargetIsAssignableOrConvertibleToType(type))
 				{
 					initializerOnGameObject.Target = initializable;
 					return;
@@ -1932,12 +1988,12 @@ namespace Sisus.Init.Internal
 				&& Array.IndexOf(Selection.gameObjects, initializable.gameObject) != -1)
 			{
 				var newInitializer = Application.isPlaying
-								   ? initializable.gameObject.AddComponent(onlyInitializerType) as IInitializer
-								   : Undo.AddComponent(initializable.gameObject, onlyInitializerType) as IInitializer;
+									? initializable.gameObject.AddComponent(onlyInitializerType) as IInitializer
+									: Undo.AddComponent(initializable.gameObject, onlyInitializerType) as IInitializer;
 
 				newInitializer.Target = initializable;
 			}
 		}
-#endif
+		#endif
 	}
 }

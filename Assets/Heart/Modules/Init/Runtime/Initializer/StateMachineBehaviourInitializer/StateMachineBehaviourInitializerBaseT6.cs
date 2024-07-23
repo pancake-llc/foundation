@@ -80,7 +80,7 @@ namespace Sisus.Init
 		/// <inheritdoc/>
 		[return: NotNull]
 		private protected override TStateMachineBehaviour InitTarget([DisallowNull] Animator target)
-        {
+		{
 			var firstArgument = FirstArgument;
 			var secondArgument = SecondArgument;
 			var thirdArgument = ThirdArgument;
@@ -95,7 +95,7 @@ namespace Sisus.Init
 			var behaviours = target.GetBehaviours<TStateMachineBehaviour>();
 			int count = behaviours.Length;
 			
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(count == 0) throw new MissingComponentException($"No {typeof(TStateMachineBehaviour).Name} was found in the Animator on '{name}'.", null);
 			#endif
 
@@ -105,14 +105,14 @@ namespace Sisus.Init
 			}
 
 			return behaviours[0];
-        }
+		}
 
 		bool IInitializable.HasInitializer => false;
 		
 		bool IInitializable.Init(Context context)
 		{
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				AutoInitInEditMode<StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(this);
 			}
@@ -159,5 +159,5 @@ namespace Sisus.Init
 		private protected sealed override void Reset() => Reset<StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(this, gameObject);
 		private protected override void OnValidate() => Validate(this, gameObject, FirstArgument, SecondArgument, ThirdArgument, FourthArgument, FifthArgument, SixthArgument);
 		#endif
-    }
+	}
 }

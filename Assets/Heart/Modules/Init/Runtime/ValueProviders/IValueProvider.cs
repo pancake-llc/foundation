@@ -27,6 +27,12 @@ namespace Sisus.Init
 		new TValue Value { get; }
 
 		/// <summary>
+		/// Gets the value of type <typeparamref name="TValue"/> provided by this object.
+		/// </summary>
+		[MaybeNull]
+		object IValueProvider.Value => Value;
+
+		/// <summary>
 		/// Gets the value of type <typeparamref name="TValue"/> for the <paramref name="client"/>.
 		/// </summary>
 		/// <param name="client">
@@ -41,12 +47,6 @@ namespace Sisus.Init
 			value = Value;
 			return value != Null;
 		}
-
-		/// <summary>
-		/// Gets the value of type <typeparamref name="TValue"/> provided by this object.
-		/// </summary>
-		[MaybeNull]
-		object IValueProvider.Value => Value;
 	}
 
 	/// <summary>
@@ -63,5 +63,11 @@ namespace Sisus.Init
 		/// </summary>
 		[MaybeNull]
 		object Value { get; }
+
+		bool TryGetFor([AllowNull] Component client, [NotNullWhen(true), MaybeNullWhen(false)] out object value)
+		{
+			value = Value;
+			return value != Null;
+		}
 	}
 }

@@ -1,11 +1,13 @@
-﻿//#define DEBUG_OVERRIDE_EDITOR
+﻿//#define DEBUG_SETUP_DURATION
+//#define DEBUG_OVERRIDE_EDITOR
 //#define DRAW_INIT_SECTION_WITHOUT_EDITOR
 
 #if UNITY_2023_1_OR_NEWER
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -15,43 +17,61 @@ namespace Sisus.Init.EditorOnly.Internal
 	[InitializeOnLoad]
 	internal static class InitializableEditorInjector
 	{
-		public static bool IsDone { get; private set; } = false;
+		public static bool IsDone { get; private set; }
+
+		#if DEV_MODE && DEBUG_SETUP_DURATION
+		private static readonly System.Diagnostics.Stopwatch tryGetEditorOverrideTypeTimer = new();
+		private static readonly System.Diagnostics.Stopwatch getCustomEditorTypeTimer = new();
+		private static readonly System.Diagnostics.Stopwatch injectCustomEditorTimer = new();
+		#endif
 
 		static InitializableEditorInjector() => InjectCustomEditorsWhenReady();
 
-		private static void InjectCustomEditorsWhenReady()
+		private static async void InjectCustomEditorsWhenReady()
 		{
 			IsDone = false;
 
-			InternalCustomEditorCache internalCustomEditorCache = new InternalCustomEditorCache();
+			await Until.UnitySafeContext();
+
+			InternalCustomEditorCache internalCustomEditorCache = new();
 
 			#if ODIN_INSPECTOR
-			if(ShouldWaitForOdinToInjectItsEditor(internalCustomEditorCache))
+			while(ShouldWaitForOdinToInjectItsEditor(internalCustomEditorCache))
 			{
-				EditorApplication.delayCall += InjectCustomEditorsWhenReady;
-				return;
+				await Until.UnitySafeContext();
 			}
 			#endif
-			
+
 			InjectCustomEditors(internalCustomEditorCache);
-			if(Selection.objects.Length > 0)
-			{
-				var selectionWas = Selection.objects;
-				Selection.objects = Array.Empty<Object>();
-				EditorApplication.delayCall += ()=>
-				{
-					if(Selection.objects.Length == 0)
-					{
-						Selection.objects = selectionWas;
-					}
-				};
-			}
 
 			IsDone = true;
+
+			if (Selection.objects.Length <= 0)
+			{
+				return;
+			}
+
+			var selectionWas = Selection.objects;
+			Selection.objects = Array.Empty<Object>();
+
+			await Until.UnitySafeContext();
+
+			if(Selection.objects.Length == 0)
+			{
+				Selection.objects = selectionWas;
+			}
 		}
 
 		private static void InjectCustomEditors(InternalCustomEditorCache customEditorCache)
 		{
+			#if DEV_MODE
+			UnityEngine.Profiling.Profiler.BeginSample("InjectCustomEditors");
+			#if DEBUG_SETUP_DURATION
+			var timer = new System.Diagnostics.Stopwatch();
+			timer.Start();
+			#endif
+			#endif
+			
 			// Temporarily clear selection and restore later in order to force all
 			// open Inspectors to update their contents using the updated inspectors.
 			// NOTE: Does not handle locked Inspector nor Properties... windows at the moment.
@@ -64,99 +84,75 @@ namespace Sisus.Init.EditorOnly.Internal
 								.Concat(TypeCache.GetTypesDerivedFrom<ScriptableObject>())
 								.Concat(TypeCache.GetTypesDerivedFrom<StateMachineBehaviour>()))
 			{
-				if(inspectableType.IsAbstract || !InitializerEditorUtility.TryGetEditorOverrideType(inspectableType, out Type overrideEditorType))
-				{
-					continue;
-				}
-
-				Type customEditorType = GetCustomEditorType(inspectableType, false);
-				if(customEditorType.Assembly == thisAssembly)
-				{
-					#if DEV_MODE && DEBUG_OVERRIDE_EDITOR
-                    Debug.Log($"Won't override {type.Name} existing editor {GetCustomEditorType(type, false).Name}");
-					#endif
-					continue;
-				}
-
-				#if DRAW_INIT_SECTION_WITHOUT_EDITOR
-				// Still use the custom editor when possible,
-				// because it visualizes non-serialized fields in play mode.
-				if(!CustomEditorUtility.IsGenericInspectorType(customEditorType))
-				{
-					continue;
-				}
-				#endif
-
-				customEditorCache.InjectCustomEditor(inspectableType, overrideEditorType, canEditMultipleObjects:true, editorForChildClasses:false, isFallback:false);
+				HandleInjectCustomEditor(customEditorCache, inspectableType, thisAssembly);
 			}
 
 			// Restore selection to rebuild inspectors.
 			Selection.objects = selectionWas;
-		}
 
-		public static void CreateCachedEditor(Object[] targets, ref Editor editor)
-		{
-			var editorType = GetCustomEditorType(targets[0].GetType(), targets.Length > 1);
-
-			if(InitializerEditorUtility.IsInitializableEditorType(editorType))
-			{
-				#if DEV_MODE
-				Debug.LogWarning(targets[0]);
-				#endif
-
-				editorType = CustomEditorUtility.GetGenericInspectorType();
-			}
-
-			Editor.CreateCachedEditor(targets[0], editorType, ref editor);
-		}
-
-		public static bool HasCustomEditor(Type componentType) => GetCustomEditorType(componentType, false) != CustomEditorUtility.genericInspectorType;
-
-		public static Type GetCustomEditorType([DisallowNull] Type componentType, bool multiEdit)
-		{
 			#if DEV_MODE
-			Debug.Assert(componentType != null);
+			UnityEngine.Profiling.Profiler.EndSample();
+			#if DEBUG_SETUP_DURATION
+			Debug.Log("InjectCustomEditors in total took " + timer.Elapsed.TotalSeconds + "s.\n"+
+			"    TryGetEditorOverrideType took " + tryGetEditorOverrideTypeTimer.Elapsed.TotalSeconds + "s.\n"+
+			"    GetCustomEditorType took " + getCustomEditorTypeTimer.Elapsed.TotalSeconds + "s.\n"+
+			"    InjectCustomEditor took " + injectCustomEditorTimer.Elapsed.TotalSeconds + "s.");
+			#endif
+			#endif
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void HandleInjectCustomEditor(InternalCustomEditorCache customEditorCache, Type inspectableType, Assembly thisAssembly)
+		{
+			#if DEV_MODE && DEBUG_SETUP_DURATION
+			InitializableEditorInjector.tryGetEditorOverrideTypeTimer.Start();
 			#endif
 
-			var inspectedType = typeof(CustomEditor).GetField("m_InspectedType", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-			var editorForChildClasses = typeof(CustomEditor).GetField("m_EditorForChildClasses", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-			Type result = null;
-
-			foreach(var customEditorType in TypeCache.GetTypesWithAttribute<CustomEditor>())
+			if(inspectableType.IsAbstract || !InitializerEditorUtility.TryGetEditorOverrideType(inspectableType, out Type overrideEditorType))
 			{
-				foreach(var attribute in customEditorType.GetCustomAttributes<CustomEditor>())
-				{
-					var targetType = inspectedType.GetValue(attribute) as Type;
-					if(targetType == null)
-					{
-						continue;
-					}
+				#if DEV_MODE && DEBUG_SETUP_DURATION
+				InitializableEditorInjector.tryGetEditorOverrideTypeTimer.Stop();
+				#endif
+				return;
+			}
+						
+			#if DEV_MODE && DEBUG_SETUP_DURATION
+			InitializableEditorInjector.tryGetEditorOverrideTypeTimer.Stop();
+			InitializableEditorInjector.getCustomEditorTypeTimer.Start();
+			#endif
+					
+			Type customEditorType = CustomEditorType.Get(inspectableType, false);
 
-					if(targetType == componentType)
-					{
-						if(!attribute.isFallback)
-						{
-							return customEditorType;
-						}
+			#if DEV_MODE && DEBUG_SETUP_DURATION
+			InitializableEditorInjector.getCustomEditorTypeTimer.Stop();
+			#endif
 
-						result = customEditorType;
-						break;
-					}
-
-					if(result == null && targetType.IsAssignableFrom(componentType) && (bool)editorForChildClasses.GetValue(attribute))
-					{
-						result = customEditorType;
-						break;
-					}
-				}
+			if(customEditorType.Assembly == thisAssembly)
+			{
+				#if DEV_MODE && DEBUG_OVERRIDE_EDITOR
+				Debug.Log($"Won't override {type.Name} existing editor {GetCustomEditorType(type, false).Name}");
+				#endif
+				return;
 			}
 
-			if(result != null)
+			#if DRAW_INIT_SECTION_WITHOUT_EDITOR
+			// Still use the custom editor when possible,
+			// because it visualizes non-serialized fields in play mode.
+			if(!CustomEditorUtility.IsGenericInspectorType(customEditorType))
 			{
-				return result;
+				continue;
 			}
+			#endif
 
-			return CustomEditorUtility.GetGenericInspectorType();
+			#if DEV_MODE && DEBUG_SETUP_DURATION
+			InitializableEditorInjector.injectCustomEditorTimer.Start();
+			#endif
+
+			customEditorCache.InjectCustomEditor(inspectableType, overrideEditorType, canEditMultipleObjects:true, editorForChildClasses:false, isFallback:false);
+				
+			#if DEV_MODE && DEBUG_SETUP_DURATION
+			InitializableEditorInjector.injectCustomEditorTimer.Stop();
+			#endif
 		}
 
 		#if ODIN_INSPECTOR

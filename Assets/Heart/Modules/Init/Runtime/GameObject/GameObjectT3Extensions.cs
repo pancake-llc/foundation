@@ -1320,7 +1320,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 
@@ -1534,7 +1534,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 
@@ -1575,7 +1575,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 
@@ -1616,7 +1616,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 
@@ -1656,7 +1656,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 
@@ -1698,7 +1698,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 
@@ -1778,7 +1778,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 
@@ -1819,7 +1819,7 @@ namespace Sisus.Init
 				where TThirdComponent : Component
 		{
 			if(!@this.gameObject.TryGetComponent(out @this.components.third))
-            {
+			{
 				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
 			}
 

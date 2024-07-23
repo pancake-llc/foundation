@@ -74,7 +74,7 @@ namespace Sisus.Init.ValueProviders
 			Debug.Log($"IsValid:{addressableAsset.IsValid()}, RuntimeKeyIsValid:{addressableAsset.RuntimeKeyIsValid()}, SubObjectName:{addressableAsset.SubObjectName}, IsDone:{addressableAsset.IsDone}, Status:{(addressableAsset.IsValid() ? addressableAsset.OperationHandle.Status : AsyncOperationStatus.None)}, editorAsset:{(addressableAsset.editorAsset == null ? "null" : addressableAsset.editorAsset.name)}, HasValue:{(this as INullGuard).EvaluateNullGuard(null)}");
 			#endif
 
-			#if DEBUG || SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(!addressableAsset.RuntimeKeyIsValid() || string.IsNullOrEmpty(addressableAsset.SubObjectName))
 			{
 				return default;
@@ -212,7 +212,7 @@ namespace Sisus.Init.ValueProviders
 			
 			if(addressableAsset.OperationHandle.IsValid() && addressableAsset.OperationHandle.OperationException is not null)
 			{
-				return NullGuardResult.ExceptionOccurred;
+				return NullGuardResult.ValueProviderException;
 			}
 
 			if(addressableAsset.editorAsset == null)

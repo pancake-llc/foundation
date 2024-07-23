@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Sisus.Init.Internal;
+﻿using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 
@@ -56,7 +55,7 @@ namespace Sisus.Init
 			var secondArgument = await this.secondArgument.GetValueAsync();
 			var thirdArgument = await this.thirdArgument.GetValueAsync();
 
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(disposeArgumentsOnDestroy != Arguments.None)
 			{
 				OptimizeValueProviderNameForDebugging(this, this.firstArgument);
@@ -69,11 +68,11 @@ namespace Sisus.Init
 			if(IsRuntimeNullGuardActive) ValidateArgumentsAtRuntime(firstArgument, secondArgument, thirdArgument);
 			#endif
 
-            if(target == null)
-            {
-                Create.Instance(out target, firstArgument, secondArgument, thirdArgument);
+			if(target == null)
+			{
+				Create.Instance(out target, firstArgument, secondArgument, thirdArgument);
 				return target;
-            }
+			}
 			
 			if(target is ScriptableObject<TFirstArgument, TSecondArgument, TThirdArgument> scriptableObjectT)
 			{
@@ -107,8 +106,8 @@ namespace Sisus.Init
 		}
 
 		private protected override NullGuardResult EvaluateNullGuard() => firstArgument.EvaluateNullGuard()
-																 .Join(secondArgument.EvaluateNullGuard())
-																 .Join(thirdArgument.EvaluateNullGuard());
+																	.Join(secondArgument.EvaluateNullGuard())
+																	.Join(thirdArgument.EvaluateNullGuard());
 
 		private protected override void OnValidate() => Validate(this, null, firstArgument, secondArgument, thirdArgument);
 		#endif

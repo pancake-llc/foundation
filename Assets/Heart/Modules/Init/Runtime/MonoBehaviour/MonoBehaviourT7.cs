@@ -37,8 +37,17 @@ namespace Sisus.Init
 	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> function. </typeparam>
 	/// <typeparam name="TSeventhArgument"> Type of the seventh argument received in the <see cref="Init"/> function. </typeparam>
 	public abstract class MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument> : MonoBehaviour, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>, IInitializable
+		#if UNITY_EDITOR
+		, EditorOnly.IInitializableEditorOnly
+		#endif
 	{
 		private InitState initState;
+
+		#if UNITY_EDITOR
+		IInitializer EditorOnly.IInitializableEditorOnly.Initializer { get => TryGetInitializer(this, out IInitializer Initializer) ? Initializer : null; set { if(value != Null) value.Target = this; } }
+		bool EditorOnly.IInitializableEditorOnly.CanInitSelfWhenInactive => false;
+		InitState EditorOnly.IInitializableEditorOnly.InitState => initState;
+		#endif
 
 		/// <summary>
 		/// Provides the <see cref="Component"/> with the objects that it depends on.
@@ -87,20 +96,21 @@ namespace Sisus.Init
 		/// and does not have a set accessor.
 		/// </exception>
 		protected object this[[DisallowNull] string memberName]
-        {
+		{
 			set
 			{
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(initState is InitState.Initialized) throw new InvalidOperationException($"Unable to assign to member {GetType().Name}.{memberName}: Values can only be injected during initialization.");
 				#endif
 
 				Inject<MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>(this, memberName, value);
 			}
-        }
+		}
 
 		/// <summary>
 		/// A value against which any <see cref="object"/> can be compared to determine whether or not it is
 		/// <see langword="null"/> or an <see cref="Object"/> which has been <see cref="Object.Destroy">destroyed</see>.
+		/// </summary>
 		/// <example>
 		/// <code>
 		/// private IEvent trigger;
@@ -114,7 +124,6 @@ namespace Sisus.Init
 		///	}
 		/// </code>
 		/// </example>
-		/// </summary>
 		[NotNull]
 		protected static NullExtensions.NullComparer Null => NullExtensions.Null;
 
@@ -122,6 +131,7 @@ namespace Sisus.Init
 		/// A value against which any <see cref="object"/> can be compared to determine whether or not it is
 		/// <see langword="null"/> or an <see cref="Object"/> which is <see cref="GameObject.activeInHierarchy">inactive</see>
 		/// or has been <see cref="Object.Destroy">destroyed</see>.
+		/// </summary>
 		/// <example>
 		/// <code>
 		/// private ITrackable target;
@@ -196,7 +206,18 @@ namespace Sisus.Init
 		{
 			if(initState == InitState.Uninitialized)
 			{
+				#if UNITY_EDITOR
+				bool isInitialized =
+				#endif
+
 				Init(Context.Awake);
+
+				#if UNITY_EDITOR
+				if(!isInitialized && ShouldSelfGuardAgainstNull(this))
+				{
+					throw new MissingInitArgumentsException(this);
+				}
+				#endif
 			}
 
 			OnAwake();
@@ -208,13 +229,18 @@ namespace Sisus.Init
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool Init(Context context)
 		{
+			if(initState != InitState.Uninitialized)
+			{
+				return true;
+			}
+
 			if(!InitArgs.TryGet(context, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument))
 			{
 				return false;
 			}
 
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
+			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, context);
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
 
@@ -228,7 +254,7 @@ namespace Sisus.Init
 			.Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
+			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, Context.MainThread);
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
 
@@ -241,7 +267,7 @@ namespace Sisus.Init
 		internal void InitInternal(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
+			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, Context.MainThread);
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
 
@@ -287,8 +313,55 @@ namespace Sisus.Init
 		/// <param name="fifthArgument"> The fifth received argument to validate. </param>
 		/// <param name="sixthArgument"> The sixth received argument to validate. </param>
 		/// <param name="seventhArgument"> The seventh received argument to validate. </param>
-		[Conditional("DEBUG"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected virtual void ValidateArguments(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument) { }
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected virtual void ValidateArguments(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument)
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			AssertNotNull(firstArgument);
+			AssertNotNull(secondArgument);
+			AssertNotNull(thirdArgument);
+			AssertNotNull(fourthArgument);
+			AssertNotNull(fifthArgument);
+			AssertNotNull(sixthArgument);
+			AssertNotNull(seventhArgument);
+			#endif
+		}
+
+		[Conditional("UNITY_EDITOR"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		#if UNITY_EDITOR
+		async
+		#endif
+		private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, Context context)
+		{
+			#if UNITY_EDITOR
+			if(context.TryDetermineIsEditMode(out bool editMode))
+			{
+				if(editMode)
+				{
+					return;
+				}
+
+				if(!context.IsUnitySafeContext())
+				{
+					await Until.UnitySafeContext();
+				}
+			}
+			else
+			{
+				await Until.UnitySafeContext();
+
+				if(!Application.isPlaying)
+				{
+					return;
+				}
+			}
+
+			if(ShouldSelfGuardAgainstNull(this))
+			{
+				ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
+			}
+			#endif
+		}
 
 		/// <summary>
 		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws an <see cref="ArgumentNullException"/> if it is.
@@ -297,11 +370,11 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected void ThrowIfNull<TArgument>(TArgument argument, [CallerMemberName] string memberName = "") where TArgument : class
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected void ThrowIfNull<TArgument>(TArgument argument)
 		{
-			#if DEBUG
-			if(argument == Null) throw new ArgumentNullException(memberName, $"Init argument '{memberName}' of type {typeof(TArgument).Name} passed to {GetType().Name} was null.");
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(argument == Null) throw new ArgumentNullException(typeof(TArgument).Name, $"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.");
 			#endif
 		}
 
@@ -312,25 +385,12 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected void AssertNotNull<TArgument>(TArgument argument, [CallerMemberName] string memberName = "") where TArgument : class
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected void AssertNotNull<TArgument>(TArgument argument)
 		{
-			#if DEBUG
-			if(argument == Null) Debug.LogAssertion($"Init argument '{memberName}' of type {typeof(TArgument).Name} passed to {GetType().Name} was null.", this);
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(argument == Null) Debug.LogAssertion($"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.", this);
 			#endif
-		}
-
-		[Conditional("DEBUG"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument)
-		{
-			#if UNITY_EDITOR
-			if(!EditorOnly.ThreadSafe.Application.IsPlaying)
-			{
-				return;
-			}
-			#endif
-
-			ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
 		}
 	}
 }

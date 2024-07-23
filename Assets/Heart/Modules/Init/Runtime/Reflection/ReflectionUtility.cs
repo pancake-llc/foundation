@@ -21,11 +21,11 @@ namespace Sisus.Init.Reflection.Internal
 		/// or if a field or property was found but a <paramref name="value"/> of type <typeparamref name="TValue"/> is not assignable to it.
 		/// </exception>
 		public static void SetPropertyOrFieldValue<TClient>(TClient client, [DisallowNull] string name, object value)
-        {
-            switch(TryFindFieldOrProperty(typeof(TClient), name, out FieldInfo field, out PropertyInfo property))
-            {
-                case FoundMember.Field:
-                    if(value is null)
+		{
+			switch(TryFindFieldOrProperty(typeof(TClient), name, out FieldInfo field, out PropertyInfo property))
+			{
+				case FoundMember.Field:
+					if(value is null)
 					{
 						if(field.FieldType.IsValueType)
 						{
@@ -39,7 +39,7 @@ namespace Sisus.Init.Reflection.Internal
 
 					field.SetValue(client, value);
 					return;
-                case FoundMember.Property:
+				case FoundMember.Property:
 					if(value is null)
 					{
 						if(property.PropertyType.IsValueType)
@@ -56,7 +56,7 @@ namespace Sisus.Init.Reflection.Internal
 				default:
 					throw new MissingMemberException($"No field or property by name \"{name}\" was found on class {typeof(TClient).Name}.");
 			}
-        }
+		}
 
 		/// <summary>
 		/// Sets the value of a field or property with a certain name found on the target.
@@ -70,22 +70,22 @@ namespace Sisus.Init.Reflection.Internal
 		/// or if a field or property was found but a <paramref name="value"/> of type <typeparamref name="TValue"/> is not assignable to it.
 		/// </exception>
 		public static void SetPropertyOrFieldValue<TClient>(TClient client, [DisallowNull] object value)
-        {
-            switch(TryFindFieldOrProperty(typeof(TClient), value.GetType(), out FieldInfo field, out PropertyInfo property))
-            {
-                case FoundMember.Field:
+		{
+			switch(TryFindFieldOrProperty(typeof(TClient), value.GetType(), out FieldInfo field, out PropertyInfo property))
+			{
+				case FoundMember.Field:
 					field.SetValue(client, value);
 					return;
-                case FoundMember.Property:
+				case FoundMember.Property:
 					property.SetValue(client, value, null);
 					return;
 				default:
 					throw new MissingMemberException($"No field or property assignable from type {value.GetType().Name} was found on class {typeof(TClient).Name}.");
 			}
-        }
+		}
 
 		private static FoundMember TryFindFieldOrProperty(Type componentType, [DisallowNull] string name, out FieldInfo field, out PropertyInfo property)
-        {
+		{
 			for(var type = componentType; type != null; type = type.BaseType)
 			{
 				field = type.GetField(name, AllDeclaredOnly);
@@ -108,17 +108,17 @@ namespace Sisus.Init.Reflection.Internal
 		}
 
 		private static FoundMember TryFindFieldOrProperty(Type componentType, Type assignableFromType, out FieldInfo field, out PropertyInfo property)
-        {
+		{
 			for(var type = componentType; type != null; type = type.BaseType)
 			{
 				foreach(var fieldToTest in type.GetFields(AllDeclaredOnly))
-                {
+				{
 					if(fieldToTest.FieldType == assignableFromType)
-                    {
+					{
 						field = fieldToTest;
 						property = null;
 						return FoundMember.Field;
-                    }
+					}
 				}
 
 				foreach(var propertyToTest in type.GetProperties(AllDeclaredOnly))
@@ -135,13 +135,13 @@ namespace Sisus.Init.Reflection.Internal
 			for(var t = componentType; !TypeUtility.IsNullOrBaseType(t); t = t.BaseType)
 			{
 				foreach(var fieldToTest in t.GetFields(AllDeclaredOnly))
-                {
+				{
 					if(fieldToTest.FieldType.IsAssignableFrom(assignableFromType))
-                    {
+					{
 						field = fieldToTest;
 						property = null;
 						return FoundMember.Field;
-                    }
+					}
 				}
 
 				foreach(var propertyToTest in t.GetProperties(AllDeclaredOnly))

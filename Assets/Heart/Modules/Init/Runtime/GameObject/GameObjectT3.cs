@@ -61,7 +61,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="name"> The <see cref="GameObject.name">name</param> that the GameObject is created with. </param>
 		public GameObject(string name)
-        {
+		{
 			gameObject = new GameObject(name);
 			gameObject.SetActive(false);
 			leaveInactive = false;
@@ -273,7 +273,7 @@ namespace Sisus.Init
 		public GameObject(Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, bool inWorldSpace = false, bool active = true) : this(parent, active)
 		{
 			if(parent == null)
-            {
+			{
 				gameObject.transform.SetPositionAndRotation(position, rotation);
 				gameObject.transform.localScale = scale;
 			}
@@ -419,7 +419,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="original"> An existing object that you want to make a copy of. </param>
 		public GameObject([DisallowNull] GameObject original)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			bool wasActive = original.activeSelf;
@@ -460,7 +460,7 @@ namespace Sisus.Init
 		/// <param name="original"> An existing object that you want to make a copy of. </param>
 		/// <param name="parent"> The <see cref="Transform.parent">parent</see> of the created GameObject. </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			bool wasActive = original.activeSelf;
@@ -502,7 +502,7 @@ namespace Sisus.Init
 		/// <param name="parent"> The <see cref="Transform.parent">parent</see> of the created GameObject. </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, bool active)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			bool wasActive = original.activeSelf;
@@ -548,7 +548,7 @@ namespace Sisus.Init
 		/// or <see langword="false"/> to set the GameObject's position <see cref="Transform.localPosition">relative</see> to its new <paramref name="parent"/>.
 		/// </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, bool positionInWorldSpace = false) : this(original, parent, original.activeSelf)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(positionInWorldSpace)
@@ -595,7 +595,7 @@ namespace Sisus.Init
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, bool positionInWorldSpace, bool active) : this(original, parent, active)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(positionInWorldSpace)
@@ -642,7 +642,7 @@ namespace Sisus.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(inWorldSpace || parent == null)
@@ -691,7 +691,7 @@ namespace Sisus.Init
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, bool inWorldSpace, bool active) : this(original, parent, active)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(inWorldSpace || parent == null)
@@ -740,7 +740,7 @@ namespace Sisus.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(parent == null)
@@ -798,7 +798,7 @@ namespace Sisus.Init
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, bool inWorldSpace, bool active) : this(original, parent, active)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(parent == null)
@@ -854,7 +854,7 @@ namespace Sisus.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(inWorldSpace && parent != null)
@@ -904,7 +904,7 @@ namespace Sisus.Init
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, bool inWorldSpace, bool active) : this(original, parent, active)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(inWorldSpace && parent != null)
@@ -954,7 +954,7 @@ namespace Sisus.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, Vector3 scale, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(inWorldSpace && parent != null)
@@ -1009,7 +1009,7 @@ namespace Sisus.Init
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
 		public GameObject([DisallowNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, Vector3 scale, bool inWorldSpace, bool active) : this(original, parent, active)
-        {
+		{
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
 			if(inWorldSpace && parent != null)
@@ -1041,9 +1041,9 @@ namespace Sisus.Init
 			isInitialized = true;
 
 			if(!leaveInactive)
-            {
+			{
 				gameObject.SetActive(true);
-            }
+			}
 		}
 
 		internal void OnBeforeException()
@@ -1240,7 +1240,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// Builder for creating a new <see cref="GameObject"/> with three components.
 		public static implicit operator TFirstComponent(GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this)
-        {
+		{
 			return @this.isInitialized ? @this.gameObject.GetComponent<TFirstComponent>() : @this.Init().first;
 		}
 

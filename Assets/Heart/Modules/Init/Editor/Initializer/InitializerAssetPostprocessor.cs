@@ -12,19 +12,19 @@ namespace Sisus.Init
 	/// for all initializers so that all dependencies are initialized before the dependent objects.
 	/// </summary>
 	internal sealed class InitializerAssetPostprocessor : AssetPostprocessor
-    {
+	{
 		private const string EDITOR_PREFS_KEY = "InitArgs.Initializers.DelayedProcessingQueue";
 		private const string ICON_NAME = "AnimatorStateTransition Icon";
 		private static Texture2D initializerIcon = null;
 
-        [UsedImplicitly]
-        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
-        {
-            for(int i = importedAssets.Length - 1; i >= 0; i--)
-            {
-                PostProcessAsset(importedAssets[i]);
-            }
-        }
+		[UsedImplicitly]
+		private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+		{
+			for(int i = importedAssets.Length - 1; i >= 0; i--)
+			{
+				PostProcessAsset(importedAssets[i]);
+			}
+		}
 
 		[DidReloadScripts]
 		private static void OnScriptsReloaded()
@@ -33,7 +33,7 @@ namespace Sisus.Init
 			EditorApplication.delayCall += HandleProcessQueuedAssets;
 		}
 
-        private static void PostProcessAsset(string path)
+		private static void PostProcessAsset(string path)
 		{
 			if(TryDetermineIsInitializerScript(path, out bool isInitializer) && !isInitializer)
 			{
@@ -162,13 +162,13 @@ namespace Sisus.Init
 		private static void OnImportedInitializerAsset(MonoScript script) => SetInitializerIcon(script);
 
 		private static void SetInitializerIcon(MonoScript script)
-        {
-            if(initializerIcon == null)
+		{
+			if(initializerIcon == null)
 			{
 				initializerIcon = EditorGUIUtility.IconContent(ICON_NAME).image as Texture2D;
 
 				if(initializerIcon == null)
-                {
+				{
 					if(EditorApplication.isUpdating)
 					{
 						EditorApplication.delayCall += ()=> SetInitializerIcon(script);
@@ -179,31 +179,19 @@ namespace Sisus.Init
 					Debug.LogWarning($"Initializer icon '{ICON_NAME}' not found.");
 					#endif
 					return;
-                }
+				}
 			}
 
 			SetIcon(script, initializerIcon);
-        }
+		}
 
 		private static void SetIcon(MonoScript script, Texture2D icon)
-        {
-			#if UNITY_2021_2_OR_NEWER
+		{
 			var currentIcon = EditorGUIUtility.GetIconForObject(script);
 			if(currentIcon != icon)
 			{
 				EditorGUIUtility.SetIconForObject(script, icon);
 			}
-			#else
-			MethodInfo getIconForObject = typeof(EditorGUIUtility).GetMethod("GetIconForObject", BindingFlags.Static | BindingFlags.NonPublic);
-			var currentIcon = getIconForObject.Invoke(null, new object[] { script }) as Texture2D;
-			if(currentIcon != icon)
-			{
-				MethodInfo setIconForObject = typeof(EditorGUIUtility).GetMethod("SetIconForObject", BindingFlags.Static | BindingFlags.NonPublic);
-				MethodInfo copyMonoScriptIconToImporters = typeof(MonoImporter).GetMethod("CopyMonoScriptIconToImporters", BindingFlags.Static | BindingFlags.NonPublic);
-				setIconForObject.Invoke(null, new object[] { script, icon });
-				copyMonoScriptIconToImporters.Invoke(null, new object[] { script });
-			}
-			#endif
-        }
+		}
 	}
 }

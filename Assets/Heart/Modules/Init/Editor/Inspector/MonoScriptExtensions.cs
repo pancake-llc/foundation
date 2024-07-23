@@ -39,6 +39,16 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			string userData = assetImporter.userData;
+
+			#if UNITY_2023_2 || UNITY_2023_3 || UNITY_6000_0 || INIT_ARGS_DISABLE_WRITE_TO_METADATA
+			// Certain Unity versions have a bug where userData always returns an empty string:
+			// https://issuetracker.unity3d.com/issues/empty-string-is-returned-when-using-assetimporter-dot-userdata
+			if(userData.Length == 0)
+			{
+				return false;
+			}
+			#endif
+
 			string[] userDataLines = userData.Length == 0 ? Array.Empty<string>() : userData.Split('\n', StringSplitOptions.None);
 			string setUserDataLine = userDataKey + ": " + value;
 			bool userDataLinesUpdated = false;
@@ -94,7 +104,14 @@ namespace Sisus.Init.EditorOnly.Internal
 			assetImporter.SaveAndReimport();
 
 			#if DEV_MODE
-			EditorApplication.delayCall += () => Debug.Assert(AssetImporter.GetAtPath(scriptPath).userData == userData, scriptPath);
+			EditorApplication.delayCall += () => 
+			{
+				var importer = AssetImporter.GetAtPath(scriptPath);
+				if(importer.userData != userData)
+				{
+					Debug.LogWarning("Failed to serialize user data into '" + scriptPath  +".meta'.");
+				}
+			};
 			#endif
 
 			return true;

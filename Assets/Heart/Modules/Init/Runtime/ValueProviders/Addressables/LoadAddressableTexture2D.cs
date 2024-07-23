@@ -75,7 +75,7 @@ namespace Sisus.Init.ValueProviders
 			Debug.Log($"IsValid:{addressableAsset.IsValid()}, RuntimeKeyIsValid:{addressableAsset.RuntimeKeyIsValid()}, SubObjectName:{addressableAsset.SubObjectName}, IsDone:{addressableAsset.IsDone}, Status:{(addressableAsset.IsValid() ? addressableAsset.OperationHandle.Status : AsyncOperationStatus.None)}, editorAsset:{(addressableAsset.editorAsset == null ? "null" : addressableAsset.editorAsset.name)}, HasValue:{(this as INullGuard).EvaluateNullGuard(null)}");
 			#endif
 
-			#if DEBUG || SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(!addressableAsset.RuntimeKeyIsValid() || string.IsNullOrEmpty(addressableAsset.SubObjectName))
 			{
 				return default;
@@ -101,7 +101,7 @@ namespace Sisus.Init.ValueProviders
 			}
 
 			#if DEV_MODE && UNITY_EDITOR
-			Debug.Log($"name:\"{name}\" isSharedInstance:{isSharedInstance}"); // IDEA: Could also detect by naming pattern? E.g. leave name blank, unless shared instance? Or use custom prefix, like "TEMP_" or "DISPOSABLE_" or "InitArg_" or "_Disposable".
+			Debug.Log($"name:\"{name}\" isSharedInstance:{isSharedInstance}");
 			#endif
 
 			if(isSharedInstance)
@@ -112,7 +112,7 @@ namespace Sisus.Init.ValueProviders
 			string setName = name;
 			string key = addressableAsset.RuntimeKey?.ToString();
 
-			if(addressableAsset.editorAsset is Object asset && asset != null)
+			if(addressableAsset.editorAsset is Object asset && asset)
 			{
 				setName = asset.name;
 			}
@@ -217,7 +217,7 @@ namespace Sisus.Init.ValueProviders
 			
 			if(addressableAsset.OperationHandle.IsValid() && addressableAsset.OperationHandle.OperationException is not null)
 			{
-				return NullGuardResult.ExceptionOccurred;
+				return NullGuardResult.ValueProviderException;
 			}
 
 			if(addressableAsset.editorAsset == null)

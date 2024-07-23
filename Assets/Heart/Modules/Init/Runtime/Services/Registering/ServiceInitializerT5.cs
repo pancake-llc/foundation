@@ -1,14 +1,10 @@
-﻿#pragma warning disable CS0414
-
-using System;
-using System.Threading.Tasks;
-using Object = UnityEngine.Object;
+﻿using UnityEngine;
 
 namespace Sisus.Init
 {
 	/// <summary>
 	/// A base class for an initializer that is responsible for initializing a service of type
-	/// <typeparamref name="TService"/>, which itself depends on two other services.
+	/// <typeparamref name="TService"/>, which itself depends on five other services.
 	/// <para>
 	/// The <see cref="ServiceAttribute"/> must be added to all classes that derive from this
 	/// base class; otherwise the framework will not discover the initializer and the
@@ -25,25 +21,26 @@ namespace Sisus.Init
 	/// this is one tool at your disposable that can help with that.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TFirstArgument"> The defining type of the first service which the initialized service depends on. </typeparam>
-	/// <typeparam name="TSecondArgument"> The defining type of the second service which the initialized service depends on. </typeparam>
-	/// <typeparam name="TThirdArgument"> The defining type of the third service which the initialized service depends on. </typeparam>
-	/// <typeparam name="TFourthArgument"> The defining type of the fourth service which the initialized service depends on. </typeparam>
-	/// <typeparam name="TFifthArgument"> The defining type of the fifth service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth service which the initialized service depends on. </typeparam>
 	public abstract class ServiceInitializer<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> : IServiceInitializer<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> where TService : class
 	{
 		/// <inheritdoc/>
-		object IServiceInitializer.InitTarget(params object[] services)
+		object IServiceInitializer.InitTarget(params object[] arguments)
 		{
-			Task<TService> task = InitTargetAsync((TFirstArgument)services[0], (TSecondArgument)services[1], (TThirdArgument)services[2], (TFourthArgument)services[3], (TFifthArgument)services[4]);
-			return task.IsCompleted ? task.Result : task;
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(arguments is null) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given no services, when one was expected.");
+			else if(arguments.Length != 5) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given {arguments.Length} services, when one was expected.");
+			#endif
+
+			return InitTarget((TFirstArgument)arguments[0], (TSecondArgument)arguments[1], (TThirdArgument)arguments[2], (TFourthArgument)arguments[3], (TFifthArgument)arguments[4]);
 		}
 
 		/// <inheritdoc/>
 		public abstract TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument);
-		
-		/// <inheritdoc/>
-		public Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument) => Task.FromResult(InitTarget(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument));
 	}
 }

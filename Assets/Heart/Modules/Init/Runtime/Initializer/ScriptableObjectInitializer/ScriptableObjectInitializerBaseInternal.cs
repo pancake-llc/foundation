@@ -47,7 +47,7 @@ namespace Sisus.Init.Internal
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
 		{
-			if(target != null && target is TValue result)
+			if(target && target is TValue result)
 			{
 				value = result;
 				return true;
@@ -205,18 +205,22 @@ namespace Sisus.Init.Internal
 		[return: NotNull]
 		private protected abstract TClient InitTarget([AllowNull] TClient target);
 
-		#if DEBUG
+		#if DEBUG || INIT_ARGS_SAFE_MODE
 		async 
 		#endif
 		private protected void Awake()
 		{
+			#if UNITY_EDITOR
+			ThreadSafe.Application.IsPlaying = Application.isPlaying;
+			#endif
+
 			if(
 			#if UNITY_EDITOR
 			Application.isPlaying &&
 			#endif
 			IsAsync)
 			{
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				await
 				#else
 				_ = 
@@ -245,6 +249,7 @@ namespace Sisus.Init.Internal
 		#if UNITY_EDITOR
 		bool IInitializerEditorOnly.ShowNullArgumentGuard => true;
 		bool IInitializerEditorOnly.CanInitTargetWhenInactive => false;
+		bool IInitializerEditorOnly.CanGuardAgainstNull => true;
 		NullArgumentGuard IInitializerEditorOnly.NullArgumentGuard { get => nullArgumentGuard; set => nullArgumentGuard = value; }
 		string IInitializerEditorOnly.NullGuardFailedMessage { get; set; } = "";
 		NullGuardResult IInitializerEditorOnly.EvaluateNullGuard() => EvaluateNullGuard();
@@ -256,8 +261,8 @@ namespace Sisus.Init.Internal
 		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
 		private protected abstract NullGuardResult EvaluateNullGuard();
 
-        private protected abstract void Reset();
+		private protected abstract void Reset();
 		private protected abstract void OnValidate();
 		#endif
-    }
+	}
 }

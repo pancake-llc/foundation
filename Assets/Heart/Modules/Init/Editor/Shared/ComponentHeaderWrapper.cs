@@ -29,7 +29,7 @@ namespace Sisus.Init.EditorOnly
         {
             var header = editorAndHeader.header;
             var onGUIHandler = header.onGUIHandler;
-		    if(string.Equals(onGUIHandler.Method?.Name, nameof(DrawWrappedHeaderGUI)))
+		    if(string.Equals(onGUIHandler.Method.Name, nameof(DrawWrappedHeaderGUI)))
 		    {
 			    return;
 		    }
@@ -41,18 +41,18 @@ namespace Sisus.Init.EditorOnly
 
 		private void DrawWrappedHeaderGUI()
         {
-            if(component == null)
+            if(!component)
             {
                 Unwrap();
                 return;
             }
 
-            Rect headerRect = headerElement.contentRect;
-            bool HeaderIsSelected = headerElement.focusController.focusedElement == headerElement;
+            var headerRect = headerElement.contentRect;
+            bool headerIsSelected = headerElement.focusController.focusedElement == headerElement;
 
-            ComponentHeader.InvokeBeforeHeaderGUI(component, headerRect, HeaderIsSelected, supportsRichText);
+            ComponentHeader.InvokeBeforeHeaderGUI(component, headerRect, headerIsSelected, supportsRichText);
             wrappedOnGUIHandler?.Invoke();
-            ComponentHeader.InvokeAfterHeaderGUI(component, headerRect, HeaderIsSelected, supportsRichText);
+            ComponentHeader.InvokeAfterHeaderGUI(component, headerRect, headerIsSelected, supportsRichText);
         }
 
         private void Unwrap()

@@ -63,23 +63,23 @@ namespace Sisus.Init.Internal
 	/// </para>
 	/// </summary>
 	/// <seealso cref="ServiceTag"/>
-	/// <seealso cref="ServicesInState"/>
+	/// <seealso cref="ServiceAttribute"/>
 	[ExecuteAlways, AddComponentMenu("Initialization/Services"), DefaultExecutionOrder(ExecutionOrder.ServiceTag)]
-    public partial class Services : MonoBehaviour, IValueByTypeProvider
+	public partial class Services : MonoBehaviour, IValueByTypeProvider
 		#if UNITY_EDITOR
 		, ISerializationCallbackReceiver
 		, INullGuardByType
 		#endif
-    {
-        [SerializeField, FormerlySerializedAs("provideServices")]
-        internal ServiceDefinition[] providesServices = new ServiceDefinition[0];
+	{
+		[SerializeField, FormerlySerializedAs("provideServices")]
+		internal ServiceDefinition[] providesServices = new ServiceDefinition[0];
 
-        [SerializeField, Tooltip("Limits what clients have access to the services in this Services by their location in the scene hierarchy.\n\nWhen set to 'Children' only clients that are attached to the same GameObject as this Services or or any of its children (including nested children) can access the services in this Services.\n\nWhen set to 'Scene' only clients that are in the same scene as this Services can access the services in this Services.\n\nWhen set to 'Global', all clients are allowed to access the services in this Services regardless of where they are in the scene hierarchy.")]
-        internal Clients toClients = Clients.InChildren;
+		[SerializeField, Tooltip("Limits what clients have access to the services in this Services by their location in the scene hierarchy.\n\nWhen set to 'Children' only clients that are attached to the same GameObject as this Services or or any of its children (including nested children) can access the services in this Services.\n\nWhen set to 'Scene' only clients that are in the same scene as this Services can access the services in this Services.\n\nWhen set to 'Global', all clients are allowed to access the services in this Services regardless of where they are in the scene hierarchy.")]
+		internal Clients toClients = Clients.InChildren;
 
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
 		{
-			if(!AreAvailableToAnyClient() && (client == null || !AreAvailableToClient(client.gameObject)))
+			if(!AreAvailableToAnyClient() && (!client || !AreAvailableToClient(client.gameObject)))
 			{
 				value = default;
 				return false;
@@ -105,7 +105,7 @@ namespace Sisus.Init.Internal
 
 		bool IValueByTypeProvider.CanProvideValue<TValue>(Component client)
 		{
-			if(!AreAvailableToAnyClient() && (client == null || !AreAvailableToClient(client.gameObject)))
+			if(!AreAvailableToAnyClient() && (!client || !AreAvailableToClient(client.gameObject)))
 			{
 				return false;
 			}
@@ -126,8 +126,8 @@ namespace Sisus.Init.Internal
 			return false;
 		}
 
-        protected virtual void OnEnable()
-        {
+		protected virtual void OnEnable()
+		{
 			foreach(var serviceDefinition in providesServices)
 			{
 				var service = serviceDefinition.service;
@@ -146,9 +146,9 @@ namespace Sisus.Init.Internal
 
 				ServiceUtility.AddFor(service, definingType, toClients, this);
 			}
-        }
+		}
 
-        protected virtual void OnDisable()
+		protected virtual void OnDisable()
 		{
 			foreach(var serviceDefinition in providesServices)
 			{
@@ -168,59 +168,59 @@ namespace Sisus.Init.Internal
 			}
 		}
 
-        internal virtual bool AreAvailableToAnyClient() => toClients == Clients.Everywhere;
+		internal virtual bool AreAvailableToAnyClient() => toClients == Clients.Everywhere;
 
-        internal virtual bool AreAvailableToClient([DisallowNull] GameObject client)
-        {
-            Debug.Assert(client != null);
-            Debug.Assert(this != null);
+		internal virtual bool AreAvailableToClient([DisallowNull] GameObject client)
+		{
+			Debug.Assert(client != null);
+			Debug.Assert(this != null);
 
-            switch(toClients)
-            {
-                case Clients.InGameObject:
-                    return client == gameObject;
-                case Clients.InChildren:
-                    var injectorTransform = transform;
-                    for(var parent = client.transform; parent != null; parent = parent.parent)
-                    {
-                        if(parent == injectorTransform)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                case Clients.InParents:
-                    var clientTransform = client.transform;
-                    for(var parent = transform; parent != null; parent = parent.parent)
-                    {
-                        if(parent == clientTransform)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                case Clients.InHierarchyRootChildren:
-                    return transform.root == client.transform.root;
-                case Clients.InScene:
-                    return client.scene == gameObject.scene;
-                case Clients.InAllScenes:
-                case Clients.Everywhere:
-                    return true;
-                default:
-                    Debug.LogError($"Unrecognized {nameof(Clients)} value: {toClients}.", this);
-                    return false;
-            }
-        }
+			switch(toClients)
+			{
+				case Clients.InGameObject:
+					return client == gameObject;
+				case Clients.InChildren:
+					var injectorTransform = transform;
+					for(var parent = client.transform; parent; parent = parent.parent)
+					{
+						if(parent == injectorTransform)
+						{
+							return true;
+						}
+					}
+					return false;
+				case Clients.InParents:
+					var clientTransform = client.transform;
+					for(var parent = transform; parent; parent = parent.parent)
+					{
+						if(parent == clientTransform)
+						{
+							return true;
+						}
+					}
+					return false;
+				case Clients.InHierarchyRootChildren:
+					return transform.root == client.transform.root;
+				case Clients.InScene:
+					return client.scene == gameObject.scene;
+				case Clients.InAllScenes:
+				case Clients.Everywhere:
+					return true;
+				default:
+					Debug.LogError($"Unrecognized {nameof(Clients)} value: {toClients}.", this);
+					return false;
+			}
+		}
 
-        #if UNITY_EDITOR
-        protected virtual void OnValidate()
-        {
-            if(gameObject.scene.IsValid())
-            {
-                foreach(var serviceDefinition in providesServices)
+		#if UNITY_EDITOR
+		protected virtual void OnValidate()
+		{
+			if(gameObject.scene.IsValid())
+			{
+				foreach(var serviceDefinition in providesServices)
 				{
 					var service = serviceDefinition.service;
-					if(service == null)
+					if(!service)
 					{
 						continue;
 					}
@@ -233,41 +233,37 @@ namespace Sisus.Init.Internal
 
 					ServiceUtility.AddFor(service, definingType, toClients, this);
 				}
-            }
+			}
 
 			bool isSelected = Array.IndexOf(UnityEditor.Selection.gameObjects, gameObject) != -1;
-            if(!isSelected)
-            {
-                for(int i = 0, count = providesServices.Length; i < count; i++)
-                {
-                    if(providesServices[i].service == null)
-                    {
-                        Debug.LogWarning($"Service #{i} on \"{name}\" is missing.", this);
-                    }
-                    else if(providesServices[i].definingType == null)
-                    {
-                        Debug.LogWarning($"Defining Type of service #{i} on \"{name}\" is missing.", this);
-                    }
-                }
+			if(!isSelected)
+			{
+				for(int i = 0, count = providesServices.Length; i < count; i++)
+				{
+					if(providesServices[i].service == null)
+					{
+						Debug.LogWarning($"Service #{i} on \"{name}\" is missing.", this);
+					}
+					else if(providesServices[i].definingType == null)
+					{
+						Debug.LogWarning($"Defining Type of service #{i} on \"{name}\" is missing.", this);
+					}
+				}
 
-                return;
-            }
+				return;
+			}
 
-            for(int i = providesServices.Length - 1; i >= 0; i--)
-            {
-                ServiceDefinition.OnValidate(this, ref providesServices[i]);
-            }
-        }
+			for(int i = providesServices.Length - 1; i >= 0; i--)
+			{
+				ServiceDefinition.OnValidate(this, ref providesServices[i]);
+			}
+		}
 
 		void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
 		public async void OnAfterDeserialize()
 		{
-			#if UNITY_2023_1_OR_NEWER
-			await Awaitable.MainThreadAsync();
-			#else
-			await System.Threading.Tasks.Task.Yield();
-			#endif
+			await Until.UnitySafeContext();
 
 			if(!this)
 			{
@@ -277,19 +273,13 @@ namespace Sisus.Init.Internal
 			foreach(var serviceDefinition in providesServices)
 			{
 				var service = serviceDefinition.service;
-				if(service == null)
+				if(!service)
 				{
 					continue;
 				}
 
 				var definingType = serviceDefinition.definingType.Value;
 				if(definingType is null)
-				{
-					continue;
-				}
-				
-				// Avoid incorrect validation errors if wrapper component hasn't finished deserialization yet
-				if(!definingType.IsInstanceOfType(service) && service is IValueProvider valueProvider && valueProvider.Value is null)
 				{
 					continue;
 				}
@@ -300,7 +290,7 @@ namespace Sisus.Init.Internal
 
 		NullGuardResult INullGuardByType.EvaluateNullGuard<TValue>([AllowNull] Component client)
 		{
-			if(!AreAvailableToAnyClient() && (client == null || !AreAvailableToClient(client.gameObject)))
+			if(!AreAvailableToAnyClient() && (!client || !AreAvailableToClient(client.gameObject)))
 			{
 				return NullGuardResult.ClientNotSupported;
 			}
@@ -312,7 +302,7 @@ namespace Sisus.Init.Internal
 					continue;
 				}
 
-				if(definition.definingType.Value == typeof(TValue) && definition.service is TValue && definition.service != null)
+				if(definition.definingType.Value == typeof(TValue) && definition.service is TValue && definition.service)
 				{
 					return NullGuardResult.Passed;
 				}

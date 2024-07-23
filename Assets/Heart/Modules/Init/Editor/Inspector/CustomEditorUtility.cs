@@ -35,7 +35,7 @@ namespace Sisus.Init.EditorOnly
 			}
 			#endif
 
-            return genericInspectorType;
+			return genericInspectorType;
 		}
 
 		public static bool IsGenericInspectorType([AllowNull] Type customEditorType)

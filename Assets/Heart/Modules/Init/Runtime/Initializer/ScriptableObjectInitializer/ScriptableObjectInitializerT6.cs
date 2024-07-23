@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Sisus.Init.Internal;
+﻿using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 
@@ -68,7 +67,7 @@ namespace Sisus.Init
 			var fifthArgument = await this.fifthArgument.GetValueAsync();
 			var sixthArgument = await this.sixthArgument.GetValueAsync();
 
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(disposeArgumentsOnDestroy != Arguments.None)
 			{
 				OptimizeValueProviderNameForDebugging(this, this.firstArgument);
@@ -84,11 +83,11 @@ namespace Sisus.Init
 			if(IsRuntimeNullGuardActive) ValidateArgumentsAtRuntime(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 			#endif
 
-            if(target == null)
-            {
-                Create.Instance(out target, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+			if(target == null)
+			{
+				Create.Instance(out target, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 				return target;
-            }
+			}
 			
 			if(target is ScriptableObject<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> scriptableObjectT)
 			{
@@ -122,11 +121,11 @@ namespace Sisus.Init
 		}
 
 		private protected override NullGuardResult EvaluateNullGuard() => firstArgument.EvaluateNullGuard()
-																 .Join(secondArgument.EvaluateNullGuard())
-																 .Join(thirdArgument.EvaluateNullGuard())
-																 .Join(fourthArgument.EvaluateNullGuard())
-																 .Join(fifthArgument.EvaluateNullGuard())
-																 .Join(sixthArgument.EvaluateNullGuard());
+																	.Join(secondArgument.EvaluateNullGuard())
+																	.Join(thirdArgument.EvaluateNullGuard())
+																	.Join(fourthArgument.EvaluateNullGuard())
+																	.Join(fifthArgument.EvaluateNullGuard())
+																	.Join(sixthArgument.EvaluateNullGuard());
 
 		private protected override void OnValidate() => Validate(this, null, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 		#endif

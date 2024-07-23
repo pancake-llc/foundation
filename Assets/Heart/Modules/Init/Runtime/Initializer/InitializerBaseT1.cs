@@ -22,7 +22,7 @@ namespace Sisus.Init
 	/// <para>
 	/// The client receives the arguments via the
 	/// <see cref="IInitializable{TArgument}.Init">Init</see>
-	/// method where it can assigned them to member fields or properties.
+	/// method where it can be assigned to a member field or a property.
 	/// </para>
 	/// <para>
 	/// After the arguments have been injected the initializer is removed from the <see cref="GameObject"/> that holds it.
@@ -51,27 +51,27 @@ namespace Sisus.Init
 		/// <inheritdoc/>
 		[return: NotNull]
 		private protected override TClient InitTarget([AllowNull] TClient target)
-        {
+		{
 			var argument = Argument;
 
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(IsRuntimeNullGuardActive) ValidateArgumentAtRuntime(argument);
 			#endif
 
-            #if UNITY_EDITOR
-			if(target == null)
+			#if UNITY_EDITOR
+			if(!target)
 			#else
 			if(target is null)
 			#endif
-            {
-                gameObject.AddComponent(out TClient result, argument);
+			{
+				gameObject.AddComponent(out TClient result, argument);
 				return result;
-            }
+			}
 
 			if(target.gameObject != gameObject)
 			{
 				return target.Instantiate(argument);
-            }
+			}
 
 			if(target is MonoBehaviour<TArgument> monoBehaviourT)
 			{
@@ -83,21 +83,21 @@ namespace Sisus.Init
 			}
 
 			return target;
-        }
+		}
 
 		bool IInitializable.HasInitializer => false;
 
 		bool IInitializable.Init(Context context)
 		{
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				AutoInitInEditMode<InitializerBase<TClient, TArgument>, TClient, TArgument>(this);
 			}
 			#endif
 
-			InitTarget();
-			return true;
+			_ = InitTarget();
+			return initState is InitState.Initialized or InitState.Initializing;
 		}
 
 		/// <summary>
@@ -105,8 +105,10 @@ namespace Sisus.Init
 		/// <para>
 		/// <see cref="OnReset"/> is called when the user hits the Reset button in the Inspector's
 		/// context menu or when adding the component to a GameObject the first time.
+		/// </para>
 		/// <para>
 		/// This function is only called in the editor in edit mode.
+		/// </para>
 		/// </summary>
 		/// <param name="argument"> The argument to reset. </param>
 		protected virtual void OnReset(ref TArgument argument) { }
@@ -117,11 +119,17 @@ namespace Sisus.Init
 		#endif
 
 		#if UNITY_EDITOR
-		private protected override NullGuardResult EvaluateNullGuard() => IsNull(Argument) ? NullGuardResult.ValueMissing : NullGuardResult.Passed;
+		private protected override NullGuardResult EvaluateNullGuard() =>
+			initState == InitState.Failed
+				? NullGuardResult.ValueProviderException
+				: IsNull(Argument)
+					? NullGuardResult.ValueMissing
+					: NullGuardResult.Passed;
+
 		TArgument IInitializerEditorOnly<TClient, TArgument>.Argument { get => Argument; set => Argument = value; }
 		void IInitializerEditorOnly<TClient, TArgument>.OnReset(ref TArgument argument) => OnReset(ref argument);
 		private protected sealed override void Reset() => Reset<InitializerBase<TClient, TArgument>, TClient, TArgument>(this, gameObject);
 		private protected override void OnValidate() => Validate(this, gameObject, Argument);
 		#endif
-    }
+	}
 }

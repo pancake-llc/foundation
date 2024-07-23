@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Sisus.Init.Internal;
 using UnityEngine;
+using static Sisus.Init.Internal.InitializerUtility;
 using static Sisus.Init.Reflection.InjectionUtility;
 using Debug = UnityEngine.Debug;
 #if UNITY_EDITOR
 using UnityEditor;
-using Sisus.Init.EditorOnly;
 #endif
 
 namespace Sisus.Init
@@ -33,7 +35,7 @@ namespace Sisus.Init
 	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> function. </typeparam>
 	public abstract class ScriptableObject<TArgument> : ScriptableObject, IInitializable<TArgument>, IInitializable
 		#if UNITY_EDITOR
-		, IInitializableEditorOnly
+		, EditorOnly.IInitializableEditorOnly
 		#endif
 	{
 		[SerializeField, HideInInspector, MaybeNull]
@@ -43,13 +45,13 @@ namespace Sisus.Init
 		/// <summary>
 		/// <see langword="true"/> if object is currently in the process of being initialized with an argument; otherwise, <see langword="false"/>.
 		/// </summary>
-		[NonSerialized]
-		private bool initializing;
+		[NonSerialized] private InitState initState;
 		#endif
 
 		#if UNITY_EDITOR
-		IInitializer IInitializableEditorOnly.Initializer { get => initializer as IInitializer; set => initializer = value as ScriptableObject; }
-		bool IInitializableEditorOnly.CanInitSelfWhenInactive => true;
+		IInitializer EditorOnly.IInitializableEditorOnly.Initializer { get => initializer as IInitializer; set => initializer = value as ScriptableObject; }
+		bool EditorOnly.IInitializableEditorOnly.CanInitSelfWhenInactive => true;
+		InitState EditorOnly.IInitializableEditorOnly.InitState => initState;
 		#endif
 
 		/// <summary>
@@ -84,19 +86,16 @@ namespace Sisus.Init
 		/// and does not have a set accessor.
 		/// </exception>
 		protected TArgument this[[DisallowNull] string memberName]
-        {
+		{
 			set
 			{
 				#if DEBUG || INIT_ARGS_SAFE_MODE
-				if(!initializing)
-                {
-					throw new InvalidOperationException($"Unable to assign to member {GetType().Name}.{memberName}: Values can only be injected during initialization.");
-				}
+				if(initState == InitState.Initialized) throw new InvalidOperationException($"Unable to assign to member {GetType().Name}.{memberName}: Values can only be injected during initialization.");
 				#endif
 
 				Inject(this, memberName, value);
 			}
-        }
+		}
 
 		/// <summary>
 		/// A value against which any <see cref="object"/> can be compared to determine whether or not it is
@@ -174,7 +173,7 @@ namespace Sisus.Init
 		bool IInitializable.Init(Context context)
 		{
 			#if UNITY_EDITOR
-			if(context == Context.EditMode && initializer is IInitializable initializable)
+			if(context.IsEditMode() && initializer is IInitializable initializable)
 			{
 				return initializable.Init(context);
 			}
@@ -190,26 +189,26 @@ namespace Sisus.Init
 		}
 
 		#if UNITY_EDITOR
-        private void Reset()
-        {
+		private void Reset()
+		{
 			if(InitArgs.TryGet(Context.Reset, this, out TArgument argument))
 			{
 				#if DEBUG || INIT_ARGS_SAFE_MODE
-				initializing = true;
+				initState = InitState.Initializing;
 				#endif
 
-                Init(argument);
+				Init(argument);
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
-				initializing = false;
+				initState = InitState.Initialized;
 				#endif
 			}
 
 			OnReset();
-        }
+		}
 		#endif
 
-        private protected void Awake()
+		private protected void Awake()
 		{
 			#if !UNITY_EDITOR
 			if(!ServiceUtility.ServicesAreReady)
@@ -235,14 +234,14 @@ namespace Sisus.Init
 			else if(InitArgs.TryGet(Context.Awake, this, out TArgument argument))
 			{
 				#if DEBUG || INIT_ARGS_SAFE_MODE
-				initializing = true;
-				ValidateArgument(argument);
+				initState = InitState.Initializing;
+				ValidateArgumentIfPlayMode(argument);
 				#endif
 
-                Init(argument);
+				Init(argument);
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
-				initializing = false;
+				initState = InitState.Initialized;
 				#endif
 			}
 
@@ -284,30 +283,30 @@ namespace Sisus.Init
 
 		/// <inheritdoc/>
 		void IInitializable<TArgument>.Init(TArgument argument)
-        {
+		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			initializing = true;
-			ValidateArgument(argument);
+			initState = InitState.Initializing;
+			ValidateArgumentIfPlayMode(argument);
 			#endif
 
-            Init(argument);
+			Init(argument);
 
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			initializing = false;
+			initState = InitState.Initialized;
 			#endif
-        }
+		}
 
 		internal void InitInternal(TArgument argument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			initializing = true;
-			ValidateArgument(argument);
+			initState = InitState.Initializing;
+			ValidateArgumentIfPlayMode(argument);
 			#endif
 
-            Init(argument);
+			Init(argument);
 
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			initializing = false;
+			initState = InitState.Initialized;
 			#endif
 		}
 
@@ -342,44 +341,61 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <param name="argument"> The received argument to validate. </param>
-		#if !INIT_ARGS_SAFE_MODE
-		[Conditional("DEBUG")]
-		#endif
-		protected virtual void ValidateArgument(TArgument argument) { }
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws
-		/// an <see cref="ArgumentNullException"/> if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		#if !INIT_ARGS_SAFE_MODE
-		[Conditional("DEBUG")]
-		#endif
-		protected void ThrowIfNull(TArgument argument)
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected virtual void ValidateArgument(TArgument argument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(argument == Null) throw new ArgumentNullException(null, $"First argument passed to {GetType().Name} was null.");
+			ThrowIfNull(argument);
+			#endif
+		}
+
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ValidateArgumentIfPlayMode(TArgument argument)
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if UNITY_EDITOR
+			if(!EditorOnly.ThreadSafe.Application.IsPlaying)
+			{
+				return;
+			}
+			#endif
+
+			if(!ShouldSelfGuardAgainstNull(this))
+			{
+				return;
+			}
+
+			ValidateArgument(argument);
 			#endif
 		}
 
 		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs
-		/// an assertion message to the console if it is.
+		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws an <see cref="ArgumentNullException"/> if it is.
 		/// <para>
 		/// This method call is ignored in non-development builds.
 		/// </para>
 		/// </summary>
 		/// <param name="argument"> The argument to test. </param>
-		#if !INIT_ARGS_SAFE_MODE
-		[Conditional("DEBUG")]
-		#endif
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected void ThrowIfNull(TArgument argument)
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(argument == Null) throw new ArgumentNullException(typeof(TArgument).Name, $"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.");
+			#endif
+		}
+
+		/// <summary>
+		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs an assertion message to the console if it is.
+		/// <para>
+		/// This method call is ignored in non-development builds.
+		/// </para>
+		/// </summary>
+		/// <param name="argument"> The argument to test. </param>
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected void AssertNotNull(TArgument argument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(argument == Null) Debug.LogAssertion($"First argument passed to {GetType().Name} was null.", this);
+			if(argument == Null) Debug.LogAssertion($"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.", this);
 			#endif
 		}
 	}

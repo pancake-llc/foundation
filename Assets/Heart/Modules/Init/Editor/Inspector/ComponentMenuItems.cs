@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
-	[InitializeOnLoad]
 	internal static class ComponentMenuItems
 	{
 		public const string ShowInitSection = "CONTEXT/Component/Show Init Section";
@@ -76,7 +75,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static bool IsToggleShowShowInitSectionClickable(MenuCommand command)
 		{
 			var target = command.context;
-			if(target == null)
+			if(!target)
 			{
 				return false;
 			}

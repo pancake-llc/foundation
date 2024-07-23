@@ -6,7 +6,7 @@ namespace Sisus.Init.EditorOnly.Internal
 	internal abstract class ServiceChangedListener : IDisposable
 	{
 		public static ServiceChangedListener Create(Type argumentType, Action onChangedCallback)
-            => (ServiceChangedListener)typeof(ServiceChangedListener<>).MakeGenericType(argumentType).GetConstructor(new Type[] { typeof(Action) }).Invoke(new object[] { onChangedCallback });
+			=> (ServiceChangedListener)typeof(ServiceChangedListener<>).MakeGenericType(argumentType).GetConstructor(new Type[] { typeof(Action) }).Invoke(new object[] { onChangedCallback });
 
 		public static void UpdateAll(ref ServiceChangedListener[] listeners, Type[] serviceTypes, Action onAnyServiceChanged)
 		{
@@ -21,10 +21,10 @@ namespace Sisus.Init.EditorOnly.Internal
 				Array.Resize(ref listeners, count);
 			}
 
-            for(int i = 0; i < count; i++)
+			for(int i = 0; i < count; i++)
 			{
 				listeners[i] ??= Create(serviceTypes[i], onAnyServiceChanged);
-            }
+			}
 		}
 
 		public static void DisposeAll(ref ServiceChangedListener[] listeners)
@@ -42,13 +42,13 @@ namespace Sisus.Init.EditorOnly.Internal
 
 	internal sealed class ServiceChangedListener<TService> : ServiceChangedListener
 	{
-        private readonly Action onChangedCallback;
+		private readonly Action onChangedCallback;
 
 		public ServiceChangedListener(Action onChangedCallback)
-        {
-            Service.AddInstanceChangedListener<TService>(OnServiceChanged);
-            this.onChangedCallback = onChangedCallback;
-        }
+		{
+			Service.AddInstanceChangedListener<TService>(OnServiceChanged);
+			this.onChangedCallback = onChangedCallback;
+		}
 
 		public override void Dispose() => Service.RemoveInstanceChangedListener<TService>(OnServiceChanged);
 		public void OnServiceChanged(Clients clients, [AllowNull] TService oldInstance, [AllowNull] TService newInstance) => onChangedCallback();

@@ -19,7 +19,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		public bool NullArgumentGuardActive { get; private set; }
 		public bool ServicesShown { get; private set; }
 
-		public InitParameterGUI(GUIContent label, SerializedProperty anyProperty, Type valueType, /*InitializerGUI initializerDrawer,*/ /*PropertyDrawer propertyDrawer = null, */ Attribute[] attributes = null)
+		public InitParameterGUI(GUIContent label, SerializedProperty anyProperty, Type valueType, Attribute[] attributes = null)
 		{
 			NowDrawing = this;
 

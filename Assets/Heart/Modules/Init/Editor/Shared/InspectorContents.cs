@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -13,7 +14,7 @@ namespace Sisus.Init.EditorOnly
 	public static class InspectorContents
 	{
 		private static readonly IList allInspectors = null;
-		private static readonly List<EditorWindow> allPropertyEditors = new List<EditorWindow>();
+		private static readonly List<EditorWindow> allPropertyEditors = new();
 		private static readonly FieldInfo inspectorElementEditorField;
 		private static readonly Type propertyEditorType;
 		private static bool shouldUpdatePropertyEditors = true;
@@ -22,9 +23,9 @@ namespace Sisus.Init.EditorOnly
 		{
 			get
 			{
-				foreach(var inspector in AllInspectors)
+				foreach(var inspector in allInspectors)
 				{
-					yield return inspector;
+					yield return inspector as EditorWindow;
 				}
 
 				foreach(var propertyEditors in AllPropertyEditors)
@@ -52,18 +53,25 @@ namespace Sisus.Init.EditorOnly
 				if(shouldUpdatePropertyEditors)
 				{
 					shouldUpdatePropertyEditors = false;
-					UpdateAllPropertyEditors();
+					allPropertyEditors.Clear();
+					foreach(var window in Resources.FindObjectsOfTypeAll(propertyEditorType))
+					{
+						if(window.GetType() == propertyEditorType)
+						{
+							allPropertyEditors.Add((EditorWindow)window);
+						}
+					}
 				}
 				else
 				{
 					var focusedWindow = EditorWindow.focusedWindow;
-					if(focusedWindow != null && focusedWindow.GetType() == propertyEditorType && !allPropertyEditors.Contains(focusedWindow))
+					if(focusedWindow && focusedWindow.GetType() == propertyEditorType && !allPropertyEditors.Contains(focusedWindow))
 					{
 						allPropertyEditors.Add(focusedWindow);
 					}
 
 					var mouseOverWindow = EditorWindow.mouseOverWindow;
-					if(mouseOverWindow != null && mouseOverWindow.GetType() == propertyEditorType && !allPropertyEditors.Contains(mouseOverWindow))
+					if(mouseOverWindow && mouseOverWindow.GetType() == propertyEditorType && !allPropertyEditors.Contains(mouseOverWindow))
 					{
 						allPropertyEditors.Add(mouseOverWindow);
 					}
@@ -123,186 +131,130 @@ namespace Sisus.Init.EditorOnly
 			}
 		}
 
-		internal static IEnumerable<(Editor, IMGUIContainer)> GetComponentHeaderElementsFromEditorWindowOf(Editor gameObjectEditor)
+		private static readonly List<List<(Editor, IMGUIContainer)>> listOfListOfHeaders = new();
+		private static readonly List<(Editor, IMGUIContainer)> listOfHeaders = new();
+		private static readonly Stack<List<(Editor, IMGUIContainer)>> listOfHeadersPool = new();
+
+		internal static List<List<(Editor, IMGUIContainer)>> GetComponentHeaderElementsFromInspectorWindows(Editor gameObjectEditor)
 		{
-			var inspector = GetGameObjectEditorWindow(gameObjectEditor);
-			if(inspector == null)
+			foreach(var list in listOfListOfHeaders)
 			{
-				return Enumerable.Empty<(Editor, IMGUIContainer)>();
+				list.Clear();
+				listOfHeadersPool.Push(list);
 			}
 
-			return GetAllComponentHeaderElements(inspector);
-		}
+			listOfListOfHeaders.Clear();
 
-		internal static (Editor, IMGUIContainer)? GetComponentHeaderElementFromPropertyEditorOf(Editor componentEditor)
-		{
-			var propertyEditor = GetComponentPropertyEditor(componentEditor);
-			return propertyEditor == null ? default : GetFirstComponentHeaderElement(propertyEditor.rootVisualElement);
-		}
-
-		private static EditorWindow GetGameObjectEditorWindow(Editor gameObjectEditor)
-		{
-			foreach(var window in AllEditorWindows)
+			foreach(EditorWindow inspectorWindow in allInspectors)
 			{
-				if(ContainsGameObjectEditor(window.rootVisualElement, gameObjectEditor))
+				if(TryFindEditorElement(inspectorWindow.rootVisualElement, gameObjectEditor, out var gameObjectEditorElement)
+				// All EditorElements should be parented under the same editors list element
+				&& gameObjectEditorElement.parent is { } editorsListElement)
 				{
-					return window;
+					var headers = listOfHeadersPool.Count > 0 ? listOfHeadersPool.Pop() : new List<(Editor, IMGUIContainer)>();
+					GetAllComponentHeaderElements(editorsListElement, headers);
+					if(headers.Count > 0)
+					{
+						listOfListOfHeaders.Add(headers);
+					}
+					else
+					{
+						listOfHeadersPool.Push(headers);
+					}
 				}
 			}
 
-			return null;
+			return listOfListOfHeaders;
 		}
 
-		private static EditorWindow GetComponentPropertyEditor(Editor componentEditor)
+		internal static List<(Editor, IMGUIContainer)> GetComponentHeaderElementFromPropertyEditorWindows(Editor componentEditor)
 		{
+			listOfHeaders.Clear();
+
 			for(int i = AllPropertyEditors.Count - 1; i >= 0; i--)
 			{
 				var propertyEditor = allPropertyEditors[i];
-				if(propertyEditor == null)
+				if(!propertyEditor)
 				{
 					allPropertyEditors.RemoveAt(i);
 					continue;
 				}
-				if(ContainsGameObjectEditor(propertyEditor.rootVisualElement, componentEditor))
+
+				if(TryFindInspectorElement(propertyEditor.rootVisualElement, componentEditor, out var inspectorElement)
+					&& TryFindComponentHeaderElement(inspectorElement, out var header))
 				{
-					return propertyEditor;
+					listOfHeaders.Add(header);
 				}
 			}
 
-			return null;
+			return listOfHeaders;
 		}
 
-		private static IEnumerable<(Editor, IMGUIContainer)> GetAllComponentHeaderElements(EditorWindow inspector)
+		private static bool TryFindEditorElement(VisualElement rootVisualElement, Editor editor, [MaybeNullWhen(false), NotNullWhen(true)] out VisualElement editorElement)
 		{
-			return GetAllComponentHeaderElements(inspector.rootVisualElement);
+			// InspectorElement should be a child of the EditorElement
+			editorElement = rootVisualElement?.Query<InspectorElement>()
+											 .Where(inspectorElement => inspectorElementEditorField.GetValue(inspectorElement) as Editor == editor)
+											 .First()?.parent;
+
+			return editorElement is not null;
 		}
 
-		private static bool ContainsGameObjectEditor(VisualElement parentElement, Editor gameObjectEditor)
+		private static bool TryFindInspectorElement(VisualElement rootVisualElement, Editor editor, [MaybeNullWhen(false), NotNullWhen(true)] out InspectorElement inspectorElement)
 		{
-			if(parentElement is null)
+			inspectorElement = rootVisualElement?.Query<InspectorElement>()
+				.Where(inspectorElement => inspectorElementEditorField.GetValue(inspectorElement) as Editor == editor)
+				.First();
+			return inspectorElement is not null;
+		}
+
+		private static void GetAllComponentHeaderElements([DisallowNull] VisualElement editorsListElement, List<(Editor, IMGUIContainer)> results)
+		{
+			foreach(var inspectorElement in editorsListElement.Query<InspectorElement>().Build())
 			{
+				if(inspectorElement.parent is not { } editorElement)
+				{
+					continue;
+				}
+
+				foreach(var editorElementChild in editorElement.Children())
+				{
+					if(TryGetComponentHeaderElement(editorElementChild, out var header))
+					{
+						var editor = inspectorElementEditorField.GetValue(inspectorElement) as Editor;
+						if(editor && editor.target as Component)
+						{
+							results.Add((editor, header));
+						}
+					}
+				}
+			}
+		}
+
+		private static bool TryFindComponentHeaderElement(InspectorElement inspectorElement, out (Editor editor, IMGUIContainer header) result)
+		{
+			// Both InspectorElement and header element should be nested under the same EditorElement
+			if(inspectorElement.parent is not { } editorElement)
+			{
+				result = default;
 				return false;
 			}
 
-			if(parentElement.GetType().Name == "EditorElement")
+			foreach(var editorElementChild in editorElement.Children())
 			{
-				foreach(var child in parentElement.Children())
+				if(TryGetComponentHeaderElement(editorElementChild, out var header))
 				{
-					if(child is InspectorElement inspectorElement)
+					var editor = inspectorElementEditorField.GetValue(inspectorElement) as Editor;
+					if(editor && editor.target as Component)
 					{
-						var editor = inspectorElementEditorField.GetValue(inspectorElement) as Editor;
-						if(editor == gameObjectEditor)
-						{
-							return true;
-						}
-
-						if(editor != null && editor.target as GameObject != null)
-						{
-							return false;
-						}
+						result = (editor, header);
+						return true;
 					}
 				}
 			}
 
-			foreach(var child in parentElement.Children())
-			{
-				if(ContainsGameObjectEditor(child, gameObjectEditor))
-				{
-					return true;
-				}
-			}
-
+			result = default;
 			return false;
-		}
-
-		private static IEnumerable<(Editor, IMGUIContainer)> GetAllComponentHeaderElements(VisualElement parentElement)
-		{
-			if(parentElement is null)
-			{
-				yield break;
-			}
-
-			if(parentElement.GetType().Name == "EditorElement")
-			{
-				IMGUIContainer header = null;
-				foreach(var child in parentElement.Children())
-				{
-					if(TryGetComponentHeaderElement(child, out var headerOrNull))
-					{
-						header = headerOrNull;
-					}
-					else if(header is null)
-					{
-						continue;
-					}
-
-					if(child is InspectorElement inspectorElement)
-					{
-						var editor = inspectorElementEditorField.GetValue(inspectorElement) as Editor;
-
-						if(editor != null && editor.target as Component != null)
-						{
-							yield return (editor, header);
-						}
-
-						break;
-					}
-				}
-			}
-
-			foreach(var child in parentElement.Children())
-			{
-				foreach(var childHeader in GetAllComponentHeaderElements(child))
-				{
-					yield return childHeader;
-				}
-			}
-		}
-
-		private static (Editor editor, IMGUIContainer header)? GetFirstComponentHeaderElement(VisualElement parentElement)
-		{
-			if(parentElement is null)
-			{
-				return null;
-			}
-
-			if(parentElement.GetType().Name == "EditorElement")
-			{
-				IMGUIContainer header = null;
-				foreach(var child in parentElement.Children())
-				{
-					if(TryGetComponentHeaderElement(child, out var headerOrNull))
-					{
-						header = headerOrNull;
-					}
-					else if(header is null)
-					{
-						continue;
-					}
-
-					if(child is InspectorElement inspectorElement)
-					{
-						var editor = inspectorElementEditorField.GetValue(inspectorElement) as Editor;
-
-						if(editor != null && editor.target as Component != null)
-						{
-							return (editor, header);
-						}
-						break;
-					}
-				}
-			}
-
-			foreach(var child in parentElement.Children())
-			{
-				var result = GetFirstComponentHeaderElement(child);
-				if(result.HasValue)
-				{
-					return result;
-				}
-			}
-
-			return null;
 		}
 
 		private static bool TryGetComponentHeaderElement(VisualElement visualElement, out IMGUIContainer header)
@@ -319,11 +271,5 @@ namespace Sisus.Init.EditorOnly
 
 		private static IEnumerable<EditorWindow> GetAllInspectorWindowsFallback()
 			=> Resources.FindObjectsOfTypeAll<EditorWindow>().Where(window => window.GetType().Name == "InspectorWindow");
-
-		private static void UpdateAllPropertyEditors()
-		{
-			allPropertyEditors.Clear();
-			allPropertyEditors.AddRange(Resources.FindObjectsOfTypeAll(propertyEditorType) as EditorWindow[]);
-		}
 	}
 }

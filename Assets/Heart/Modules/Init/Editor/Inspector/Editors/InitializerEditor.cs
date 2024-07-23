@@ -16,165 +16,141 @@ namespace Sisus.Init.EditorOnly
 	[CanEditMultipleObjects]
 	public class InitializerEditor : Editor
 	{
-        protected internal const string InitArgumentMetadataClassName = InitializerUtility.InitArgumentMetadataClassName;
+		protected internal const string InitArgumentMetadataClassName = InitializerUtility.InitArgumentMetadataClassName;
 
-        private bool setupDone;
-        private SerializedProperty client;
-        private SerializedProperty nullArgumentGuard;
-        private GUIContent clientLabel;
-        private bool clientIsInitializable;
-        private bool hasServiceArguments;
-        private InitializerGUI ownedInitializerGUI;
-        private InitializerGUI externallyOwnedInitializerGUI;
-        [NonSerialized]
-        private InitParameterGUI[] parameterGUIs = new InitParameterGUI[0];
-        private Type clientType;
-        private bool drawNullArgumentGuard;
-        private ServiceChangedListener[] serviceChangedListeners = Array.Empty<ServiceChangedListener>();
+		private bool setupDone;
+		private SerializedProperty client;
+		private SerializedProperty nullArgumentGuard;
+		private bool clientIsInitializable;
+		private InitializerGUI ownedInitializerGUI;
+		private InitializerGUI externallyOwnedInitializerGUI;
+		[NonSerialized]
+		private InitParameterGUI[] parameterGUIs = new InitParameterGUI[0];
+		private Type clientType;
+		private bool drawNullArgumentGuard;
+		private ServiceChangedListener[] serviceChangedListeners = Array.Empty<ServiceChangedListener>();
 
-        protected virtual Type[] GetGenericArguments() => target.GetType().BaseType.GetGenericArguments();
-        protected virtual Type GetClientType(Type[] genericArguments) => genericArguments[0];
-        protected virtual Type[] GetInitArgumentTypes(Type[] genericArguments) => genericArguments.Skip(1).ToArray();
+		protected virtual Type[] GetGenericArguments() => target.GetType().BaseType.GetGenericArguments();
+		protected virtual Type GetClientType(Type[] genericArguments) => genericArguments[0];
+		protected virtual Type[] GetInitArgumentTypes(Type[] genericArguments) => genericArguments.Skip(1).ToArray();
 
-        private static bool ServicesShown => InitializerGUI.ServicesShown;
+		private static bool ServicesShown => InitializerGUI.ServicesShown;
 
-        protected virtual bool HasUserDefinedInitArgumentFields { get; }
+		protected virtual bool HasUserDefinedInitArgumentFields { get; }
 
-        private bool IsNullAllowed
-        {
-            get
-            {
-                if(!drawNullArgumentGuard)
+		private bool IsNullAllowed
+		{
+			get
+			{
+				if(!drawNullArgumentGuard)
 				{
-                    return true;
+					return true;
 				}
 
-                var nullGuard = (NullArgumentGuard)nullArgumentGuard.intValue;
-                return !nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning)
-                   || (!nullGuard.IsEnabled(NullArgumentGuard.EnabledForPrefabs) && PrefabUtility.IsPartOfPrefabAsset(target));
-            }
-        }
+				var nullGuard = (NullArgumentGuard)nullArgumentGuard.intValue;
+				return !nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning)
+					|| (!nullGuard.IsEnabled(NullArgumentGuard.EnabledForPrefabs) && PrefabUtility.IsPartOfPrefabAsset(target));
+			}
+		}
 
-        internal void Setup([AllowNull] InitializerGUI externallyOwnedInitializerGUI)
-        {
-            #if DEV_MODE && DEBUG_ENABLED
+		internal void Setup([AllowNull] InitializerGUI externallyOwnedInitializerGUI)
+		{
+			#if DEV_MODE && DEBUG_ENABLED
 			Debug.Log($"{GetType().Name}.Setup() with Event.current:{Event.current.type}");
 			#endif
 
-            setupDone = true;
+			setupDone = true;
 
-            this.externallyOwnedInitializerGUI = externallyOwnedInitializerGUI;
-            client = serializedObject.FindProperty("target");
-            nullArgumentGuard = serializedObject.FindProperty(nameof(nullArgumentGuard));
-            drawNullArgumentGuard = nullArgumentGuard != null;
+			this.externallyOwnedInitializerGUI = externallyOwnedInitializerGUI;
+			client = serializedObject.FindProperty("target");
+			nullArgumentGuard = serializedObject.FindProperty(nameof(nullArgumentGuard));
+			drawNullArgumentGuard = nullArgumentGuard != null;
 
-            var genericArguments = GetGenericArguments();
-            clientType = GetClientType(genericArguments);
-            clientIsInitializable = IsInitializable(clientType);
-            clientLabel = GetClientLabel();
-            var initializers = targets;
-            int count = targets.Length;
-            var clients = new Object[count];
-            for(int i = 0; i < count; i++)
+			var genericArguments = GetGenericArguments();
+			clientType = GetClientType(genericArguments);
+			clientIsInitializable = IsInitializable(clientType);
+			var initializers = targets;
+			int count = targets.Length;
+			var clients = new Object[count];
+			for(int i = 0; i < count; i++)
 			{
-                var initializer = initializers[i] as IInitializer;
-                clients[i] = initializer.Target;
+				var initializer = initializers[i] as IInitializer;
+				clients[i] = initializer.Target;
 
-                if(i == 0 && initializer is IInitializerEditorOnly initializerEditorOnly && !initializerEditorOnly.ShowNullArgumentGuard)
+				if(i == 0 && initializer is IInitializerEditorOnly initializerEditorOnly && !initializerEditorOnly.ShowNullArgumentGuard)
 				{
-                    drawNullArgumentGuard = false;
+					drawNullArgumentGuard = false;
 				}
-            }
-
-            if(count > 0 && clients[0] == null)
-			{
-                clients = Array.Empty<Object>();
 			}
 
-            var initArguments = GetInitArgumentTypes(genericArguments);
-            if(externallyOwnedInitializerGUI is null)
-            {
-                DisposeOwnedInitializerGUI();
-                ownedInitializerGUI = new InitializerGUI(targets, clients, initArguments, this);
-				ownedInitializerGUI.Changed += OnOwnedInitializerGUIChanged;
-            }
-
-            SetupParameterGUIs(initArguments);
-            hasServiceArguments = Array.Exists(parameterGUIs, d => d.isService);
-
-            ServiceChangedListener.UpdateAll(ref serviceChangedListeners, genericArguments, OnInitArgumentServiceChanged);
-
-            LayoutUtility.Repaint(this);
-
-            GUIContent GetClientLabel()
+			if(count > 0 && clients[0] == null)
 			{
-                var result = GetLabel(clientType);
-                if(typeof(StateMachineBehaviour).IsAssignableFrom(clientType))
-				{
-                    result.text = "None (Animator → " + result.text + ")";
-                }
-                else if(typeof(ScriptableObject).IsAssignableFrom(clientType))
-				{
-                    result.text = "None (" + result.text + ")";
-                }
-                else
-                {
-                    result.text = "New Instance (" + result.text + ")";
-                }
+				clients = Array.Empty<Object>();
+			}
 
-                return result;
-            }
-        }
+			var initArguments = GetInitArgumentTypes(genericArguments);
+			if(externallyOwnedInitializerGUI is null)
+			{
+				DisposeOwnedInitializerGUI();
+				ownedInitializerGUI = new InitializerGUI(targets, clients, initArguments, this);
+				ownedInitializerGUI.Changed += OnOwnedInitializerGUIChanged;
+			}
+
+			SetupParameterGUIs(initArguments);
+			ServiceChangedListener.UpdateAll(ref serviceChangedListeners, genericArguments, OnInitArgumentServiceChanged);
+
+			LayoutUtility.Repaint(this);
+		}
 
 		// This can get called during deserialization, which could result in errors
 		private void OnInitArgumentServiceChanged() => EditorApplication.delayCall += ()=>
 		{
-            if(!this)
-            {
-                return;
-            }
+			if(!this || !serializedObject.targetObject)
+			{
+				return;
+			}
 
-            OnDisable();
-            Setup(externallyOwnedInitializerGUI);
+			OnDisable();
+			Setup(externallyOwnedInitializerGUI);
 		};
 
-        /// <param name="argumentTypes">
-        /// Types of the init arguments injected to the client.
-        /// <para>
-        /// In addition to the argument types, this can include the client type etc.
-        /// </para>
-        /// </param>
-        private protected virtual void SetupParameterGUIs(Type[] argumentTypes)
-        {
-            DisposeParameterGUIs();
-            parameterGUIs = HasUserDefinedInitArgumentFields ? Array.Empty<InitParameterGUI>() : CreateParameterGUIs(clientType, argumentTypes);
+		/// <param name="argumentTypes">
+		/// Types of the init arguments injected to the client.
+		/// <para>
+		/// In addition to the argument types, this can include the client type etc.
+		/// </para>
+		/// </param>
+		private protected virtual void SetupParameterGUIs(Type[] argumentTypes)
+		{
+			DisposeParameterGUIs();
+			parameterGUIs = HasUserDefinedInitArgumentFields ? Array.Empty<InitParameterGUI>() : CreateParameterGUIs(clientType, argumentTypes);
             
-            AnyPropertyDrawer.UserSelectedTypeChanged -= OnInitArgUserSelectedTypeChanged;
-            if(parameterGUIs.Length > 0)
-            {
-                AnyPropertyDrawer.UserSelectedTypeChanged += OnInitArgUserSelectedTypeChanged;
-            }
-        }
+			AnyPropertyDrawer.UserSelectedTypeChanged -= OnInitArgUserSelectedTypeChanged;
+			if(parameterGUIs.Length > 0)
+			{
+				AnyPropertyDrawer.UserSelectedTypeChanged += OnInitArgUserSelectedTypeChanged;
+			}
+		}
 
 		private void OnInitArgUserSelectedTypeChanged(SerializedProperty changedProperty, Type userSelectedType)
 		{
 			for(int i = parameterGUIs.Length - 1; i >= 0; i--)
 			{
-                AnyPropertyDrawer.UpdateValueBasedState(parameterGUIs[i].anyProperty);
+				AnyPropertyDrawer.UpdateValueBasedState(parameterGUIs[i].anyProperty);
 			}
 		}
 
-        private InitParameterGUI[] CreateParameterGUIs(Type clientType, Type[] argumentTypes)
-            => InitializerEditorUtility.CreateParameterGUIs(serializedObject, clientType, argumentTypes);
+		private InitParameterGUI[] CreateParameterGUIs(Type clientType, Type[] argumentTypes)
+			=> InitializerEditorUtility.CreateParameterGUIs(serializedObject, clientType, argumentTypes);
 
-        public override void OnInspectorGUI()
+		public override void OnInspectorGUI()
 		{
-            HandleBeginGUI();
+			HandleBeginGUI();
 
-            bool hierarchyModeWas = EditorGUIUtility.hierarchyMode;
-            EditorGUIUtility.hierarchyMode = true;
+			bool hierarchyModeWas = EditorGUIUtility.hierarchyMode;
+			EditorGUIUtility.hierarchyMode = true;
 
-            serializedObject.Update();
+			serializedObject.Update();
 
 			if(client == null)
 			{
@@ -183,53 +159,53 @@ namespace Sisus.Init.EditorOnly
 
 			if(ownedInitializerGUI == null)
 			{
-                EditorGUIUtility.hierarchyMode = hierarchyModeWas;
+				EditorGUIUtility.hierarchyMode = hierarchyModeWas;
 				return;
 			}
 
 			var rect = EditorGUILayout.GetControlRect();
-            rect.y -= 2f;
+			rect.y -= 2f;
 
-            // Tooltip for icon must be drawn before drawer.OnInspectorGUI for it to
-            // take precedence over Init header tooltip.
-            var iconRect = rect;
-            iconRect.x = EditorGUIUtility.labelWidth - 1f;
-            iconRect.y += 5f;
-            iconRect.width = 20f;
-            iconRect.height = 20f;
-            GUI.Label(iconRect, GetReferenceTooltip(client.serializedObject.targetObject, client.objectReferenceValue, clientIsInitializable));
+			// Tooltip for icon must be drawn before drawer.OnInspectorGUI for it to
+			// take precedence over Init header tooltip.
+			var iconRect = rect;
+			iconRect.x = EditorGUIUtility.labelWidth - 1f;
+			iconRect.y += 5f;
+			iconRect.width = 20f;
+			iconRect.height = 20f;
+			GUI.Label(iconRect, GetReferenceTooltip(client.serializedObject.targetObject, client.objectReferenceValue, clientIsInitializable));
 
-            GUILayout.Space(-EditorGUIUtility.singleLineHeight - 2f);
-			ownedInitializerGUI.OnInspectorGUI();
+			GUILayout.Space(-EditorGUIUtility.singleLineHeight - 2f);
+			ownedInitializerGUI.OnInspectorGUI(); 
 
-            if(client.objectReferenceValue is Component)
-            {
-			    DrawClientField(rect, client, clientLabel, clientIsInitializable, hasServiceArguments);
-            }
+			//if(client.objectReferenceValue is not ScriptableObject)
+			//{
+			//	DrawClientField(rect, client, clientLabel, clientIsInitializable, hasServiceArguments);
+			//}
 
-            serializedObject.ApplyModifiedProperties();
+			serializedObject.ApplyModifiedProperties();
 
-            EditorGUIUtility.hierarchyMode = hierarchyModeWas;
+			EditorGUIUtility.hierarchyMode = hierarchyModeWas;
 		}
 
 		public virtual void DrawArgumentFields()
-        {
-            if(client == null)
-            {
-                Setup(null);
-            }
-
-            int count = parameterGUIs.Length;
-            if(count == 0)
+		{
+			if(client == null)
 			{
-                var serializedProperty = serializedObject.GetIterator();
-                serializedProperty.NextVisible(true);
-                while(serializedProperty.NextVisible(false))
+				Setup(null);
+			}
+
+			int count = parameterGUIs.Length;
+			if(count == 0)
+			{
+				var serializedProperty = serializedObject.GetIterator();
+				serializedProperty.NextVisible(true);
+				while(serializedProperty.NextVisible(false))
 				{
-                    EditorGUILayout.PropertyField(serializedProperty);
+					EditorGUILayout.PropertyField(serializedProperty);
 				}
 
-                return;
+				return;
 			}
 
 			for(int i = 0; i < count; i++)
@@ -237,13 +213,13 @@ namespace Sisus.Init.EditorOnly
 				InitParameterGUI drawer = parameterGUIs[i];
 				drawer.DrawArgumentField(IsNullAllowed, ServicesShown);
 			}
-        }
+		}
 
-        private void OnDisable()
+		private void OnDisable()
 		{
-            AnyPropertyDrawer.DisposeAllStaticState();
-            AnyPropertyDrawer.UserSelectedTypeChanged -= OnInitArgUserSelectedTypeChanged;
-            ServiceChangedListener.DisposeAll(ref serviceChangedListeners);
+			AnyPropertyDrawer.DisposeAllStaticState();
+			AnyPropertyDrawer.UserSelectedTypeChanged -= OnInitArgUserSelectedTypeChanged;
+			ServiceChangedListener.DisposeAll(ref serviceChangedListeners);
 			DisposeParameterGUIs();
 			DisposeOwnedInitializerGUI();
 		}
@@ -255,7 +231,7 @@ namespace Sisus.Init.EditorOnly
 				return;
 			}
 
-            ownedInitializerGUI.Changed -= OnOwnedInitializerGUIChanged;
+			ownedInitializerGUI.Changed -= OnOwnedInitializerGUIChanged;
 			ownedInitializerGUI.Dispose();
 			ownedInitializerGUI = null;
 		}
@@ -267,16 +243,16 @@ namespace Sisus.Init.EditorOnly
 				parameterGUIs[i].Dispose();
 			}
 
-            parameterGUIs = Array.Empty<InitParameterGUI>();
+			parameterGUIs = Array.Empty<InitParameterGUI>();
 		}
 
-        private void HandleBeginGUI()
+		private void HandleBeginGUI()
 		{
 			LayoutUtility.BeginGUI(this);
 			HandleSetup();
 		}
 
-        private void HandleSetup()
+		private void HandleSetup()
 		{
 			if(!setupDone || !(ownedInitializerGUI?.IsValid() ?? true))
 			{
@@ -288,7 +264,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			if(Event.current.type == EventType.Layout)
 			{
-                DisposeOwnedInitializerGUI();
+				DisposeOwnedInitializerGUI();
 				Setup(externallyOwnedInitializerGUI);
 				return;
 			}
@@ -303,14 +279,14 @@ namespace Sisus.Init.EditorOnly
 			LayoutUtility.ExitGUI(this);
 		}
 
-        private void OnOwnedInitializerGUIChanged(InitializerGUI initializerGUI)
+		private void OnOwnedInitializerGUIChanged(InitializerGUI initializerGUI)
 		{
-            #if DEV_MODE && DEBUG_ENABLED
+			#if DEV_MODE && DEBUG_ENABLED
 			Debug.Log($"{GetType().Name}.OnInitializerGUIChanged with Event.current:{Event.current?.type.ToString() ?? "None"}");
 			#endif
 
 			setupDone = false;
 			Repaint();
 		}
-    }
+	}
 }

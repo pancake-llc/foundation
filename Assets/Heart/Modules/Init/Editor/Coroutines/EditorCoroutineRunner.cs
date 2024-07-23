@@ -1,132 +1,112 @@
-﻿using System.Collections;
-using System.Reflection;
-using UnityEngine;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System;
+using System.Diagnostics.CodeAnalysis;
+using UnityEditor;
+using UnityEngine;
 
 namespace Sisus.Init
 {
-    /// <summary>
-    /// Class that can be used for starting and stopping coroutines in the editor even in edit mode.
-    /// <para>
-    /// The class implements <see cref="ICoroutineRunner"/> and it can be used to substitute other
-    /// <see cref="ICoroutineRunner">ICoroutineRunners</see> such as <see cref="Wrapper">Wrappers</see>
-    /// in unit tests.
-    /// </para>
-    /// </summary>
-    [EditorService(typeof(ICoroutineRunner))]
+	/// <summary>
+	/// Class that can be used for starting and stopping coroutines in the editor even in edit mode.
+	/// <para>
+	/// The class implements <see cref="ICoroutineRunner"/> and it can be used to substitute other
+	/// <see cref="ICoroutineRunner">ICoroutineRunners</see> such as <see cref="Wrapper">Wrappers</see>
+	/// in unit tests.
+	/// </para>
+	/// </summary>
+	[EditorService(typeof(ICoroutineRunner))]
 	public sealed class EditorCoroutineRunner : ICoroutineRunner, IDisposable
-    {
-        /// <summary>
-        /// A single cached instance of EditorCoroutineRunner that can be shared across multiple client objects.
-        /// <para>
-        /// This same instance can also be accessed via Service<ICoroutineRunner>.Instance in edit mode.
-        /// </para>
-        /// </summary>
-        public static readonly EditorCoroutineRunner SharedInstance = new EditorCoroutineRunner();
-        
-		private static readonly FieldInfo coroutineRoutineField;
+	{
+		/// <summary>
+		/// A single cached instance of EditorCoroutineRunner that can be shared across multiple client objects.
+		/// <para>
+		/// This same instance can also be accessed via <see cref="Service{ICoroutineRunner}.Instance"/> in edit mode.
+		/// </para>
+		/// </summary>
+		public static readonly EditorCoroutineRunner SharedInstance = new();
 
 		private readonly List<EditorCoroutine> running = new(1);
 
-		static EditorCoroutineRunner()
-        {
-            coroutineRoutineField = typeof(YieldInstruction).GetField("routine", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-			if(coroutineRoutineField is null)
-			{
-				// backwards compatibility
-				coroutineRoutineField = typeof(Coroutine).GetField("routine", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-				if(coroutineRoutineField is null)
-				{
-					Debug.LogWarning("Field Coroutine.routine not found.");
-				}
-			}
+		[InitializeOnLoadMethod]
+		static void Init() => Service.SetInstance<ICoroutineRunner>(SharedInstance);
 
-            if(!EditorOnly.ThreadSafe.Application.IsPlaying)
-            {
-                Service.SetInstance<ICoroutineRunner>(SharedInstance);
-            }
-        }
-
-        /// <summary>
-        /// Starts the provided <paramref name="coroutine"/>.
-        /// </summary>
-        /// <param name="coroutine"> The coroutine to start. </param>
-        /// <returns>
-        /// Always returns <see langword="null"/>.
-        /// </returns>
-        public Coroutine StartCoroutine([DisallowNull] IEnumerator coroutine)
-        {
+		/// <summary>
+		/// Starts the provided <paramref name="coroutine"/>.
+		/// </summary>
+		/// <param name="coroutine"> The coroutine to start. </param>
+		/// <returns>
+		/// Always returns <see langword="null"/>.
+		/// </returns>
+		public Coroutine StartCoroutine([DisallowNull] IEnumerator coroutine)
+		{
 			if(running.Count == 0)
 			{
 				EditorCoroutine.Stopped += OnSomeEditorCoroutineStopped;
 			}
 
-            running.Add(EditorCoroutine.Start(coroutine));
-            return null;
-        }
+			running.Add(EditorCoroutine.Start(coroutine));
+			return null;
+		}
 
-        /// <inheritdoc/>
-        public void StopCoroutine([DisallowNull] Coroutine coroutine)
-        {
-            IEnumerator enumerator = (IEnumerator)coroutineRoutineField.GetValue(coroutine);
-
+		/// <inheritdoc/>
+		public void StopCoroutine([DisallowNull] IEnumerator coroutine)
+		{
 			for(int i = running.Count - 1; i >= 0; i--)
-            {
+			{
 				EditorCoroutine runningCoroutine = running[i];
-				if(runningCoroutine.Equals(enumerator))
+				if(runningCoroutine.Equals(coroutine))
 				{
 					runningCoroutine.Stop();
 					return;
 				}
-            }
-        }
+			}
+		}
 
 		/// <inheritdoc/>
-		public void StopCoroutine([DisallowNull] IEnumerator coroutine) => EditorCoroutine.Stop(coroutine);
+		void ICoroutineRunner.StopCoroutine([DisallowNull] Coroutine coroutine) => Debug.LogWarning($"{nameof(EditorCoroutineRunner)}.{nameof(StopCoroutine)}({nameof(Coroutine)}) is not supported. Use {nameof(StopCoroutine)}({nameof(IEnumerator)}) instead.");
 
 		/// <summary>
 		/// Stops all coroutines that have been started using <see cref="StartCoroutine"/> that are currently running.
 		/// </summary>
 		public void StopAllCoroutines()
-        {
+		{
 			for(int i = running.Count - 1; i >= 0; i--)
 			{
 				running[i].Stop();
 			}
-        }
+		}
 
 		/// <summary>
-        /// Advances all currently running coroutines to their next phase.
-        /// </summary>
-        /// <param name="skipWaits">
-        /// (Optional) If <see langword="true"/> then yield instructions
-        /// <see cref="WaitForSeconds"/> and <see cref="WaitForSecondsRealtime"/> are skipped.
-        /// </param>
-        /// <returns> <see langword="true"/> if any coroutines are still running, <see langword="false"/> if all have finished. </returns>
+		/// Advances all currently running coroutines to their next phase.
+		/// </summary>
+		/// <param name="skipWaits">
+		/// (Optional) If <see langword="true"/> then yield instructions
+		/// <see cref="WaitForSeconds"/> and <see cref="WaitForSecondsRealtime"/> are skipped.
+		/// </param>
+		/// <returns> <see langword="true"/> if any coroutines are still running, <see langword="false"/> if all have finished. </returns>
 		public bool MoveAllNext(bool skipWaits = false)
-        {
+		{
 			for(int i = running.Count - 1; i >= 0; i--)
 			{
 				running[i].MoveNext(skipWaits);
 			}
 
 			return running.Count > 0;
-        }
+		}
 
 		/// <summary>
-        /// Continuously advances all currently running coroutines to their
-        /// next phases until all of them have reached the end.
-        /// <para>
-        /// Note that this locks the current thread until all running coroutines have fully finished.
-        /// If any coroutine contains <see cref="CustomYieldInstruction">CustomYieldInstructions</see>
-        /// that take a long time to finish (or never finish in edit mode) this can cause the editor
-        /// to freeze for the same duration.
-        /// </para>
-        /// </summary>
+		/// Continuously advances all currently running coroutines to their
+		/// next phases until all of them have reached the end.
+		/// <para>
+		/// Note that this locks the current thread until all running coroutines have fully finished.
+		/// If any coroutine contains <see cref="CustomYieldInstruction">CustomYieldInstructions</see>
+		/// that take a long time to finish (or never finish in edit mode) this can cause the editor
+		/// to freeze for the same duration.
+		/// </para>
+		/// </summary>
 		public void MoveAllToEnd()
-        {
+		{
 			int count = running.Count;
 			while(count > 0)
 			{
@@ -137,7 +117,7 @@ namespace Sisus.Init
 
 				count = running.Count;
 			}
-        }
+		}
 
 		~EditorCoroutineRunner() => HandleDispose();
 

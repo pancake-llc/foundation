@@ -18,7 +18,7 @@ namespace Sisus.Init.Reflection
 	public static class InstantiateExtensions
 	{
 		/// <summary>
-		/// Clones the original <typeparamref name="TObject"/>, <see cref="IInitializable{TArgument}.Init">initializes</summary>
+		/// Clones the original <typeparamref name="TObject"/>, <see cref="IInitializable{TArgument}.Init">initializes</see>
 		/// it with the given argument and then returns the clone.
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
@@ -46,15 +46,15 @@ namespace Sisus.Init.Reflection
 			}
 
 			if(setActive)
-            {
+			{
 				gameObject.SetActive(true);
-            }
+			}
 
 			return clone;
 		}
 
 		/// <summary>
-		/// Clones the original <typeparamref name="TObject"/>, <see cref="IInitializable{TArgument}.Init">initializes</summary>
+		/// Clones the original <typeparamref name="TObject"/>, <see cref="IInitializable{TArgument}.Init">initializes</see>
 		/// it with the given argument and then returns the clone.
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
@@ -91,7 +91,7 @@ namespace Sisus.Init.Reflection
 
 		private static void Instantiate<TObject>([DisallowNull] TObject original, out TObject clone, out GameObject gameObject, out bool setActive) where TObject : Object
 		{
-			if(original == null)
+			if(!original)
 			{
 				throw new ArgumentNullException($"The object which you want to instantiate {nameof(TObject)} is null.", default(Exception));
 			}

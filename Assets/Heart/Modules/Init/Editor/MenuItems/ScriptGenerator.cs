@@ -15,171 +15,171 @@ namespace Sisus.Init.EditorOnly.Internal
 	using static InitializerEditorUtility;
 
 	internal static class ScriptGenerator
-    {
-        private const string InitializerTemplate =
-            "{0}\r\n" +
-            "namespace {1}\r\n" +
-            "{{\r\n" +
-            "\t/// <summary>\r\n" +
-            "\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
-            "\t/// </summary>\r\n" +
-            "\tinternal sealed class {2}Initializer : {4}<{2}, {5}>\r\n" +
-            "\t{{\r\n" +
-            "\t\t#if UNITY_EDITOR\r\n" +
-            "\t\t/// <summary>\r\n" +
-            "\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// </summary>\r\n" +
-            "\t\tprivate sealed class Init\r\n" +
-            "\t\t{{\r\n" +
-            "{6}" +
-            "\t\t}}\r\n" +
-            "\t\t#endif\r\n" +
-            "\t}}\r\n" +
-            "}}\r\n";
+	{
+		private const string InitializerTemplate =
+			"{0}\r\n" +
+			"namespace {1}\r\n" +
+			"{{\r\n" +
+			"\t/// <summary>\r\n" +
+			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// </summary>\r\n" +
+			"\tinternal sealed class {2}Initializer : {4}<{2}, {5}>\r\n" +
+			"\t{{\r\n" +
+			"\t\t#if UNITY_EDITOR\r\n" +
+			"\t\t/// <summary>\r\n" +
+			"\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// </summary>\r\n" +
+			"\t\tprivate sealed class Init\r\n" +
+			"\t\t{{\r\n" +
+			"{6}" +
+			"\t\t}}\r\n" +
+			"\t\t#endif\r\n" +
+			"\t}}\r\n" +
+			"}}\r\n";
 
 		private const string InitializerBaseTemplate =
-            "{0}\r\n" +
-            "namespace {1}\r\n" +
-            "{{\r\n" +
-            "\t/// <summary>\r\n" +
-            "\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
-            "\t/// </summary>\r\n" +
-            "\tinternal sealed class {2}Initializer : {4}<{2}, {5}>\r\n" +
-            "\t{{\r\n" +
-            "{6}" +
-            "\t}}\r\n" +
-            "}}\r\n";
+			"{0}\r\n" +
+			"namespace {1}\r\n" +
+			"{{\r\n" +
+			"\t/// <summary>\r\n" +
+			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// </summary>\r\n" +
+			"\tinternal sealed class {2}Initializer : {4}<{2}, {5}>\r\n" +
+			"\t{{\r\n" +
+			"{6}" +
+			"\t}}\r\n" +
+			"}}\r\n";
 
-        private const string WrapperInitializerTemplate =
-            "{0}\r\n" +
-            "namespace {1}\r\n" +
-            "{{\r\n" +
-            "\t/// <summary>\r\n" +
-            "\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
-            "\t/// </summary>\r\n" +
-            "\tinternal sealed class {2}Initializer : {4}<{5}>\r\n" +
-            "\t{{\r\n" +
-            "\t\t#if UNITY_EDITOR\r\n" +
-            "\t\t/// <summary>\r\n" +
-            "\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// </summary>\r\n" +
-            "\t\tprivate sealed class Init\r\n" +
-            "\t\t{{\r\n" +
-            "{6}" +
-            "\t\t}}\r\n" +
-            "\t\t#endif\r\n" +
+		private const string WrapperInitializerTemplate =
+			"{0}\r\n" +
+			"namespace {1}\r\n" +
+			"{{\r\n" +
+			"\t/// <summary>\r\n" +
+			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// </summary>\r\n" +
+			"\tinternal sealed class {2}Initializer : {4}<{5}>\r\n" +
+			"\t{{\r\n" +
+			"\t\t#if UNITY_EDITOR\r\n" +
+			"\t\t/// <summary>\r\n" +
+			"\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// </summary>\r\n" +
+			"\t\tprivate sealed class Init\r\n" +
+			"\t\t{{\r\n" +
+			"{6}" +
+			"\t\t}}\r\n" +
+			"\t\t#endif\r\n" +
 			"\r\n" +
 			"\t\tprotected override {2} CreateWrappedObject({7}) => new({8});\r\n" +
-            "\t}}\r\n" +
-            "}}\r\n";
+			"\t}}\r\n" +
+			"}}\r\n";
 
 		
 
 		private const string WrapperInitializerBaseTemplate =
-            "{0}\r\n" +
-            "namespace {1}\r\n" +
-            "{{\r\n" +
-            "\t/// <summary>\r\n" +
-            "\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
-            "\t/// </summary>\r\n" +
-            "\tinternal sealed class {2}Initializer : {4}<{5}>\r\n" +
-            "\t{{\r\n" +
-            "{6}" +
+			"{0}\r\n" +
+			"namespace {1}\r\n" +
+			"{{\r\n" +
+			"\t/// <summary>\r\n" +
+			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// </summary>\r\n" +
+			"\tinternal sealed class {2}Initializer : {4}<{5}>\r\n" +
+			"\t{{\r\n" +
+			"{6}" +
 			"\r\n" +
 			"\t\tprotected override {2} CreateWrappedObject({7}) => new({8});\r\n" +
-            "\t\t}}\r\n" +
-            "}}\r\n";
+			"\t\t}}\r\n" +
+			"}}\r\n";
 
-        private const string CustomInitializerTemplate =
-            "{0}\r\n" +
-            "namespace {1}\r\n" +
-            "{{\r\n" +
-            "\t/// <summary>\r\n" +
-            "\t/// Initializer for the <see cref=\"{2}\"/> component.\r\n" +
-            "\t/// </summary>\r\n" +
-            "\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
-            "\t{{\r\n" +
-            "\t\t#if UNITY_EDITOR\r\n" +
-            "\t\t/// <summary>\r\n" +
-            "\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// </summary>\r\n" +
-            "\t\tprivate sealed class Init\r\n" +
-            "\t\t{{\r\n" +
-            "{5}" +
-            "\t\t}}\r\n" +
-            "\t\t#endif\r\n" +
+		private const string CustomInitializerTemplate =
+			"{0}\r\n" +
+			"namespace {1}\r\n" +
+			"{{\r\n" +
+			"\t/// <summary>\r\n" +
+			"\t/// Initializer for the <see cref=\"{2}\"/> component.\r\n" +
+			"\t/// </summary>\r\n" +
+			"\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
+			"\t{{\r\n" +
+			"\t\t#if UNITY_EDITOR\r\n" +
+			"\t\t/// <summary>\r\n" +
+			"\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// </summary>\r\n" +
+			"\t\tprivate sealed class Init\r\n" +
+			"\t\t{{\r\n" +
+			"{5}" +
+			"\t\t}}\r\n" +
+			"\t\t#endif\r\n" +
 			"\r\n" +
 			"\t\tprotected override void InitTarget({6})\r\n" +
 			"\t\t{{\r\n" +
 			"{7}\t\t}}\r\n" +
-            "\t}}\r\n" +
-            "}}\r\n";
+			"\t}}\r\n" +
+			"}}\r\n";
 
 		private const string VisualElementInitializerTemplate =
-            "{0}\r\n" +
-            "namespace {1}\r\n" +
-            "{{\r\n" +
-            "\t/// <summary>\r\n" +
-            "\t/// Initializer for a <see cref=\"{2}\"/> in a <see cref=\"UIDocument\"/>.\r\n" +
-            "\t/// </summary>\r\n" +
-            "\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
-            "\t{{\r\n" +
-            "\t\t#if UNITY_EDITOR\r\n" +
-            "\t\t/// <summary>\r\n" +
-            "\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// <para>\r\n" +
-            "\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
-            "\t\t/// </para>\r\n" +
-            "\t\t/// </summary>\r\n" +
-            "\t\tprivate sealed class Init\r\n" +
-            "\t\t{{\r\n" +
-            "{5}" +
-            "\t\t}}\r\n" +
-            "\t\t#endif\r\n" +
+			"{0}\r\n" +
+			"namespace {1}\r\n" +
+			"{{\r\n" +
+			"\t/// <summary>\r\n" +
+			"\t/// Initializer for a <see cref=\"{2}\"/> in a <see cref=\"UIDocument\"/>.\r\n" +
+			"\t/// </summary>\r\n" +
+			"\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
+			"\t{{\r\n" +
+			"\t\t#if UNITY_EDITOR\r\n" +
+			"\t\t/// <summary>\r\n" +
+			"\t\t/// This section can be used to customize how the Init arguments will be drawn in the Inspector.\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// The Init argument names shown in the Inspector will match the names of members defined inside this section.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// <para>\r\n" +
+			"\t\t/// Any PropertyAttributes attached to these members will also affect the Init arguments in the Inspector.\r\n" +
+			"\t\t/// </para>\r\n" +
+			"\t\t/// </summary>\r\n" +
+			"\t\tprivate sealed class Init\r\n" +
+			"\t\t{{\r\n" +
+			"{5}" +
+			"\t\t}}\r\n" +
+			"\t\t#endif\r\n" +
 			"\r\n" +
 			"\t\tprotected override void InitTarget({6})\r\n" +
 			"\t\t{{\r\n" +
 			"{7}\t\t}}\r\n" +
-            "\t}}\r\n" +
-            "}}\r\n";
+			"\t}}\r\n" +
+			"}}\r\n";
 
-        private const string WrapperTemplate =
-            "using UnityEngine;\r\n" +
-            "using Sisus.Init;\r\n" +
-            "\r\n" +
-            "namespace {0}\r\n" +
-            "{{\r\n" +
-            "\t/// <summary>\r\n" +
-            "\t/// <see cref=\"Wrapper{{}}\"/> for the <see cref=\"{1}\"/> object.\r\n" +
-            "\t/// </summary>\r\n" +
-            "\t[AddComponentMenu(\"Wrapper/{2}\")]\r\n" +
-            "\tinternal sealed class {1}Component : Wrapper<{1}> {{ }}\r\n" +
-            "}}\r\n";
+		private const string WrapperTemplate =
+			"using UnityEngine;\r\n" +
+			"using Sisus.Init;\r\n" +
+			"\r\n" +
+			"namespace {0}\r\n" +
+			"{{\r\n" +
+			"\t/// <summary>\r\n" +
+			"\t/// <see cref=\"Wrapper{{}}\"/> for the <see cref=\"{1}\"/> object.\r\n" +
+			"\t/// </summary>\r\n" +
+			"\t[AddComponentMenu(\"Wrapper/{2}\")]\r\n" +
+			"\tinternal sealed class {1}Component : Wrapper<{1}> {{ }}\r\n" +
+			"}}\r\n";
 
 		private const string DefaultNamespace = "MyNamespace";
 
-        private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(1)
+		private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(1)
 		{
 			{ '\0', new Dictionary<Type, string>(4096) {
 				{ typeof(int), "int" }, { typeof(uint), "unit" },
@@ -307,7 +307,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		internal static string CreateInitializer([DisallowNull] MonoScript clientScript)
-        {
+		{
 			var clientType = clientScript.GetClass();
 			if(!AssetDatabase.CanOpenForEdit(clientScript)) 
 			{
@@ -315,10 +315,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			string clientScriptPath = AssetDatabase.GetAssetPath(clientScript);
-            string clientTypeName = clientType != null ? NameOfWithoutIllegalCharacters(clientType) : Path.GetFileNameWithoutExtension(clientScriptPath);
+			string clientTypeName = clientType != null ? NameOfWithoutIllegalCharacters(clientType) : Path.GetFileNameWithoutExtension(clientScriptPath);
 			string saveAtPath = Path.Combine(Path.GetDirectoryName(clientScriptPath), clientTypeName + "Initializer.cs");
 			return CreateInitializer(saveAtPath, clientType);
-        }
+		}
 
 		internal static string CreateInitializerAtUserSelectedPath(Type clientType = null)
 		{
@@ -376,7 +376,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			int parameterCount = parametersTypes.Length;
 			HashSet<string> namespaces = new HashSet<string>() { "Sisus.Init" };
 
-            bool canSerializeAllArgumentsAsReferences = true;
+			bool canSerializeAllArgumentsAsReferences = true;
 			HashSet<string> initializerFieldNames = new HashSet<string>();
 			string[] typeNames = new string[parameterCount];
 			string[] argumentTargetMemberNames = new string[parameterCount];
@@ -387,9 +387,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				for(int i = 0; i < parameterCount; i++)
 				{
 					var parameterType = parametersTypes[i];
-                    if(!CanSerializeAsReference(parameterType))
+					if(!CanSerializeAsReference(parameterType))
 					{
-                        canSerializeAllArgumentsAsReferences = false;
+						canSerializeAllArgumentsAsReferences = false;
 					}
 				}
 				
@@ -404,7 +404,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						argumentTargetMemberNames[i] = member.Name;
 
-                        foreach(var attribute in member.GetCustomAttributes(typeof(PropertyAttribute), false))
+						foreach(var attribute in member.GetCustomAttributes(typeof(PropertyAttribute), false))
 						{
 							if(attribute is TooltipAttribute tooltip)
 							{
@@ -683,35 +683,35 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		private static bool CanSerializeAsReference(Type type)
-        {
-		    if(type is null)
+		{
+			if(type is null)
 			{
-                return true;
+				return true;
 			}
 
-            if(type.IsGenericType)
+			if(type.IsGenericType)
 			{
-                if(type.IsGenericTypeDefinition)
+				if(type.IsGenericTypeDefinition)
 				{
-                    return type == typeof(List<>);
-                }
+					return type == typeof(List<>);
+				}
 
-                return type.GetGenericTypeDefinition() == typeof(List<>);
+				return type.GetGenericTypeDefinition() == typeof(List<>);
 			}
 
-            // SerializeReference can only handle a subset of value types.
-            // Primitives, enums and Unity's internal types and Vector3 all seem to work,
-            // but custom struct types don't
-            //if(type.IsValueType && !type.IsPrimitive && !type.IsEnum && (!(type.Namespace is string namespaceName) || !namespaceName.Contains("Unity")
+			// SerializeReference can only handle a subset of value types.
+			// Primitives, enums and Unity's internal types and Vector3 all seem to work,
+			// but custom struct types don't
+			//if(type.IsValueType && !type.IsPrimitive && !type.IsEnum && (!(type.Namespace is string namespaceName) || !namespaceName.Contains("Unity")
 			//{
-            //    return false;
+			//    return false;
 			//}
 
-            return true;
-        }
+			return true;
+		}
 
 		private static Type[] GetInitParameters(Type clientType)
-        {
+		{
 			var resultFromInitializableInitializerOrConstructor = GetInitParameterTypes(GetInitializerTypes(clientType).FirstOrDefault(), clientType);
 			if(resultFromInitializableInitializerOrConstructor.Length > 0)
 			{
@@ -719,7 +719,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			var allProperties = clientType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
-										  .Where(p => p.CanRead && p.GetCustomAttribute<ObsoleteAttribute>() is null);
+											.Where(p => p.CanRead && p.GetCustomAttribute<ObsoleteAttribute>() is null);
 
 			List<Type> memberTypes;
 
@@ -727,15 +727,15 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(typeof(Object).IsAssignableFrom(clientType))
 			{
 				memberTypes = allProperties
-							 .Where(p => p.CanWrite)
-							 .Select(p => p.PropertyType)
-							 .ToList();
+								.Where(p => p.CanWrite)
+								.Select(p => p.PropertyType)
+								.ToList();
 			}
 			else
 			{
 				memberTypes = allProperties
-							 .Select(p => p.PropertyType)
-							 .ToList();
+								.Select(p => p.PropertyType)
+								.ToList();
 			}
 
 			if(memberTypes.Count == 0)
@@ -753,35 +753,35 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			return memberTypes.ToArray();
-        }
+		}
 
-        internal static string CreateWrapper(string assetPath, MonoScript script)
-        {
-            var @class = script == null ? null : script.GetClass();
-            string className = @class != null ? NameOfWithoutIllegalCharacters(@class) : Path.GetFileNameWithoutExtension(assetPath);
-            var @namespace = @class?.Namespace ?? "MyNamespace";
-            return CreateWrapper(assetPath, className, @namespace);
-        }
+		internal static string CreateWrapper(string assetPath, MonoScript script)
+		{
+			var @class = script == null ? null : script.GetClass();
+			string className = @class != null ? NameOfWithoutIllegalCharacters(@class) : Path.GetFileNameWithoutExtension(assetPath);
+			var @namespace = @class?.Namespace ?? "MyNamespace";
+			return CreateWrapper(assetPath, className, @namespace);
+		}
 
-        internal static string CreateWrapper(string forScriptAtPath, string className, string @namespace)
-        {
+		internal static string CreateWrapper(string forScriptAtPath, string className, string @namespace)
+		{
 			string inspectorTitle = ObjectNames.NicifyVariableName(className);
-            string code = string.Format(WrapperTemplate, @namespace, className, inspectorTitle);
-            string path = forScriptAtPath;
-            path = Path.GetDirectoryName(path);
-            string filename = className + "Component.cs";
-            path = Path.Combine(path, className + "Component.cs");
+			string code = string.Format(WrapperTemplate, @namespace, className, inspectorTitle);
+			string path = forScriptAtPath;
+			path = Path.GetDirectoryName(path);
+			string filename = className + "Component.cs";
+			path = Path.Combine(path, className + "Component.cs");
 
-            if(File.Exists(path) && !EditorUtility.DisplayDialog("Overwrite Existing File?", $"The file '{filename}' already exists at the path '{path}'.\n\nWould you like to overwrite it?", "Overwrite", "Cancel"))
+			if(File.Exists(path) && !EditorUtility.DisplayDialog("Overwrite Existing File?", $"The file '{filename}' already exists at the path '{path}'.\n\nWould you like to overwrite it?", "Overwrite", "Cancel"))
 			{
-                return path;
+				return path;
 			}
 
-            File.WriteAllText(path, code);
-            AssetDatabase.ImportAsset(path);
+			File.WriteAllText(path, code);
+			AssetDatabase.ImportAsset(path);
 
-            return path;
-        }
+			return path;
+		}
 
 		private static Type GetAsUnitySerializableType(Type parameterType)
 		{
@@ -802,45 +802,45 @@ namespace Sisus.Init.EditorOnly.Internal
 			return parameterType;
 		}
 
-        private static string NameOf(Type type, HashSet<string> namespaces)
-        {
-            if(TryGetBuiltInTypeAlias(type, out string alias))
+		private static string NameOf(Type type, HashSet<string> namespaces)
+		{
+			if(TryGetBuiltInTypeAlias(type, out string alias))
 			{
-                return alias;
+				return alias;
 			}
 
-            RegisterNamespaces(type, namespaces);
+			RegisterNamespaces(type, namespaces);
 
-            return TypeUtility.ToString(type, '\0', toStringCache);
+			return TypeUtility.ToString(type, '\0', toStringCache);
 
 			void RegisterNamespaces(Type type, HashSet<string> namespaces)
 			{
-                if(type.Namespace != null)
-                {
-                    namespaces.Add(type.Namespace);
+				if(type.Namespace != null)
+				{
+					namespaces.Add(type.Namespace);
 
 					if(type == typeof(Object))
 					{
 						namespaces.Add("Object = UnityEngine.Object");
 					}
-                }
+				}
 
-                if(!type.IsGenericType)
-			    {
+				if(!type.IsGenericType)
+				{
 					return;
 				}
 
-                foreach(var genericType in type.GetGenericArguments())
+				foreach(var genericType in type.GetGenericArguments())
 				{
 					if(!TryGetBuiltInTypeAlias(genericType, out _))
 					{
-	                    RegisterNamespaces(genericType, namespaces);
+						RegisterNamespaces(genericType, namespaces);
 					}
-                }
-            }
-        }
+				}
+			}
+		}
 
-        private static bool TryGetBuiltInTypeAlias(Type type, out string alias)
+		private static bool TryGetBuiltInTypeAlias(Type type, out string alias)
 		{
 			if(type.IsEnum)
 			{
@@ -848,7 +848,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				return false;
 			}
 
-            switch(Type.GetTypeCode(type))
+			switch(Type.GetTypeCode(type))
 			{
 				case TypeCode.Boolean:
 					alias = "bool";
@@ -900,16 +900,16 @@ namespace Sisus.Init.EditorOnly.Internal
 				return true;
 			}
 
-            alias = null;
-            return false;
+			alias = null;
+			return false;
 		}
 
-        private static string NameOfWithoutIllegalCharacters(Type type)
-        {
+		private static string NameOfWithoutIllegalCharacters(Type type)
+		{
 			string name = type.Name;
 
 			// Get name without `1, `2 etc. at the end
-            if(type.IsGenericType)
+			if(type.IsGenericType)
 			{
 				var typeDefinition = type.GetGenericTypeDefinition();
 				if(typeDefinition == typeof(List<>)

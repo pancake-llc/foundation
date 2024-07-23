@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,8 +8,6 @@ namespace Sisus.Init.EditorOnly
 	[InitializeOnLoad]
 	internal static class RefTagDrawer
 	{
-		private static readonly List<RefTag> tags = new List<RefTag>();
-
 		static RefTagDrawer()
 		{
 			ComponentHeader.BeforeHeaderGUI -= OnBeforeComponentHeaderGUI;
@@ -62,7 +60,7 @@ namespace Sisus.Init.EditorOnly
 
 		private static float OnAfterComponentHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
-			if(!TryGetRefTag(component.gameObject, component, out RefTag referenceable))
+			if(!TryGetRefTag(component.gameObject, component, out var referenceable))
 			{
 				return 0f;
 			}
@@ -84,7 +82,10 @@ namespace Sisus.Init.EditorOnly
 
 		private static void HandleContextMenu(RefTag referenceable, Rect refRect)
 		{
-			if(Event.current.type == EventType.MouseDown && refRect.Contains(Event.current.mousePosition))
+			//TODO: test
+			//int controlId = GUIUtility.GetControlID(FocusType.Passive, refRect);
+			//if(Event.GetTypeForControl(controlId) == EventType.MouseDown && refRect.Contains(Event.current.mousePosition))
+			if(GUI.Button(refRect, GUIContent.none, EditorStyles.label))
 			{
 				Event.current.Use();
 				var menu = new GenericMenu();
@@ -165,21 +166,19 @@ namespace Sisus.Init.EditorOnly
 			return labelRect;
         }
 
-		private static bool TryGetRefTag(GameObject gameObject, Object target, out RefTag result)
+		/// <param name="gameObject"> target itself, or the GameObject to which target is attached.</param>
+		/// <param name="target"> GameObject or component. </param>
+		private static bool TryGetRefTag([DisallowNull] GameObject gameObject, Object target, out RefTag result)
 		{
-			gameObject.GetComponents(tags);
-
-			foreach(var referenceable in tags)
+			foreach(var tag in gameObject.GetComponentsNonAlloc<RefTag>())
 			{
-				if(referenceable.Target == target)
+				if(tag.Target == target)
 				{
-					tags.Clear();
-					result = referenceable;
+					result = tag;
 					return true;
 				}
 			}
 
-			tags.Clear();
 			result = null;
 			return false;
 		}

@@ -208,14 +208,6 @@ namespace Sisus.Init
 					currentInitializerOrder = previousInitializerOrder - stepSize;
 				}
 
-				// Not sure about this...
-				/*
-				if(currentInitializerOrder > ExecutionOrder.ServiceInitializer && serviceTypes.Contains(GetClientType(initializerType)))
-				{
-					currentInitializerOrder = ExecutionOrder.ServiceInitializer;
-				}
-				*/
-
 				SetScriptExecutionOrder(initializerType, currentInitializerOrder);
 			}
 
@@ -602,7 +594,7 @@ namespace Sisus.Init
 			var result = TypeCache.GetTypesDerivedFrom(type).Where(t => !t.IsAbstract);
 			if(!type.IsAbstract)
 			{
-				result.Append(type);
+				result = result.Append(type);
 			}
 
 			return result;

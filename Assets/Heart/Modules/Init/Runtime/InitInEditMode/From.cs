@@ -72,9 +72,9 @@ namespace Sisus.Init
 		ChildrenOrParent = Children | Parent,
 		Anywhere = Children | Parent | SameScene | AnyScene | Assets,
 
-        /// <summary>
+		/// <summary>
 		/// Retrieves the argument from the Initializer of the client.
-        /// </summary>
-        Initializer = -1,
+		/// </summary>
+		Initializer = -1,
 	}
 }

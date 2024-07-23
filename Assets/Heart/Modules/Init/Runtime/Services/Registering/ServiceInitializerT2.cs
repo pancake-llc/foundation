@@ -1,8 +1,4 @@
-﻿#pragma warning disable CS0414
-
-using System;
-using System.Threading.Tasks;
-using Object = UnityEngine.Object;
+﻿using UnityEngine;
 
 namespace Sisus.Init
 {
@@ -25,22 +21,23 @@ namespace Sisus.Init
 	/// this is one tool at your disposable that can help with that.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TFirstArgument"> The defining type of the first service which the initialized service depends on. </typeparam>
-	/// <typeparam name="TSecondArgument"> The defining type of the second service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second service which the initialized service depends on. </typeparam>
 	public abstract class ServiceInitializer<TService, TFirstArgument, TSecondArgument> : IServiceInitializer<TService, TFirstArgument, TSecondArgument> where TService : class
 	{
 		/// <inheritdoc/>
-		object IServiceInitializer.InitTarget(params object[] services)
+		object IServiceInitializer.InitTarget(params object[] arguments)
 		{
-			Task<TService> task = InitTargetAsync((TFirstArgument)services[0], (TSecondArgument)services[1]);
-			return task.IsCompleted ? task.Result : task;
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(arguments is null) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given no services, when one was expected.");
+			else if(arguments.Length != 2) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given {arguments.Length} services, when one was expected.");
+			#endif
+
+			return InitTarget((TFirstArgument)arguments[0], (TSecondArgument)arguments[1]);
 		}
 
 		/// <inheritdoc/>
 		public abstract TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument);
-		
-		/// <inheritdoc/>
-		public Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument) => Task.FromResult(InitTarget(firstArgument, secondArgument));
 	}
 }

@@ -92,7 +92,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			tempClientsList.Clear();
 			RebuildInitializerGUIs(firstInitializables, out drawInitializerGUI);
 
-			var editorType = InitializableEditorInjector.GetCustomEditorType(target.GetType(), targets.Length > 0);
+			var editorType = CustomEditorType.Get(target.GetType(), targets.Length > 0);
 			CreateCachedEditor(targets, editorType, ref wrappedEditor);
 
 			UpdateInitializablesLastFrame();
@@ -133,11 +133,8 @@ namespace Sisus.Init.EditorOnly.Internal
 							continue;
 						}
 
-						var initializerGUI = new InitializerGUI(targets, new object[] { initializable }, initParameterTypes, null, gameObjects);
-						initializerGUI.Initializers = initializers.Any(obj => obj == null) ? Array.Empty<Object>() : initializers;
-						initializerGUI.OnAddInitializerButtonPressedOverride = OnAddButtonPressed;
-						initializerGUI.Changed += OnInitializerGUIChanged;
-						initializerGUIs.Add(initializerGUI);
+						var initializerGUI = AddInitializerGUI(initializable, initParameterTypes);
+						initializerGUI.Initializers = Array.Exists(initializers, obj => obj == null) ? Array.Empty<Object>() : initializers;
 					}
 				}
 			}
@@ -146,16 +143,21 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				foreach(TClient initializable in firstInitializables)
 				{
-					var initParameterTypes = GetInitArgumentTypes(initializable);
-					var initializerGUI = new InitializerGUI(targets, new object[] { initializable }, initParameterTypes, null, gameObjects);
-					initializerGUI.OnAddInitializerButtonPressedOverride = OnAddButtonPressed;
-					initializerGUI.Changed += OnInitializerGUIChanged;
-					initializerGUIs.Add(initializerGUI);
+					AddInitializerGUI(initializable, GetInitArgumentTypes(initializable));
 					break;
 				}
 			}
 
 			drawInitializerGUI = initializerGUIs.Count > 0 && canDrawInitializers && !Application.isPlaying;
+		}
+
+		protected virtual InitializerGUI AddInitializerGUI(TClient initializable, Type[] initParameterTypes)
+		{
+			var initializerGUI = new InitializerGUI(targets, new object[] { initializable }, initParameterTypes, null, gameObjects);
+			initializerGUI.OnAddInitializerButtonPressedOverride = OnAddButtonPressed;
+			initializerGUI.Changed += OnInitializerGUIChanged;
+			initializerGUIs.Add(initializerGUI);
+			return initializerGUI;
 		}
 
 		private void OnInitializerGUIChanged(InitializerGUI initializerGUI)
@@ -173,7 +175,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(wrappedEditor == null)
 			{
 				bool multiEdit = targets.Length > 1;
-				var wrappedEditorType = InitializableEditorInjector.GetCustomEditorType(typeof(TTarget), multiEdit);
+				var wrappedEditorType = CustomEditorType.Get(typeof(TTarget), multiEdit);
 				CreateCachedEditor(targets, wrappedEditorType, ref wrappedEditor);
 			}
 
@@ -209,13 +211,20 @@ namespace Sisus.Init.EditorOnly.Internal
 				return;
 			}
 
-			for(int i = 0, count = initializerGUIs.Count; i < count; i++)
+			GUILayout.Space(1f);
+
+			for(int i = 0, lastIndex = initializerGUIs.Count - 1; i <= lastIndex; i++)
 			{
 				var initializerGUI = initializerGUIs[i];
 				initializerGUI.OnInspectorGUI();
 				if(!initializerGUI.IsValid())
 				{
 					SetupDuringNextOnGUI();
+				}
+
+				if(i < lastIndex)
+				{ 
+					GUILayout.Space(2f);
 				}
 			}
 
@@ -230,6 +239,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				DrawAddButton(rect);
 			}
+
+			GUILayout.Space(1f);
 		}
 
 		protected virtual bool ShouldRunSetupAgain() => UpdateInitializablesLastFrame();
@@ -296,9 +307,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private void DrawAddButton(Rect rect)
 		{
-			float xMax = rect.xMax - 3f;
-			float x = xMax - 33f;
-			var backgroundRect = new Rect(x, rect.y, xMax - x, rect.height);
+			const float width = 30f;
+			const float rightOffset = 8f;
+			float x = rect.xMax - width - rightOffset;
+			var backgroundRect = new Rect(x, rect.y - 2f, width, rect.height);
 
 			if(Event.current.type == EventType.Repaint)
 			{
@@ -307,7 +319,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			GUILayout.Space(EditorGUIUtility.singleLineHeight + 3f);
 
-			var addButtonRect = new Rect(x + 4f, rect.y, 25f, 16f);
+			var addButtonRect = new Rect(x + 3f, rect.y - 2f, 25f, 16f);
 
 			Styles.AddButtonIcon.tooltip = "Add State Machine Behaviour Initializer";
 			if(GUI.Button(addButtonRect, Styles.AddButtonIcon, Styles.AddButtonStyle))
@@ -473,7 +485,11 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			setupDone = false;
 			Repaint();
-			LayoutUtility.ExitGUI(this);
+
+			if(Event.current != null)
+			{
+				LayoutUtility.ExitGUI(this);
+			}
 		}
 	}
 }

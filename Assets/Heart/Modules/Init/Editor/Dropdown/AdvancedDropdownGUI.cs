@@ -7,8 +7,8 @@ namespace Sisus.Init.EditorOnly
 {
     internal sealed class AdvancedDropdownGUI
     {
-        private static readonly GUIContent groupName = new GUIContent("", "");
-        private static readonly Color separatorColor = new Color(0.5f, 0.5f, 0.5f, 0.2f);
+        private static readonly GUIContent groupName = new("", "");
+        private static readonly Color separatorColor = new(0.5f, 0.5f, 0.5f, 0.2f);
 
         private static class Styles
         {

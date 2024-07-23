@@ -335,12 +335,12 @@ namespace Sisus.Init.Reflection
 			string argumentTypeName = parameterType.Name;
 			string memberName = GetConstructorArgumentTargetFieldName(classType, parameterType, argumentTypeName);
 			if(memberName != null)
-            {
+			{
 				return memberName;
-            }
+			}
 
 			if(argumentTypeName.Length == 1)
-            {
+			{
 				throw new MissingMemberException(classType.Name, argumentTypeName);
 			}
 			
@@ -356,11 +356,11 @@ namespace Sisus.Init.Reflection
 
 		[return: MaybeNull]
 		private static string GetConstructorArgumentTargetFieldName([DisallowNull] Type classType, [DisallowNull] Type argumentType, string argumentTypeName)
-        {
+		{
 			if(AssignableClassMemberExists(classType, argumentTypeName, argumentType))
-            {
+			{
 				return argumentTypeName;
-            }
+			}
 
 			string camelCase;
 			if(char.IsLower(argumentTypeName[0]))
@@ -443,7 +443,7 @@ namespace Sisus.Init.Reflection
 			}
 
 			if(fieldOfMatchingType != null)
-            {
+			{
 				return fieldOfMatchingType.Name;
 			}
 
@@ -460,7 +460,7 @@ namespace Sisus.Init.Reflection
 					fieldOfMatchingType = GetPropertyBackingField(type, property.Name);
 
 					if(fieldOfMatchingType == null && !property.CanWrite)
-                    {
+					{
 						continue;
 					}
 
@@ -474,12 +474,12 @@ namespace Sisus.Init.Reflection
 			}
 
 			if(fieldOfMatchingType != null)
-            {
+			{
 				return fieldOfMatchingType.Name;
-            }
+			}
 
 			if(propertyOfMatchingType != null)
-            {
+			{
 				return propertyOfMatchingType.Name;
 			}
 
@@ -502,7 +502,7 @@ namespace Sisus.Init.Reflection
 		/// <returns> <see langword="true"/> if a match was found; otherwise, <see langword="false"/>. </returns>
 		[return: MaybeNull]
 		internal static bool TryGetInitArgumentTargetMember([DisallowNull] Type clientType, [DisallowNull] Type argumentType, int parameterIndex, bool requirePublicSetter, out MemberInfo result)
-        {
+		{
 			// Could add argument like prioritizeSerializable / prioritizeField, when searching for attributes?
 
 			// Prio 1: assignable member at index
@@ -544,7 +544,7 @@ namespace Sisus.Init.Reflection
 					if(member is PropertyInfo property)
 					{
 						if(property.GetIndexParameters().Length > 0 || !property.CanRead ||
-						  (requirePublicSetter && (!property.CanWrite || !property.GetGetMethod().IsPublic)))
+							(requirePublicSetter && (!property.CanWrite || !property.GetGetMethod().IsPublic)))
 						{
 							continue;
 						}
@@ -678,7 +678,7 @@ namespace Sisus.Init.Reflection
 		/// Thrown if no field or property by name <paramref name="memberName"/> is found on class <paramref name="classType"/> or any of its inherited types.
 		/// </exception>
 		public static bool IsClassMemberSerialized([DisallowNull] Type classType, [DisallowNull] string memberName)
-        {
+		{
 			for(var type = classType; !TypeUtility.IsNullOrBaseType(type); type = type.BaseType)
 			{
 				var field = classType.GetField(memberName, AnyDeclaredInstance);
@@ -706,41 +706,41 @@ namespace Sisus.Init.Reflection
 		internal static string GetConstructorArgumentName(string fieldName)
 		{
 			if(string.IsNullOrEmpty(fieldName))
-            {
+			{
 				return "";
-            }
+			}
 
 			char firstChar;
 			if(fieldName[0] == '<')
-            {
+			{
 				int end = fieldName.IndexOf('>');
 				if(end != -1)
-                {
+				{
 					firstChar = char.ToLowerInvariant(fieldName[1]);
 					return firstChar + fieldName.Substring(2, end - 2);
-                }
-            }
+				}
+			}
 
 			firstChar = char.ToLowerInvariant(fieldName[0]);
 			return firstChar + fieldName.Substring(1);
 		}
 
-        private static bool IsFieldSerialized(FieldInfo field)
-        {
-            if(field.IsInitOnly)
-            {
-                return false;
-            }
+		private static bool IsFieldSerialized(FieldInfo field)
+		{
+			if(field.IsInitOnly)
+			{
+				return false;
+			}
 
-            if(field.GetCustomAttribute<NonSerializedAttribute>() != null)
-            {
-                return false;
-            }
+			if(field.GetCustomAttribute<NonSerializedAttribute>() != null)
+			{
+				return false;
+			}
 
-            if(field.GetCustomAttribute<SerializeField>() != null)
-            {
-                return true;
-            }
+			if(field.GetCustomAttribute<SerializeField>() != null)
+			{
+				return true;
+			}
 
 			if(field.GetCustomAttribute<SerializeReference>() != null)
 			{
@@ -754,10 +754,10 @@ namespace Sisus.Init.Reflection
 
 			var type = field.FieldType;
 			return type.IsSerializable && !type.IsAbstract;
-        }
+		}
 
 		private static bool AssignableClassMemberExists([DisallowNull] Type classType, [DisallowNull] string memberName, [DisallowNull] Type assignedType)
-        {
+		{
 			for(var type = classType; !TypeUtility.IsNullOrBaseType(type); type = type.BaseType)
 			{
 				var field = type.GetField(memberName, AnyDeclaredInstance);
@@ -768,14 +768,14 @@ namespace Sisus.Init.Reflection
 
 				var property = type.GetProperty(memberName, AnyDeclaredInstance);
 				if(property == null || !IsAssignableFrom(property.PropertyType, assignedType))
-                {
+				{
 					continue;
-                }
+				}
 
 				if(property.CanWrite)
-                {
+				{
 					return true;
-                }
+				}
 
 				field = GetPropertyBackingField(type, memberName);
 				if(field != null)
@@ -791,9 +791,9 @@ namespace Sisus.Init.Reflection
 
 		private static void InjectInternal([DisallowNull] object client, [DisallowNull] string memberName, [AllowNull] object value)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is null)
-            {
+			{
 				throw new ArgumentNullException(nameof(client));
 			}
 			if(memberName is null)
@@ -805,13 +805,13 @@ namespace Sisus.Init.Reflection
 			var setter = GetClassMemberForInjection(client, memberName);
 
 			if(setter is FieldInfo cachedField)
-            {
+			{
 				cachedField.SetValue(client, value);
 				return;
 			}
 
 			if(setter is PropertyInfo cachedProperty)
-            {
+			{
 				cachedProperty.SetValue(client, value, null);
 				return;
 			}
@@ -823,14 +823,14 @@ namespace Sisus.Init.Reflection
 		private static MemberInfo GetClassMemberForInjection([DisallowNull] object client, [DisallowNull] string memberName)
 		{
 			if(settersByType.TryGetValue(client.GetType(), out var setters))
-            {
+			{
 				if(setters.TryGetValue(memberName, out var setter))
-                {
+				{
 					return setter;
-                }
+				}
 			}
 			else
-            {
+			{
 				setters = new Setters(1);
 				settersByType[client.GetType()] = setters;
 			}
@@ -880,18 +880,18 @@ namespace Sisus.Init.Reflection
 		}
 
 		private static bool IsAssignableFrom(Type fieldOrPropertyType, Type assignedType)
-        {
+		{
 			if(fieldOrPropertyType.IsAssignableFrom(assignedType))
-            {
+			{
 				return true;
-            }
+			}
 
 			if(typeof(IAny).IsAssignableFrom(fieldOrPropertyType) && fieldOrPropertyType.IsGenericType)
-            {
+			{
 				return fieldOrPropertyType.GetGenericArguments()[0].IsAssignableFrom(assignedType);
-            }
+			}
 
 			return false;
-        }
+		}
 	}
 }

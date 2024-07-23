@@ -68,8 +68,17 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public static void ExitGUI([AllowNull] Editor editor)
 		{
+			if(Event.current is null)
+			{
+				#if DEV_MODE
+				Debug.LogWarning($"{nameof(LayoutUtility)}.{nameof(ExitGUI)} with Event.current:None.");
+				#endif
+
+				return;
+			}
+
 			#if DEV_MODE && DEBUG_ENABLED
-			Debug.Log($"{nameof(LayoutUtility)}.{nameof(ExitGUI)} with Event.current:{Event.current?.type.ToString() ?? "None"}.");
+			Debug.Log($"{nameof(LayoutUtility)}.{nameof(ExitGUI)} with Event.current:{Event.current.type}.");
 			#endif
 
 			ExitingGUI = new(editor ?? NowDrawing);

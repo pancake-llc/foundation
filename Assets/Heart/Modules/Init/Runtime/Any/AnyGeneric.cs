@@ -49,8 +49,11 @@ namespace Sisus.Init
 	[Sirenix.OdinInspector.InlineProperty]
 	#endif
 	public struct AnyGeneric<T> : IAny
-		#if DEBUG
+		#if DEBUG || INIT_ARGS_SAFE_MODE
 		, ISerializationCallbackReceiver
+		#endif
+		#if UNITY_EDITOR
+		, INullGuard
 		#endif
 	{
 		[SerializeField]
@@ -68,9 +71,9 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		public bool HasValue
-        {
+		{
 			get
-            {
+			{
 				#if UNITY_EDITOR
 				if(!ServiceUtility.ServicesAreReady && ServiceUtility.IsServiceDefiningType<T>())
 				{
@@ -80,7 +83,7 @@ namespace Sisus.Init
 
 				return TryGetValue(out _);
 			}
-        }
+		}
 
 		/// <summary>
 		/// Gets the value of the current <see cref="AnyGeneric{T}"/> object
@@ -103,7 +106,7 @@ namespace Sisus.Init
 		/// the <see cref="Service{T}.Instance">shared instance</see> of that service.
 		/// </para>
 		/// </summary>
-		public T Value => GetValue(null as MonoBehaviour, Context.MainThread);
+		public T Value => GetValue(null as Component, Context.MainThread);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AnyGeneric"/> struct with the given underlying value.
@@ -112,11 +115,11 @@ namespace Sisus.Init
 		public AnyGeneric(T value)
 		{
 			if(value is Object unityObject)
-            {
+			{
 				this.value = default;
 				this.reference = unityObject;
 				return;
-            }
+			}
 
 			this.value = value;
 			this.reference = default;
@@ -140,34 +143,34 @@ namespace Sisus.Init
 			reference = value;
 		}
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="AnyGeneric"/> struct with the given underlying value.
-        /// </summary>
-        /// <param name="value"> The underlying value of the <see cref="AnyGeneric{T}"/> object. </param>
-        /// <returns> A new instance of the <see cref="AnyGeneric{T}"/> struct. </returns>
-        public static AnyGeneric<T> FromValue(T value) => new AnyGeneric<T>(value);
+		/// <summary>
+		/// Creates a new instance of the <see cref="AnyGeneric"/> struct with the given underlying value.
+		/// </summary>
+		/// <param name="value"> The underlying value of the <see cref="AnyGeneric{T}"/> object. </param>
+		/// <returns> A new instance of the <see cref="AnyGeneric{T}"/> struct. </returns>
+		public static AnyGeneric<T> FromValue(T value) => new AnyGeneric<T>(value);
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="AnyGeneric"/> struct with the given underlying value.
-        /// </summary>
-        /// <param name="value">
-        /// The underlying value of the <see cref="AnyGeneric{T}"/> object.
-        /// </param>
-        /// <returns> A new instance of the <see cref="AnyGeneric{T}"/> struct. </returns>
-        public static AnyGeneric<T> FromObject([AllowNull] Object value) => new AnyGeneric<T>(value);
+		/// <summary>
+		/// Creates a new instance of the <see cref="AnyGeneric"/> struct with the given underlying value.
+		/// </summary>
+		/// <param name="value">
+		/// The underlying value of the <see cref="AnyGeneric{T}"/> object.
+		/// </param>
+		/// <returns> A new instance of the <see cref="AnyGeneric{T}"/> struct. </returns>
+		public static AnyGeneric<T> FromObject([AllowNull] Object value) => new AnyGeneric<T>(value);
 
-        /// <summary>
-        /// Returns a value indicating whether or not it is possible to create an instance of the
-        /// <see cref="AnyGeneric"/> struct with the underlying value of <paramref name="fromReference"/>.
-        /// </summary>
-        /// <param name="fromReference"> The underlying value of the <see cref="AnyGeneric{T}"/> object. </param>
-        /// <returns> A new instance of the <see cref="AnyGeneric{T}"/> struct. </returns>
-        public static bool IsCreatableFrom([AllowNull] Object fromReference, Component forClient)
-        {
-			if(fromReference == null)
-            {
+		/// <summary>
+		/// Returns a value indicating whether or not it is possible to create an instance of the
+		/// <see cref="AnyGeneric"/> struct with the underlying value of <paramref name="fromReference"/>.
+		/// </summary>
+		/// <param name="fromReference"> The underlying value of the <see cref="AnyGeneric{T}"/> object. </param>
+		/// <returns> A new instance of the <see cref="AnyGeneric{T}"/> struct. </returns>
+		public static bool IsCreatableFrom([AllowNull] Object fromReference, Component forClient)
+		{
+			if(!fromReference)
+			{
 				return typeof(T).IsValueType;
-            }
+			}
 
 			if(fromReference is T or IValueProvider<T> or IValueProviderAsync<T>)
 			{
@@ -270,7 +273,7 @@ namespace Sisus.Init
 		/// The value associated with the current <see cref="AnyGeneric{T}"/> object, if it has a value;
 		/// otherwise, the default value of <see cref="T"/>.
 		/// </returns>
-		public T GetValue([DisallowNull] Component client, Context context = Context.MainThread)
+		public T GetValue([AllowNull] Component client, Context context = Context.MainThread)
 		{
 			// Prefer cached value over a value provider - this can help avoid issues
 			// such as addressable assets being loaded more than once by the same client
@@ -330,7 +333,7 @@ namespace Sisus.Init
 
 			return value switch
 			{
-				null when client != null && context == Context.MainThread => Service.TryGetFor(client, out T service) ? service : default,
+				null when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
 				null => Service.TryGet(out T service) ? service : default,
 				// Needed to support value providers in AnyGeneric.Serialization.cs
 				IValueProvider<T> valueProvider => valueProvider.Value,
@@ -419,7 +422,7 @@ namespace Sisus.Init
 				// Handle "fake null" references
 				null => value switch
 				{
-					null when client != null && context == Context.MainThread => Service.TryGetFor(client, out T service) ? service : default,
+					null when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
 					null => Service.TryGet(out T service) ? service : default,
 					// Needed to support value providers in AnyGeneric.Serialization.cs
 					IValueProvider<T> valueProvider => valueProvider.Value,
@@ -427,7 +430,7 @@ namespace Sisus.Init
 				},
 				_ when reference.GetHashCode() == 0 => value switch
 				{
-					null when client != null && context == Context.MainThread => Service.TryGetFor(client, out T service) ? service : default,
+					null when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
 					null => Service.TryGet(out T service) ? service : default,
 					// Needed to support value providers in AnyGeneric.Serialization.cs
 					IValueProvider<T> valueProvider => valueProvider.Value,
@@ -444,7 +447,7 @@ namespace Sisus.Init
 				IValueProvider<T> valueProvider => valueProvider.TryGetFor(client, out T result) ? CacheValueProviderResult(result) : default,
 				IValueByTypeProvider valueProvider => valueProvider.TryGetFor(client, out T result) ? CacheValueProviderResult(result) : default,
 				IValueProvider valueProvider when valueProvider.Value is object objectValue && Find.In(objectValue, out T result) => CacheValueProviderResult(result),
-				_ when client != null && context == Context.MainThread => Service.TryGetFor(client, out T service) ? service : default,
+				_ when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
 				_ when Service.TryGet(out T service) => service,
 				_ => value
 			};
@@ -474,7 +477,7 @@ namespace Sisus.Init
 		/// </para>
 		/// </returns>
 		public bool GetHasValue([AllowNull] Component client, Context context = Context.MainThread)
-        {
+		{
 			if(reference is INullGuard nullGuard && reference)
 			{
 				return nullGuard.EvaluateNullGuard(client) == NullGuardResult.Passed;
@@ -542,16 +545,15 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			bool isPlaying = context  == Context.MainThread ? Application.isPlaying : EditorOnly.ThreadSafe.Application.IsPlaying;
-			if(!isPlaying && ServiceUtility.IsServiceDefiningType<T>())
-            {
+			if(context.IsEditMode() && ServiceUtility.IsServiceDefiningType<T>())
+			{
 				return true;
-            }
+			}
 			#endif
 
 			return value switch
 			{
-				null when client != null && context == Context.MainThread => Service.ExistsFor<T>(client),
+				null when client && context.IsUnitySafeContext() => Service.ExistsFor<T>(client),
 				null => Service.Exists<T>(),
 				// Support value providers in AnyGeneric.Serialization.cs, like _String.
 				IValueProvider<T> valueProvider => valueProvider.Value is not null,
@@ -701,7 +703,7 @@ namespace Sisus.Init
 
 			switch(value)
 			{
-				case null when client != null && context == Context.MainThread:
+				case null when client && context.IsUnitySafeContext():
 					return Service.TryGetFor(client, out result);
 				case null:
 					return Service.TryGet(out result);
@@ -732,24 +734,24 @@ namespace Sisus.Init
 		/// <returns> <see langword="true"/> if a valid underlying value has been assigned; otherwise, <see langword="false"/>. </returns>
 		public bool TryGetValue(Component client, out T value) => TryGetValue(client, Context.MainThread, out value);
 
-        /// <summary>
-        /// Determines whether the specified object is equal to the current object.
-        /// </summary>
-        /// <param name="obj"> The object to compare with the current object. </param>
-        /// <returns> <see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>. </returns>
-        public override bool Equals(object obj)
+		/// <summary>
+		/// Determines whether the specified object is equal to the current object.
+		/// </summary>
+		/// <param name="obj"> The object to compare with the current object. </param>
+		/// <returns> <see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>. </returns>
+		public override bool Equals(object obj)
 		{
 			if(obj is null)
 			{
-				return value is null && reference == null && !ServiceUtility.IsServiceDefiningType<T>();
+				return value is null && !reference && !ServiceUtility.IsServiceDefiningType<T>();
 			}
 
 			if(obj is AnyGeneric<T> any)
-            {
+			{
 				return Equals(any);
-            }
+			}
 
-            return obj.Equals(Value);
+			return obj.Equals(Value);
 		}
 
 		/// <summary>
@@ -760,9 +762,9 @@ namespace Sisus.Init
 		public bool Equals(T other)
 		{
 			if(other is null)
-            {
-				return value is null && reference == null && !ServiceUtility.IsServiceDefiningType<T>();
-            }
+			{
+				return value is null && !reference && !ServiceUtility.IsServiceDefiningType<T>();
+			}
 
 			return EqualityComparer<T>.Default.Equals(other, Value);
 		}
@@ -781,9 +783,9 @@ namespace Sisus.Init
 		/// <returns> <see langword="true"/> if the specified object is equal to the current object's value; otherwise, <see langword="false"/>. </returns>
 		public bool Equals(Object other, Context context = Context.MainThread)
 		{
-			if(other == null)
-            {
-				return value is null && reference == null && !ServiceUtility.IsServiceDefiningType<T>();
+			if(!other)
+			{
+				return value is null && !reference && !ServiceUtility.IsServiceDefiningType<T>();
 			}
 
 			if(reference == other)
@@ -791,7 +793,7 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(reference != null)
+			if(reference)
 			{
 				return false;
 			}
@@ -803,7 +805,7 @@ namespace Sisus.Init
 		#if UNITY_2023_1_OR_NEWER
 		Awaitable<T>.Awaiter GetAwaiter() => GetValueAsync().GetAwaiter();
 		#else
-		System.Threading.Tasks.Task<T> GetAwaiter() => GetValueAsync();
+		System.Runtime.CompilerServices.TaskAwaiter<T> GetAwaiter() => GetValueAsync().GetAwaiter();
 		#endif
 
 		public async Task<T> AsTask() => await GetValueAsync();
@@ -815,25 +817,25 @@ namespace Sisus.Init
 		/// <returns> A string that represents the underlying object, if it has been assigned; otherwise, and empty string. </returns>
 		public override string ToString() => TryGetValue(out T value) ? value.ToString() : "";
 
-        /// <summary>
-        /// Returns the hash code for this <see cref="AnyGeneric{T}"/> object.
-        /// </summary>
-        /// <returns> Hash code of the underlying object, if it has been assigned; otherwise, 0. </returns>
-        public override int GetHashCode() => TryGetValue(out T value) ? value.GetHashCode() : 0;
+		/// <summary>
+		/// Returns the hash code for this <see cref="AnyGeneric{T}"/> object.
+		/// </summary>
+		/// <returns> Hash code of the underlying object, if it has been assigned; otherwise, 0. </returns>
+		public override int GetHashCode() => TryGetValue(out T value) ? value.GetHashCode() : 0;
 
-		[Conditional("DEBUG")]
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
 		private static void AssertConstructorArgumentIsValid(Object reference)
-        {
-			#if DEBUG
-			if(reference == null)
-            {
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(!reference)
+			{
 				if(typeof(T).IsValueType)
-                {
+				{
 					throw new InvalidCastException($"AnyGeneric<{typeof(T).Name}> can not have a null value because {typeof(T).Name} is a value type.");
-                }
+				}
 
 				return;
-            }
+			}
 
 			if(reference is T or IValueProvider or IValueByTypeProvider or IValueProviderAsync or IValueByTypeProviderAsync)
 			{
@@ -844,26 +846,26 @@ namespace Sisus.Init
 			#endif
 		}
 
-		[Conditional("DEBUG")]
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
 		private static void AssertSerializedReferenceIsValid(Object reference)
-        {
-			#if DEBUG
-			if(reference == null || reference is T or IValueProvider or IValueProviderAsync or IValueByTypeProvider or IValueByTypeProviderAsync)
-            {
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(!reference || reference is T or IValueProvider or IValueProviderAsync or IValueByTypeProvider or IValueByTypeProviderAsync)
+			{
 				return;
-            }
+			}
 
 			throw new InvalidCastException($"AnyGeneric<{typeof(T).Name}> can not have a value of type {reference.GetType().Name}.");
 			#endif
 		}
 
-		#if DEBUG
+		#if DEBUG || INIT_ARGS_SAFE_MODE
 		void ISerializationCallbackReceiver.OnBeforeSerialize()
 		{
-			if(typeof(T) == typeof(object) && !(value is null))
-            {
+			if(typeof(T) == typeof(object) && value is not null)
+			{
 				if(value is int intValue)
-                {
+				{
 					value = (T)(object)new _Integer() { value = intValue };
 				}
 				else if(value is bool boolValue)
@@ -896,7 +898,7 @@ namespace Sisus.Init
 			if(reference is CrossSceneReference crossSceneReference && !crossSceneReference.isCrossScene)
 			{
 				var crossSceneReferenceValue = crossSceneReference.Value;
-				if(crossSceneReferenceValue != null)
+				if(crossSceneReferenceValue)
 				{
 					#if DEV_MODE
 					Debug.Log($"CrossSceneReference {crossSceneReferenceValue.name} ({crossSceneReferenceValue.GetType().Name}) isCrossScene was false. Changing into a direct reference.");
@@ -920,32 +922,33 @@ namespace Sisus.Init
 				AssertSerializedReferenceIsValid(reference);
 			}
 			catch(InvalidCastException e)
-            {
+			{
 				if(reference is GameObject gameObject)
-                {
-					foreach(var component in gameObject.GetComponents<Component>())
-                    {
+				{
+					foreach(var component in gameObject.GetComponentsNonAlloc<Component>())
+					{
 						if(IsCreatableFrom(component, component))
-                        {
+						{
 							reference = component;
 							return;
-                        }
-                    }
-                }
+						}
+					}
+				}
 
 				Debug.LogWarning(e.Message, reference);
 				reference = null;
-            }
+			}
 		}
 
 		void ISerializationCallbackReceiver.OnAfterDeserialize() { }
 		#endif
 
 		#if UNITY_EDITOR
-		internal bool HasSerializedValue() => reference != null || value != null;
+		internal bool HasSerializedValue() => reference || value is not null;
 		#endif
 
 		#if UNITY_EDITOR
+		NullGuardResult INullGuard.EvaluateNullGuard(Component client) => EvaluateNullGuard(client, Context.MainThread);
 		internal NullGuardResult EvaluateNullGuard(Component client = null, Context context = Context.MainThread)
 		{
 			if(reference is not null && reference.GetHashCode() != 0)
@@ -990,9 +993,9 @@ namespace Sisus.Init
 						? NullGuardResult.ValueProviderValueMissing
 						: NullGuardResult.ValueProviderValueNullInEditMode;
 						#else
-						return awaitable.IsFaulted ? NullGuardResult.ExceptionOccurred : NullGuardResult.Passed;
+						return awaitable.IsFaulted ? NullGuardResult.ValueProviderException : NullGuardResult.Passed;
 						#endif
-						
+
 					case IValueByTypeProviderAsync valueProvider:
 						awaitable = valueProvider.GetForAsync<T>(client);
 						#if UNITY_2023_1_OR_NEWER
@@ -1003,28 +1006,26 @@ namespace Sisus.Init
 						? NullGuardResult.ValueProviderValueMissing
 						: NullGuardResult.ValueProviderValueNullInEditMode;
 						#else
-						return awaitable.IsFaulted ? NullGuardResult.ExceptionOccurred : NullGuardResult.Passed;
+						return awaitable.IsFaulted ? NullGuardResult.ValueProviderException : NullGuardResult.Passed;
 						#endif
 				}
 			}
 
-			#if UNITY_EDITOR
 			bool isPlaying = context  == Context.MainThread ? Application.isPlaying : EditorOnly.ThreadSafe.Application.IsPlaying;
 			if(!isPlaying && ServiceUtility.IsServiceDefiningType<T>())
 			{
 				return NullGuardResult.Passed;
 			}
-			#endif
 
 			return value switch
 			{
-				null when client != null && context == Context.MainThread => Service.ExistsFor<T>(client) ? NullGuardResult.Passed : NullGuardResult.ValueMissing,
+				null when client && context.IsUnitySafeContext() => Service.ExistsFor<T>(client) ? NullGuardResult.Passed : NullGuardResult.ValueMissing,
 				null => Service.Exists<T>() ? NullGuardResult.Passed : NullGuardResult.ValueMissing,
-				// Support value providers in AnyGeneric.Serialization.cs, like _String.
+				// Support value providers in Any.Serialization.cs, like _String.
 				IValueProvider<T> valueProvider => valueProvider.Value is not null ? NullGuardResult.Passed : NullGuardResult.InvalidValueProviderState,
 				_ => NullGuardResult.Passed,
 			};
 		}
-#endif
+		#endif
 	}
 }

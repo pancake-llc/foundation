@@ -1,4 +1,6 @@
-﻿//#define DRAW_INIT_SECTION_WITHOUT_EDITOR
+﻿//#define DEBUG_SETUP_DURATION
+
+//#define DRAW_INIT_SECTION_WITHOUT_EDITOR
 //#define DEBUG_ENABLED
 
 using System;
@@ -23,12 +25,15 @@ namespace Sisus.Init.EditorOnly
 	/// Base class for custom editors for initializable targets that visualize non-serialized fields of the target in play mode.
 	/// </summary>
 	public class InitializableEditor : Editor
-    {
-		private static readonly string[] scriptField = new string[] { "m_Script" };
+	{
+		private static readonly string[] scriptField = { "m_Script" };
 
+		[NonSerialized]
 		private bool setupDone;
-        [NonSerialized]
-        private RuntimeFieldsDrawer runtimeFieldsDrawer;
+		[NonSerialized]
+		private bool preOnGUISetupDone;
+		[NonSerialized]
+		private RuntimeFieldsDrawer runtimeFieldsDrawer;
 		[NonSerialized]
 		private InitializerGUI initializerGUI;
 		private bool drawInitSection;
@@ -40,7 +45,7 @@ namespace Sisus.Init.EditorOnly
 
 		/// <summary>
 		/// The generic type definition of the Initializable base class from which the Editor target derives from,
-		/// or if that is not known, then an IInitializable<T...> interface the target implements.
+		/// or if that is not known, then an IInitializable{T...} interface the target implements.
 		/// <para>
 		/// This is used to determine what the <see cref="BaseType"/> of the target's class is.
 		/// </para>
@@ -58,81 +63,81 @@ namespace Sisus.Init.EditorOnly
 		/// </para>
 		/// </summary>
 		protected Type BaseType
-        {
-            get
-            {
-                var baseTypeDefinition = BaseTypeDefinition;
+		{
+			get
+			{
+				var baseTypeDefinition = BaseTypeDefinition;
 
-                if(baseTypeDefinition.IsInterface)
-                {
-                    Type parentType = target.GetType();
+				if(baseTypeDefinition.IsInterface)
+				{
+					Type parentType = target.GetType();
 
-                    if(baseTypeDefinition.IsGenericTypeDefinition)
+					if(baseTypeDefinition.IsGenericTypeDefinition)
 					{
-                        for(Type baseType = parentType.BaseType; baseType != null; baseType = baseType.BaseType)
-                        {
-                            bool implementsInterface = false;
-                            foreach(var @interface in baseType.GetInterfaces())
-                            {
-                                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == baseTypeDefinition)
-						        {
-                                    implementsInterface = true;
-                                    break;
-						        }
-                            }
+						for(Type baseType = parentType.BaseType; baseType != null; baseType = baseType.BaseType)
+						{
+							bool implementsInterface = false;
+							foreach(var @interface in baseType.GetInterfaces())
+							{
+								if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == baseTypeDefinition)
+								{
+									implementsInterface = true;
+									break;
+								}
+							}
 
-                            if(!implementsInterface)
-					        {
-                                return parentType;
-					        }
+							if(!implementsInterface)
+							{
+								return parentType;
+							}
 
-                            parentType = baseType;
-                        }
+							parentType = baseType;
+						}
 					}
-                    else
-                    {
-                        for(Type baseType = parentType.BaseType; baseType != null; baseType = baseType.BaseType)
-                        {
-                            bool implementsInterface = false;
-                            foreach(var @interface in baseType.GetInterfaces())
-                            {
-                                if(@interface == baseTypeDefinition)
-						        {
-                                    implementsInterface = true;
-                                    break;
-						        }
-                            }
+					else
+					{
+						for(Type baseType = parentType.BaseType; baseType != null; baseType = baseType.BaseType)
+						{
+							bool implementsInterface = false;
+							foreach(var @interface in baseType.GetInterfaces())
+							{
+								if(@interface == baseTypeDefinition)
+								{
+									implementsInterface = true;
+									break;
+								}
+							}
 
-                            if(!implementsInterface)
-					        {
-                                return parentType;
-					        }
+							if(!implementsInterface)
+							{
+								return parentType;
+							}
 
-                            parentType = baseType;
-                        }
-                    }
+							parentType = baseType;
+						}
+					}
 
-                    return typeof(MonoBehaviour).IsAssignableFrom(parentType) ? typeof(MonoBehaviour) : 
-						   typeof(ScriptableObject).IsAssignableFrom(parentType) ? typeof(ScriptableObject) :
-						   typeof(Object);
-                }
-                else if(baseTypeDefinition.IsGenericTypeDefinition)
-                {
-                    for(Type baseType = target.GetType().BaseType; baseType != null; baseType = baseType.BaseType)
-                    {
-                        if(baseType.IsGenericType && baseType.GetGenericTypeDefinition() == baseTypeDefinition)
-                        {
-                            return baseType;
-                        }
-                    }
-                }
+					return typeof(MonoBehaviour).IsAssignableFrom(parentType) ? typeof(MonoBehaviour) : 
+							typeof(ScriptableObject).IsAssignableFrom(parentType) ? typeof(ScriptableObject) :
+							typeof(Object);
+				}
+				else if(baseTypeDefinition.IsGenericTypeDefinition)
+				{
+					for(Type baseType = target.GetType().BaseType; baseType != null; baseType = baseType.BaseType)
+					{
+						if(baseType.IsGenericType && baseType.GetGenericTypeDefinition() == baseTypeDefinition)
+						{
+							return baseType;
+						}
+					}
+				}
 
-                return baseTypeDefinition;
-            }
-        }
+				return baseTypeDefinition;
+			}
+		}
 
-        [DidReloadScripts]
-        private static void OnScriptsReloaded()
+		[DidReloadScripts]
+		private static void OnScriptsReloaded()
 		{
 			if(!EditorPrefs.HasKey(InitializerGUI.SetInitializerTargetOnScriptsReloadedEditorPrefsKey))
 			{
@@ -149,40 +154,40 @@ namespace Sisus.Init.EditorOnly
 			}
 
 			string initializerAssetGuid = value.Substring(0, i);
-            string initializerAssetPath = AssetDatabase.GUIDToAssetPath(initializerAssetGuid);
-            if(string.IsNullOrEmpty(initializerAssetPath))
+			string initializerAssetPath = AssetDatabase.GUIDToAssetPath(initializerAssetGuid);
+			if(string.IsNullOrEmpty(initializerAssetPath))
 			{
-                return;
+				return;
 			}
 
-            var initializerScript = AssetDatabase.LoadAssetAtPath<MonoScript>(initializerAssetPath);
-            if(initializerScript == null)
+			var initializerScript = AssetDatabase.LoadAssetAtPath<MonoScript>(initializerAssetPath);
+			if(!initializerScript)
 			{
-                return;
+				return;
 			}
 
-            var initializerType = initializerScript.GetClass();
-            if(initializerType == null)
+			var initializerType = initializerScript.GetClass();
+			if(initializerType == null)
 			{
-                return;
+				return;
 			}
             
-            var targetIds = value.Substring(i + 1).Split(';');
-            foreach(var idString in targetIds)
+			var targetIds = value.Substring(i + 1).Split(';');
+			foreach(var idString in targetIds)
 			{
-                if(!int.TryParse(idString, out int id))
+				if(!int.TryParse(idString, out int id))
 				{
-                    continue;
+					continue;
 				}
 
 				var target = EditorUtility.InstanceIDToObject(id);
 
-                var component = target as Component;
-                if(component != null)
+				var component = target as Component;
+				if(component)
 				{
 					var gameObject = component.gameObject;
 					var initializerComponent = gameObject.GetComponent(initializerType);
-					if(initializerComponent == null || !(initializerComponent is IInitializer initializer) || !initializer.TargetIsAssignableOrConvertibleToType(component.GetType()) || initializer.Target != null)
+					if(!initializerComponent || initializerComponent is not IInitializer initializer || !initializer.TargetIsAssignableOrConvertibleToType(component.GetType()) || initializer.Target != null)
 					{
 						continue;
 					}
@@ -192,10 +197,10 @@ namespace Sisus.Init.EditorOnly
 				}
 
 				var scriptableObject = target as ScriptableObject;
-				if(scriptableObject != null && typeof(IInitializer).IsAssignableFrom(initializerType) && typeof(ScriptableObject).IsAssignableFrom(initializerType))
+				if(scriptableObject && typeof(IInitializer).IsAssignableFrom(initializerType) && typeof(ScriptableObject).IsAssignableFrom(initializerType))
 				{
 					IInitializer initializer = CreateInstance(initializerType) as IInitializer;
-					if(initializer == null || !initializer.TargetIsAssignableOrConvertibleToType(scriptableObject.GetType()) || initializer.Target != null)
+					if(initializer == null || !initializer.TargetIsAssignableOrConvertibleToType(scriptableObject.GetType()) || initializer.Target)
 					{
 						continue;
 					}
@@ -209,11 +214,11 @@ namespace Sisus.Init.EditorOnly
 						initializableEditorOnly.Initializer = initializer;
 					}
 				}
-            }
+			}
 		}
 
 		protected virtual void OnEnable()
-        {
+		{
 			#if DEV_MODE
 			Profiler.enableAllocationCallstacks = true;
 			Profiler.maxUsedMemory = 1024 * 1024 * 1024;
@@ -226,7 +231,7 @@ namespace Sisus.Init.EditorOnly
 			CompilationPipeline.assemblyCompilationFinished -= OnAssemblyCompilationFinished;
 			CompilationPipeline.assemblyCompilationFinished += OnAssemblyCompilationFinished;
 
-			if(target != null)
+			if(target)
 			{
 				MonoScript script = target is MonoBehaviour monoBehaviour ? MonoScript.FromMonoBehaviour(monoBehaviour) : null;
 				Type type = target.GetType();
@@ -250,7 +255,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			string assemblyName = Path.GetFileName(assemblyPath);
 
-			if(internalEditor != null && string.Equals(assemblyName, Path.GetFileName(internalEditor.GetType().Assembly.Location)))
+			if(internalEditor && string.Equals(assemblyName, Path.GetFileName(internalEditor.GetType().Assembly.Location)))
 			{
 				DestroyImmediate(internalEditor);
 			}
@@ -266,53 +271,72 @@ namespace Sisus.Init.EditorOnly
 
 			#if DEV_MODE
 			Profiler.BeginSample("InitializableEditor.Setup");
+			#if DEBUG_SETUP_DURATION
+			var timer = new System.Diagnostics.Stopwatch();
+			timer.Start();
+			#endif
 			#endif
 
 			setupDone = true;
 
 			var baseType = BaseType;
 			var firstTarget = targets[0];
-			var initParameterTypes = baseType is null || !baseType.IsGenericType || baseType.IsGenericTypeDefinition ? InitializerEditorUtility.GetInitParameterTypes(firstTarget) : baseType.GetGenericArguments();
+			var initParameterTypes = BaseType is null || !baseType.IsGenericType || baseType.IsGenericTypeDefinition
+				? InitializerEditorUtility.GetInitParameterTypes(firstTarget)
+				: baseType.GetGenericArguments();
 
 			DisposeInitializerGUI();
 			initializerGUI = new InitializerGUI(targets, targets.Select(GetInitializable).ToArray(), initParameterTypes);
 			initializerGUI.Changed += OnOwnedInitializerGUIChanged;
 
-			ShowRuntimeFields = firstTarget is MonoBehaviour
-							  && (firstTarget is IOneArgument || firstTarget is ITwoArguments || firstTarget is IThreeArguments
-							  || firstTarget is IFourArguments || firstTarget is IFiveArguments || firstTarget is ISixArguments);
+			if(!preOnGUISetupDone)
+			{
+				PreOnGUISetup(baseType);
+			}
+
+			LayoutUtility.Repaint(this);
+
+			#if DEV_MODE
+			Profiler.EndSample();
+			#if DEBUG_SETUP_DURATION
+			timer.Stop();
+			Debug.Log(GetType().Name + ".Setup took " + timer.Elapsed.TotalSeconds + "s.");
+			#endif
+			#endif
+		}
+
+		private void PreOnGUISetup(Type baseType)
+		{
+			preOnGUISetupDone = true;
+
+			var firstTarget = targets[0];
+			ShowRuntimeFields = firstTarget is MonoBehaviour and (IOneArgument or ITwoArguments or IThreeArguments or IFourArguments or IFiveArguments or ISixArguments or ISevenArguments or IEightArguments or INineArguments or ITenArguments or IElevenArguments or ITwelveArguments);
 
 			if(ShowRuntimeFields)
-            {
-                runtimeFieldsDrawer = new RuntimeFieldsDrawer(target, baseType);
-            }
+			{
+				runtimeFieldsDrawer = new RuntimeFieldsDrawer(target, baseType);
+			}
 
 			#if DRAW_INIT_SECTION_WITHOUT_EDITOR
 			drawInitSection = false;
 			#else
 			// Always draw the Init section if the client has an initializer attached
 			if(InitializerUtility.HasInitializer(firstTarget))
-            {
-                drawInitSection = true;
-            }
+			{
+				drawInitSection = true;
+			}
 			// Otherwise draw it the user has not disabled initializer visibility via the context menu for the client type
-            else
-            {
+			else
+			{
 				drawInitSection = !InitializerGUI.IsInitSectionHidden(firstTarget);
 			}
-			#endif
-
-			LayoutUtility.Repaint(this);
-
-			#if DEV_MODE
-			Profiler.EndSample();
 			#endif
 		}
 
 		protected virtual object GetInitializable(Object inspectedTarget) => inspectedTarget;
 
 		[Pure]
-		protected virtual RuntimeFieldsDrawer CreateRuntimeFieldsDrawer() => new RuntimeFieldsDrawer(target, BaseType);
+		protected virtual RuntimeFieldsDrawer CreateRuntimeFieldsDrawer() => new(target, BaseType);
 
 		public override VisualElement CreateInspectorGUI()
 		{
@@ -320,15 +344,18 @@ namespace Sisus.Init.EditorOnly
 			Profiler.BeginSample("InitializableEditor.CreateInspectorGUI");
 			#endif
 
-			if(internalEditor == null)
+			if(!preOnGUISetupDone)
 			{
-				var editorType = InitializableEditorInjector.GetCustomEditorType(target.GetType(), targets.Length > 0);
-				CreateCachedEditor(targets, editorType, ref internalEditor);
-				internalEditorIsGenericInspector = string.Equals(internalEditor.GetType().FullName, "UnityEditor.GenericInspector");
+				PreOnGUISetup(BaseType);
+			}
+
+			if(!internalEditor)
+			{
+				CreateInternalEditor();
 			}
 
 			var internalGUI = internalEditor.CreateInspectorGUI();
-			if(internalGUI == null)
+			if(internalGUI is null)
 			{
 				#if DEV_MODE
 				Profiler.EndSample();
@@ -385,11 +412,9 @@ namespace Sisus.Init.EditorOnly
 			Profiler.BeginSample("InitializableEditor.BaseGUI");
 			#endif
 
-			if(internalEditor == null)
+			if(!internalEditor)
 			{
-				var editorType = InitializableEditorInjector.GetCustomEditorType(target.GetType(), targets.Length > 0);
-				CreateCachedEditor(targets, editorType, ref internalEditor);
-				internalEditorIsGenericInspector = string.Equals(internalEditor.GetType().FullName, "UnityEditor.GenericInspector");
+				CreateInternalEditor();
 			}
 
 			if(internalEditorIsGenericInspector)
@@ -456,7 +481,7 @@ namespace Sisus.Init.EditorOnly
 			#endif
 		}
 
-        private void OnDisable()
+		private void OnDisable()
 		{
 			AnyPropertyDrawer.DisposeAllStaticState();
 			EditorApplication.update -= OnUpdate;
@@ -491,8 +516,8 @@ namespace Sisus.Init.EditorOnly
 		{
 			if(Application.isPlaying && runtimeFieldsDrawer != null)
 			{
-                Repaint();
-            }
+				Repaint();
+			}
 		}
 
 		private void HandleBeginGUI()
@@ -501,7 +526,7 @@ namespace Sisus.Init.EditorOnly
 			HandleSetup();
 		}
 
-        private void HandleSetup()
+		private void HandleSetup()
 		{
 			if(!setupDone || !initializerGUI.IsValid())
 			{
@@ -513,7 +538,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			if(Event.current.type == EventType.Layout)
 			{
-                DisposeInitializerGUI();
+				DisposeInitializerGUI();
 				Setup();
 				return;
 			}
@@ -530,12 +555,19 @@ namespace Sisus.Init.EditorOnly
 
 		private void OnOwnedInitializerGUIChanged(InitializerGUI initializerGUI)
 		{
-            #if DEV_MODE && DEBUG_ENABLED
+			#if DEV_MODE && DEBUG_ENABLED
 			Debug.Log($"{GetType().Name}.OnInitializerGUIChanged with Event.current:{Event.current?.type.ToString() ?? "None"}");
 			#endif
 
 			setupDone = false;
 			Repaint();
+		}
+
+		private void CreateInternalEditor()
+		{
+			var editorType = CustomEditorType.Get(target.GetType(), targets.Length > 0);
+			CreateCachedEditor(targets, editorType, ref internalEditor);
+			internalEditorIsGenericInspector = string.Equals(internalEditor.GetType().FullName, "UnityEditor.GenericInspector");
 		}
 
 		private void DisposeInitializerGUI()
@@ -545,7 +577,7 @@ namespace Sisus.Init.EditorOnly
 				return;
 			}
 
-            initializerGUI.Changed -= OnOwnedInitializerGUIChanged;
+			initializerGUI.Changed -= OnOwnedInitializerGUIChanged;
 			initializerGUI.Dispose();
 			initializerGUI = null;
 		}

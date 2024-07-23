@@ -86,7 +86,7 @@ namespace Sisus.Init.ValueProviders
 			Debug.Log($"IsValid:{addressableAsset.IsValid()}, RuntimeKeyIsValid:{addressableAsset.RuntimeKeyIsValid()}, SubObjectName:{addressableAsset.SubObjectName}, IsDone:{addressableAsset.IsDone}, Status:{(addressableAsset.IsValid() ? addressableAsset.OperationHandle.Status : AsyncOperationStatus.None)}, editorAsset:{(addressableAsset.editorAsset == null ? "null" : addressableAsset.editorAsset.name)}, HasValue:{(this as INullGuard).EvaluateNullGuard(null)}");
 			#endif
 
-			#if DEBUG || SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(!addressableAsset.RuntimeKeyIsValid())
 			{
 				Debug.LogWarning($"Invalid Runtime Key - {GetType().Name}.GetForAsync({client.GetType().Name}) failed.\n{addressableAsset}", client);
@@ -152,7 +152,7 @@ namespace Sisus.Init.ValueProviders
 		}
 
 		/// <inheritdoc/>
-        bool IValueByTypeProviderAsync.CanProvideValue<TValue>(Component client)
+		bool IValueByTypeProviderAsync.CanProvideValue<TValue>(Component client)
 		{
 			#if UNITY_EDITOR
 			if(!Application.isPlaying)
@@ -306,7 +306,7 @@ namespace Sisus.Init.ValueProviders
 			
 			if(addressableAsset.OperationHandle.IsValid() && addressableAsset.OperationHandle.OperationException is not null)
 			{
-				return NullGuardResult.ExceptionOccurred;
+				return NullGuardResult.ValueProviderException;
 			}
 
 			if(addressableAsset.editorAsset == null)

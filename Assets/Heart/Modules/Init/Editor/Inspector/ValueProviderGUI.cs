@@ -145,6 +145,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(isExpanded)
 			{
+				GUILayout.Space(2f);
 				EditorGUI.indentLevel++;
 				editor.OnNestedInspectorGUI();
 				EditorGUI.indentLevel--;

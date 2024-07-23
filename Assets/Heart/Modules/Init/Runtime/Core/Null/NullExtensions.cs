@@ -141,10 +141,10 @@ namespace Sisus
 		/// <exception cref="ArgumentNullException">
 		/// Thrown if <paramref name="reference"/> is <see langword="null"/> or a destroyed <see cref="Object"/>.
 		/// </exception>
-		[Conditional("DEBUG")]
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
 		public static void ThrowIfNull<TObject>(TObject reference, string exceptionMessage)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(reference == Null)
 			{
 				throw new ArgumentNullException(string.Format(exceptionMessage, typeof(TObject).Name), default(Exception));
@@ -170,10 +170,10 @@ namespace Sisus
 		/// </param>
 		/// <param name="type"> Type information to include in the message. </param>
 		/// <exception cref="ArgumentNullException">
-		[Conditional("DEBUG")]
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
 		public static void ThrowIfNull(Object reference, string exceptionMessage, Type type)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(reference == null)
 			{
 				throw new ArgumentNullException(string.Format(exceptionMessage, TypeUtility.ToString(type)), default(Exception));
@@ -199,10 +199,10 @@ namespace Sisus
 		/// </param>
 		/// <param name="type"> Type information to include in the message. </param>
 		/// <exception cref="ArgumentNullException">
-		[Conditional("DEBUG")]
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
 		public static void ThrowIfNull(object reference, string exceptionMessage, Type type)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(reference == Null)
 			{
 				throw new ArgumentNullException(string.Format(exceptionMessage, TypeUtility.ToString(type)), default(Exception));
@@ -278,8 +278,8 @@ namespace Sisus
 			public override int GetHashCode() => 0;
 			public override string ToString() => "NullOrInactive";
 
-            public static bool operator ==(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => gameObject == null || !gameObject.activeInHierarchy;
-            public static bool operator !=(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => gameObject != null && gameObject.activeInHierarchy;
+			public static bool operator ==(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => gameObject == null || !gameObject.activeInHierarchy;
+			public static bool operator !=(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => gameObject != null && gameObject.activeInHierarchy;
 
 			public static bool operator ==(Component component, NullOrInactiveComparer nullOrInactive) => component == null || !component.gameObject.activeInHierarchy;
 
@@ -309,15 +309,15 @@ namespace Sisus
 				#endif
 				obj is null || IsDestroyedOrInactive(obj);
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private static bool IsDestroyedOrInactive(object obj) =>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private static bool IsDestroyedOrInactive(object obj) =>
 					obj is Object unityObject
-                    ? IsDestroyedOrInactive(unityObject)
-                    : Find.WrapperOf(obj, out var wrapper) && !wrapper.gameObject.activeInHierarchy;
+					? IsDestroyedOrInactive(unityObject)
+					: Find.WrapperOf(obj, out var wrapper) && !wrapper.gameObject.activeInHierarchy;
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private static bool IsDestroyedOrInactive(Object unityObject)
-            {
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private static bool IsDestroyedOrInactive(Object unityObject)
+			{
 				if(unityObject == null)
 				{
 					return true;
@@ -334,7 +334,7 @@ namespace Sisus
 				}
 
 				return false;
-            }
+			}
 		}
 	}
 }

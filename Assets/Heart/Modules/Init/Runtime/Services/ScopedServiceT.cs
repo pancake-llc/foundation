@@ -76,7 +76,7 @@ namespace Sisus.Init
 		public static bool Remove([DisallowNull] TService service, Clients clients, [DisallowNull] Component container)
 		{
 			#if UNITY_EDITOR
-			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
+			var instances = UnityEditor.EditorApplication.isPlaying ? instancesInPlayMode : instancesInEditMode;
 			foreach(var instance in instances.Keys)
 			{
 				if(ReferenceEquals(instance.service, service) && ReferenceEquals(instance.serviceProvider, container))
@@ -99,9 +99,9 @@ namespace Sisus.Init
 			return false;
 		}
 
-        #if (ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT
-        private static void EnsureAOTPlatformSupport() => ServiceUtility.EnsureAOTPlatformSupportForService<TService>();
-        #endif
+		#if (ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT
+		private static void EnsureAOTPlatformSupport() => ServiceUtility.EnsureAOTPlatformSupportForService<TService>();
+		#endif
 
 		internal readonly struct Instance : IEquatable<Instance>
 		{
@@ -126,8 +126,8 @@ namespace Sisus.Init
 			public Instance([DisallowNull] TService service, Clients clients, [DisallowNull] Component serviceProvider)
 			{
 				this.service = service;
-                this.clients = clients;
-                this.serviceProvider = serviceProvider;
+				this.clients = clients;
+				this.serviceProvider = serviceProvider;
 			}
 
 			public override bool Equals(object obj) => obj is Instance instance && Equals(instance);
@@ -146,5 +146,5 @@ namespace Sisus.Init
 				return hashCode;
 			}
 		}
-    }
+	}
 }

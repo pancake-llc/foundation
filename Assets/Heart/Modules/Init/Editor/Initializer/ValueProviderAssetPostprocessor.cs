@@ -11,19 +11,19 @@ namespace Sisus.Init
 	/// <see cref="ScriptableObject"/> is imported and giving the script the Value Provider icon.
 	/// </summary>
 	internal sealed class ValueProviderAssetPostprocessor : AssetPostprocessor
-    {
+	{
 		private const string EDITOR_PREFS_KEY = "InitArgs.ValueProviders.DelayedProcessingQueue";
 		private const string ICON_NAME = "AreaEffector2D Icon";
 		private static Texture2D valueProviderIcon = null;
 
-        [UsedImplicitly]
-        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
-        {
-            for(int i = importedAssets.Length - 1; i >= 0; i--)
-            {
-                PostProcessAsset(importedAssets[i]);
-            }
-        }
+		[UsedImplicitly]
+		private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+		{
+			for(int i = importedAssets.Length - 1; i >= 0; i--)
+			{
+				PostProcessAsset(importedAssets[i]);
+			}
+		}
 
 		[DidReloadScripts]
 		private static void OnScriptsReloaded()
@@ -32,7 +32,7 @@ namespace Sisus.Init
 			EditorApplication.delayCall += HandleProcessQueuedAssets;
 		}
 
-        private static void PostProcessAsset(string path)
+		private static void PostProcessAsset(string path)
 		{
 			if(TryDetermineIsValueProviderScript(path, out bool isValueProvider) && !isValueProvider)
 			{
@@ -156,13 +156,13 @@ namespace Sisus.Init
 		}
 
 		private static void SetValueProviderIcon(MonoScript script)
-        {
-            if(valueProviderIcon == null)
+		{
+			if(valueProviderIcon == null)
 			{
 				valueProviderIcon = EditorGUIUtility.IconContent(ICON_NAME).image as Texture2D;
 
 				if(valueProviderIcon == null)
-                {
+				{
 					if(EditorApplication.isUpdating)
 					{
 						EditorApplication.delayCall += ()=> SetValueProviderIcon(script);
@@ -173,31 +173,19 @@ namespace Sisus.Init
 					Debug.LogWarning($"Value provider icon '{ICON_NAME}' not found.");
 					#endif
 					return;
-                }
+				}
 			}
 
 			SetIcon(script, valueProviderIcon);
-        }
+		}
 
 		private static void SetIcon(MonoScript script, Texture2D icon)
-        {
-			#if UNITY_2021_2_OR_NEWER
+		{
 			var currentIcon = EditorGUIUtility.GetIconForObject(script);
 			if(currentIcon != icon)
 			{
 				EditorGUIUtility.SetIconForObject(script, icon);
 			}
-			#else
-			MethodInfo getIconForObject = typeof(EditorGUIUtility).GetMethod("GetIconForObject", BindingFlags.Static | BindingFlags.NonPublic);
-			var currentIcon = getIconForObject.Invoke(null, new object[] { script }) as Texture2D;
-			if(currentIcon != icon)
-			{
-				MethodInfo setIconForObject = typeof(EditorGUIUtility).GetMethod("SetIconForObject", BindingFlags.Static | BindingFlags.NonPublic);
-				MethodInfo copyMonoScriptIconToImporters = typeof(MonoImporter).GetMethod("CopyMonoScriptIconToImporters", BindingFlags.Static | BindingFlags.NonPublic);
-				setIconForObject.Invoke(null, new object[] { script, icon });
-				copyMonoScriptIconToImporters.Invoke(null, new object[] { script });
-			}
-			#endif
-        }
+		}
 	}
 }

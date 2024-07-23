@@ -12,7 +12,6 @@ namespace Sisus.Init.EditorOnly.Internal
 	internal static class ServiceTagDrawer
 	{
 		private static readonly GUIContent refLabel = new("Ref");
-		private static readonly List<RefTag> tags = new();
 		private static readonly StringBuilder sb = new();
 
 		private static readonly GUIContent tagIdleLabel = new("Service");
@@ -242,18 +241,14 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static bool ContainsRefTag(Component component)
 		{
-			component.GetComponents(tags);
-
-			foreach(var referenceable in tags)
+			foreach(var referenceable in component.gameObject.GetComponentsNonAlloc<RefTag>())
 			{
 				if(referenceable.Target == component)
 				{
-					tags.Clear();
 					return true;
 				}
 			}
 
-			tags.Clear();
 			return false;
 		}
 	}

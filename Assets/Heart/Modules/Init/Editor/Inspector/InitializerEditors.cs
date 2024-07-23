@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
+using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEngine;
 using static Sisus.Init.EditorOnly.DragAndDropUtility;
@@ -10,14 +11,14 @@ namespace Sisus.Init.EditorOnly
 {
 	/// <summary>
 	/// Class responsible for setting Initializer inspector hide flags on/off
-	/// based on whether or not their editor has already been embedded in their
+	/// based on whether their editor has already been embedded in their
 	/// target components Editor.
 	/// </summary>
 	[InitializeOnLoad]
 	internal static class InitializerEditors
 	{
-		internal static readonly Dictionary<Object, List<IInitializer>> InitializersOnInspectedObjects = new Dictionary<Object, List<IInitializer>>();
-		internal static readonly HashSet<IInitializer> InitializersWithClientOnSameGameObject = new HashSet<IInitializer>();
+		internal static readonly Dictionary<Object, List<IInitializer>> InitializersOnInspectedObjects = new();
+		internal static readonly HashSet<IInitializer> InitializersWithClientOnSameGameObject = new();
 
 		static InitializerEditors()
 		{
@@ -54,16 +55,18 @@ namespace Sisus.Init.EditorOnly
 
 				CopyComponent(initializerComponent);
 
-				var client = DropTargetGameObject.GetComponents(DragAndDroppedComponentType).LastOrDefault();
+				using var potentialDraggedComponents = DropTargetGameObject.GetComponentsNonAlloc(DragAndDroppedComponentType);
+				var draggedTarget = potentialDraggedComponents.LastOrDefault();
 
 				if(!PasteComponentAsNew(DropTargetGameObject))
 				{
 					continue;
 				}
 
-				if(DropTargetGameObject.GetComponents(initializer.GetType()).LastOrDefault() is Component pastedComponent && pastedComponent is IInitializer pastedInitializer)
+				using var potentialMigratedComponent = DropTargetGameObject.GetComponentsNonAlloc(DragAndDroppedComponentType);
+				if(DropTargetGameObject.GetComponents(initializer.GetType()).LastOrDefault() is Component pastedComponent and IInitializer pastedInitializer)
 				{
-					pastedInitializer.Target = client;
+					pastedInitializer.Target = draggedTarget;
 					pastedComponent.hideFlags = HideFlags.HideInInspector;
 				}
 

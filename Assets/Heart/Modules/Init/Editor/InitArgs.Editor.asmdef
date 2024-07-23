@@ -3,7 +3,6 @@
     "rootNamespace": "Sisus.Init",
     "references": [
         "InitArgs",
-        "InitArgs.Interfaces",
         "InitArgs.Services",
         "Pancake.Localization"
     ],
@@ -21,6 +20,11 @@
             "name": "com.unity.addressables",
             "expression": "1.17.4",
             "define": "UNITY_ADDRESSABLES_1_17_4_OR_NEWER"
+        },
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "UNITY_LOCALIZATION"
         },
         {
             "name": "com.unity.ugui",

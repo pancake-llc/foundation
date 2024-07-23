@@ -8,8 +8,8 @@ namespace Sisus.Init
 	/// that implement one of the <see cref="IArgs{TArgument}">IArgs</see> interfaces with the required dependencies passed
 	/// to the clone's <see cref="IInitializable{TArgument}.Init">Init</see> function.
 	/// </summary>
-    public static class Create
-    {
+	public static class Create
+	{
 		/// <summary>
 		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TArgument}.Init">initializes</see> it with the provided <paramref name="argument"/>.
@@ -38,7 +38,7 @@ namespace Sisus.Init
 		/// </exception>
 		public static TScriptableObject Instance<TScriptableObject, TArgument>(TArgument argument) where TScriptableObject : ScriptableObject, IArgs<TArgument>
 		{
-            InitArgs.Set<TScriptableObject, TArgument>(argument);
+			InitArgs.Set<TScriptableObject, TArgument>(argument);
 			
 			var client = ScriptableObject.CreateInstance<TScriptableObject>();
 
@@ -53,8 +53,8 @@ namespace Sisus.Init
 				return client;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
-        }
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
+		}
 
 		/// <summary>
 		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
@@ -101,7 +101,7 @@ namespace Sisus.Init
 				return client;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -151,7 +151,7 @@ namespace Sisus.Init
 				return client;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -202,7 +202,7 @@ namespace Sisus.Init
 				return client;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -255,7 +255,7 @@ namespace Sisus.Init
 				return client;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -309,7 +309,7 @@ namespace Sisus.Init
 				return client;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -355,7 +355,7 @@ namespace Sisus.Init
 				return;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -408,7 +408,7 @@ namespace Sisus.Init
 				return;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -462,7 +462,7 @@ namespace Sisus.Init
 				return;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -517,7 +517,7 @@ namespace Sisus.Init
 				return;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -573,7 +573,7 @@ namespace Sisus.Init
 				return;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 
 		/// <summary>
@@ -630,7 +630,7 @@ namespace Sisus.Init
 				return;
 			}
 
-			throw new InitArgumentsNotReceivedException($"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>", typeof(TScriptableObject));
+			throw new InitArgumentsNotReceivedException(typeof(TScriptableObject), $"{nameof(Create)}.{nameof(Instance)}<{typeof(TScriptableObject).Name}>");
 		}
 	}
 }

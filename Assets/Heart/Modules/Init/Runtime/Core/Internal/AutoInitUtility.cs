@@ -29,17 +29,18 @@ namespace Sisus.Init.EditorOnly
 	/// <seealso cref="RequireComponent"/>
 	internal static class AutoInitUtility
 	{
-		private static readonly ConcurrentDictionary<Type, bool> shouldAutoInit = new ConcurrentDictionary<Type, bool>();
-		private static readonly ConcurrentDictionary<Type, From[]> autoInitFrom = new ConcurrentDictionary<Type, From[]>();
+		private static readonly ConcurrentDictionary<Type, bool> shouldAutoInit = new();
+		private static readonly ConcurrentDictionary<Type, From[]> autoInitFrom = new();
 
 		/// <summary>
 		/// Examines the <paramref name="initializer"/> class and its <see cref="IInitializer.Target">client</see> class for the
 		/// <see cref="InitOnResetAttribute"/> and if found uses them to cache data about where <see cref="From">from</see>
 		/// the arguments of the client should be retrieved during auto-initialization.
 		/// </summary>
-		/// <typeparam name="TClient"> Type of the object that will receive the Init arguments. </typeparam>
 		/// <param name="initializer"> Initializer responsible for initializing the client. </param>
 		/// <param name="argumentCount"> Number of Init arguments that the client will receive. </param>
+		/// <typeparam name="TClient"> Type of the object that will receive the Init arguments. </typeparam>
+		/// <returns> <see keyword="true"/> if should auto init the client; otherwise, <see keyword="false"/>.</returns>
 		internal static bool TryPrepareArgumentsForAutoInit<TClient>([DisallowNull] IInitializer initializer, int argumentCount)
 		{
 			var target = initializer.Target;
@@ -149,7 +150,7 @@ namespace Sisus.Init.EditorOnly
 			{
 				// If the client has an initializer attached to it, never have it auto-initialize itself,
 				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
-				if(result && TryGetInitializer(client, out _))
+				if(result && HasInitializer(client))
 				{
 					return false;
 				}
@@ -190,7 +191,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -205,7 +206,7 @@ namespace Sisus.Init.EditorOnly
 
 				// If the client has an initializer attached to it, never have it auto-initialize itself,
 				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
-				if(result && TryGetInitializer(client, out _))
+				if(result && HasInitializer(client))
 				{
 					#if DEV_MODE
 					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
@@ -256,7 +257,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -307,7 +308,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -361,7 +362,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -417,7 +418,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -474,7 +475,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -534,7 +535,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -595,7 +596,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -658,7 +659,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -723,7 +724,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -790,7 +791,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			// When a client has an initializer attached, the initializer takes over the responsibility
 			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(TryGetInitializer(client, out IInitializer _))
+			if(HasInitializer(client))
 			{
 				return false;
 			}
@@ -853,6 +854,8 @@ namespace Sisus.Init.EditorOnly
 		{
 			#if DEV_MODE
 			Debug.Assert(autoInitFrom.ContainsKey(client.GetType()), client.GetType().Name);
+			Debug.Assert(shouldAutoInit.TryGetValue(client.GetType(), out var shouldAutoInitClient), client.GetType().Name);
+			Debug.Assert(shouldAutoInitClient, client.GetType().Name);
 			#endif
 
 			var from = autoInitFrom[client.GetType()][argumentIndex];
@@ -962,7 +965,8 @@ namespace Sisus.Init.EditorOnly
 
 						return (TArgument)(object)clientComponent.transform;
 					}
-					else if(argumentIsGameObjectOrTransformCollection)
+
+					if(argumentIsGameObjectOrTransformCollection)
 					{
 						int count = clientComponent.transform.childCount;
 						if(argumentObjectType == ObjectType.GameObject)
@@ -984,7 +988,8 @@ namespace Sisus.Init.EditorOnly
 
 						return ConvertToCollection<TArgument, Transform>(transforms);
 					}
-					else if(argumentIsComponentOrInterfaceCollection)
+
+					if(argumentIsComponentOrInterfaceCollection)
 					{
 						var components = clientComponent.GetComponentsInChildren(GetCollectionElementType(typeof(TArgument)), true);
 						if(components.Length > 0 || (!fromParent && !fromSameScene))

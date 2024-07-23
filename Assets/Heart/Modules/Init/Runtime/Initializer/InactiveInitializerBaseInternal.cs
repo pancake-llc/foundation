@@ -3,7 +3,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 using static Sisus.NullExtensions;
@@ -36,8 +36,19 @@ namespace Sisus.Init.Internal
 		[SerializeField, HideInInspector, Tooltip(NullArgumentGuardTooltip)]
 		private protected NullArgumentGuard nullArgumentGuard = DefaultNullArgumentGuardFlags;
 
+		private InitState initState = InitState.Uninitialized;
+
+		protected virtual bool IsRemovedAfterTargetInitialized => true;
+		private protected virtual bool IsAsync => false;
+
 		/// <inheritdoc/>
 		TClient IValueProvider<TClient>.Value => target;
+
+		/// <inheritdoc/>
+		bool IInitializer.ProvidesCustomInitArguments => false;
+
+		/// <inheritdoc/>
+		Object IInitializer.Target { get => target; set => target = value as TClient; }
 
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
@@ -55,9 +66,6 @@ namespace Sisus.Init.Internal
 		bool IValueByTypeProvider.CanProvideValue<TValue>(Component client) => typeof(TValue).IsAssignableFrom(typeof(TClient));
 
 		/// <inheritdoc/>
-		Object IInitializer.Target { get => target; set => target = value as TClient; }
-
-		/// <inheritdoc/>
 		bool IInitializer.TargetIsAssignableOrConvertibleToType(Type type) => type.IsAssignableFrom(typeof(TClient));
 
 		/// <inheritdoc/>
@@ -70,54 +78,76 @@ namespace Sisus.Init.Internal
 		#else
 		System.Threading.Tasks.Task<object>
 		#endif
-		IInitializer.InitTargetAsync() => await InitTargetAsync();
-
-		protected virtual bool IsRemovedAfterTargetInitialized => true;
-		private protected virtual bool IsAsync => false;
+		IInitializer.InitTargetAsync()
+		{
+			_ = await InitTargetAsync(Context.MainThread);
+			return target;
+		}
 
 		/// <inheritdoc/>
-		public
+		async
 		#if UNITY_2023_1_OR_NEWER
 		Awaitable<TClient>
 		#else
 		System.Threading.Tasks.Task<TClient>
 		#endif
-		InitTargetAsync() => InitTargetAsync(Context.MainThread);
+		IInitializer<TClient>.InitTargetAsync()
+		{
+			_ = await InitTargetAsync(Context.MainThread);
+			return target;
+		}
 
-		/// <inheritdoc/>
-		public async
+		private async
 		#if UNITY_2023_1_OR_NEWER
-		Awaitable<TClient>
+		Awaitable<bool>
 		#else
-		System.Threading.Tasks.Task<TClient>
+		System.Threading.Tasks.Task<bool>
 		#endif
 		InitTargetAsync(Context context)
 		{
-			if(!this)
+			if(initState is InitState.Initialized or InitState.Initializing)
 			{
-				return target;
+				return true;
 			}
 
-			target = await InitTargetAsync(target, context);
-
-			if(
-			#if UNITY_EDITOR
-			ThreadSafe.Application.IsPlaying &&
-			#endif
-			IsRemovedAfterTargetInitialized)
+			if(!this || initState is InitState.Failed)
 			{
-				Updater.InvokeAtEndOfFrame(DestroySelf);
+				return false;
+			}
 
-				void DestroySelf()
+			try
+			{
+				initState = InitState.Initializing;
+
+				if(!await InitTargetAsync(target, context))
 				{
-					if(this != null)
-					{
-						Destroy(this);
-					}
+					initState = InitState.Uninitialized;
+					return false;
 				}
-			}
 
-			return target;
+				initState = InitState.Initialized;
+
+				if(this && IsRemovedAfterTargetInitialized)
+				{
+					Updater.InvokeAtEndOfFrame(DestroySelfIfNotAsset);
+				}
+
+				return true;
+			}
+			catch(Exception
+			#if UNITY_EDITOR
+			exception
+			#endif
+			)
+			{
+				initState = InitState.Failed;
+
+				#if UNITY_EDITOR
+				((IInitializerEditorOnly)this).NullGuardFailedMessage = exception.ToString();
+				#endif
+
+				throw;
+			}
 		}
 
 		/// <summary>
@@ -151,57 +181,77 @@ namespace Sisus.Init.Internal
 		/// An object to initialize, a prefab to clone, or <see langword="null"/>.
 		/// </param>
 		/// <returns> The initialized object. </returns>
-		private protected virtual ValueTask<TClient> InitTargetAsync([AllowNull] TClient target, Context context) => new ValueTask<TClient>(InitTarget(ref target, context) ? target : null);
+		private protected virtual
+		#if UNITY_2023_1_OR_NEWER
+			Awaitable<bool> InitTargetAsync([AllowNull] TClient target, Context context) => AwaitableUtility.FromResult(InitTarget(target, context));
+		#else
+		System.Threading.Tasks.Task<bool> InitTargetAsync([AllowNull] TClient target, Context context) => System.Threading.Tasks.Task.FromResult(InitTarget(target, context));
+		#endif
 
 		/// <inheritdoc/>
 		public TClient InitTarget()
 		{
-			InitTarget(Context.MainThread);
+			_ = InitTarget(Context.MainThread);
 			return target;
 		}
 
 		public bool InitTarget(Context context)
 		{
-			if(this == null)
+			if(initState is InitState.Initialized or InitState.Initializing)
+			{
+				return true;
+			}
+
+			if(!this || initState is InitState.Failed)
 			{
 				return false;
 			}
 
-			if(
-			#if UNITY_EDITOR
-			ThreadSafe.Application.IsPlaying &&
-			#endif
-			IsRemovedAfterTargetInitialized)
+			initState = InitState.Initializing;
+
+			try
 			{
-				Updater.InvokeAtEndOfFrame(DestroySelf);
-
-				void DestroySelf()
+				if(!InitTarget(target, context))
 				{
-					if(this != null)
-					{
-						Destroy(this);
-					}
+					initState = InitState.Uninitialized;
+					return false;
 				}
+
+				initState = InitState.Initialized;
+
+				if(IsRemovedAfterTargetInitialized)
+				{
+					Updater.InvokeAtEndOfFrame(DestroySelfIfNotAsset);
+				}
+
+				return true;
 			}
-
-			return InitTarget(ref target, context);
-		}
-
-		#if DEBUG || INIT_ARGS_SAFE_MODE
-		private protected bool IsRuntimeNullGuardActive => nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException)
+			catch(
+			Exception
 			#if UNITY_EDITOR
-			&& Application.isPlaying
+			exception
 			#endif
-			;
-		#endif
+			)
+			{
+				initState = InitState.Failed;
+
+				#if UNITY_EDITOR
+				((IInitializerEditorOnly)this).NullGuardFailedMessage = exception.ToString();
+				#endif
+
+				throw;
+			}
+		}
 
 		/// <summary>
 		/// Resets the initializer to its default state.
 		/// <para>
 		/// <see cref="OnReset"/> is called when the user hits the Reset button in the Inspector's
 		/// context menu or when adding the component to a GameObject the first time.
+		/// </para>
 		/// <para>
 		/// This function is only called in the editor in edit mode.
+		/// </para>
 		/// </summary>
 		protected virtual void OnReset() { }
 
@@ -221,62 +271,71 @@ namespace Sisus.Init.Internal
 		/// initializes it, and returns it.
 		/// </para>
 		/// </summary>
-		/// <param name="target">
-		/// An object to initialize, a prefab to clone, or <see langword="null"/>.
-		/// </param>
-		/// <returns> The initialized object. </returns>
+		/// <param name="target"> The object to initialize. </param>
+		/// <param name="context"> Contexts from which the method is being called. </param>
+		/// <returns> <see langword="true"/> if target was initialized successfully; otherwise, <see langword="true"/>. </returns>
 		[return: NotNull]
-		private protected abstract bool InitTarget([DisallowNull] ref TClient target, Context context);
+		private protected abstract bool InitTarget([DisallowNull] TClient target, Context context);
 
 		void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-		//public void OnBeforeSerialize() { }
 
-		#if DEBUG
-		async
-		#endif
-		public void OnAfterDeserialize()
+		public async void OnAfterDeserialize()
 		{
-			#if DEBUG
-			if(!target)
-			{
-				return;
-			}
-			#endif
-
-			if(
-			#if UNITY_EDITOR
-			ThreadSafe.Application.IsPlaying &&
-			#endif
-			IsAsync)
-			{
-				#if DEBUG
-				await
-				#else
-				_ = 
-				#endif
-				InitTargetAsync(Context.OnAfterDeserialize);
-				return;
-			}
-
-			if(!InitTarget(Context.OnAfterDeserialize))
-			{
-				if(!ServiceInjector.ServicesAreReady)
-				{
-					ServiceInjector.ServicesBecameReady += OnServicesBecameReady;
-				}
-			}
+			await Until.UnitySafeContext();
+			await OnAfterDeserializeOnMainThread();
 		}
 
-		private void OnServicesBecameReady()
+		private protected async
+		#if UNITY_2023_1_OR_NEWER
+		Awaitable
+		#else
+		System.Threading.Tasks.Task
+		#endif
+		OnAfterDeserializeOnMainThread()
 		{
-			if(!this)
+			#if UNITY_EDITOR
+			if(!Application.isPlaying)
+			{
+				return;
+			}
+			#endif
+
+			if(!this || !target)
 			{
 				return;
 			}
 
-			if(!InitTarget(Context.MainThread))
+			if(IsAsync ? await InitTargetAsync(Context.MainThread) : InitTarget(Context.MainThread))
 			{
-				throw new MissingInitArgumentsException(target?.GetType() ?? typeof(TClient));
+				return;
+			}
+
+			if(!ServiceInjector.AsyncServicesAreReady)
+			{
+				ServiceInjector.AsyncServicesBecameReady += OnAsyncServicesReady;
+			}
+
+			Updater.InvokeAtEndOfFrame(OnManuallyRegisteredServicesReady);
+
+			void OnAsyncServicesReady()
+			{
+				if(this && !InitTarget(Context.MainThread))
+				{
+					Updater.InvokeAtEndOfFrame(OnManuallyRegisteredServicesReady);
+				}
+			}
+
+			void OnManuallyRegisteredServicesReady()
+			{
+				if(this && !InitTarget(Context.MainThread))
+				{
+					initState = InitState.Failed;
+					var exception = new MissingInitArgumentsException(target?.GetType() ?? typeof(TClient));
+					#if UNITY_EDITOR
+					((IInitializerEditorOnly)this).NullGuardFailedMessage = exception.Message;
+					#endif
+					throw exception;
+				}
 			}
 		}
 
@@ -291,9 +350,27 @@ namespace Sisus.Init.Internal
 		}
 		#endif
 
+		private void DestroySelfIfNotAsset()
+		{
+			if(!this)
+			{
+				return;
+			}
+
+			#if UNITY_EDITOR
+			if(gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
+			{
+				return;
+			}
+			#endif
+
+			Destroy(this);
+		}
+
 		#if UNITY_EDITOR
 		bool IInitializerEditorOnly.ShowNullArgumentGuard => true;
 		bool IInitializerEditorOnly.CanInitTargetWhenInactive => true;
+		bool IInitializerEditorOnly.CanGuardAgainstNull => false;
 		NullArgumentGuard IInitializerEditorOnly.NullArgumentGuard { get => nullArgumentGuard; set => nullArgumentGuard = value; }
 		string IInitializerEditorOnly.NullGuardFailedMessage { get; set; } = "";
 		NullGuardResult IInitializerEditorOnly.EvaluateNullGuard() => EvaluateNullGuard();
@@ -303,10 +380,9 @@ namespace Sisus.Init.Internal
 		void IInitializerEditorOnly.SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) => SetIsArgumentAsyncValueProvider(argument, isAsyncValueProvider);
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }
 		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
-		private protected abstract NullGuardResult EvaluateNullGuard();
-
-        private protected abstract void Reset();
-		private protected abstract void OnValidate();
+		private protected virtual NullGuardResult EvaluateNullGuard() => NullGuardResult.Passed;
+		private protected virtual void Reset() { }
+		private protected virtual void OnValidate() { }
 		#endif
-    }
+	}
 }

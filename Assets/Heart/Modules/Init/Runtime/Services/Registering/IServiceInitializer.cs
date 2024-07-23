@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using UnityEngine.Scripting;
 
 namespace Sisus.Init
@@ -16,16 +15,23 @@ namespace Sisus.Init
 	{
 		/// <summary>
 		/// Returns a new instance of the service class,
-		/// A task that can be awaited to get a new instance of the service class asynchronously,
+		/// a <see cref="UnityEngine.Awaitable{}"/> that returns a new instance of the service class asynchronously,
 		/// or <see langword="null"/>.
 		/// <para>
-		/// If this method returns <see langword="null"/>, it tells the framework that it should
-		/// handle creating the instance internally.
+		/// If this method returns <see langword="null"/>, the framework will handle creating the instance internally.
+		/// </para>
+		/// <para>
+		/// If this method returns an <see cref="UnityEngine.Awaitable{}"/>, the framework will await for the result
+		/// and register it as a service once it's ready.
+		/// </para>
+		/// <para>
+		/// If this method returns an object of another type, that will be registered as a service immediately.
 		/// </para>
 		/// </summary>
-		/// <param name="services"> Other services used during initialization of the target service. </param>
-		/// <returns> An instance of the service class, a task, or <see langword="null"/>. </returns>
-		object InitTarget(params object[] services);
+		/// <param name="arguments"> Zero or more other services used during initialization of the target service. </param>
+		/// <returns> An instance of the service class, an <see cref="UnityEngine.Awaitable{}"/>, or <see langword="null"/>. </returns>
+		[return: MaybeNull]
+		object InitTarget(params object[] arguments);
 	}
 
 	/// <summary>
@@ -34,10 +40,10 @@ namespace Sisus.Init
 	/// <para>
 	/// Implemented by initializers of services that are initialized automatically by the framework
 	/// or services that don't depend on any other services and are initialized manually via the
-	/// <see cref="IInitializer{TService}.InitTarget"/> method.
+	/// <see cref="InitTarget"/> method.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
 	[RequireImplementors]
 	public interface IServiceInitializer<TService> : IServiceInitializer
 	{
@@ -56,25 +62,8 @@ namespace Sisus.Init
 		/// A new instance of the <see cref="TService"/> class, or <see langword="null"/>
 		/// if the framework should create the instance automatically.
 		/// </returns>
+		[return: MaybeNull]
 		TService InitTarget();
-
-		/// <summary>
-		/// Returns an <see cref="Task{TService}"/> that can be awaited to get a new instance
-		/// of the <see cref="TService"/> class, or <see langword="null"/>.
-		/// <para>
-		/// If the task has a result of <see langword="null"/>, it tells the framework that it should
-		/// handle creating the instance internally.
-		/// </para>
-		/// <para>
-		/// If more control is needed, this method can be implemented to take over control of the
-		/// creation of the service object from the framework.
-		/// </para>
-		/// </summary>
-		/// <returns>
-		/// A task containing an instance of the <see cref="TService"/> class, or <see langword="null"/>
-		/// if the framework should create the instance automatically.
-		/// </returns>
-		Task<TService> InitTargetAsync();
 	}
 
 	/// <summary>
@@ -85,8 +74,8 @@ namespace Sisus.Init
 	/// are initialized manually via the <see cref="InitTarget"/> method.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TArgument"> Type of another service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TArgument"> Type of another service which the initialized service depends on. </typeparam>
 	[RequireImplementors]
 	public interface IServiceInitializer<TService, TArgument> : IServiceInitializer
 	{
@@ -96,12 +85,6 @@ namespace Sisus.Init
 		/// <param name="argument"> Service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TArgument argument);
-
-		/// <summary>
-		/// Initializes the service asynchronously with another service that it depends on.
-		/// </summary>
-		/// <param name="argument"> Service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TArgument argument);
 	}
 
 	/// <summary>
@@ -112,9 +95,9 @@ namespace Sisus.Init
 	/// are initialized manually via the <see cref="InitTarget"/> method.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TFirstArgument"> Type of the first service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second service which the initialized service depends on. </typeparam>
 	[RequireImplementors]
 	public interface IServiceInitializer<TService, TFirstArgument, TSecondArgument> : IServiceInitializer
 	{
@@ -125,13 +108,6 @@ namespace Sisus.Init
 		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously with two other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument);
 	}
 
 	/// <summary>
@@ -142,10 +118,10 @@ namespace Sisus.Init
 	/// are initialized manually via the <see cref="InitTarget"/> method.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TFirstArgument"> Type of the first service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third service which the initialized service depends on. </typeparam>
 	[RequireImplementors]
 	public interface IServiceInitializer<TService, TFirstArgument, TSecondArgument, TThirdArgument> : IServiceInitializer
 	{
@@ -157,14 +133,6 @@ namespace Sisus.Init
 		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously with three other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument);
 	}
 
 	/// <summary>
@@ -175,11 +143,11 @@ namespace Sisus.Init
 	/// are initialized manually via the <see cref="InitTarget"/> method.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TFirstArgument"> Type of the first service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth service which the initialized service depends on. </typeparam>
 	[RequireImplementors]
 	public interface IServiceInitializer<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> : IServiceInitializer
 	{
@@ -192,15 +160,6 @@ namespace Sisus.Init
 		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously with four other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument);
 	}
 
 	/// <summary>
@@ -211,12 +170,12 @@ namespace Sisus.Init
 	/// are initialized manually via the <see cref="InitTarget"/> method.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TFirstArgument"> Type of the first service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth service which the initialized service depends on. </typeparam>
 	[RequireImplementors]
 	public interface IServiceInitializer<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> : IServiceInitializer
 	{
@@ -230,16 +189,6 @@ namespace Sisus.Init
 		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously with five other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument);
 	}
 
 	/// <summary>
@@ -250,13 +199,13 @@ namespace Sisus.Init
 	/// are initialized manually via the <see cref="InitTarget"/> method.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
-	/// <typeparam name="TFirstArgument"> Type of the first service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth service which the service of type <typeparamref name="TService"/> depends on. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth service which the initialized service depends on. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth service which the initialized service depends on. </typeparam>
 	[RequireImplementors]
 	public interface IServiceInitializer<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : IServiceInitializer
 	{
@@ -271,17 +220,6 @@ namespace Sisus.Init
 		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously with six other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument);
 	}
 
 	[RequireImplementors]
@@ -299,18 +237,6 @@ namespace Sisus.Init
 		/// <param name="seventhArgument"> Seventh service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously using seven other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
-		/// <param name="seventhArgument"> Seventh service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument);
 	}
 
 	[RequireImplementors]
@@ -329,19 +255,6 @@ namespace Sisus.Init
 		/// <param name="eighthArgument"> Eighth service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously using eight other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
-		/// <param name="seventhArgument"> Seventh service used during initialization of the target service. </param>
-		/// <param name="eighthArgument"> Eighth service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument);
 	}
 
 	[RequireImplementors]
@@ -361,20 +274,6 @@ namespace Sisus.Init
 		/// <param name="ninthArgument"> Ninth service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously using nine other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
-		/// <param name="seventhArgument"> Seventh service used during initialization of the target service. </param>
-		/// <param name="eighthArgument"> Eighth service used during initialization of the target service. </param>
-		/// <param name="ninthArgument"> Ninth service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument);
 	}
 
 	[RequireImplementors]
@@ -395,21 +294,6 @@ namespace Sisus.Init
 		/// <param name="tenthArgument"> Tenth service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously using ten other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
-		/// <param name="seventhArgument"> Seventh service used during initialization of the target service. </param>
-		/// <param name="eighthArgument"> Eighth service used during initialization of the target service. </param>
-		/// <param name="ninthArgument"> Ninth service used during initialization of the target service. </param>
-		/// <param name="tenthArgument"> Tenth service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument);
 	}
 
 	[RequireImplementors]
@@ -430,24 +314,7 @@ namespace Sisus.Init
 		/// <param name="tenthArgument"> Tenth service used during initialization of the target service. </param>
 		/// <param name="eleventhArgument"> Eleventh service used during initialization of the target service. </param>
 		[return: NotNull]
-		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously asynchronously using eleven other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
-		/// <param name="seventhArgument"> Seventh service used during initialization of the target service. </param>
-		/// <param name="eighthArgument"> Eighth service used during initialization of the target service. </param>
-		/// <param name="ninthArgument"> Ninth service used during initialization of the target service. </param>
-		/// <param name="tenthArgument"> Tenth service used during initialization of the target service. </param>
-		/// <param name="eleventhArgument"> Eleventh service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument);
-	}
+		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument);	}
 
 	[RequireImplementors]
 	public interface IServiceInitializer<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument> : IServiceInitializer
@@ -469,22 +336,5 @@ namespace Sisus.Init
 		/// <param name="twelfthArgument"> Twelfth service used during initialization of the target service. </param>
 		[return: NotNull]
 		TService InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument);
-
-		/// <summary>
-		/// Initializes the service asynchronously using twelve other services that it depends on.
-		/// </summary>
-		/// <param name="firstArgument"> First service used during initialization of the target service. </param>
-		/// <param name="secondArgument"> Second service used during initialization of the target service. </param>
-		/// <param name="thirdArgument"> Third service used during initialization of the target service. </param>
-		/// <param name="fourthArgument"> Fourth service used during initialization of the target service. </param>
-		/// <param name="fifthArgument"> Fifth service used during initialization of the target service. </param>
-		/// <param name="sixthArgument"> Sixth service used during initialization of the target service. </param>
-		/// <param name="seventhArgument"> Seventh service used during initialization of the target service. </param>
-		/// <param name="eighthArgument"> Eighth service used during initialization of the target service. </param>
-		/// <param name="ninthArgument"> Ninth service used during initialization of the target service. </param>
-		/// <param name="tenthArgument"> Tenth service used during initialization of the target service. </param>
-		/// <param name="eleventhArgument"> Eleventh service used during initialization of the target service. </param>
-		/// <param name="twelfthArgument"> Twelfth service used during initialization of the target service. </param>
-		Task<TService> InitTargetAsync(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument);
 	}
 }

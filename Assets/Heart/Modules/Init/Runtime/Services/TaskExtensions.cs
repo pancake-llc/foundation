@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Sisus.Init.Internal
 {
@@ -16,12 +17,17 @@ namespace Sisus.Init.Internal
 				else
 				{
 					await task;
-					result = task.GetType().GetProperty(nameof(Task<object>.Result)).GetValue(task);
+					if(task.GetType().GetProperty(nameof(Task<object>.Result)) is not PropertyInfo resultProperty)
+					{
+						return Task.FromResult<object>(null);
+					}
+					
+					result = resultProperty.GetValue(task);
 				}
 
 				task = result as Task;
 			}
-			while(task != null);
+			while(task is not null);
 
 			return result;
 		}

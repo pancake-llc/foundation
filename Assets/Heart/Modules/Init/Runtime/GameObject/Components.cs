@@ -41,7 +41,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="this"> Pair of component. </param>
 		public static implicit operator TFirstComponent(Components<TFirstComponent, TSecondComponent> @this)
-        {
+		{
 			return @this.first;
 		}
 
@@ -112,7 +112,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="this"> Pair of component. </param>
 		public static implicit operator TFirstComponent(Components<TFirstComponent, TSecondComponent, TThirdComponent> @this)
-        {
+		{
 			return @this.first;
 		}
 

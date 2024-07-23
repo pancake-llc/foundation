@@ -30,6 +30,16 @@ namespace Sisus.Init
 		Object Target { get; set; }
 
 		/// <summary>
+		/// Gets a value indicating whether this initializer is able to
+		/// provide custom per-instance Init arguments for its client.
+		/// <para>
+		/// Initializers like <see cref="Internal.InactiveInitializer"/> don't do that,
+		/// but will just call <see cref="IInitializable.Init"/> instead.
+		/// </para>
+		/// </summary>
+		bool ProvidesCustomInitArguments => true;
+
+		/// <summary>
 		/// Gets a value indicating whether or not an object of the given <paramref name="type"/>
 		/// can be assigned to the <see cref="Target"/> property directly,
 		/// or if <paramref name="type"/> implements <see cref="IValueProvider{T}"/>,
@@ -89,7 +99,7 @@ namespace Sisus.Init
 		/// <returns> The initialized object. </returns>
 		[return: NotNull]
 		#if UNITY_2023_1_OR_NEWER
-		Awaitable<object> InitTargetAsync() => AwaitableUtility.FromResult(InitTarget());
+		Awaitable<object> InitTargetAsync() => Internal.AwaitableUtility.FromResult(InitTarget());
 		#else
 		System.Threading.Tasks.Task<object> InitTargetAsync() => System.Threading.Tasks.Task.FromResult(InitTarget());
 		#endif
@@ -122,6 +132,9 @@ namespace Sisus.Init
 		[return: NotNull]
 		new TClient InitTarget();
 
+		/// <inheritdoc/>
+		public new bool TargetIsAssignableOrConvertibleToType(Type type) => typeof(TClient).IsAssignableFrom(type);
+
 		/// <summary>
 		/// Initializes the client object of type <see cref="TClient"/> asynchronously with the arguments specified by this initializer.
 		/// <para>
@@ -151,7 +164,7 @@ namespace Sisus.Init
 		/// <returns> The initialized object. </returns>
 		[return: NotNull]
 		#if UNITY_2023_1_OR_NEWER
-		new Awaitable<TClient> InitTargetAsync() => AwaitableUtility.FromResult(InitTarget());
+		new Awaitable<TClient> InitTargetAsync() => Internal.AwaitableUtility.FromResult(InitTarget());
 		#else
 		new System.Threading.Tasks.Task<TClient> InitTargetAsync() => System.Threading.Tasks.Task.FromResult(InitTarget());
 		#endif

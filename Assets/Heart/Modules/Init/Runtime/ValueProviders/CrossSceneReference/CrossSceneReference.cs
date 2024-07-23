@@ -21,7 +21,7 @@ namespace Sisus.Init.Internal
 		[SerializeField]
 		internal bool isCrossScene = false;
 
-		#if DEBUG // To make this persist through builds, could store in a separate ScriptableObject asset instead? Or just take the hit in increased build size.
+		#if DEBUG || INIT_ARGS_SAFE_MODE // To make this persist through builds, could store in a separate ScriptableObject asset instead? Or just take the hit in increased build size.
 		#pragma warning disable CS0414
 		[SerializeField]
 		private Object target = null;
@@ -61,7 +61,7 @@ namespace Sisus.Init.Internal
 			
 			// In older versions of Unity an error will occur if GlobalObjectId.GlobalObjectIdentifierToObjectSlow
 			// is called and the target object is in an unloaded scene.
-			if(target == null && context != Context.Threaded && !Application.isPlaying && IsTargetSceneLoaded()
+			if(!target && context.IsUnitySafeContext() && context.IsEditMode() && IsTargetSceneLoaded()
 				&& !string.IsNullOrEmpty(globalObjectIdSlow) && GlobalObjectId.TryParse(globalObjectIdSlow, out GlobalObjectId globalObjectId))
 			{
 				target = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
@@ -96,7 +96,7 @@ namespace Sisus.Init.Internal
 			guid = Id.Empty;
 			isCrossScene = false;
 
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			target = value;
 			globalObjectIdSlow = default;
 			targetName = "";
@@ -123,9 +123,9 @@ namespace Sisus.Init.Internal
 			icon = EditorGUIUtility.ObjectContent(target, target.GetType()).image;
 			#endif
 
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			targetName = value.name;
-			if(!(value is GameObject))
+			if(value is not GameObject)
 			{
 				targetName += " (" + value.GetType().Name + ")";
 			}

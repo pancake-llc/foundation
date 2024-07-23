@@ -13,32 +13,30 @@ namespace Sisus.Init.Internal
 	/// so that their state can be examined using the Inspector window.
 	/// </summary>
 	[AddComponentMenu(Hidden)]
-	internal sealed class ServicesDebugger : MonoBehaviour<List<object>>
+	internal sealed class ServicesDebugger : MonoBehaviour
 	{
 		private const string Hidden = "";
 
-		private List<object> services = new List<object>();
+		private List<object> services = new();
 
-		protected override void Init(List<object> services) => this.services = services;
-
-		protected override void OnAwake() => EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+		private void Awake() => EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 		private void OnDestroy() => EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 
 		private void OnPlayModeStateChanged(PlayModeStateChange playModeState)
-        {
+		{
 			if(playModeState == PlayModeStateChange.ExitingPlayMode)
 			{
 				EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 				Destroy(this);
-            }
-        }
+			}
+		}
 
 		#pragma warning disable CS1998
-        internal async Task SetServices(IEnumerable<object> services)
+		internal async Task SetServices(IEnumerable<object> services)
 		#pragma warning restore CS1998
-        {
-            foreach(var service in services)
-            {
+		{
+			foreach(var service in services)
+			{
 				if(service is Task task)
 				{
 					#pragma warning disable CS4014
@@ -46,14 +44,14 @@ namespace Sisus.Init.Internal
 					#pragma warning restore CS4014
 				}
 				else
-                {
+				{
 					AddService(service);
 				}
-            }
+			}
 		}
 
 		private async Task AddServiceAsync(Task task)
-        {
+		{
 			await task.ContinueWith(AddResult);
 
 			void AddResult(Task task)
@@ -65,11 +63,11 @@ namespace Sisus.Init.Internal
 		private void AddService(object service)
 		{
 			if(service is Object unityObject)
-            {
+			{
 				services.Add(new LabeledUnityObjectService(unityObject));
 			}
 			else
-            {
+			{
 				services.Add(new LabeledPlainOldClassObjectService(service));
 			}
 		}
@@ -105,7 +103,7 @@ namespace Sisus.Init.Internal
 				state = service;				
 			}
 		}
-    }
+	}
 }
 
 #endif

@@ -106,25 +106,25 @@ namespace Sisus.Init.Internal
 			}
 		}
 
-		internal static IEnumerable<Type> GetServiceDefiningTypes(object serviceOrServiceProvider)
+		internal static IEnumerable<Type> GetServiceDefiningTypes([DisallowNull] object serviceOrServiceProvider)
 		{
 			Profiler.BeginSample("GetServiceDefiningTypes");
 
 			currentDefiningTypes.Clear();
 
-			Transform client = Find.In<Transform>(serviceOrServiceProvider);
-			AddServiceDefiningTypes(client, serviceOrServiceProvider, currentDefiningTypes);
+			Transform clientOrNull = Find.In<Transform>(serviceOrServiceProvider);
+			AddServiceDefiningTypes(clientOrNull, serviceOrServiceProvider, currentDefiningTypes);
 
 			if(serviceOrServiceProvider is IValueProvider valueProvider)
 			{
-				AddServiceProviderValueDefiningTypes(client, valueProvider, currentDefiningTypes);
+				AddServiceProviderValueDefiningTypes(clientOrNull, valueProvider, currentDefiningTypes);
 			}
 
 			Profiler.EndSample();
 
 			return currentDefiningTypes;
 
-			static void AddServiceDefiningTypes([AllowNull] Component client, [DisallowNull] object service, [DisallowNull] HashSet<Type> currentDefiningTypes)
+			static void AddServiceDefiningTypes([AllowNull] Component clientOrNull, [DisallowNull] object service, [DisallowNull] HashSet<Type> currentDefiningTypes)
 			{
 				Type concreteType = service.GetType();
 				foreach(var definingType in ServiceAttributeUtility.GetDefiningTypes(concreteType))
@@ -134,7 +134,7 @@ namespace Sisus.Init.Internal
 
 				for(var typeOrBaseType = concreteType; !TypeUtility.IsNullOrBaseType(typeOrBaseType); typeOrBaseType = typeOrBaseType.BaseType)
 				{
-					if(!currentDefiningTypes.Contains(typeOrBaseType) && ServiceUtility.IsServiceOrServiceProviderFor(client, typeOrBaseType, service))
+					if(!currentDefiningTypes.Contains(typeOrBaseType) && (clientOrNull == null ? ServiceUtility.IsServiceOrServiceProvider(typeOrBaseType, service) : ServiceUtility.IsServiceOrServiceProviderFor(clientOrNull, typeOrBaseType, service)))
 					{
 						currentDefiningTypes.Add(typeOrBaseType);
 					}
@@ -143,7 +143,7 @@ namespace Sisus.Init.Internal
 				var interfaces = concreteType.GetInterfaces();
 				foreach(var interfaceType in interfaces)
 				{
-					if(!currentDefiningTypes.Contains(interfaceType) && ServiceUtility.IsServiceOrServiceProviderFor(client, interfaceType, service))
+					if(!currentDefiningTypes.Contains(interfaceType) && (clientOrNull == null ? ServiceUtility.IsServiceOrServiceProvider(interfaceType, service) : ServiceUtility.IsServiceOrServiceProviderFor(clientOrNull, interfaceType, service)))
 					{
 						currentDefiningTypes.Add(interfaceType);
 					}

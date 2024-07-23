@@ -50,9 +50,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			EditorGUI.BeginChangeCheck();
 
-			if(!hasValue)
-            {
-				GUI.color = Color.red;
+			if(!hasValue && InitializerEditorUtility.TryGetTintForNullGuardResult(NullGuardResult.ValueMissing, out Color setGuiColor))
+			{
+				GUI.color = setGuiColor;
 			}
 
 			EditorGUI.PropertyField(serviceRect, state.serviceProperty, GUIContent.none);
@@ -65,7 +65,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(state.serviceProperty.objectReferenceValue is GameObject gameObject)
 				{
-					var components = gameObject.GetComponents<Component>();
+					using var components = gameObject.GetComponentsNonAlloc<Component>();
 
 					var menu = new GenericMenu();
 					menu.AddItem(new GUIContent("GameObject"), false, () =>
@@ -78,7 +78,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 					HashSet<string> addedItems = new HashSet<string>() { "GameObject" };
 
-                    for(int i = 0, count = components.Length; i < count; i++)
+                    for(int i = 0, count = components.Count; i < count; i++)
                     {
 						var component = components[i];
 						if(component == null)

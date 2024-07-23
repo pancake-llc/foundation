@@ -61,7 +61,7 @@ namespace Sisus.Init
 				var secondArgument = await this.secondArgument.GetValueAsync(this, Context.MainThread);
 				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref secondArgument);
 
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(disposeArgumentsOnDestroy != Arguments.None)
 				{
 					if(disposeArgumentsOnDestroy.HasFlag(Arguments.First)) OptimizeValueProviderNameForDebugging(this, this.firstArgument);
@@ -81,7 +81,7 @@ namespace Sisus.Init
 				var firstArgument = await this.firstArgument.GetValueAsync(this, Context.MainThread);
 				var secondArgument = await this.secondArgument.GetValueAsync(this, Context.MainThread);
 
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(disposeArgumentsOnDestroy != Arguments.None)
 				{
 					if(disposeArgumentsOnDestroy.HasFlag(Arguments.First)) OptimizeValueProviderNameForDebugging(this, this.firstArgument);
@@ -137,5 +137,5 @@ namespace Sisus.Init
 
 		private protected override void OnValidate() => Validate(this, gameObject, firstArgument, secondArgument);
 		#endif
-    }
+	}
 }

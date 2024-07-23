@@ -1,26 +1,29 @@
-﻿using static Sisus.Init.FlagsValues;
-
-namespace Sisus.Init.Internal
+﻿namespace Sisus.Init.Internal
 {
 	/// <summary>
 	/// Specifies the different states of initialization
 	/// that a client that depends on some services can have.
 	/// </summary>
-	public enum InitState : byte
+	public enum InitState
 	{
 		/// <summary>
 		/// Client's Init function has not been executed yet.
 		/// </summary>
-		Uninitialized = _0,
+		Uninitialized = 0,
 
 		/// <summary>
 		/// Client's Init function has been executed but has not finished yet.
 		/// </summary>
-		Initializing = _1,
+		Initializing = 1,
 
 		/// <summary>
 		/// Client's Init function has been executed and it has finished.
 		/// </summary>
-		Initialized = _2
-	}
+		Initialized = 2,
+
+		/// <summary>
+		/// Initialization of the client has failed.
+		/// </summary>
+		Failed = 3
+	}	
 }

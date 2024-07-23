@@ -3,12 +3,12 @@
 namespace Sisus.Init
 {
 	/// <summary>
-	/// Represents an object which might be able try locate its own dependencies and initialize itself.
+	/// Represents an object which might be able to try and locate its own dependencies and initialize itself.
 	/// </summary>
 	public interface IInitializable
 	{
 		/// <summary>
-		/// Gets a value indicating whether or not this object has an initializer attached to it.
+		/// Gets a value indicating whether this object has an initializer attached to it.
 		/// <para>
 		/// If the object itself is an initializer, then returns <see langword="false"/>.
 		/// </para>
@@ -26,7 +26,10 @@ namespace Sisus.Init
 		/// reliability reasons it is recommended to do these operations in edit mode only, and cache the results.
 		/// </para>
 		/// </param>
-		/// <returns> <see langword="true"/> if was able to locate all dependencies and initialize itself; otherwise, <see langword="false"/>. </returns>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize itself, or has already
+		/// successfully initialized itself previously; otherwise, <see langword="false"/>.
+		/// </returns>
 		bool Init(Context context);
 	}
 

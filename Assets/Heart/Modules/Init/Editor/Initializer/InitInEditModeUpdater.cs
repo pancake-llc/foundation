@@ -1,3 +1,5 @@
+//#define DEBUG_SETUP_DURATION
+
 #if !INIT_ARGS_DISABLE_INIT_IN_EDIT_MODE
 using System;
 using System.Collections.Generic;
@@ -16,12 +18,24 @@ namespace Sisus.Init.EditorOnly.Internal
     [InitializeOnLoad]
 	internal static class InitInEditModeUpdater
 	{
-		private static readonly HashSet<Type> typesWithAttribute;
-		private static readonly HashSet<Scene> scenesToProcess = new();
-		private static readonly HashSet<GameObject> prefabsToProcess = new();
+		private static HashSet<Type> typesWithAttribute;
+		private static HashSet<Scene> scenesToProcess = new();
+		private static HashSet<GameObject> prefabsToProcess = new();
 
-		static InitInEditModeUpdater()
+		static InitInEditModeUpdater() => SetupAsync();
+
+		private static async void SetupAsync()
 		{
+			await Until.UnitySafeContext();
+
+			#if DEV_MODE
+			UnityEngine.Profiling.Profiler.BeginSample(nameof(InitInEditModeUpdater));
+			#if DEBUG_SETUP_DURATION
+			var timer = new System.Diagnostics.Stopwatch();
+			timer.Start();
+			#endif
+			#endif
+
 			typesWithAttribute = new HashSet<Type>(TypeCache.GetTypesWithAttribute<InitInEditModeAttribute>());
 
 			if(typesWithAttribute.Count > 0)
@@ -37,6 +51,14 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			ResubscribeToEvents();
+
+			#if DEV_MODE
+			UnityEngine.Profiling.Profiler.EndSample();
+			#if DEBUG_SETUP_DURATION
+			timer.Stop();
+			Debug.Log(nameof(InitInEditModeUpdater) + " took " + timer.Elapsed.TotalSeconds + "s.");
+			#endif
+			#endif
 		}
 
 		private static void ResubscribeToEvents()
@@ -361,7 +383,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					var component = componentsInChildrenToProcess[c];
 					if(component != null && typesWithAttribute.Contains(component.GetType()))
 					{
-						component.Init(Context.EditMode);
+						component.Init(Context.EditMode | Context.MainThread);
 					}
 
 					if(c % MAX_TO_INIT_PER_FRAME == 0)

@@ -9,6 +9,7 @@ using Sisus.Init.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using static Sisus.Init.Internal.InitializableUtility;
 using static Sisus.Init.Internal.InitializerUtility;
 using Object = UnityEngine.Object;
 #if ODIN_INSPECTOR
@@ -19,13 +20,17 @@ namespace Sisus.Init.EditorOnly.Internal
 {
 	internal static class InitializerEditorUtility
 	{
-		private static readonly GUIContent clientNullTooltip = new GUIContent("", "A new instance will be added to this GameObject during initialization.");
-		private static readonly GUIContent clientPrefabTooltip = new GUIContent("", "A new instance will be created by cloning this prefab during initialization.");
-		private static readonly GUIContent clientInstantiateTooltip = new GUIContent("", "A new instance will be created by cloning this scene object during initialization.");
-		private static readonly GUIContent clientNotInitializableTooltip = new GUIContent("", "Can not inject arguments to client because it does not implement IInitializable.");
+		internal static readonly Color NullGuardFailedColor = new(1f, 0.82f, 0f, 1f);
+		internal static readonly Color NullGuardWarningColor = new Color(0.4f, 0.6f, 1f, 1f);
+
+		private static readonly GUIContent clientNullTooltip = new("", "A new instance will be added to this GameObject during initialization.");
+		private static readonly GUIContent clientPrefabTooltip = new("", "A new instance will be created by cloning this prefab during initialization.");
+		private static readonly GUIContent clientInstantiateTooltip = new("", "A new instance will be created by cloning this scene object during initialization.");
+		private static readonly GUIContent clientNotInitializableTooltip = new("", "Can not inject arguments to client because it does not implement IInitializable.");
 		private static GUIContent warningIcon;
 		private static GUIContent prefabIcon;
 		private static GUIContent gameObjectIcon;
+		private static GUIContent instantiateOverlayIcon;
 		private static GUIContent scriptableObjectIcon;
 
 		private static readonly HashSet<Type> initializableEditors = new(12)
@@ -159,7 +164,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			{ "twelfthArgument", 11 }
 		};
 
-		private static Color ObjectFieldBackgroundColor => EditorGUIUtility.isProSkin ? new(42, 42, 42, 255) : new(237, 237, 237, 255);
+		private static Color ObjectFieldBackgroundColor => EditorGUIUtility.isProSkin ? new Color32(42, 42, 42, 255) : new Color32(237, 237, 237, 255);
 
 		static InitializerEditorUtility()
 		{
@@ -312,7 +317,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return null;
 		}
 
-		internal static bool IsGenericIInitializerType(Type interfaceType) => argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition());
+		//internal static bool IsGenericIInitializerType(Type interfaceType) => argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition());
 
 		internal static bool IsGenericIInitializableType(Type interfaceType) => interfaceType.IsGenericType && argumentCountsByIInitializableTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition());
 
@@ -324,7 +329,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				// Don't use InitializableEditor for value providers that are drawn inlined
 				// within the AnyPropertyDrawer - we don't want the Init section to appear for those.
-				if(inspectedType.GetCustomAttribute<ValueProviderMenuAttribute>() is not null)
+				if(typeof(ScriptableObject).IsAssignableFrom(inspectedType) && inspectedType.IsDefined(typeof(ValueProviderMenuAttribute)))
 				{
 					editorType = null;
 					return false;
@@ -351,27 +356,58 @@ namespace Sisus.Init.EditorOnly.Internal
 				return true;
 			}
 
-			var initializerTypes = GetInitializerTypes(inspectedType);
-			foreach(var initializerType in initializerTypes)
+			bool hasAnyInitilizer = false;
+
+			foreach(var initializerType in TypeCache.GetTypesDerivedFrom<IInitializer>())
 			{
-				foreach(var interfaceType in initializerType.GetInterfaces())
+				if(initializerType.IsAbstract)
 				{
-					if(interfaceType.IsGenericType
-					&& argumentCountsByIInitializerTypeDefinition.TryGetValue(interfaceType.GetGenericTypeDefinition(), out int argumentCount)
-					&& initializableEditorsByArgumentCount.TryGetValue(argumentCount, out editorType))
+					continue;
+				}
+
+				foreach(Type interfaceType in initializerType.GetInterfaces())
+				{
+					if(!interfaceType.IsGenericType)
 					{
-						return true;
+						continue;
+					}
+
+					if(!argumentCountsByIInitializerTypeDefinition.TryGetValue(interfaceType.GetGenericTypeDefinition(), out int argumentCount))
+					{
+						continue;
+					}
+
+					var initializerClientType = interfaceType.GetGenericArguments()[0];
+					if(initializerClientType.IsAssignableFrom(inspectedType)
+						&& (initializerClientType != typeof(object) || inspectedType == typeof(object)))
+					{
+						if(initializableEditorsByArgumentCount.TryGetValue(argumentCount, out editorType))
+						{
+							return true;
+						}
+
+						hasAnyInitilizer = true;
+					}
+
+					if(Find.typeToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
+						&& Array.IndexOf(wrapperTypes, inspectedType) != -1)
+					{
+						if(initializableEditorsByArgumentCount.TryGetValue(argumentCount, out editorType))
+						{
+							return true;
+						}
+
+						hasAnyInitilizer = true;
 					}
 				}
 			}
 
-			if(initializerTypes.Any())
+			if(hasAnyInitilizer)
 			{
 				editorType = typeof(InitializableEditor);
 				return true;
 			}
 
-			editorType = null;
 			return false;
 		}
 
@@ -437,7 +473,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						if(scriptableObjectClient is IInitializableEditorOnly initializableEditorOnly)
 						{
 							Undo.RecordObject(scriptableObjectClient, UNDO_NAME);
-                            initializableEditorOnly.Initializer = initializerInstance as IInitializer;
+							initializableEditorOnly.Initializer = initializerInstance as IInitializer;
 						}
 					}
 
@@ -542,16 +578,15 @@ namespace Sisus.Init.EditorOnly.Internal
 			return false;
 		}
 
-		internal static void DrawClientField(Rect rect, SerializedProperty client, GUIContent clientLabel, bool isInitializable, bool hasServiceArguments)
+		internal static void DrawClientField(Rect rect, SerializedProperty client, GUIContent clientLabel, bool isInitializable)
 		{
-			rect.y += 5f;
-			rect.width -= 28f;
-			if(hasServiceArguments)
+			var fieldRect = EditorGUI.PrefixLabel(rect, new GUIContent(" "));
+			if(fieldRect.width < 20f)
 			{
-				rect.width -= 20f;
+				fieldRect.width = 20f;
+				fieldRect.x = rect.xMax - 20f;
 			}
 
-			var fieldRect = EditorGUI.PrefixLabel(rect, new GUIContent(" "));
 			var reference = client.objectReferenceValue;
 
 			EditorGUI.ObjectField(fieldRect, client, GUIContent.none);
@@ -563,9 +598,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			fieldRect.y += 2f;
 			fieldRect.height -= 3f;
 
-			if(!isInitializable && !mouseovered)
+			if(!isInitializable && !mouseovered && TryGetTintForNullGuardResult(NullGuardResult.ClientNotSupported, out Color setGuiColor))
 			{
-				GUI.color = Color.red;
+				GUI.color = setGuiColor;
 			}
 
 			if(reference == null)
@@ -595,6 +630,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						warningIcon = EditorGUIUtility.IconContent("Warning");
 					}
+
 					icon = warningIcon;
 				}
 				else if(isPrefab)
@@ -603,6 +639,12 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						prefabIcon = EditorGUIUtility.IconContent("Prefab Icon");
 					}
+
+					if(instantiateOverlayIcon == null)
+					{
+						instantiateOverlayIcon = EditorGUIUtility.IconContent("PrefabOverlayAdded Icon");
+					}
+
 					icon = prefabIcon;
 				}
 				else if(isSceneObject)
@@ -611,6 +653,12 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						gameObjectIcon = EditorGUIUtility.IconContent("GameObject Icon");
 					}
+
+					if(instantiateOverlayIcon == null)
+					{
+						instantiateOverlayIcon = EditorGUIUtility.IconContent("PrefabOverlayAdded Icon");
+					}
+
 					icon = gameObjectIcon;
 				}
 				else if(isScriptableObject)
@@ -645,6 +693,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
 					EditorGUIUtility.PingObject(gameObject != null ? gameObject : reference);
 				}
+
+				GUI.Label(iconRect, instantiateOverlayIcon);
 
 				EditorGUIUtility.SetIconSize(iconSize);
 			}
@@ -862,7 +912,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			var target = serializedObject.targetObject;
 			var initializerType = target.GetType();
-            var metadataClass = GetMetaDataClassType(initializerType);
+			var metadataClass = GetMetaDataClassType(initializerType);
 
 			int argumentCount = argumentTypes.Length;
 			var results = new InitParameterGUI[argumentCount];
@@ -872,7 +922,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			// If the Init class has one member per init argument + constructor, then we can try extracting
 			// attributes and labels from the non-contructor members defined in it and use them when visualizing
 			// the Init arguments in the Inspector.
-            if(members.Length == argumentCount + 1)
+			if(members.Length == argumentCount + 1)
 			{
 				for(int i = 0, count = serializedProperties.Length; i < count; i++)
 				{
@@ -905,8 +955,8 @@ namespace Sisus.Init.EditorOnly.Internal
 					);
 				}
 			}
-            else
-            {
+			else
+			{
 				for(int i = 0, count = serializedProperties.Length; i < count; i++)
 				{
 					var serializedProperty = serializedProperties[i];
@@ -936,7 +986,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						argumentType
 					);
 				}
-            }
+			}
 
 			return results;
 		}
@@ -1017,7 +1067,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		internal static object CreateInstance(Type type)
-        {
+		{
 			try
 			{
 				return Activator.CreateInstance(type);
@@ -1026,7 +1076,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				return FormatterServices.GetUninitializedObject(type);
 			}
-        }
+		}
 
 		internal static GUIContent GetArgumentLabel(Type clientType, Type parameterType, int parameterIndex)
 		{
@@ -1085,6 +1135,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			targetFieldName = null;
 			return false;
 		}
+
+		internal static bool IsInitializable(object client) => client is IOneArgument or ITwoArguments or IThreeArguments or IFourArguments or IFiveArguments or ISixArguments or ISevenArguments or IEightArguments or INineArguments or ITenArguments or IElevenArguments or ITwelveArguments;
 
 		internal static bool IsInitializable(Type clientType) => GetClientInitArgumentCount(clientType) > 0;
 
@@ -1151,6 +1203,24 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			return 0;
+		}
+
+		internal static bool TryGetTintForNullGuardResult(NullGuardResult nullGuardResult, out Color color)
+		{
+			if(nullGuardResult == NullGuardResult.Passed)
+			{
+				color = Color.white;
+				return false;
+			}
+
+			if(nullGuardResult == NullGuardResult.ValueProviderValueNullInEditMode)
+			{
+				color = NullGuardWarningColor;
+				return true;
+			}
+
+			color = NullGuardFailedColor;
+			return true;
 		}
 	}
 }

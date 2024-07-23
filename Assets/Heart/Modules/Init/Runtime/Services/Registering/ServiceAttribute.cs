@@ -97,20 +97,30 @@ namespace Sisus.Init
 		[DisallowNull]
 		public string AddressableKey
 		{
-			get => loadMethod is LoadMethod.LoadAddressable or LoadMethod.LoadAddressableAsync ? loadData : null;
+			get => loadMethod is LoadMethod.Addressable or LoadMethod.AddressableAsync
+							  or LoadMethod.LoadAddressable or LoadMethod.LoadAddressableAsync
+							  or LoadMethod.InstantiateAddressable or LoadMethod.InstantiateAddressableAsync
+							  ? loadData : null;
 
 			set
 			{
 				if(!string.IsNullOrEmpty(value))
 				{
-					loadMethod = loadMethod is LoadMethod.UndefinedAsync or LoadMethod.LoadAddressableAsync
-							   ? LoadMethod.LoadAddressableAsync
-							   : LoadMethod.LoadAddressable;
+					loadMethod = loadMethod switch
+					{
+						LoadMethod.Default => LoadMethod.Addressable,
+						LoadMethod.Async => LoadMethod.AddressableAsync,
+						LoadMethod.Load => LoadMethod.LoadAddressable,
+						LoadMethod.Instantiate => LoadMethod.InstantiateAddressable,
+						LoadMethod.LoadAsync =>  LoadMethod.LoadAddressableAsync,
+						LoadMethod.InstantiateAsync => LoadMethod.InstantiateAddressableAsync,
+						_ => loadMethod
+					};
 
 					loadData = value;
 				}
 			}
-        }
+		}
 		#endif
 
 		/// <summary>
@@ -122,20 +132,30 @@ namespace Sisus.Init
 		[DisallowNull]
 		public string ResourcePath
 		{
-			get => loadMethod is LoadMethod.LoadResource or LoadMethod.LoadResourceAsync ? loadData : null;
+			get => loadMethod is LoadMethod.Resource or LoadMethod.ResourceAsync
+							  or LoadMethod.LoadResource or LoadMethod.LoadResourceAsync
+							  or LoadMethod.InstantiateResource or LoadMethod.InstantiateResourceAsync
+							  ? loadData : null;
 
 			set
 			{
 				if(!string.IsNullOrEmpty(value))
 				{
-					loadMethod = loadMethod is LoadMethod.UndefinedAsync or LoadMethod.LoadResourceAsync
-							   ? LoadMethod.LoadResourceAsync
-							   : LoadMethod.LoadResource;
+					loadMethod = loadMethod switch
+					{
+						LoadMethod.Default => LoadMethod.Resource,
+						LoadMethod.Async => LoadMethod.ResourceAsync,
+						LoadMethod.Load => LoadMethod.LoadResource,
+						LoadMethod.Instantiate => LoadMethod.InstantiateResource,
+						LoadMethod.LoadAsync =>  LoadMethod.LoadResourceAsync,
+						LoadMethod.InstantiateAsync => LoadMethod.InstantiateResourceAsync,
+						_ => loadMethod
+					};
 
 					loadData = value;
 				}
 			}
-        }
+		}
 
 		/// <summary>
 		/// If <see langword="true"/> then an instance of the service
@@ -143,17 +163,128 @@ namespace Sisus.Init
 		/// </summary>
 		/// <seealso cref="UnityEngine.Object.FindObjectOfType(true)"/>
 		public bool FindFromScene
-        {
+		{
 			get => loadMethod == LoadMethod.FindObjectOfType;
 
 			set
 			{
 				if(value)
-                {
+				{
 					loadMethod = LoadMethod.FindObjectOfType;
 				}
 			}
-        }
+		}
+
+		/// <summary>
+		/// If <see langword="true"/>, then service instance will be a direct reference to an asset that is loaded using a resource path or an addressable key.
+		/// <para>
+		/// If <see langword="false"/>, then service instance will be a clone instantiated from an asset that is loaded using a resource path or an addressable key.
+		/// </para>
+		/// <para>
+		/// If <see langword="null"/>, and service asset is a prefab, then service instance will be a clone instantiated from the asset.
+		/// </para>
+		/// <para>
+		/// If <see langword="null"/>, and service asset is not a prefab, then service instance will be a direct reference to the asset.
+		/// </para>
+		/// </summary>
+		public bool? Instantiate
+		{
+			get
+			{
+				if(loadMethod is LoadMethod.Instantiate or LoadMethod.InstantiateAsync
+							  or LoadMethod.InstantiateResource or LoadMethod.InstantiateResourceAsync
+							  #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+							  or LoadMethod.InstantiateAddressable or LoadMethod.InstantiateAddressableAsync
+							  #endif
+				){
+					return true;
+				}
+
+				if(loadMethod is LoadMethod.Load or LoadMethod.LoadAsync
+							  or LoadMethod.LoadResource or LoadMethod.LoadResourceAsync
+							  #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+							  or LoadMethod.LoadAddressable or LoadMethod.LoadAddressableAsync
+							  #endif
+				){
+					return false;
+				}
+
+				return null;
+			}
+
+			set
+			{
+				if(value is not bool instantiate)
+				{
+					return;
+				}
+
+				if(instantiate)
+				{
+					switch(loadMethod)
+					{
+						case LoadMethod.Default:
+						case LoadMethod.Load:
+							loadMethod = LoadMethod.Instantiate;
+							return;
+						case LoadMethod.Async:
+						case LoadMethod.LoadAsync:
+							loadMethod = LoadMethod.InstantiateAsync;
+							return;
+						case LoadMethod.Resource:
+						case LoadMethod.LoadResource:
+							loadMethod = LoadMethod.InstantiateResource;
+							return;
+						case LoadMethod.ResourceAsync:
+						case LoadMethod.LoadResourceAsync:
+							loadMethod = LoadMethod.InstantiateResourceAsync;
+							return;
+						#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+						case LoadMethod.Addressable:
+						case LoadMethod.LoadAddressable:
+							loadMethod = LoadMethod.InstantiateAddressable;
+							return;
+						case LoadMethod.AddressableAsync:
+						case LoadMethod.LoadAddressableAsync:
+							loadMethod = LoadMethod.InstantiateAddressableAsync;
+							return;
+						#endif
+					}
+				}
+				else
+				{
+					switch(loadMethod)
+					{
+						case LoadMethod.Default:
+						case LoadMethod.Instantiate:
+							loadMethod = LoadMethod.Load;
+							return;
+						case LoadMethod.Async:
+						case LoadMethod.InstantiateAsync:
+							loadMethod = LoadMethod.LoadAsync;
+							return;
+						case LoadMethod.Resource:
+						case LoadMethod.InstantiateResource:
+							loadMethod = LoadMethod.LoadResource;
+							return;
+						case LoadMethod.ResourceAsync:
+						case LoadMethod.InstantiateResourceAsync:
+							loadMethod = LoadMethod.LoadResourceAsync;
+							return;
+						#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+						case LoadMethod.Addressable:
+						case LoadMethod.InstantiateAddressable:
+							loadMethod = LoadMethod.LoadAddressable;
+							return;
+						case LoadMethod.AddressableAsync:
+						case LoadMethod.InstantiateAddressableAsync:
+							loadMethod = LoadMethod.LoadAddressableAsync;
+							return;
+						#endif
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// If set to <see langword="true"/> then an instance of the service will only
@@ -172,7 +303,7 @@ namespace Sisus.Init
 		public bool LazyInit { get; set; }
 
 		/// <summary>
-		/// If set to <see langword="true"/> then the service will be loaded asynchonously if possible.
+		/// If set to <see langword="true"/> then the service will be loaded asynchronously if possible.
 		/// <para>
 		/// When set to <see langword="true"/> and <see cref="ResourcePath"/> is given a non-empty value,
 		/// then <see cref="UnityEngine.Resources.LoadAsync"/> will be used to load the resource.
@@ -181,14 +312,17 @@ namespace Sisus.Init
 		/// When set to <see langword="true"/> and <see cref="AddressableKey"/> is given a non-empty value,
 		/// then <see cref="Addressables.LoadAssetAsync"/> will be used to load the asset.
 		/// </para>
-		/// <para>
+		/// </summary>
 		public bool LoadAsync
 		{
-			get => loadMethod is LoadMethod.LoadResourceAsync
+			get => loadMethod is LoadMethod.Async or LoadMethod.LoadAsync or LoadMethod.InstantiateAsync
+							  or LoadMethod.LoadResourceAsync or LoadMethod.InstantiateResourceAsync
 							  #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+							  or LoadMethod.AddressableAsync
 							  or LoadMethod.LoadAddressableAsync
-							  #endif
-							  or LoadMethod.UndefinedAsync;
+							  or LoadMethod.InstantiateAddressableAsync
+								#endif
+								;
 
 			set
 			{
@@ -199,21 +333,47 @@ namespace Sisus.Init
 
 				switch(loadMethod)
 				{
-					#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-					case LoadMethod.LoadAddressable:
-						loadMethod = LoadMethod.LoadAddressableAsync;
+					case LoadMethod.Default:
+						loadMethod = LoadMethod.Async;
 						return;
-					#endif
+					case LoadMethod.Instantiate:
+						loadMethod = LoadMethod.InstantiateAsync;
+						return;
+					case LoadMethod.Load:
+						loadMethod = LoadMethod.LoadAsync;
+						return;
+					case LoadMethod.Resource:
+						loadMethod = LoadMethod.ResourceAsync;
+						return;
 					case LoadMethod.LoadResource:
 						loadMethod = LoadMethod.LoadResourceAsync;
 						return;
-					case LoadMethod.Default:
-						loadMethod = LoadMethod.UndefinedAsync;
+					case LoadMethod.InstantiateResource:
+						loadMethod = LoadMethod.InstantiateResourceAsync;
 						return;
+					#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+					case LoadMethod.Addressable:
+						loadMethod = LoadMethod.AddressableAsync;
+						return;
+					case LoadMethod.LoadAddressable:
+						loadMethod = LoadMethod.LoadAddressableAsync;
+						return;
+					case LoadMethod.InstantiateAddressable:
+						loadMethod = LoadMethod.InstantiateAddressableAsync;
+						return;
+					#endif
 				}
 			}
 		}
 
+		#if DEV_MODE
+		/// <summary>
+		/// If set to <see langword="true"/> then the service will be automatically registered
+		/// using all the interfaces that it implements as its <see cref="definingType">defining types</see>.
+		/// </summary>
+		public bool RegisterAsAllInterfaces { get; set; }
+		#endif
+		
 		/// <summary>
 		/// Classes that have the <see cref="ServiceAttribute"/> can provide services
 		/// for one or more client objects.
@@ -255,23 +415,108 @@ namespace Sisus.Init
 		public ServiceAttribute([AllowNull] Type definingType)
 		{
 			this.definingType = definingType;
-			loadMethod = LoadMethod.CreateInstance;
+			loadMethod = LoadMethod.Default;
 			loadData = null;
 		}
 
-		private enum LoadMethod : byte
+		private enum LoadMethod
 		{
-			Default = 0,
-			CreateInstance = 0,
-			UndefinedAsync = 1,
-			FindObjectOfType = 2,
+			/// <summary>
+			/// Uses <see cref="Instantiate"/> for prefabs and <see cref="Load"/> for other assets.
+			/// </summary>
+			Default,
 
-			LoadResource = 3,
-			LoadResourceAsync = 4,
+			/// <summary>
+			/// Loads an asset using either resources or addressables, and registers it as a service directly.
+			/// </summary>
+			Load,
+
+			/// <summary>
+			/// Creates a new instance from scratch or by cloning an asset.
+			/// </summary>
+			Instantiate,
+
+			/// <summary>
+			/// Finds an object from the initial scene, and registers it as a service.
+			/// </summary>
+			FindObjectOfType,
+
+			/// <summary>
+			/// Loads or instantiates an asset using resources, and registers it as a service directly.
+			/// </summary>
+			Resource,
+
+			/// <summary>
+			/// Loads an asset using resources, and registers it as a service directly.
+			/// </summary>
+			LoadResource,
+			
+			/// <summary>
+			/// Loads an asset using resources, clones it, and registers the clone as a service.
+			/// </summary>
+			InstantiateResource,
+
+			/// <summary>
+			/// Asynchronously loads or instantiates an asset using either resources or addressables.
+			/// </summary>
+			Async,
+
+			/// <summary>
+			/// Asynchronously loads an asset using either resources or addressables, and registers it as a service directly.
+			/// </summary>
+			LoadAsync,
+
+			/// <summary>
+			/// Asynchronously loads an asset using either resources or addressables, clones it,
+			/// and registers the clone as a service.
+			/// </summary>
+			InstantiateAsync,
+
+			/// <summary>
+			/// Asynchronously loads or instantiates an asset using resources.
+			/// </summary>
+			ResourceAsync,
+
+			/// <summary>
+			/// Asynchronously loads an asset using resources, and registers it as a service directly.
+			/// </summary>
+			LoadResourceAsync,
+
+			/// <summary>
+			/// Asynchronously loads an asset using resources, clones it, and registers the clone as a service.
+			/// </summary>
+			InstantiateResourceAsync,
 
 			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-			LoadAddressable = 100,
-			LoadAddressableAsync = 101,
+			/// <summary>
+			/// Loads or instantiates an asset using addressables, and registers it as a service directly.
+			/// </summary>
+			Addressable,
+
+			/// <summary>
+			/// Asynchronously loads or instantiates an asset using addressables.
+			/// </summary>
+			AddressableAsync,
+
+			/// <summary>
+			/// Loads an asset using addressables, and registers it as a service directly.
+			/// </summary>
+			LoadAddressable,
+			
+			/// <summary>
+			/// Asynchronously loads an asset using addressables, and registers it as a service directly.
+			/// </summary>
+			LoadAddressableAsync,
+			
+			/// <summary>
+			/// Loads an asset using addressables, clones it, and registers the clone as a service.
+			/// </summary>
+			InstantiateAddressable,
+
+			/// <summary>
+			/// Asynchronously loads an asset using addressables, clones it, and registers the clone as a service.
+			/// </summary>
+			InstantiateAddressableAsync
 			#endif
 		}
 	}

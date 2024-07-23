@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-namespace Sisus.Init
+namespace Sisus.Init.Internal
 {
 	using static NullExtensions;
 
@@ -24,7 +24,7 @@ namespace Sisus.Init
 	/// </summary>
 	[AddComponentMenu(Hidden)]
 	[Service(typeof(ICoroutineRunner))]
-	public sealed class Updater : MonoBehaviour, ICoroutineRunner
+	internal sealed class Updater : MonoBehaviour, ICoroutineRunner
 	{
 		private const string Hidden = "";
 
@@ -38,7 +38,7 @@ namespace Sisus.Init
 		private static int lateUpdatingCount;
 		private static int fixedUpdatingCount;
 
-		private static readonly object threadLock = new object();
+		private static readonly object threadLock = new();
 
 		private static MonoBehaviour persistentInstance;
 
@@ -82,19 +82,19 @@ namespace Sisus.Init
 			{
 				for(int i = 0; i < updatingCount; i++)
 				{
-					updating[i] = null;
+					updating[i] = NullUpdatable.Instance;
 				}
 				updatingCount = 0;
 
 				for(int i = 0; i < lateUpdatingCount; i++)
 				{
-					lateUpdating[i] = null;
+					lateUpdating[i] = NullUpdatable.Instance;;
 				}
 				lateUpdatingCount = 0;
 
 				for(int i = 0; i < fixedUpdatingCount; i++)
 				{
-					fixedUpdating[i] = null;
+					fixedUpdating[i] = NullUpdatable.Instance;;
 				}
 				fixedUpdatingCount = 0;
 			}
@@ -117,14 +117,14 @@ namespace Sisus.Init
 				Service.RemoveInstanceChangedListener<ICoroutineRunner>(OnInstanceChanged);
 				Service.AddInstanceChangedListener<ICoroutineRunner>(OnInstanceChanged);
 			}
-		}
 
-		private static void OnInstanceChanged(Clients clients, ICoroutineRunner oldInstance, ICoroutineRunner newInstance)
-		{
-			if(newInstance is Updater updater)
+			static void OnInstanceChanged(Clients clients, ICoroutineRunner oldInstance, ICoroutineRunner newInstance)
 			{
-				persistentInstance = updater;
-				CoroutineRunner = updater;
+				if(newInstance is Updater updater)
+				{
+					persistentInstance = updater;
+					CoroutineRunner = updater;
+				}
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace Sisus.Init
 		{
 			lock(threadLock)
 			{
-				Remove(ref updating, subscriber, ref updatingCount);
+				Remove(ref updating, subscriber, ref updatingCount, NullUpdatable.Instance);
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace Sisus.Init
 		{
 			lock(threadLock)
 			{
-				Remove(ref lateUpdating, subscriber, ref lateUpdatingCount);
+				Remove(ref lateUpdating, subscriber, ref lateUpdatingCount, NullUpdatable.Instance);
 			}
 		}
 
@@ -196,7 +196,7 @@ namespace Sisus.Init
 		{
 			lock(threadLock)
 			{
-				Remove(ref fixedUpdating, subscriber, ref fixedUpdatingCount);
+				Remove(ref fixedUpdating, subscriber, ref fixedUpdatingCount, NullUpdatable.Instance);
 			}
 		}
 
@@ -224,7 +224,7 @@ namespace Sisus.Init
 			// This will only occur in the rare cases that Init has not yet executed before
 			// this method is called or that the application is quitting and the
 			// persistentInstance has already been unloaded.
-			if(persistentInstance == null)
+			if(!persistentInstance)
 			{
 				InvokeAtEndOfFrame(() => StartCoroutine(coroutine));
 				return null;
@@ -242,7 +242,7 @@ namespace Sisus.Init
 			// This will only occur in the rare cases that Init has not yet executed before
 			// this method is called or that the application is quitting and the
 			// persistentInstance has already been unloaded.
-			if(persistentInstance == null)
+			if(!persistentInstance)
 			{
 				InvokeAtEndOfFrame(() => StopCoroutine(coroutine));
 				return;
@@ -266,7 +266,7 @@ namespace Sisus.Init
 			// This will only occur in the rare cases that Init has not yet executed before
 			// this method is called or that the application is quitting and the
 			// persistentInstance has already been unloaded.
-			if(persistentInstance == null)
+			if(!persistentInstance)
 			{
 				InvokeAtEndOfFrame(() => StopCoroutine(coroutine));
 				return;
@@ -290,11 +290,12 @@ namespace Sisus.Init
 			{
 				Array.Resize(ref array, count + count);
 			}
+
 			array[count] = item;
 			count++;
 		}
 
-		private static void Remove<T>(ref T[] array, T item, ref int count) where T : class
+		private static void Remove<T>(ref T[] array, T item, ref int count, T nullValue) where T : class
 		{
 			count--;
 
@@ -307,7 +308,7 @@ namespace Sisus.Init
 
 			if(index == count)
 			{
-				array[index] = null;
+				array[index] = nullValue;
 				return;
 			}
 
@@ -320,7 +321,7 @@ namespace Sisus.Init
 		private void Update()
 		{
 			float deltaTime = Time.deltaTime;
-			for(int i = 0; i < updatingCount; i++)
+			for(int i = updatingCount - 1; i >= 0; i--)
 			{
 				updating[i].Update(deltaTime);
 			}
@@ -329,7 +330,7 @@ namespace Sisus.Init
 		private void LateUpdate()
 		{
 			float deltaTime = Time.deltaTime;
-			for(int i = 0; i < lateUpdatingCount; i++)
+			for(int i = lateUpdatingCount - 1; i >= 0; i--)
 			{
 				lateUpdating[i].LateUpdate(deltaTime);
 			}
@@ -338,7 +339,7 @@ namespace Sisus.Init
 		private void FixedUpdate()
 		{
 			float deltaTime = Time.deltaTime;
-			for(int i = 0; i < fixedUpdatingCount; i++)
+			for(int i = fixedUpdatingCount - 1; i >= 0; i--)
 			{
 				fixedUpdating[i].FixedUpdate(deltaTime);
 			}
@@ -352,9 +353,23 @@ namespace Sisus.Init
 
 			public void LateUpdate(float deltaTime)
 			{
-				Remove(ref lateUpdating, this, ref lateUpdatingCount);
+				Remove(ref lateUpdating, this, ref lateUpdatingCount, NullUpdatable.Instance);
 				action();
 			}
 		}
+
+		private sealed class NullUpdatable : IUpdate, IFixedUpdate, ILateUpdate
+		{
+			public static readonly NullUpdatable Instance = new ();
+
+			private NullUpdatable() { }
+
+			public void Update(float deltaTime)	{ }
+
+			public void FixedUpdate(float deltaTime) { }
+
+			public void LateUpdate(float deltaTime) { }
+		}
+
 	}
 }

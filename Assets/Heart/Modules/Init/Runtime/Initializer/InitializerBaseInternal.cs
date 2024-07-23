@@ -2,8 +2,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 using static Sisus.NullExtensions;
@@ -38,13 +38,19 @@ namespace Sisus.Init.Internal
 		[SerializeField, HideInInspector, Tooltip(NullArgumentGuardTooltip)]
 		private protected NullArgumentGuard nullArgumentGuard = DefaultNullArgumentGuardFlags;
 
+		private protected InitState initState = InitState.Uninitialized;
+		private TClient initTargetResult = default;
+
+		protected virtual bool IsRemovedAfterTargetInitialized => true;
+		private protected virtual bool IsAsync => false;
+
 		/// <inheritdoc/>
 		TClient IValueProvider<TClient>.Value => target;
 
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
 		{
-			if(target != null && target is TValue result)
+			if(initTargetResult is TValue result)
 			{
 				value = result;
 				return true;
@@ -57,7 +63,22 @@ namespace Sisus.Init.Internal
 		bool IValueByTypeProvider.CanProvideValue<TValue>(Component client) => typeof(TValue).IsAssignableFrom(typeof(TClient));
 
 		/// <inheritdoc/>
-		Object IInitializer.Target { get => target; set => target = value as TClient; }
+		Object IInitializer.Target
+		{
+			get
+			{
+				#if UNITY_EDITOR
+				if(gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
+				{
+					return target;
+				}
+				#endif
+
+				return initTargetResult;
+			}
+
+			set => target = value as TClient;
+		}
 
 		/// <inheritdoc/>
 		bool IInitializer.TargetIsAssignableOrConvertibleToType(Type type) => type.IsAssignableFrom(typeof(TClient));
@@ -74,9 +95,6 @@ namespace Sisus.Init.Internal
 		#endif
 		IInitializer.InitTargetAsync() => await InitTargetAsync();
 
-		protected virtual bool IsRemovedAfterTargetInitialized => true;
-		private protected virtual bool IsAsync => false;
-
 		/// <inheritdoc/>
 		public async
 		#if UNITY_2023_1_OR_NEWER
@@ -86,31 +104,45 @@ namespace Sisus.Init.Internal
 		#endif
 		InitTargetAsync()
 		{
+			if(initState != InitState.Uninitialized)
+			{
+				return initTargetResult;
+			}
+
 			if(!this)
 			{
-				return target;
+				return null;
 			}
 
-			target = await InitTargetAsync(target);
+			initState = InitState.Initializing;
 
-			if(
-			#if UNITY_EDITOR
-			Application.isPlaying &&
-			#endif
-			IsRemovedAfterTargetInitialized)
+			var initTargetAsync = InitTargetAsync(target);
+
+			try
 			{
-				Updater.InvokeAtEndOfFrame(DestroySelf);
+				initTargetResult = await initTargetAsync;
 
-				void DestroySelf()
+				initState = InitState.Initialized;
+
+				if(IsRemovedAfterTargetInitialized && this)
 				{
-					if(this != null)
-					{
-						Destroy(this);
-					}
+					Updater.InvokeAtEndOfFrame(DestroySelfIfNotAsset);
 				}
-			}
 
-			return target;
+				return initTargetResult;
+			}
+			catch(Exception
+			#if UNITY_EDITOR
+			exception
+			#endif
+			)
+			{
+				initState = InitState.Failed;
+				#if UNITY_EDITOR
+				((IInitializerEditorOnly)this).NullGuardFailedMessage = exception.ToString();
+				#endif
+				throw;
+			}
 		}
 
 		/// <summary>
@@ -144,43 +176,75 @@ namespace Sisus.Init.Internal
 		/// An object to initialize, a prefab to clone, or <see langword="null"/>.
 		/// </param>
 		/// <returns> The initialized object. </returns>
-		private protected virtual ValueTask<TClient> InitTargetAsync([AllowNull] TClient target) => new ValueTask<TClient>(InitTarget(target));
+		private protected virtual
+		#if UNITY_2023_1_OR_NEWER
+		Awaitable<TClient> InitTargetAsync([AllowNull] TClient target) => AwaitableUtility.FromResult(InitTarget(target));
+		#else
+		System.Threading.Tasks.Task<TClient> InitTargetAsync([AllowNull] TClient target) => System.Threading.Tasks.Task.FromResult(InitTarget(target));
+		#endif
 
 		/// <inheritdoc/>
 		public TClient InitTarget()
 		{
-			if(this == null)
+			if(initState != InitState.Uninitialized)
 			{
-				return target;
+				return initTargetResult;
 			}
 
-			if(
-			#if UNITY_EDITOR
-			Application.isPlaying &&
-			#endif
-			IsRemovedAfterTargetInitialized)
+			if(!this)
 			{
-				Updater.InvokeAtEndOfFrame(DestroySelf);
+				return null;
+			}
 
-				void DestroySelf()
+			initState = InitState.Initializing;
+
+			try
+			{
+
+				initTargetResult = InitTarget(target);
+				initState = InitState.Initialized;
+
+				if(IsRemovedAfterTargetInitialized)
 				{
-					if(this != null)
-					{
-						Destroy(this);
-					}
+					Updater.InvokeAtEndOfFrame(DestroySelfIfNotAsset);
 				}
-			}
 
-			target = InitTarget(target);
-			return target;
+				return initTargetResult;
+			}
+			catch(Exception
+			#if UNITY_EDITOR
+			exception
+			#endif
+			)
+			{
+				initState = InitState.Failed;
+				#if UNITY_EDITOR
+				((IInitializerEditorOnly)this).NullGuardFailedMessage = exception.ToString();
+				#endif
+				throw;
+			}
 		}
 
 		#if DEBUG || INIT_ARGS_SAFE_MODE
-		private protected bool IsRuntimeNullGuardActive => nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException)
-			#if UNITY_EDITOR
-			&& Application.isPlaying
-			#endif
-			;
+		private protected bool IsRuntimeNullGuardActive
+		{
+			get
+			{
+				if(!nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
+				{
+					return false;
+				}
+
+				#if UNITY_EDITOR
+				if(gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
+				{
+					return false;
+				}
+				#endif
+
+				return true;
+			}
+		}
 		#endif
 
 		/// <summary>
@@ -188,8 +252,10 @@ namespace Sisus.Init.Internal
 		/// <para>
 		/// <see cref="OnReset"/> is called when the user hits the Reset button in the Inspector's
 		/// context menu or when adding the component to a GameObject the first time.
+		/// </para>
 		/// <para>
 		/// This function is only called in the editor in edit mode.
+		/// </para>
 		/// </summary>
 		protected virtual void OnReset() { }
 
@@ -216,13 +282,14 @@ namespace Sisus.Init.Internal
 		[return: NotNull]
 		private protected abstract TClient InitTarget([AllowNull] TClient target);
 
-		#if DEBUG
-		async
-		#endif
-		private protected void Awake()
+		async private protected void Awake()
 		{
-			#if DEBUG && UNITY_2023_1_OR_NEWER
-			if(target is MonoBehaviour targetMonoBehaviour && targetMonoBehaviour && targetMonoBehaviour.didAwake)
+			#if UNITY_EDITOR
+			ThreadSafe.Application.IsPlaying = Application.isPlaying;
+			#endif
+
+			#if (DEBUG || INIT_ARGS_SAFE_MODE) && UNITY_2023_1_OR_NEWER
+			if(target is MonoBehaviour targetMonoBehaviour && targetMonoBehaviour && targetMonoBehaviour.didAwake && targetMonoBehaviour.GetType().GetCustomAttribute<ExecuteAlways>() is null)
 			{
 				Debug.LogWarning($"{GetType().Name}.Awake was called after target {target.GetType().Name}.Awake has already executed! You can add the [InitAfter(typeof({target.GetType().Name}))] attribute to the {GetType().Name} class to make sure it is initialized before its client.");
 			}
@@ -230,16 +297,11 @@ namespace Sisus.Init.Internal
 
 			if(
 			#if UNITY_EDITOR
-			Application.isPlaying &&
+			!gameObject.IsAsset(resultIfSceneObjectInEditMode: true) &&
 			#endif
 			IsAsync)
 			{
-				#if DEBUG
-				await
-				#else
-				_ = 
-				#endif
-				InitTargetAsync();
+				await InitTargetAsync();
 				return;
 			}
 
@@ -248,18 +310,46 @@ namespace Sisus.Init.Internal
 
 		#if DEBUG || INIT_ARGS_SAFE_MODE
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		#else
+		[System.Diagnostics.Conditional("FALSE")]
+		#endif
 		private protected void ThrowIfMissing<TArgument>(TArgument argument)
 		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(argument == Null)
 			{
 				throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TArgument));
 			}
+			#endif
 		}
-		#endif
+
+		private void DestroySelf()
+		{
+			if(this)
+			{
+				Destroy(this);
+			}
+		}
+
+		private void DestroySelfIfNotAsset()
+		{
+			#if UNITY_EDITOR
+			if(gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
+			{
+				return;
+			}
+			#endif
+
+			if(this)
+			{
+				Destroy(this);
+			}
+		}
 
 		#if UNITY_EDITOR
 		bool IInitializerEditorOnly.ShowNullArgumentGuard => true;
 		bool IInitializerEditorOnly.CanInitTargetWhenInactive => false;
+		bool IInitializerEditorOnly.CanGuardAgainstNull => true;
 		NullArgumentGuard IInitializerEditorOnly.NullArgumentGuard { get => nullArgumentGuard; set => nullArgumentGuard = value; }
 		string IInitializerEditorOnly.NullGuardFailedMessage { get; set; } = "";
 		NullGuardResult IInitializerEditorOnly.EvaluateNullGuard() => EvaluateNullGuard();
@@ -270,9 +360,8 @@ namespace Sisus.Init.Internal
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }
 		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
 		private protected abstract NullGuardResult EvaluateNullGuard();
-
-        private protected abstract void Reset();
+		private protected abstract void Reset();
 		private protected abstract void OnValidate();
 		#endif
-    }
+	}
 }

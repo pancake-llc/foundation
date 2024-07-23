@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CS0414
 
-using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
 namespace Sisus.Init
 {
@@ -28,26 +28,29 @@ namespace Sisus.Init
 	/// this is one tool at your disposable that can help with that.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TService"> The concrete type of the service object class. </typeparam>
+	/// <typeparam name="TService"> The concrete type of the initialized service. </typeparam>
 	/// <seealso cref="ServiceInitializer{TService, TArgument}"/>
 	public abstract class ServiceInitializer<TService> : IServiceInitializer<TService> where TService : class
 	{
 		/// <inheritdoc/>
-		object IServiceInitializer.InitTarget(params object[] services)
+		object IServiceInitializer.InitTarget(params object[] arguments)
 		{
-			Task<TService> task = InitTargetAsync();
-			return task.IsCompleted ? task.Result : task;
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(arguments is null) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given no services, when none were expected.");
+			else if(arguments.Length != 0) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given {arguments.Length} services, when none were expected.");
+			#endif
+
+			return InitTarget();
 		}
 
 		/// <summary>
 		/// Returns a new instance of the <see cref="TService"/> class, or <see langword="null"/>.
 		/// <para>
-		/// By default this method always returns <see langword="null"/>.
-		/// This tells the framework that it should handle creating the instance internally.
+		/// By default this method returns <see langword="null"/>. In this case the framework
+		/// will take care of creating the instance internally.
 		/// </para>
 		/// <para>
-		/// If more control is needed, this method can be override to take over control of the
-		/// creation of the service object from the framework.
+		/// If more control is needed, this method can be override to manually create the service instance.
 		/// </para>
 		/// </summary>
 		/// <returns>
@@ -55,23 +58,6 @@ namespace Sisus.Init
 		/// if the framework should create the instance automatically.
 		/// </returns>
 		[return: MaybeNull]
-		public virtual TService InitTarget() => null;
-
-		/// <summary>
-		/// Returns a task that can be awaited to get a new instance
-		/// of the <see cref="TService"/> class, or <see langword="null"/>.
-		/// <para>
-		/// By default this method returns the result of <see cref="InitTarget"/> synchronously.
-		/// </para>
-		/// <para>
-		/// This method can be overridden to implement logic for loading the service asynchronously.
-		/// </para>
-		/// </summary>
-		/// <returns>
-		/// A task containing an instance of the <see cref="TService"/> class, or <see langword="null"/>
-		/// if the framework should create the instance automatically.
-		/// </returns>
-		[return: MaybeNull]
-		public virtual Task<TService> InitTargetAsync() => Task.FromResult(InitTarget());
+		public virtual TService InitTarget() => default;
 	}
 }

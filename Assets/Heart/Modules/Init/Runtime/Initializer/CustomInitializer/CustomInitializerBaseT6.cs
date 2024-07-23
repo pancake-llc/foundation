@@ -102,13 +102,13 @@ namespace Sisus.Init
 			#else
 			if(target is null)
 			#endif
-            {
-                target = gameObject.AddComponent<TClient>();
-            }
+			{
+				target = gameObject.AddComponent<TClient>();
+			}
 			else if(target.gameObject != gameObject)
 			{
 				target = Instantiate(target);
-            }
+			}
 
 			InitTarget(target, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 			return target;
@@ -131,7 +131,7 @@ namespace Sisus.Init
 		bool IInitializable.Init(Context context)
 		{
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				AutoInitInEditMode<CustomInitializerBase<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(this);
 			}
@@ -178,5 +178,5 @@ namespace Sisus.Init
 		private protected sealed override void Reset() => Reset<CustomInitializerBase<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(this, gameObject);
 		private protected override void OnValidate() => Validate(this, gameObject, FirstArgument, SecondArgument, ThirdArgument, FourthArgument, FifthArgument, SixthArgument);
 		#endif
-    }
+	}
 }

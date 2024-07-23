@@ -48,7 +48,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					Type definingType = serviceDefinition.definingType ?? service.GetType();
-					ServiceInfo serviceAttributeInfo;
+					GlobalServiceInfo serviceAttributeInfo;
 					if(TryGetServiceAttributeInfo(definingType, out serviceAttributeInfo))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, servicesComponent.toClients);
@@ -77,7 +77,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return height;
 		}
 
-		static bool TryGetServiceAttributeInfo(Type definingType, out ServiceInfo serviceAttributeInfo)
+		static bool TryGetServiceAttributeInfo(Type definingType, out GlobalServiceInfo serviceAttributeInfo)
 			=> ServiceAttributeUtility.definingTypes.TryGetValue(definingType, out serviceAttributeInfo);
 		
 		static bool TryGetServiceTag(Component component, Type matchingDefiningType, out ServiceTag result)

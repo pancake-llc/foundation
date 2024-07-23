@@ -74,13 +74,13 @@ namespace Sisus.Init
 			#else
 			if(target is null)
 			#endif
-            {
-                target = gameObject.AddComponent<TClient>();
-            }
+			{
+				target = gameObject.AddComponent<TClient>();
+			}
 			else if(target.gameObject != gameObject)
 			{
 				target = Instantiate(target);
-            }
+			}
 
 			InitTarget(target, firstArgument, secondArgument);
 			return target;
@@ -99,7 +99,7 @@ namespace Sisus.Init
 		bool IInitializable.Init(Context context)
 		{
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				AutoInitInEditMode<CustomInitializerBase<TClient, TFirstArgument, TSecondArgument>, TClient, TFirstArgument, TSecondArgument>(this);
 			}
@@ -137,5 +137,5 @@ namespace Sisus.Init
 		private protected sealed override void Reset() => Reset<CustomInitializerBase<TClient, TFirstArgument, TSecondArgument>, TClient, TFirstArgument, TSecondArgument>(this, gameObject);
 		private protected override void OnValidate() => Validate(this, gameObject, FirstArgument, SecondArgument);
 		#endif
-    }
+	}
 }

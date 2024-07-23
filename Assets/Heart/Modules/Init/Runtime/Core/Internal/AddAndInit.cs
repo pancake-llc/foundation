@@ -5,10 +5,10 @@ namespace Sisus.Init
 	/// <summary>
 	/// Utility class to help with getting and adding components to GameObjects when using new <see cref="GameObject{}"/>.
 	/// </summary>
-    internal static class AddAndInit
+	internal static class AddAndInit
 	{
 		internal static TComponent Component<TComponent, TArgument>(GameObject gameObject, TArgument argument, bool setActive) where TComponent : Component
-        {
+		{
 			TComponent component;
 
 			if(!gameObject.TryGetComponent(out component))
@@ -28,7 +28,7 @@ namespace Sisus.Init
 			}
 
 			if(setActive && !gameObject.activeSelf)
-            {
+			{
 				InitArgs.Set(typeof(TComponent), argument);
 				gameObject.SetActive(true);
 				if(!InitArgs.Clear<TArgument>(typeof(TComponent)))
@@ -38,7 +38,7 @@ namespace Sisus.Init
 			}
 
 			OnBeforeException(gameObject, setActive);
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		internal static TComponent Component<TComponent, TFirstArgument, TSecondArgument>(GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, bool setActive) where TComponent : Component
@@ -62,7 +62,7 @@ namespace Sisus.Init
 			}
 
 			if(setActive && !gameObject.activeSelf)
-            {
+			{
 				InitArgs.Set(typeof(TComponent), firstArgument, secondArgument);
 				gameObject.SetActive(true);
 				if(!InitArgs.Clear<TFirstArgument, TSecondArgument>(typeof(TComponent)))
@@ -72,7 +72,7 @@ namespace Sisus.Init
 			}
 
 			OnBeforeException(gameObject, setActive);
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		internal static TComponent Component<TComponent, TFirstArgument, TSecondArgument, TThirdArgument>(GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, bool setActive) where TComponent : Component
@@ -96,7 +96,7 @@ namespace Sisus.Init
 			}
 
 			if(setActive && !gameObject.activeSelf)
-            {
+			{
 				InitArgs.Set(typeof(TComponent), firstArgument, secondArgument, thirdArgument);
 				gameObject.SetActive(true);
 				if(!InitArgs.Clear<TFirstArgument, TSecondArgument, TThirdArgument>(typeof(TComponent)))
@@ -106,7 +106,7 @@ namespace Sisus.Init
 			}
 
 			OnBeforeException(gameObject, setActive);
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		internal static TComponent Component<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, bool setActive) where TComponent : Component
@@ -130,7 +130,7 @@ namespace Sisus.Init
 			}
 
 			if(setActive && !gameObject.activeSelf)
-            {
+			{
 				InitArgs.Set(typeof(TComponent), firstArgument, secondArgument, thirdArgument, fourthArgument);
 				gameObject.SetActive(true);
 				if(!InitArgs.Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(typeof(TComponent)))
@@ -140,7 +140,7 @@ namespace Sisus.Init
 			}
 
 			OnBeforeException(gameObject, setActive);
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		internal static TComponent Component<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, bool setActive) where TComponent : Component
@@ -164,7 +164,7 @@ namespace Sisus.Init
 			}
 
 			if(setActive && !gameObject.activeSelf)
-            {
+			{
 				InitArgs.Set(typeof(TComponent), firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
 				gameObject.SetActive(true);
 				if(!InitArgs.Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(typeof(TComponent)))
@@ -174,7 +174,7 @@ namespace Sisus.Init
 			}
 
 			OnBeforeException(gameObject, setActive);
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		internal static TComponent Component<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, bool setActive) where TComponent : Component
@@ -198,7 +198,7 @@ namespace Sisus.Init
 			}
 
 			if(setActive && !gameObject.activeSelf)
-            {
+			{
 				InitArgs.Set(typeof(TComponent), firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 				gameObject.SetActive(true);
 				if(!InitArgs.Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(typeof(TComponent)))
@@ -208,7 +208,7 @@ namespace Sisus.Init
 			}
 
 			OnBeforeException(gameObject, setActive);
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		private static void OnBeforeException(GameObject gameObject, bool setActive)

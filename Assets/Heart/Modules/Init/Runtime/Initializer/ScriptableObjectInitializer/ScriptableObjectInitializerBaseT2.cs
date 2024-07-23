@@ -56,7 +56,7 @@ namespace Sisus.Init
 		/// <inheritdoc/>
 		[return: NotNull]
 		private protected override TClient InitTarget([AllowNull] TClient target)
-        {
+		{
 			var firstArgument = FirstArgument;
 			var secondArgument = SecondArgument;
 
@@ -65,10 +65,10 @@ namespace Sisus.Init
 			#endif
 
 			if(target == null)
-            {
-                Create.Instance(out target, firstArgument, secondArgument);
+			{
+				Create.Instance(out target, firstArgument, secondArgument);
 				return target;
-            }
+			}
 			
 			if(target is ScriptableObject<TFirstArgument, TSecondArgument> scriptableObjectT)
 			{
@@ -78,7 +78,7 @@ namespace Sisus.Init
 
 			target.Init(firstArgument, secondArgument);
 			return target;
-        }
+		}
 
 		/// <summary>
 		/// Resets the Init arguments to their default values.
@@ -108,5 +108,5 @@ namespace Sisus.Init
 		private protected sealed override void Reset() => Reset<ScriptableObjectInitializerBase<TClient, TFirstArgument, TSecondArgument>, TClient, TFirstArgument, TSecondArgument>(this, null);
 		private protected override void OnValidate() => Validate(this, null, FirstArgument, SecondArgument);
 		#endif
-    }
+	}
 }

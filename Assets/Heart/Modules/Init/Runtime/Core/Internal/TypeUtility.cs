@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
@@ -12,9 +11,12 @@ using Object = UnityEngine.Object;
 
 namespace Sisus.Init.Internal
 {
-    public static class TypeUtility
-    {
-		private static readonly HashSet<Type> baseTypes = new HashSet<Type>()
+	/// <summary>
+	/// Contains a collections of utility methods related to <see cref="Type"/>.
+	/// </summary>
+	internal static class TypeUtility
+	{
+		private static readonly HashSet<Type> baseTypes = new()
 		{
 			typeof(object),
 			typeof(Object),
@@ -31,7 +33,7 @@ namespace Sisus.Init.Internal
 			#endif
 		};
 
-		private static readonly HashSet<Type> genericBaseTypes = new HashSet<Type>()
+		private static readonly HashSet<Type> genericBaseTypes = new()
 		{
 			typeof(MonoBehaviour<>),
 			typeof(MonoBehaviour<,>),
@@ -47,7 +49,13 @@ namespace Sisus.Init.Internal
 			typeof(MonoBehaviour<,,,,,,,,,,,>),
 
 			typeof(ConstructorBehaviour<>), typeof(ConstructorBehaviour<,>),typeof(ConstructorBehaviour<,>),
-			typeof(ConstructorBehaviour<,,>), typeof(ConstructorBehaviour<,,,>), typeof(ConstructorBehaviour<,,,,>)
+			typeof(ConstructorBehaviour<,,>), typeof(ConstructorBehaviour<,,,>), typeof(ConstructorBehaviour<,,,,>),
+
+			typeof(ScriptableObject<>), typeof(ScriptableObject<,>), typeof(ScriptableObject<,,>),
+			typeof(ScriptableObject<,,,>), typeof(ScriptableObject<,,,,>), typeof(ScriptableObject<,,,,,>),
+
+			typeof(StateMachineBehaviour<>), typeof(StateMachineBehaviour<,>), typeof(StateMachineBehaviour<,,>),
+			typeof(StateMachineBehaviour<,,,>), typeof(StateMachineBehaviour<,,,,>), typeof(StateMachineBehaviour<,,,,,>)
 		};
 
 		private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(3)
@@ -90,188 +98,206 @@ namespace Sisus.Init.Internal
 			} }
 		};
 
+		private static readonly Dictionary<Type, bool> isSerializableByUnityCache = new();
+
+
+		#if UNITY_EDITOR
+		internal static UnityEditor.TypeCache.TypeCollection
+		#else
 		[return: NotNull]
-		public static IEnumerable<(Type classWithAttribute, TAttribute attribute)> GetTypesWithAttribute<TAttribute>() where TAttribute : Attribute
+		internal static List<Type>
+		#endif
+		GetTypesWithAttribute<TAttribute>(bool publicOnly) where TAttribute : Attribute
 		{
 			#if UNITY_EDITOR
-			foreach(var type in UnityEditor.TypeCache.GetTypesWithAttribute<TAttribute>())
-			{
-				foreach(var attribute in type.GetCustomAttributes<TAttribute>())
-				{
-					yield return (type, attribute);
-				}
-			}
+			return UnityEditor.TypeCache.GetTypesWithAttribute<TAttribute>();
 			#else
-			foreach(var type in GetAllTypesThreadSafe(typeof(TAttribute).Assembly, null))
+			var result = new List<Type>(64);
+
+			foreach(var type in GetAllTypesThreadSafe(typeof(TAttribute).Assembly, publicOnly))
 			{
-				foreach(var attribute in type.GetCustomAttributes<TAttribute>())
+				if(type.IsDefined(typeof(TAttribute)))
 				{
-					yield return (type, attribute);
+					result.Add(type);
 				}
 			}
+
+			return result;
 			#endif
 		}
 
+		#if UNITY_EDITOR
+		internal static UnityEditor.TypeCache.TypeCollection
+		#else
 		[return: NotNull]
-		internal static IEnumerable<(Type classWithAttribute, TAttribute[] attributes)> GetTypesWithAttribute<TAttribute>([DisallowNull] Assembly mustReferenceAssembly, [AllowNull] Assembly ignoreAssembly) where TAttribute : Attribute
+		internal static List<Type>
+		#endif
+			GetTypesWithAttribute<TAttribute>([DisallowNull] Assembly mustReferenceAssembly, bool publicOnly, int estimatedResultCount) where TAttribute : Attribute
 		{
 			#if UNITY_EDITOR
-			foreach(var type in UnityEditor.TypeCache.GetTypesWithAttribute<TAttribute>())
-			{
-				yield return (type, type.GetCustomAttributes<TAttribute>().ToArray());
-			}
+			return UnityEditor.TypeCache.GetTypesWithAttribute<TAttribute>();
 			#else
-			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
+			var result = new List<Type>(estimatedResultCount);
+
+			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, publicOnly))
 			{
-				var attributes = type.GetCustomAttributes<TAttribute>();
-				if(attributes.Any())
+				if(type.IsDefined(typeof(TAttribute)))
 				{
-					yield return (type, attributes.ToArray());
+					result.Add(type);
+				}
+			}
+
+			return result;
+			#endif
+		}
+
+		#if UNITY_EDITOR
+		internal static UnityEditor.TypeCache.TypeCollection
+		#else
+		[return: NotNull]
+		internal static List<Type>
+		#endif
+			GetDerivedTypes<T>(bool publicOnly, int estimatedResultCount)
+		{
+			#if UNITY_EDITOR
+			//return typeCollectionArrayGetter(UnityEditor.TypeCache.GetTypesDerivedFrom(typeof(T)));
+			return UnityEditor.TypeCache.GetTypesDerivedFrom(typeof(T));
+			#else
+			var result = new List<Type>(estimatedResultCount);
+
+			foreach(var type in GetAllTypesThreadSafe(typeof(T).Assembly, publicOnly))
+			{
+				if(typeof(T).IsAssignableFrom(type))
+				{
+					result.Add(type);
+				}
+			}
+
+			return result;
+			#endif
+		}
+
+		internal static void GetDerivedTypes<T>(List<Type> results, bool publicOnly)
+		{
+			#if UNITY_EDITOR
+			results.AddRange(UnityEditor.TypeCache.GetTypesDerivedFrom(typeof(T)));
+			#else
+			foreach(var type in GetAllTypesThreadSafe(typeof(T).Assembly, publicOnly))
+			{
+				if(typeof(T).IsAssignableFrom(type))
+				{
+					results.Add(type);
 				}
 			}
 			#endif
 		}
 
 		#if UNITY_EDITOR
-		public static UnityEditor.TypeCache.TypeCollection GetDerivedTypes<T>()
+		internal static UnityEditor.TypeCache.TypeCollection
 		#else
 		[return: NotNull]
-		internal static IEnumerable<Type> GetDerivedTypes<T>()
+		internal static List<Type>
 		#endif
-        {
+		GetDerivedTypes([DisallowNull] Type inheritedType, [DisallowNull] Assembly mustReferenceAssembly, bool publicOnly, int estimatedResultCount)
+		{
 			#if UNITY_EDITOR
-			return UnityEditor.TypeCache.GetTypesDerivedFrom(typeof(T));
+			return UnityEditor.TypeCache.GetTypesDerivedFrom(inheritedType);
 			#else
-			foreach(var type in GetAllTypesThreadSafe(typeof(T).Assembly, null))
-			{
-				if(typeof(T).IsAssignableFrom(type))
-				{
-					yield return type;
-				}
-			}
-			#endif
-        }
+			var results = new List<Type>(estimatedResultCount);
 
-		[return: NotNull]
-		internal static IEnumerable<Type> GetDerivedTypes([DisallowNull] Type inheritedType, [DisallowNull] Assembly mustReferenceAssembly, [AllowNull] Assembly ignoreAssembly)
-        {
-			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
+			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, publicOnly))
 			{
 				if(inheritedType.IsAssignableFrom(type))
 				{
-					yield return type;
+					results.Add(type);
 				}
 			}
-        }
 
-		[return: NotNull]
-		internal static IEnumerable<Type> GetImplementingTypes<TInterface>([DisallowNull] Assembly mustReferenceAssembly, [AllowNull] Assembly ignoreAssembly) where TInterface : class
-        {
-			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
-			{
-				if(typeof(TInterface).IsAssignableFrom(type) && !type.IsInterface)
-				{
-					yield return type;
-				}
-			}
-        }
-
-		[return: NotNull]
-		internal static IEnumerable<Type> GetImplementingTypes([DisallowNull] Type interfaceType, [AllowNull] Assembly mustReferenceAssembly, [AllowNull] Assembly ignoreAssembly)
-        {
-			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
-			{
-				if(interfaceType.IsAssignableFrom(type) && !type.IsInterface)
-				{
-					yield return type;
-				}
-			}
-        }
-
-		[return: NotNull]
-		internal static IEnumerable<Type> GetAllTypesThreadSafe([AllowNull] Assembly mustReferenceAssembly, [AllowNull] Assembly ignoreAssembly)
-		{
-            foreach(var assembly in GetAllAssembliesThreadSafe(mustReferenceAssembly, ignoreAssembly))
-            {
-				var types = assembly.GetLoadableTypes(true);
-                for(int i = types.Length - 1; i >= 0; i--)
-                {
-					yield return types[i];
-                }
-            }
-		}
-
-		[return: NotNull]
-		public static IEnumerable<Type> GetAllTypesThreadSafe()
-		{
-            foreach(var assembly in GetAllAssembliesThreadSafe())
-            {
-				var types = assembly.GetLoadableTypes(true);
-                for(int i = types.Length - 1; i >= 0; i--)
-                {
-					yield return types[i];
-                }
-            }
-		}
-
-		[return: NotNull]
-		private static Type[] GetLoadableTypes([DisallowNull] this Assembly assembly, bool exportedOnly)
-		{
-			try
-			{
-				Type[] result;
-				if(exportedOnly)
-				{
-					result = assembly.GetExportedTypes();
-				}
-				else
-				{
-					result = assembly.GetTypes();
-				}
-
-				return result;
-			}
-			catch(NotSupportedException) //thrown if GetExportedTypes is called for a dynamic assembly
-			{
-				#if DEV_MODE
-				UnityEngine.Debug.LogWarning(assembly.GetName().Name + ".GetLoadableTypes() NotSupportedException\n" + assembly.FullName);
-				#endif
-				return Type.EmptyTypes;
-			}
-			catch(ReflectionTypeLoadException e)
-			{
-				var TypesList = new List<Type>(100);
-
-				var exceptionTypes = e.Types;
-				int count = exceptionTypes.Length;
-				for(int n = count - 1; n >= 0; n--)
-				{
-					var type = exceptionTypes[n];
-					if(type != null)
-					{
-						TypesList.Add(type);
-					}
-				}
-
-				#if DEV_MODE
-				UnityEngine.Debug.LogWarning(assembly.GetName().Name + ".GetLoadableTypes() ReflectionTypeLoadException, salvaged: " + TypesList.Count + "\n" + assembly.FullName);
-				#endif
-
-				return TypesList.ToArray();
-			}
-			#if DEV_MODE
-			catch(Exception e)
-			{
-				UnityEngine.Debug.LogWarning(assembly.GetName().Name + ".GetLoadableTypes() " + e + "\n" + assembly.FullName);
-			#else
-			catch(Exception)
-			{
+			return results;
 			#endif
-				return Type.EmptyTypes;
-			}
 		}
 
-		public static IEnumerable<Assembly> GetAllAssembliesThreadSafe([AllowNull] Assembly mustReferenceAssembly, [AllowNull] Assembly ignoreAssembly)
+		[return: NotNull]
+		internal static List<Type> GetImplementingTypes<TInterface>([DisallowNull] Assembly mustReferenceAssembly, bool publicOnly, int estimatedResultCount) where TInterface : class
+		{
+			#if DEV_MODE
+			Debug.Assert(typeof(TInterface).IsInterface);
+			#endif
+
+			var results = new List<Type>(estimatedResultCount);
+
+			#if UNITY_EDITOR
+			foreach(var type in UnityEditor.TypeCache.GetTypesDerivedFrom<TInterface>())
+			{
+			#else
+			Type interfaceType = typeof(TInterface);
+			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, publicOnly))
+			{
+				if(!interfaceType.IsAssignableFrom(type))
+				{
+					continue;
+				}
+			#endif
+
+				if(!type.IsInterface)
+				{
+					results.Add(type);
+				}
+			}
+
+			return results;
+		}
+
+		[return: NotNull]
+		internal static List<Type> GetImplementingTypes([DisallowNull] Type interfaceType, [AllowNull] Assembly mustReferenceAssembly, bool publicOnly, int estimatedResultCount)
+		{
+			#if DEV_MODE
+			Debug.Assert(interfaceType.IsInterface);
+			#endif
+
+			var results = new List<Type>(estimatedResultCount);
+
+			#if UNITY_EDITOR
+			foreach(var type in UnityEditor.TypeCache.GetTypesDerivedFrom(interfaceType))
+			{
+			#else
+			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, publicOnly))
+			{
+				if(!interfaceType.IsAssignableFrom(type))
+				{
+					continue;
+				}
+			#endif
+
+				if(!type.IsInterface)
+				{
+					results.Add(type);
+				}
+			}
+
+			return results;
+		}
+
+		/// <summary>
+		/// NOTE: Even if this looks unused, it can be used in builds.
+		/// </summary>
+		[return: NotNull]
+		internal static List<Type> GetAllTypesThreadSafe([AllowNull] Assembly mustReferenceAssembly, bool publicOnly)
+		{
+			var results = new List<Type>(2048);
+
+			foreach(var assembly in GetAllAssembliesThreadSafe(mustReferenceAssembly))
+			{
+				results.AddRange(assembly.GetLoadableTypes(publicOnly));
+			}
+
+			return results;
+		}
+
+		/// <summary>
+		/// NOTE: Even if this looks unused, it can be used in builds.
+		/// </summary>
+		public static IEnumerable<Assembly> GetAllAssembliesThreadSafe([AllowNull] Assembly mustReferenceAssembly)
 		{
 			var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -287,44 +313,21 @@ namespace Sisus.Init.Internal
 					continue;
 				}
 
-				if(assembly == ignoreAssembly)
+				if(mustReferenceAssembly is null || assembly == mustReferenceAssembly)
 				{
+					yield return assembly;
 					continue;
 				}
 
-				if(mustReferenceAssembly is null || assembly == mustReferenceAssembly)
-                {
-					yield return assembly;
-					continue;
-                }
-
 				var referencedAssemblies = assembly.GetReferencedAssemblies();
-                for(int r = referencedAssemblies.Length - 1; r >= 0; r--)
-                {
+				for(int r = referencedAssemblies.Length - 1; r >= 0; r--)
+				{
 					if(string.Equals(referencedAssemblies[r].Name, mustReferenceName))
-                    {
+					{
 						yield return assembly;
 						break;
 					}
-                }
-			}
-		}
-
-		public static IEnumerable<Assembly> GetAllAssembliesThreadSafe()
-		{
-			var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-			for(int n = allAssemblies.Length - 1; n >= 0; n--)
-			{
-				var assembly = allAssemblies[n];
-
-				// skip dynamic assemblies to prevent NotSupportedException from being thrown when calling GetTypes
-				if(assembly.IsDynamic)
-				{
-					continue;
 				}
-
-				yield return assembly;
 			}
 		}
 
@@ -346,20 +349,29 @@ namespace Sisus.Init.Internal
 		}
 
 		internal static string ToString([DisallowNull] Type type, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache)
-        {
+		{
 			if(cache[namespaceDelimiter].TryGetValue(type, out string cached))
-            {
+			{
 				return cached;
-            }
+			}
 
 			var builder = new StringBuilder();
 			ToString(type, builder, namespaceDelimiter, cache);
 			string result = builder.ToString();
 			cache[namespaceDelimiter][type] = result;
 			return result;
-        }
+		}
 
-		internal static bool IsSerializableByUnity(Type type) => type.IsSerializable || (type.Namespace is string namespaceName && namespaceName.Contains("Unity"));
+		internal static bool IsSerializableByUnity([DisallowNull] Type type)
+		{
+			if(!isSerializableByUnityCache.TryGetValue(type, out bool result))
+			{
+				result = type.IsSerializable || typeof(Object).IsAssignableFrom(type) || (type.Namespace is string namespaceName && namespaceName.Contains("Unity"));
+				isSerializableByUnityCache.Add(type, result);
+			}
+
+			return result;
+		}
 
 		private static void ToString([DisallowNull] Type type, [DisallowNull] StringBuilder builder, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache, Type[] genericTypeArguments = null)
 		{
@@ -492,7 +504,7 @@ namespace Sisus.Init.Internal
 		public static bool IsNullOrBaseType([AllowNull] Type type) => type is null || IsBaseType(type);
 
 		public static bool IsBaseType([DisallowNull] Type type) => type.IsGenericType switch
-        {
+		{
 			true when type.IsGenericTypeDefinition => genericBaseTypes.Contains(type),
 			true => genericBaseTypes.Contains(type.GetGenericTypeDefinition()),
 			_ => baseTypes.Contains(type)
@@ -585,7 +597,7 @@ namespace Sisus.Init.Internal
 		}
 
 		public static Type GetCollectionElementType(Type collectionType)
-        {
+		{
 			if(collectionType.IsArray)
 			{
 				return collectionType.GetElementType();
@@ -617,12 +629,12 @@ namespace Sisus.Init.Internal
 			}
 
 			foreach(var interfaceType in collectionType.GetInterfaces())
-            {
+			{
 				if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                {
+				{
 					return interfaceType.GetGenericArguments()[0];
-                }
-            }
+				}
+			}
 
 			return null;
 		}
@@ -655,6 +667,63 @@ namespace Sisus.Init.Internal
 				|| typeDefinition == typeof(Dictionary<,>)
 				|| typeDefinition == typeof(IDictionary<,>);
 		}
+		
+		[return: NotNull]
+		private static Type[] GetLoadableTypes([DisallowNull] this Assembly assembly, bool publicOnly)
+		{
+			try
+			{
+				Type[] result;
+				if(publicOnly)
+				{
+					result = assembly.GetExportedTypes();
+				}
+				else
+				{
+					result = assembly.GetTypes();
+				}
+
+				return result;
+			}
+			catch(NotSupportedException) //thrown if GetExportedTypes is called for a dynamic assembly
+			{
+				#if DEV_MODE
+				Debug.LogWarning(assembly.GetName().Name + ".GetLoadableTypes() NotSupportedException\n" + assembly.FullName);
+				#endif
+				return Type.EmptyTypes;
+			}
+			catch(ReflectionTypeLoadException e)
+			{
+				var TypesList = new List<Type>(100);
+
+				var exceptionTypes = e.Types;
+				int count = exceptionTypes.Length;
+				for(int n = count - 1; n >= 0; n--)
+				{
+					var type = exceptionTypes[n];
+					if(type != null)
+					{
+						TypesList.Add(type);
+					}
+				}
+
+				#if DEV_MODE
+				Debug.LogWarning(assembly.GetName().Name + ".GetLoadableTypes() ReflectionTypeLoadException, salvaged: " + TypesList.Count + "\n" + assembly.FullName);
+				#endif
+
+				return TypesList.ToArray();
+			}
+			#if DEV_MODE
+			catch(Exception e)
+			{
+				Debug.LogWarning(assembly.GetName().Name + ".GetLoadableTypes() " + e + "\n" + assembly.FullName);
+			#else
+			catch(Exception)
+			{
+			#endif
+				return Type.EmptyTypes;
+			}
+		}
 
 		private static class To<TCollection>
 		{
@@ -676,5 +745,5 @@ namespace Sisus.Init.Internal
 				return (TCollection)constructor.Invoke(arguments);
 			}
 		}
-    }
+	}
 }

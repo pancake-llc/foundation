@@ -15,7 +15,7 @@ namespace Sisus.Init
 	/// <para>
 	/// If <typeparamref name="TThirdComponent"/> does not implement any IArgs interface then
 	/// the parameterless <see cref="GameObjectT3Extensions.Init3{TFirstComponent, TSecondComponent, TThirdComponent}">Init3</see>
-    /// function should be used to initialize the component in question.
+	/// function should be used to initialize the component in question.
 	/// </para>
 	/// </summary>
 	/// <typeparam name="TFirstComponent"> Type of the first added component; already initialized. </typeparam>
@@ -37,9 +37,9 @@ namespace Sisus.Init
 		internal void OnAfterInitialized()
 		{
 			if(setActive)
-            {
+			{
 				gameObject.SetActive(true);
-            }
+			}
 		}
 
 		/// <summary>

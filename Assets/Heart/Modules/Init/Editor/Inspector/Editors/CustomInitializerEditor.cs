@@ -3,5 +3,5 @@
 namespace Sisus.Init.EditorOnly
 {
 	[CanEditMultipleObjects]
-    public class CustomInitializerEditor : InitializerEditor { }
+	public class CustomInitializerEditor : InitializerEditor { }
 }

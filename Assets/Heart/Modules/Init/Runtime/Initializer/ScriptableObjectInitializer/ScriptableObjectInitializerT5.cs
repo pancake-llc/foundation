@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Sisus.Init.Internal;
+﻿using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 
@@ -65,7 +64,7 @@ namespace Sisus.Init
 			var fourthArgument = await this.fourthArgument.GetValueAsync();
 			var fifthArgument = await this.fifthArgument.GetValueAsync();
 
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(disposeArgumentsOnDestroy != Arguments.None)
 			{
 				OptimizeValueProviderNameForDebugging(this, this.firstArgument);
@@ -80,11 +79,11 @@ namespace Sisus.Init
 			if(IsRuntimeNullGuardActive) ValidateArgumentsAtRuntime(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
 			#endif
 
-            if(target == null)
-            {
-                Create.Instance(out target, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
+			if(target == null)
+			{
+				Create.Instance(out target, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
 				return target;
-            }
+			}
 			
 			if(target is ScriptableObject<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> scriptableObjectT)
 			{
@@ -118,10 +117,10 @@ namespace Sisus.Init
 		}
 
 		private protected override NullGuardResult EvaluateNullGuard() => firstArgument.EvaluateNullGuard()
-																 .Join(secondArgument.EvaluateNullGuard())
-																 .Join(thirdArgument.EvaluateNullGuard())
-																 .Join(fourthArgument.EvaluateNullGuard())
-																 .Join(fifthArgument.EvaluateNullGuard());
+																	.Join(secondArgument.EvaluateNullGuard())
+																	.Join(thirdArgument.EvaluateNullGuard())
+																	.Join(fourthArgument.EvaluateNullGuard())
+																	.Join(fifthArgument.EvaluateNullGuard());
 
 		private protected override void OnValidate() => Validate(this, null, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
 		#endif

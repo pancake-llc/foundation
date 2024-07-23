@@ -8,10 +8,10 @@ namespace Sisus.Init.EditorOnly
     /// </summary>
     /// <param name="component"> The component whose header is being drawn. </param>
     /// <param name="headerRect"> The position and dimensions of the header GUI. </param>
-    /// <param name="HeaderIsSelected"> Is the header currently selected in the Inspector or not? </param>
+    /// <param name="headerIsSelected"> Is the header currently selected in the Inspector or not? </param>
     /// <param name="supportsRichText"> Does the header that is being drawn support rich text tags or not? </param>
     /// <returns> The height of the element that this method has drawn before or after the header GUI. </returns>
-    public delegate float HeaderGUIHandler([DisallowNull] Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText);
+    public delegate float HeaderGUIHandler([DisallowNull] Component component, Rect headerRect, bool headerIsSelected, bool supportsRichText);
 
     /// <summary>
     /// A class that contains callbacks
@@ -28,10 +28,10 @@ namespace Sisus.Init.EditorOnly
         /// </summary>
         public static event HeaderGUIHandler AfterHeaderGUI;
 
-        internal static float InvokeBeforeHeaderGUI([DisallowNull] Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
-			=> BeforeHeaderGUI is null ? 0f : BeforeHeaderGUI.Invoke(component, headerRect, HeaderIsSelected, supportsRichText);
+        internal static float InvokeBeforeHeaderGUI([DisallowNull] Component component, Rect headerRect, bool headerIsSelected, bool supportsRichText)
+			=> BeforeHeaderGUI?.Invoke(component, headerRect, headerIsSelected, supportsRichText) ?? 0f;
 
-        internal static float InvokeAfterHeaderGUI([DisallowNull] Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
-			=> AfterHeaderGUI is null ? 0f : AfterHeaderGUI.Invoke(component, headerRect, HeaderIsSelected, supportsRichText);
+        internal static float InvokeAfterHeaderGUI([DisallowNull] Component component, Rect headerRect, bool headerIsSelected, bool supportsRichText)
+			=> AfterHeaderGUI?.Invoke(component, headerRect, headerIsSelected, supportsRichText) ?? 0f;
 	}
 }

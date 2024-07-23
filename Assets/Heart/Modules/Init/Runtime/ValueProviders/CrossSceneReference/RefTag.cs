@@ -1,23 +1,21 @@
-﻿using System.Collections.Generic;
+﻿#define SHOW_REF_TAGS_IN_INSPECTOR
+
+using System.Collections.Generic;
+using UnityEngine;
+using Id = Sisus.Init.Internal.Id;
+using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using UnityEditor;
-#if UNITY_2021_2_OR_NEWER
 using UnityEditor.SceneManagement;
-#else
-using UnityEditor.Experimental.SceneManagement;
 #endif
-#endif
-using UnityEngine;
-using Object = UnityEngine.Object;
-using Id = Sisus.Init.Internal.Id;
 
 namespace Sisus.Init
 {
 	[DefaultExecutionOrder(ExecutionOrder.Referenceable)]
 	internal sealed class RefTag : MonoBehaviour, IInitializable<Object>
 	{
-		private static readonly Dictionary<Id, Object> activeObjects = new Dictionary<Id, Object>();
-		private static readonly Dictionary<Id, List<Object>> activeClones = new Dictionary<Id, List<Object>>(); // one prefab can have more than one instance
+		private static readonly Dictionary<Id, Object> activeObjects = new();
+		private static readonly Dictionary<Id, List<Object>> activeClones = new(); // one prefab can have more than one instance
 
 		[SerializeField]
 		internal Id guid = Id.Empty;
@@ -28,7 +26,7 @@ namespace Sisus.Init
 		[SerializeField]
 		private bool isPrefab = false;
 
-		#if DEBUG
+		#if DEBUG || INIT_ARGS_SAFE_MODE
 		#pragma warning disable CS0414
 		[SerializeField]
 		private string globalObjectIdSlow = null;
@@ -45,11 +43,7 @@ namespace Sisus.Init
 		#endif
 
 		public Id Guid => guid;
-
-		public Object Target
-		{
-			get => target;
-		}
+		public Object Target => target;
 
 		void IInitializable<Object>.Init(Object target)
 		{
@@ -182,13 +176,18 @@ namespace Sisus.Init
 		private void Reset()
 		{
 			guid = Id.NewId();
-			#if !DEV_MODE
+
+			#if !DEV_MODE || !SHOW_REF_TAGS_IN_INSPECTOR
 			hideFlags = HideFlags.HideInInspector;
 			#endif
 		}
 		
 		private void OnValidate()
 		{
+			#if DEV_MODE && SHOW_REF_TAGS_IN_INSPECTOR
+			hideFlags = HideFlags.None;
+			#endif
+
 			if(!TargetExistsOnSameGameObject())
 			{
 				#if DEV_MODE

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Sisus.Init.Internal;
+﻿using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 
@@ -44,11 +43,21 @@ namespace Sisus.Init
 		protected override bool IsRemovedAfterTargetInitialized => disposeArgumentsOnDestroy == Arguments.None;
 		private protected override bool IsAsync => asyncValueProviderArguments != Arguments.None;
 
-		private protected sealed override async ValueTask<TClient> InitTargetAsync(TClient target)
+		private protected sealed override async
+		#if UNITY_2023_1_OR_NEWER
+		Awaitable<TClient>
+		#else
+		System.Threading.Tasks.Task<TClient>
+		#endif
+		InitTargetAsync(TClient target)
 		{
 			var firstArgument = await this.firstArgument.GetValueAsync(this, Context.MainThread);
 			var secondArgument = await this.secondArgument.GetValueAsync(this, Context.MainThread);
 			var thirdArgument = await this.thirdArgument.GetValueAsync(this, Context.MainThread);
+
+			#if UNITY_2022_2_OR_NEWER && (UNITY_EDITOR || INIT_ARGS_SAFE_MODE)
+			if(destroyCancellationToken.IsCancellationRequested) return default;
+			#endif
 
 			#if DEBUG
 			if(disposeArgumentsOnDestroy == Arguments.First)
@@ -63,21 +72,26 @@ namespace Sisus.Init
 			if(IsRuntimeNullGuardActive) ValidateArgumentsAtRuntime(firstArgument, secondArgument, thirdArgument);
 			#endif
 
+			TClient result;
 			#if UNITY_EDITOR
 			if(target == null)
 			#else
 			if(target is null)
 			#endif
-            {
-                target = gameObject.AddComponent<TClient>();
-            }
+			{
+				result = gameObject.AddComponent<TClient>();
+			}
 			else if(target.gameObject != gameObject)
 			{
-				target = Instantiate(target);
-            }
+				result = Instantiate(target);
+			}
+			else
+			{
+				result = target;
+			}
 
-			InitTarget(target, firstArgument, secondArgument, thirdArgument);
-			return target;
+			InitTarget(result, firstArgument, secondArgument, thirdArgument);
+			return result;
 		}
 
 		private protected void OnDestroy()

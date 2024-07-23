@@ -12,7 +12,7 @@ namespace Sisus.Init.ValueProviders
 	/// </para>
 	/// </summary>
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
-    [ValueProviderMenu(MENU_NAME, WhereAny = Is.Component | Is.WrappedObject, WhereAll = Is.Concrete, Not = typeof(GameObject), Order = 1.5f)]
+	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Component | Is.WrappedObject, WhereAll = Is.Concrete, Not = typeof(GameObject), Order = 1.5f)]
 	#endif
 	#if DEV_MODE
 	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]

@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: e97918b56a944aa9bc702d9d87fdda51
+timeCreated: 1715794551
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.4
+  assetPath: Packages/com.sisus.init-args/Scripts/Services/AwaitableExtensions.cs
+  uploadId: 679684

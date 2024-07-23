@@ -53,7 +53,7 @@ namespace Sisus.Init
 				var argument = await this.argument.GetValueAsync(this, Context.MainThread);
 				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref argument);
 
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(disposeArgumentsOnDestroy == Arguments.First) OptimizeValueProviderNameForDebugging(this, this.argument);
 				#endif
 
@@ -68,7 +68,7 @@ namespace Sisus.Init
 			{
 				var argument = await this.argument.GetValueAsync(this, Context.MainThread);
 
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(disposeArgumentsOnDestroy == Arguments.First) OptimizeValueProviderNameForDebugging(this, this.argument);
 				#endif
 
@@ -115,5 +115,5 @@ namespace Sisus.Init
 		private protected override NullGuardResult EvaluateNullGuard() => argument.EvaluateNullGuard(this);
 		private protected override void OnValidate() => Validate(this, gameObject, argument);
 		#endif
-    }
+	}
 }

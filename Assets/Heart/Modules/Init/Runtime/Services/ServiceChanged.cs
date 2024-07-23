@@ -14,19 +14,19 @@ namespace Sisus.Init
 	/// <param name="newInstance"> The new service instance, or <see langword="null"/> if the service was set to be <see langword="null"/>. </param>
 	public delegate void ServiceChangedHandler<TService>(Clients clients, [AllowNull] TService oldInstance, [AllowNull] TService newInstance);
 
-    /// <summary>
-    /// Class that holds the current subscribers to the <see cref="ServiceChangedHandler{TService}"/> event.
-    /// </summary>
+	/// <summary>
+	/// Class that holds the current subscribers to the <see cref="ServiceChangedHandler{TService}"/> event.
+	/// </summary>
 	/// <typeparam name="TService">
 	/// The defining type of the service class, which is the type specified in its <see cref="ServiceAttribute"/>,
 	/// or - if no other type has been explicitly specified - the exact type of the service class.
 	/// </typeparam>
-    internal static class ServiceChanged<TService>
-    {
-        /// <summary>
-        /// Event that is invoked when a globally available shared instance of service of type
-        /// <typeparamref name="TService"/> has changed to another one.
-        /// </summary>
-        internal static ServiceChangedHandler<TService> listeners;
-    }
+	internal static class ServiceChanged<TService>
+	{
+		/// <summary>
+		/// Event that is invoked when a globally available shared instance of service of type
+		/// <typeparamref name="TService"/> has changed to another one.
+		/// </summary>
+		internal static ServiceChangedHandler<TService> listeners;
+	}
 }

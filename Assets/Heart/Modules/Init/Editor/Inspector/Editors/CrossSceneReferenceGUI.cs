@@ -101,7 +101,7 @@ namespace Sisus.Init.EditorOnly
 
 				float remainingWidth = position.width;
 				iconRect = position;
-				
+
 				iconRect.width = iconWidth;
 				remainingWidth -= iconWidth + iconOffset;
 				sceneIcon.tooltip = "In Scene '" + sceneName + "'";
@@ -345,8 +345,8 @@ namespace Sisus.Init.EditorOnly
 			}
 
 			if(draggedObject is GameObject gameObject && requiredType != typeof(GameObject) && requiredType != typeof(Object) && requiredType != typeof(object))
-            {
-				foreach(var component in gameObject.GetComponents<Component>()) // Could reuse a list to avoid allocating so much
+			{
+				foreach(var component in gameObject.GetComponentsNonAlloc<Component>())
                 {
 					if(requiredType.IsInstanceOfType(component))
                     {

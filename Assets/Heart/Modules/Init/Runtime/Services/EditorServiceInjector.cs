@@ -1,16 +1,16 @@
-﻿//#define DEBUG_INIT_SERVICES
+﻿//#define DEBUG_INIT_TIME
+//#define DEBUG_INIT_SERVICES
 //#define DEBUG_CREATE_SERVICES
 
 #if !INIT_ARGS_DISABLE_SERVICE_INJECTION && UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using Sisus.Init.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using ServiceTypeCollection = System.Collections.Generic.IEnumerable<(System.Type classWithAttribute, Sisus.Init.EditorServiceAttribute attribute)>;
 using TypeCollection = UnityEditor.TypeCache.TypeCollection;
 
 #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
@@ -45,7 +45,7 @@ namespace Sisus.Init.Internal
 		static EditorServiceInjector() => CreateAndInjectServices();
 
 		/// <summary>
-		/// Gets a value indicating whether or not <typeparamref name="T"/> is a service type.
+		/// Gets a value indicating whether <typeparamref name="T"/> is a service type.
 		/// <para>
 		/// Service types are non-abstract classes that have the <see cref="EditorServiceAttribute"/>.
 		/// </para>
@@ -61,18 +61,21 @@ namespace Sisus.Init.Internal
 
 			if(!ServicesAreReady)
 			{
-				foreach(var service in GetServiceTypes())
+				foreach(var classWithAttribute in GetServiceTypes())
 				{
-					if(typeof(T) == service.attribute.definingType)
+					foreach(var attribute in classWithAttribute.GetCustomAttributes<EditorServiceAttribute>())
 					{
-						return !typeof(T).IsAbstract;
+						if(typeof(T) == attribute.definingType)
+						{
+							return !typeof(T).IsAbstract;
+						}
 					}
 				}
 
 				return false;
 			}
 
-			return Service<T>.Instance != null;
+			return Service<T>.Instance is not null;
 		}
 
 		/// <summary>
@@ -85,10 +88,10 @@ namespace Sisus.Init.Internal
 		/// <returns> <see langword="true"/> if <typeparamref name="T"/> is a concrete service type; otherwise, <see langword="false"/>. </returns>
 		public static bool IsServiceDefiningType([DisallowNull] Type type)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			return !type.IsValueType && typeof(Service<>).MakeGenericType(type).GetProperty(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) is not null;
 			#else
-            return !type.IsValueType && typeof(Service<>).MakeGenericType(type).GetField(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) is not null;
+			return !type.IsValueType && typeof(Service<>).MakeGenericType(type).GetField(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) is not null;
 			#endif
 		}
 
@@ -106,14 +109,33 @@ namespace Sisus.Init.Internal
 				return;
 			}
 
+			#if DEV_MODE
+			UnityEngine.Profiling.Profiler.BeginSample("EditorServiceInjector.CreateAndInjectServices");
+			#if DEBUG_INIT_TIME
+			var timer = new System.Diagnostics.Stopwatch();
+			timer.Start();
+			#endif
+			#endif
+
 			InjectServiceDependenciesForTypesThatRequireOnlyThem(CreateInstancesOfAllServices());
 
 			ServicesAreReady = true;
 			OnServicesBecameReady?.Invoke();
 			OnServicesBecameReady = null;
 
-			EditorOnly.ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
-			EditorOnly.ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
+			// Make InactiveInitializer.OnAfterDeserialize continue execution
+			Until.OnUnitySafeContext();
+
+			ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
+			ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
+
+			#if DEV_MODE
+			UnityEngine.Profiling.Profiler.EndSample();
+			#if DEBUG_INIT_TIME
+			timer.Stop();
+			Debug.Log($"Injection of editor services took {timer.Elapsed.TotalSeconds} seconds.");
+			#endif
+			#endif
 
 			static void OnExitingPlayMode() => ServicesAreReady = false;
 		}
@@ -121,9 +143,11 @@ namespace Sisus.Init.Internal
 		[return: MaybeNull]
 		private static Dictionary<Type, object> CreateInstancesOfAllServices()
 		{
+			ThreadSafe.Application.IsPlaying = false;
+
 			var serviceTypes = GetServiceTypes();
 
-			int count = serviceTypes.Count();
+			int count = serviceTypes.Count;
 
 			if(count == 0)
 			{
@@ -136,7 +160,7 @@ namespace Sisus.Init.Internal
 			CreateServices(serviceTypes, services, ref servicesContainer);
 			InjectCrossServiceDependencies(serviceTypes, services);
 
-			if(servicesContainer != null)
+			if(servicesContainer)
 			{
 				servicesContainer.SetActive(true);
 			}
@@ -155,11 +179,17 @@ namespace Sisus.Init.Internal
 			return container;
 		}
 
-		private static void CreateServices(ServiceTypeCollection serviceTypes, Dictionary<Type, object> services, ref GameObject servicesContainer)
+		private static void CreateServices(TypeCollection serviceTypes, Dictionary<Type, object> services, ref GameObject servicesContainer)
 		{
-			foreach((var classWithAttribute, var attribute) in serviceTypes)
+			foreach(var classWithAttribute in serviceTypes)
 			{
-				if(!classWithAttribute.IsAbstract && !classWithAttribute.IsGenericTypeDefinition)
+				if(classWithAttribute.IsAbstract || classWithAttribute.IsGenericTypeDefinition)
+				{
+					continue;
+				}
+
+
+				foreach(var attribute in classWithAttribute.GetCustomAttributes<EditorServiceAttribute>())
 				{
 					try
 					{
@@ -202,7 +232,7 @@ namespace Sisus.Init.Internal
 				}
 
 				#if DEBUG_CREATE_SERVICES
-                Debug.Log($"Service {classWithAttribute.Name} retrieved from asset database successfully.", instance as Object);
+				Debug.Log($"Service {classWithAttribute.Name} retrieved from asset database successfully.", instance as Object);
 				#endif
 
 				return instance;
@@ -217,7 +247,7 @@ namespace Sisus.Init.Internal
 				}
 
 				#if DEBUG_CREATE_SERVICES
-                Debug.Log($"Service {classWithAttribute.Name} loaded from resources successfully.", instance as Object);
+				Debug.Log($"Service {classWithAttribute.Name} loaded from resources successfully.", instance as Object);
 				#endif
 
 				return instance;
@@ -235,7 +265,7 @@ namespace Sisus.Init.Internal
 				if(classWithAttribute.IsInstanceOfType(obj))
 				{
 					#if DEBUG_CREATE_SERVICES
-                    Debug.Log($"Service {classWithAttribute.Name} loaded from resources successfully.", obj);
+					Debug.Log($"Service {classWithAttribute.Name} loaded from resources successfully.", obj);
 					#endif
 
 					return obj;
@@ -248,7 +278,7 @@ namespace Sisus.Init.Internal
 				}
 
 				#if DEBUG_CREATE_SERVICES
-                Debug.Log($"Service {classWithAttribute.Name} loaded from editor default resources successfully.", obj);
+				Debug.Log($"Service {classWithAttribute.Name} loaded from editor default resources successfully.", obj);
 				#endif
 
 				return instance;
@@ -264,7 +294,7 @@ namespace Sisus.Init.Internal
 				}
 
 				#if DEBUG_CREATE_SERVICES
-                Debug.Log($"Service {classWithAttribute.Name} loaded using Addressables successfully.", instance as Object);
+				Debug.Log($"Service {classWithAttribute.Name} loaded using Addressables successfully.", instance as Object);
 				#endif
 
 				return instance;
@@ -272,7 +302,7 @@ namespace Sisus.Init.Internal
 			#endif
 
 			#if DEBUG_CREATE_SERVICES
-            Debug.Log($"Service {classWithAttribute.Name} created successfully.");
+			Debug.Log($"Service {classWithAttribute.Name} created successfully.");
 			#endif
 
 			if(typeof(Component).IsAssignableFrom(classWithAttribute))
@@ -305,11 +335,10 @@ namespace Sisus.Init.Internal
 			ServiceUtility.SetInstance(definingType, instance);
 		}
 
-		private static void InjectCrossServiceDependencies(ServiceTypeCollection serviceTypes, Dictionary<Type, object> services)
+		private static void InjectCrossServiceDependencies(TypeCollection serviceTypes, Dictionary<Type, object> services)
 		{
-			foreach(var serviceType in serviceTypes)
+			foreach(var classWithAttribute in serviceTypes)
 			{
-				var classWithAttribute = serviceType.classWithAttribute;
 				if(!classWithAttribute.IsAbstract && !classWithAttribute.IsGenericTypeDefinition)
 				{
 					InjectCrossServiceDependencies(services, classWithAttribute);
@@ -337,6 +366,7 @@ namespace Sisus.Init.Internal
 
 				TrySetOneServiceDependency(services, clientType, clientType.GetInterfaces(), setMethodsByArgumentCount[1], setMethodArgumentTypes, setMethodArguments);
 			}
+
 			setMethodArgumentTypes = new Type[] { typeof(Type), null, null };
 			setMethodArguments = new object[3];
 			foreach(var clientType in GetImplementingTypes<ITwoArguments>())
@@ -360,6 +390,7 @@ namespace Sisus.Init.Internal
 
 				TrySetThreeServiceDependencies(services, clientType, clientType.GetInterfaces(), setMethodsByArgumentCount[3], setMethodArgumentTypes, setMethodArguments);
 			}
+
 			setMethodArgumentTypes = new Type[] { typeof(Type), null, null, null, null };
 			setMethodArguments = new object[5];
 			foreach(var clientType in GetImplementingTypes<IFourArguments>())
@@ -371,6 +402,7 @@ namespace Sisus.Init.Internal
 
 				TryInjectFourServiceDependencies(services, clientType, clientType.GetInterfaces(), setMethodsByArgumentCount[4], setMethodArgumentTypes, setMethodArguments);
 			}
+
 			setMethodArgumentTypes = new Type[] { typeof(Type), null, null, null, null, null };
 			setMethodArguments = new object[6];
 			foreach(var clientType in GetImplementingTypes<IFiveArguments>())
@@ -431,7 +463,7 @@ namespace Sisus.Init.Internal
 						}
 					}
 					#if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {clientType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but instance not found among {services.Count} services..."); }
+					else { Debug.Log($"Service {clientType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but instance not found among {services.Count} services..."); }
 					#endif
 					return;
 				}
@@ -447,7 +479,7 @@ namespace Sisus.Init.Internal
 						}
 					}
 					#if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {clientType.Name} requires 2 arguments but instances not found among {services.Count} services..."); }
+					else { Debug.Log($"Service {clientType.Name} requires 2 arguments but instances not found among {services.Count} services..."); }
 					#endif
 					return;
 				}
@@ -464,7 +496,7 @@ namespace Sisus.Init.Internal
 						}
 					}
 					#if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {clientType.Name} requires 3 arguments but instances not found among {services.Count} services..."); }
+					else { Debug.Log($"Service {clientType.Name} requires 3 arguments but instances not found among {services.Count} services..."); }
 					#endif
 					return;
 				}
@@ -481,7 +513,7 @@ namespace Sisus.Init.Internal
 						}
 					}
 					#if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {clientType.Name} requires 4 arguments but instances not found among {services.Count} services..."); }
+					else { Debug.Log($"Service {clientType.Name} requires 4 arguments but instances not found among {services.Count} services..."); }
 					#endif
 					return;
 				}
@@ -491,7 +523,7 @@ namespace Sisus.Init.Internal
 					var argumentTypes = interfaceType.GetGenericArguments();
 					if(services.TryGetValue(argumentTypes[0], out object firstArgument) && services.TryGetValue(argumentTypes[1], out object secondArgument)
 						&& services.TryGetValue(argumentTypes[2], out object thirdArgument) && services.TryGetValue(argumentTypes[3], out object fourthArgument)
-						 && services.TryGetValue(argumentTypes[4], out object fifthArgument))
+							&& services.TryGetValue(argumentTypes[4], out object fifthArgument))
 					{
 						if(services.TryGetValue(clientType, out object client))
 						{
@@ -499,7 +531,7 @@ namespace Sisus.Init.Internal
 						}
 					}
 					#if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {clientType.Name} requires 5 arguments but instances not found among {services.Count} services..."); }
+					else { Debug.Log($"Service {clientType.Name} requires 5 arguments but instances not found among {services.Count} services..."); }
 					#endif
 				}
 			}
@@ -524,7 +556,7 @@ namespace Sisus.Init.Internal
 						setMethod = setMethod.MakeGenericMethod(argumentTypes);
 
 						#if DEV_MODE && DEBUG_INIT_SERVICES
-                        Debug.Log($"Providing 1 service for client {clientType.Name}: {argument.GetType().Name}.");
+						Debug.Log($"Providing 1 service for client {clientType.Name}: {argument.GetType().Name}.");
 						#endif
 
 						setMethod.Invoke(null, setMethodArguments);
@@ -553,7 +585,7 @@ namespace Sisus.Init.Internal
 						setMethod = setMethod.MakeGenericMethod(argumentTypes);
 
 						#if DEV_MODE && DEBUG_INIT_SERVICES
-                        Debug.Log($"Providing 2 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}.");
+						Debug.Log($"Providing 2 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}.");
 						#endif
 
 						setMethod.Invoke(null, setMethodArguments);
@@ -585,7 +617,7 @@ namespace Sisus.Init.Internal
 						setMethod = setMethod.MakeGenericMethod(argumentTypes);
 
 						#if DEV_MODE && DEBUG_INIT_SERVICES
-                        Debug.Log($"Providing 3 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}, {thirdArgument.GetType().Name}.");
+						Debug.Log($"Providing 3 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}, {thirdArgument.GetType().Name}.");
 						#endif
 
 						setMethod.Invoke(null, setMethodArguments);
@@ -619,7 +651,7 @@ namespace Sisus.Init.Internal
 						setMethod = setMethod.MakeGenericMethod(argumentTypes);
 
 						#if DEV_MODE && DEBUG_INIT_SERVICES
-                        Debug.Log($"Providing 4 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}, {thirdArgument.GetType().Name}, {fourthArgument.GetType().Name}.");
+						Debug.Log($"Providing 4 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}, {thirdArgument.GetType().Name}, {fourthArgument.GetType().Name}.");
 						#endif
 
 						setMethod.Invoke(null, setMethodArguments);
@@ -639,7 +671,7 @@ namespace Sisus.Init.Internal
 					var argumentTypes = interfaceType.GetGenericArguments();
 					if(services.TryGetValue(argumentTypes[0], out object firstArgument) && services.TryGetValue(argumentTypes[1], out object secondArgument)
 						&& services.TryGetValue(argumentTypes[2], out object thirdArgument) && services.TryGetValue(argumentTypes[3], out object fourthArgument)
-						 && services.TryGetValue(argumentTypes[4], out object fifthArgument))
+							&& services.TryGetValue(argumentTypes[4], out object fifthArgument))
 					{
 						setMethodArgumentTypes[1] = argumentTypes[0];
 						setMethodArgumentTypes[2] = argumentTypes[1];
@@ -656,7 +688,7 @@ namespace Sisus.Init.Internal
 						setMethod = setMethod.MakeGenericMethod(argumentTypes);
 
 						#if DEV_MODE && DEBUG_INIT_SERVICES
-                        Debug.Log($"Providing 5 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}, {thirdArgument.GetType().Name}, {fourthArgument.GetType().Name}, {fifthArgument.GetType().Name}.");
+						Debug.Log($"Providing 5 services for client {clientType.Name}: {firstArgument.GetType().Name}, {secondArgument.GetType().Name}, {thirdArgument.GetType().Name}, {fourthArgument.GetType().Name}, {fifthArgument.GetType().Name}.");
 						#endif
 
 						setMethod.Invoke(null, setMethodArguments);
@@ -708,9 +740,9 @@ namespace Sisus.Init.Internal
 			}
 		}
 
-		private static ServiceTypeCollection GetServiceTypes()
+		private static TypeCollection GetServiceTypes()
 		{
-			return TypeUtility.GetTypesWithAttribute<EditorServiceAttribute>();
+			return TypeUtility.GetTypesWithAttribute<EditorServiceAttribute>(typeof(EditorServiceAttribute).Assembly, false, 8);
 		}
 
 		private static TypeCollection GetImplementingTypes<TInterface>() where TInterface : class

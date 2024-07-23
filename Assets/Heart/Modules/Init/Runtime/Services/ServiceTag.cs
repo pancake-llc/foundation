@@ -43,7 +43,7 @@ namespace Sisus.Init.Internal
 			{
 				definingType = value;
 
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(value is null)
 				{
 					#if UNITY_EDITOR
@@ -78,7 +78,7 @@ namespace Sisus.Init.Internal
 			{
 				service = value;
 
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(value == null)
 				{
 					#if UNITY_EDITOR
@@ -132,7 +132,7 @@ namespace Sisus.Init.Internal
 
 		public static bool Remove(Component component, Type definingType)
 		{
-			foreach(var serviceTag in component.GetComponents<ServiceTag>())
+			foreach(var serviceTag in component.gameObject.GetComponentsNonAlloc<ServiceTag>())
 			{
 				if(serviceTag.definingType.Value == definingType && serviceTag.service == component)
 				{
@@ -175,16 +175,16 @@ namespace Sisus.Init.Internal
 		}
 
 		private void Awake()
-        {
-            #if UNITY_EDITOR
-            if(service == null)
-            {
-                return;
-            }
-            #endif
+		{
+			#if UNITY_EDITOR
+			if(service == null)
+			{
+				return;
+			}
+			#endif
 
-            ScopedServiceInitializer.Init(service);
-        }
+			ScopedServiceInitializer.Init(service);
+		}
 
 		private void OnEnable() => Register();
 		private void OnDisable() => Deregister();
@@ -276,13 +276,13 @@ namespace Sisus.Init.Internal
 			EditorApplication.hierarchyChanged -= OnValidateDelayed;
 			#endif
 
-			if(service != null && definingType.Value is Type definingTypeValue)
-            {
-			    ServiceUtility.RemoveFromClients(service, definingTypeValue, toClients, this);
-            }
+			if(service && definingType.Value is Type definingTypeValue)
+			{
+				ServiceUtility.RemoveFromClients(service, definingTypeValue, toClients, this);
+			}
 		}
 
-		#if DEBUG
+		#if DEBUG || INIT_ARGS_SAFE_MODE
 		private static bool IsValidDefiningTypeFor([DisallowNull] Type definingType, [DisallowNull] Component service)
 			=> ServiceTagUtility.IsValidDefiningTypeFor(definingType, service);
 		#endif
@@ -290,7 +290,7 @@ namespace Sisus.Init.Internal
 		#if UNITY_EDITOR
 		private void OnValidate()
 		{
-			if(service == null
+			if(!service
 			|| service.gameObject != gameObject
 			|| definingType.Value is not Type type
 			|| !IsValidDefiningTypeFor(type, service))
@@ -343,7 +343,7 @@ namespace Sisus.Init.Internal
 			}
 
 			if(service.gameObject != gameObject)
-            {
+			{
 				#if DEV_MODE
 				Debug.Log($"Moving Service tag {definingType.Name} of {service.GetType().Name} from {name} to {service.gameObject.name}...", service.gameObject);
 				#endif
@@ -441,29 +441,9 @@ namespace Sisus.Init.Internal
 
 		public async void OnAfterDeserialize()
 		{
-			if(service == null)
-			{
-				return;
-			}
+			await Until.UnitySafeContext();
 
-			if(definingType.Value is not Type type)
-			{
-				return;
-			}
-
-			// Avoid incorrect validation errors if wrapper component hasn't finished deserialization yet
-			if(!type.IsInstanceOfType(service) && service is IValueProvider valueProvider && valueProvider.Value is null)
-			{
-				return;
-			}
-
-			#if UNITY_2023_1_OR_NEWER
-			await Awaitable.MainThreadAsync();
-			#else
-			await System.Threading.Tasks.Task.Yield();
-			#endif
-
-			if(!this)
+			if(!this || !service || definingType.Value is null)
 			{
 				return;
 			}
@@ -473,7 +453,7 @@ namespace Sisus.Init.Internal
 
 		NullGuardResult INullGuardByType.EvaluateNullGuard<TValue>(Component client)
 		{
-			if(definingType.Value is not Type serviceType || service == null)
+			if(definingType.Value is not Type serviceType || !service)
 			{
 				return NullGuardResult.InvalidValueProviderState;
 			}
@@ -483,7 +463,7 @@ namespace Sisus.Init.Internal
 				return NullGuardResult.TypeNotSupported;
 			}
 
-			if(!IsAvailableToAnyClient() && (client == null || !IsAvailableToClient(client.gameObject)))
+			if(!IsAvailableToAnyClient() && (!client || !IsAvailableToClient(client.gameObject)))
 			{
 				return NullGuardResult.ClientNotSupported;
 			}

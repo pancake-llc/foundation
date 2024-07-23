@@ -38,7 +38,7 @@ namespace Sisus.Init.Reflection
 			(this GameObject gameObject, TArgument argument)
 				where TComponent : Component
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(gameObject == null)
 			{
 				throw new ArgumentNullException($"The GameObject to which you want to add the component {nameof(TComponent)} is null.");
@@ -77,7 +77,7 @@ namespace Sisus.Init.Reflection
 			(this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument)
 				where TComponent : Component
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(gameObject == null)
 			{
 				throw new ArgumentNullException($"The GameObject to which you want to add the component {nameof(TComponent)} is null.");
@@ -118,7 +118,7 @@ namespace Sisus.Init.Reflection
 			(this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 				where TComponent : Component
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(gameObject == null)
 			{
 				throw new ArgumentNullException($"The GameObject to which you want to add the component {nameof(TComponent)} is null.");
@@ -163,7 +163,7 @@ namespace Sisus.Init.Reflection
 			(this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 				where TComponent : Component
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(gameObject == null)
 			{
 				throw new ArgumentNullException($"The GameObject to which you want to add the component {nameof(TComponent)} is null.");
@@ -212,7 +212,7 @@ namespace Sisus.Init.Reflection
 			(this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 				where TComponent : Component
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(gameObject == null)
 			{
 				throw new ArgumentNullException($"The GameObject to which you want to add the component {nameof(TComponent)} is null.");
@@ -236,22 +236,22 @@ namespace Sisus.Init.Reflection
 		/// or if a field or property was found but a <paramref name="value"/> of type <typeparamref name="TValue"/> is not assignable to it.
 		/// </exception>
 		internal static void Init<TClient, TArgument>([DisallowNull] this TClient client, TArgument argument) where TClient : class
-        {
+		{
 			var init = Cached<TClient, TArgument>.Init;
 			if(init != null)
-            {
+			{
 				init(client, argument);
 				return;
-            }
+			}
 
 			for(var type = client.GetType(); type != null; type = type.BaseType)
 			{
 				var methodInfo = typeof(TClient).GetMethod(nameof(Init), DeclaredOnlyInstance);
 				init = (InitHandler<TClient, TArgument>)Delegate.CreateDelegate(typeof(InitHandler<TClient, TArgument>), null, methodInfo, false);
 				if(init == null)
-                {
+				{
 					continue;
-                }
+				}
 
 				Cached<TClient, TArgument>.Init = init;
 				init(client, argument);
@@ -389,27 +389,27 @@ namespace Sisus.Init.Reflection
 		/// Thrown if no field or property of type <typeparamref name="TValue"/> was found on the <paramref name="client"/> class <typeparamref name="TClient"/>.
 		/// </exception>
 		private static void SetPropertyOrFieldValue<TClient, TValue>(TClient client, TValue value)
-        {
-            switch(TryFindFieldOrProperty<TValue>(typeof(TClient), out FieldInfo field, out PropertyInfo property))
-            {
-                case FoundMember.Field:
+		{
+			switch(TryFindFieldOrProperty<TValue>(typeof(TClient), out FieldInfo field, out PropertyInfo property))
+			{
+				case FoundMember.Field:
 					field.SetValue(client, value);
 					return;
-                case FoundMember.Property:
+				case FoundMember.Property:
 					property.SetValue(client, value, null);
 					return;
 				default:
 					throw new MissingMemberException($"No field or property of type {typeof(TValue).Name} was found on class {typeof(TClient).Name}.");
 			}
-        }
+		}
 
-        private static FoundMember TryFindFieldOrProperty<TValue>(Type componentType, out FieldInfo field, out PropertyInfo property)
-        {
+		private static FoundMember TryFindFieldOrProperty<TValue>(Type componentType, out FieldInfo field, out PropertyInfo property)
+		{
 			for(var t = componentType; !TypeUtility.IsNullOrBaseType(t); t = t.BaseType)
 			{
 				var fields = t.GetFields(DeclaredOnlyInstance);
 				for(int i = 0, count = fields.Length; i < count; i++)
-                {
+				{
 					field = fields[i];
 					if(field.FieldType == typeof(TValue))
 					{
@@ -434,7 +434,7 @@ namespace Sisus.Init.Reflection
 			{
 				var fields = t.GetFields(DeclaredOnlyInstance);
 				for(int i = 0, count = fields.Length; i < count; i++)
-                {
+				{
 					field = fields[i];
 					if(field.FieldType.IsAssignableFrom(typeof(TValue)))
 					{

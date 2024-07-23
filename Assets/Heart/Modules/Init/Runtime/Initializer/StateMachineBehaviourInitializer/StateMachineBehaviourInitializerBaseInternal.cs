@@ -48,14 +48,14 @@ namespace Sisus.Init.Internal
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
 		{
-			if(target != null)
+			if(target)
 			{
-                TStateMachineBehaviour stateMachineBehaviour = target.GetBehaviour<TStateMachineBehaviour>();
-                if(stateMachineBehaviour != null && stateMachineBehaviour is TValue result)
-                {
-                    value = result;
-                    return true;
-                }
+				TStateMachineBehaviour stateMachineBehaviour = target.GetBehaviour<TStateMachineBehaviour>();
+				if(stateMachineBehaviour && stateMachineBehaviour is TValue result)
+				{
+					value = result;
+					return true;
+				}
 			}
 
 			value = default;
@@ -91,9 +91,9 @@ namespace Sisus.Init.Internal
 		#endif	
 		InitTargetAsync()
 		{
-			if(this == null)
+			if(!this)
 			{
-				return target == null ? null : target.GetBehaviour<TStateMachineBehaviour>();
+				return target ? target.GetBehaviour<TStateMachineBehaviour>() : null;
 			}
 
 			TStateMachineBehaviour result = await InitTargetAsync(target);
@@ -105,14 +105,6 @@ namespace Sisus.Init.Internal
 			IsRemovedAfterTargetInitialized)
 			{
 				Updater.InvokeAtEndOfFrame(DestroySelf);
-
-				void DestroySelf()
-				{
-					if(this != null)
-					{
-						Destroy(this);
-					}
-				}
 			}
 
 			return result;
@@ -155,9 +147,9 @@ namespace Sisus.Init.Internal
 		/// <inheritdoc/>
 		public TStateMachineBehaviour InitTarget()
 		{
-			if(this == null)
+			if(!this)
 			{
-				return target == null ? null : target.GetBehaviour<TStateMachineBehaviour>();
+				return target ? target.GetBehaviour<TStateMachineBehaviour>() : null;
 			}
 
 			if(IsRemovedAfterTargetInitialized
@@ -167,14 +159,6 @@ namespace Sisus.Init.Internal
 			)
 			{
 				Updater.InvokeAtEndOfFrame(DestroySelf);
-
-				void DestroySelf()
-				{
-					if(this != null)
-					{
-						Destroy(this);
-					}
-				}
 			}
 
 			#if DEBUG || INIT_ARGS_SAFE_MODE
@@ -220,18 +204,22 @@ namespace Sisus.Init.Internal
 		[return: NotNull]
 		private protected abstract TStateMachineBehaviour InitTarget([DisallowNull] Animator target);
 
-		#if DEBUG
+		#if DEBUG || INIT_ARGS_SAFE_MODE
 		async
 		#endif
 		private protected void Awake()
 		{
+			#if UNITY_EDITOR
+			ThreadSafe.Application.IsPlaying = Application.isPlaying;
+			#endif
+
 			if(
 			#if UNITY_EDITOR
 			Application.isPlaying &&
 			#endif
 			IsAsync)
 			{
-				#if DEBUG
+				#if DEBUG || INIT_ARGS_SAFE_MODE
 				await
 				#else
 				_ = 
@@ -244,6 +232,14 @@ namespace Sisus.Init.Internal
 		}
 
 		protected void ThrowMissingInitArgumentsException<TArgument>() => throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TArgument));
+
+		void DestroySelf()
+		{
+			if(this)
+			{
+				Destroy(this);
+			}
+		}
 
 		#if DEBUG || INIT_ARGS_SAFE_MODE
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -259,6 +255,7 @@ namespace Sisus.Init.Internal
 		#if UNITY_EDITOR
 		bool IInitializerEditorOnly.ShowNullArgumentGuard => true;
 		bool IInitializerEditorOnly.CanInitTargetWhenInactive => false;
+		bool IInitializerEditorOnly.CanGuardAgainstNull => true;
 		NullArgumentGuard IInitializerEditorOnly.NullArgumentGuard { get => nullArgumentGuard; set => nullArgumentGuard = value; }
 		string IInitializerEditorOnly.NullGuardFailedMessage { get; set; } = "";
 		NullGuardResult IInitializerEditorOnly.EvaluateNullGuard() => EvaluateNullGuard();
@@ -270,8 +267,8 @@ namespace Sisus.Init.Internal
 		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
 		private protected abstract NullGuardResult EvaluateNullGuard();
 
-        private protected abstract void Reset();
+		private protected abstract void Reset();
 		private protected abstract void OnValidate();
 		#endif
-    }
+	}
 }

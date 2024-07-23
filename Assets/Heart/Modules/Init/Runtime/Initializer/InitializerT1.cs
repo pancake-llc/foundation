@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Sisus.Init.Internal;
+﻿using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 
@@ -38,7 +37,13 @@ namespace Sisus.Init
 		protected override bool IsRemovedAfterTargetInitialized => disposeArgumentsOnDestroy == Arguments.None;
 		private protected override bool IsAsync => asyncValueProviderArguments != Arguments.None;
 		
-		private protected sealed override async ValueTask<TClient> InitTargetAsync(TClient target)
+		private protected sealed override async
+		#if UNITY_2023_1_OR_NEWER
+		Awaitable<TClient>
+		#else
+		System.Threading.Tasks.Task<TClient>
+		#endif
+		InitTargetAsync(TClient target)
 		{
 			var argument = await this.argument.GetValueAsync(this, Context.MainThread);
 
@@ -50,20 +55,25 @@ namespace Sisus.Init
 			if(IsRuntimeNullGuardActive) ValidateArgumentAtRuntime(argument);
 			#endif
 
-            #if UNITY_EDITOR
-			if(target == null)
+			#if UNITY_EDITOR
+			if(!target)
 			#else
 			if(target is null)
 			#endif
-            {
-				gameObject.AddComponent(out target, argument);
-                return target;
-            }
+			{
+				gameObject.AddComponent(out TClient result, argument);
+				return result;
+			}
 
 			if(target.gameObject != gameObject)
 			{
+				#if UNITY_6_0_OR_NEWER
+				TClient[] results = await target.InstantiateAsync(argument);
+				return results[0];
+				#else
 				return target.Instantiate(argument);
-            }
+				#endif
+			}
 
 			if(target is MonoBehaviour<TArgument> monoBehaviourT)
 			{
@@ -106,7 +116,11 @@ namespace Sisus.Init
 			}
 		}
 
-		private protected override NullGuardResult EvaluateNullGuard() => argument.EvaluateNullGuard(this);
+		private protected override NullGuardResult EvaluateNullGuard() =>
+			initState == InitState.Failed
+				? NullGuardResult.ValueProviderException
+				: argument.EvaluateNullGuard(this);
+
 		private protected override void OnValidate() => Validate(this, gameObject, argument);
 		#endif
 	}

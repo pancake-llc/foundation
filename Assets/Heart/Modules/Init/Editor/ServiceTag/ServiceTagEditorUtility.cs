@@ -14,11 +14,11 @@ namespace Sisus.Init.EditorOnly.Internal
 	public static class ServiceTagEditorUtility
 	{
 		internal static Component openSelectTagsMenuFor;
-		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An instance of this service will be automatically provided during initialization.");
-		private static readonly GUIContent blankLabel = new GUIContent(" ");
+		private static readonly GUIContent serviceLabel = new("Service", "An instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent blankLabel = new(" ");
 
 		internal static Rect GetTagRect(Component component, Rect headerRect, GUIContent label, GUIStyle style)
-        {
+		{
 			var componentTitle = new GUIContent(ObjectNames.GetInspectorTitle(component));
 			float componentTitleEndX = 54f + EditorStyles.largeLabel.CalcSize(componentTitle).x + 10f;
 			float availableSpace = Screen.width - componentTitleEndX - 69f;
@@ -41,14 +41,14 @@ namespace Sisus.Init.EditorOnly.Internal
 			// For some reason the Transform header rect starts
 			// lower and is shorter than all other headers.
 			if(labelRect.height < 22f)
-            {
-                labelRect.y -= 22f - 15f;
-            }
+			{
+				labelRect.y -= 22f - 15f;
+			}
 
-            labelRect.height = 20f;
+			labelRect.height = 20f;
 			labelRect.width = labelWidth;
 			return labelRect;
-        }
+		}
 
 		/// <param name="anyProperty"> SerializedProperty of <see cref="Any{T}"/> or some other type field. </param>
 		internal static bool Draw(Rect position, GUIContent prefixLabel, SerializedProperty anyProperty, GUIContent serviceLabel = null, bool serviceExists = true)
@@ -230,8 +230,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			// Ping MonoScript of ServiceInitializer 
-			foreach(Type serviceInitializerType in TypeUtility.GetImplementingTypes<IServiceInitializer>(typeof(ServiceAttribute).Assembly, null))
+			// Ping MonoScript of ServiceInitializer
+			foreach(Type serviceInitializerType in TypeUtility.GetImplementingTypes<IServiceInitializer>(typeof(ServiceAttribute).Assembly, false, 16))
 			{
 				if(serviceInitializerType.IsGenericType && !serviceInitializerType.IsGenericTypeDefinition && !serviceInitializerType.IsAbstract
 				&& serviceInitializerType.GetGenericArguments()[0] == serviceOrServiceProviderType && HasServiceAttribute(serviceInitializerType)
@@ -314,26 +314,32 @@ namespace Sisus.Init.EditorOnly.Internal
 				names[i] = ObjectNames.NicifyVariableName(names[i]);
 			}
 
-			void OnItemSelected(object value)
-			{
-				Undo.RecordObjects(tags, "Set Service Clients");
-				int toClients = (int)value;
-				foreach(var serviceTag in tags)
-				{
-					serviceTag.ToClients = (Clients)toClients;
-				}
-			}
-
 			var enumValues = Enum.GetValues(typeof(Clients));
 			var values = new object[count];
 			for(int i = 0; i < count; i++)
 			{
-				values[i] = (int)(Clients)enumValues.GetValue(i);
+				values[i] = (Clients)enumValues.GetValue(i);
 			}
 
 			string selectedValueName = names[selectedIndex];
-
 			DropdownWindow.Show(tagRect, names, values, Enumerable.Repeat(selectedValueName, 1), OnItemSelected, "Availability");
+
+			void OnItemSelected(object value)
+			{
+				Undo.RecordObjects(tags, "Set Service Clients");
+				var toClients = (Clients)value;
+				foreach(var serviceTag in tags)
+				{
+					if(toClients == serviceTag.ToClients)
+					{
+						Undo.DestroyObjectImmediate(serviceTag);
+					}
+					else
+					{
+						serviceTag.ToClients = toClients;
+					}
+				}
+			}
 		}
 
 		internal static void OpenContextMenuForService(Component serviceOrServiceProvider, Rect tagRect)
@@ -462,14 +468,13 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static IEnumerable<GameObject> FindAllReferences(Type serviceType)
 		{
-			List<Component> components = new List<Component>();
 			for(int s = SceneManager.sceneCount - 1; s >= 0; s--)
 			{
 				var scene = SceneManager.GetSceneAt(s);
 				var rootGameObjects = scene.GetRootGameObjects();
 				for(int r = rootGameObjects.Length - 1; r >= 0; r--)
 				{
-					foreach(var reference in FindAllReferences(rootGameObjects[r].transform, components, serviceType))
+					foreach(var reference in FindAllReferences(rootGameObjects[r].transform, serviceType))
 					{
 						yield return reference;
 					}
@@ -477,9 +482,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		private static IEnumerable<GameObject> FindAllReferences(Transform transform, List<Component> components, Type serviceType)
+		private static IEnumerable<GameObject> FindAllReferences(Transform transform, Type serviceType)
 		{
-			transform.GetComponents(components);
+			var components = transform.gameObject.GetComponentsNonAlloc<Component>();
 
 			// Skip component at index 0 which is most likely a Transform.
 			for(int c = components.Count - 1; c >= 1; c--)
@@ -568,13 +573,11 @@ namespace Sisus.Init.EditorOnly.Internal
 							if(anyValueType == serviceType)
 							{
 								yield return component.gameObject;
-								continue;
 							}
 						}
-						else if(string.Equals(property.type, serviceTypeName) || string.Equals(property.type, serviceTypeNameAlt) && property.GetType() == serviceType)
+						else if((string.Equals(property.type, serviceTypeName) || string.Equals(property.type, serviceTypeNameAlt)) && property.GetType() == serviceType)
 						{
 							yield return component.gameObject;
-							continue;
 						}
 					}
 					// Checking only surface level fields, not nested fields, for performance reasons.
@@ -582,11 +585,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			components.Clear();
-
 			for(int i = transform.childCount - 1; i >= 0; i--)
 			{
-				foreach(var reference in FindAllReferences(transform.GetChild(i), components, serviceType))
+				foreach(var reference in FindAllReferences(transform.GetChild(i), serviceType))
 				{
 					yield return reference;
 				}

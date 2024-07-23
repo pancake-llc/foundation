@@ -7,19 +7,19 @@ using Object = UnityEngine.Object;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
-    [CanEditMultipleObjects]
-    public sealed class WrapperEditor : InitializableEditor
-    {
+	[CanEditMultipleObjects]
+	public sealed class WrapperEditor : InitializableEditor
+	{
 		private bool hasCustomEditor;
 
-        protected override Type BaseTypeDefinition => typeof(Wrapper<>);
-        private object WrappedObject => (target as IWrapper).WrappedObject;
+		protected override Type BaseTypeDefinition => typeof(Wrapper<>);
+		private object WrappedObject => (target as IWrapper).WrappedObject;
 
 		protected override object GetInitializable(Object inspectedTarget) => (inspectedTarget as IWrapper).WrappedObject;
 
 		protected override void Setup()
 		{
-			hasCustomEditor = InitializableEditorInjector.HasCustomEditor(target.GetType());
+			hasCustomEditor = CustomEditorType.Exists(target.GetType());
 			base.Setup();
 		}
 
@@ -56,5 +56,5 @@ namespace Sisus.Init.EditorOnly.Internal
 				serializedObject.ApplyModifiedProperties();
 			}
 		}
-    }
+	}
 }

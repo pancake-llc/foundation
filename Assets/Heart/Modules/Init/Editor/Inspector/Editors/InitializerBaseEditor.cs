@@ -3,8 +3,8 @@
 namespace Sisus.Init.EditorOnly.Internal
 {
 	[CanEditMultipleObjects]
-    internal sealed class InitializerBaseEditor : InitializerEditor
-    {
+	internal sealed class InitializerBaseEditor : InitializerEditor
+	{
 		protected override bool HasUserDefinedInitArgumentFields => true;
 	}
 }

@@ -32,7 +32,7 @@
 		}
 
 		private Arg(TArgument argument, bool provided)
-        {
+		{
 			this.argument = argument;
 			this.provided = provided;
 		}

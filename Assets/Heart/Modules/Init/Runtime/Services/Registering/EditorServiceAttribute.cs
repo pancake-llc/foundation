@@ -90,7 +90,7 @@ namespace Sisus.Init
 					loadMethod = LoadMethod.FindAssetByType;
 				}
 			}
-        }
+		}
 
 		/// <summary>
 		/// Resources path from which an instance of the service can be loaded during initialization.
@@ -111,7 +111,7 @@ namespace Sisus.Init
 					loadData = value;
 				}
 			}
-        }
+		}
 
 		/// <summary>
 		/// Resources path from which an instance of the service can be loaded during initialization.
@@ -132,7 +132,7 @@ namespace Sisus.Init
 					loadData = value;
 				}
 			}
-        }
+		}
 
 		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
 		/// <summary>
@@ -154,7 +154,7 @@ namespace Sisus.Init
 					loadData = value;
 				}
 			}
-        }
+		}
 		#endif
 
 		/// <summary>
@@ -176,7 +176,7 @@ namespace Sisus.Init
 					loadData = value;
 				}
 			}
-        }
+		}
 
 		/// <summary>
 		/// Classes that have the <see cref="EditorServiceAttribute"/> can provide services

@@ -593,14 +593,15 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="argument"> The argument received, or default value if no stored argument was found. </typeparam>
+		/// <typeparam name="TArgument"> The type of the argument. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="argument"> The argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if an argument had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException"> Thrown if <paramref name="client"/> argument is <see langword="null"/>. </exception>
 		public static bool TryGet<TClient, TArgument>(Context context, [DisallowNull] TClient client, out TArgument argument) where TClient : IArgs<TArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -616,9 +617,9 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread && Service.TryGetFor(client, out argument))
+			if(context.IsUnitySafeContext() && Service.TryGetFor(client, out argument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					argument = default;
 					return false;
@@ -628,7 +629,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentForAutoInit<TClient, TArgument>(client))
 				{
@@ -666,17 +667,17 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -693,9 +694,9 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread && Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument))
+			if(context.IsUnitySafeContext() && Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -706,7 +707,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument>(client))
 				{
@@ -743,18 +744,18 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -772,12 +773,12 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 				&& Service.TryGetFor(client, out firstArgument)
 				&& Service.TryGetFor(client, out secondArgument)
 				&& Service.TryGetFor(client, out thirdArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -789,7 +790,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument>(client))
 				{
@@ -829,19 +830,19 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -860,11 +861,11 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -877,7 +878,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(client))
 				{
@@ -920,20 +921,20 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -953,12 +954,12 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -972,7 +973,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(client))
 				{
@@ -1018,21 +1019,21 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
+		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -1053,19 +1054,19 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument) && Service.TryGetFor(client, out sixthArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
-				secondArgument = default;
-				thirdArgument = default;
-				fourthArgument = default;
-				fifthArgument = default;
-				sixthArgument = default;
+					secondArgument = default;
+					thirdArgument = default;
+					fourthArgument = default;
+					fifthArgument = default;
+					sixthArgument = default;
 					return false;
 				}
 
@@ -1073,7 +1074,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(client))
 				{
@@ -1122,22 +1123,22 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
+		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </param>
+		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -1159,13 +1160,13 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument) && Service.TryGetFor(client, out sixthArgument)
 			&& Service.TryGetFor(client, out seventhArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -1181,7 +1182,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>(client))
 				{
@@ -1233,23 +1234,23 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
+		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </param>
+		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </param>
+		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -1272,13 +1273,13 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument) && Service.TryGetFor(client, out sixthArgument)
 			&& Service.TryGetFor(client, out seventhArgument) && Service.TryGetFor(client, out eighthArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -1295,7 +1296,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>(client))
 				{
@@ -1350,24 +1351,24 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
+		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </param>
+		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </param>
+		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </param>
+		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -1391,14 +1392,14 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument) && Service.TryGetFor(client, out sixthArgument)
 			&& Service.TryGetFor(client, out seventhArgument) && Service.TryGetFor(client, out eighthArgument)
 			&& Service.TryGetFor(client, out ninthArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -1416,7 +1417,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>(client))
 				{
@@ -1474,25 +1475,25 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="tenthArgument"> The tenth argument received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
+		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </param>
+		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </param>
+		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </param>
+		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </param>
+		/// <param name="tenthArgument"> The tenth argument received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument, out TTenthArgument tenthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -1517,14 +1518,14 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument) && Service.TryGetFor(client, out sixthArgument)
 			&& Service.TryGetFor(client, out seventhArgument) && Service.TryGetFor(client, out eighthArgument)
 			&& Service.TryGetFor(client, out ninthArgument) && Service.TryGetFor(client, out tenthArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -1543,7 +1544,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>(client))
 				{
@@ -1604,26 +1605,26 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="tenthArgument"> The tenth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="eleventhArgument"> The eleventh received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
+		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </param>
+		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </param>
+		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </param>
+		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </param>
+		/// <param name="tenthArgument"> The tenth argument received, or default value if no stored argument was found. </param>
+		/// <param name="eleventhArgument"> The eleventh received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument, out TTenthArgument tenthArgument, out TEleventhArgument eleventhArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -1649,7 +1650,7 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument) && Service.TryGetFor(client, out sixthArgument)
@@ -1657,7 +1658,7 @@ namespace Sisus.Init
 			&& Service.TryGetFor(client, out ninthArgument) && Service.TryGetFor(client, out tenthArgument)
 			&& Service.TryGetFor(client, out eleventhArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -1677,7 +1678,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>(client))
 				{
@@ -1741,27 +1742,27 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TClient"> The type of the <paramref name="client"/> object. </typeparam>
-		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
-		/// <param name="client"> The object whose dependencies to retrieve. </typeparam>
-		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="tenthArgument"> The tenth argument received, or default value if no stored argument was found. </typeparam>
-		/// <param name="eleventhArgument"> The eleventh received, or default value if no stored argument was found. </typeparam>
-		/// <param name="twelfthArgument"> The twelfth received, or default value if no stored argument was found. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <param name="client"> The object whose dependencies to retrieve. </param>
+		/// <param name="firstArgument"> The first argument received, or default value if no stored argument was found. </param>
+		/// <param name="secondArgument"> The second argument received, or default value if no stored argument was found. </param>
+		/// <param name="thirdArgument"> The third argument received, or default value if no stored argument was found. </param>
+		/// <param name="fourthArgument"> The fourth argument received, or default value if no stored argument was found. </param>
+		/// <param name="fifthArgument"> The five argument received, or default value if no stored argument was found. </param>
+		/// <param name="sixthArgument"> The sixth argument received, or default value if no stored argument was found. </param>
+		/// <param name="seventhArgument"> The seventh argument received, or default value if no stored argument was found. </param>
+		/// <param name="eighthArgument"> The eighth argument received, or default value if no stored argument was found. </param>
+		/// <param name="ninthArgument"> The ninth argument received, or default value if no stored argument was found. </param>
+		/// <param name="tenthArgument"> The tenth argument received, or default value if no stored argument was found. </param>
+		/// <param name="eleventhArgument"> The eleventh received, or default value if no stored argument was found. </param>
+		/// <param name="twelfthArgument"> The twelfth received, or default value if no stored argument was found. </param>
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
 			(Context context, [DisallowNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument, out TTenthArgument tenthArgument, out TEleventhArgument eleventhArgument, out TTwelfthArgument twelfthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(client is Object obj ? !obj : client is null)
 			{
 				throw new ArgumentNullException($"The {typeof(TClient).Name} whose dependencies you are trying to get is null.", null as Exception);
@@ -1788,7 +1789,7 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(context is Context.MainThread
+			if(context.IsUnitySafeContext()
 			&& Service.TryGetFor(client, out firstArgument) && Service.TryGetFor(client, out secondArgument)
 			&& Service.TryGetFor(client, out thirdArgument) && Service.TryGetFor(client, out fourthArgument)
 			&& Service.TryGetFor(client, out fifthArgument) && Service.TryGetFor(client, out sixthArgument)
@@ -1796,7 +1797,7 @@ namespace Sisus.Init
 			&& Service.TryGetFor(client, out ninthArgument) && Service.TryGetFor(client, out tenthArgument)
 			&& Service.TryGetFor(client, out eleventhArgument) && Service.TryGetFor(client, out twelfthArgument))
 			{
-				if(client is Component component && context is Context.MainThread && InitializerUtility.HasInitializer(component))
+				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
 					firstArgument = default;
 					secondArgument = default;
@@ -1817,7 +1818,7 @@ namespace Sisus.Init
 			}
 
 			#if UNITY_EDITOR
-			if(context is Context.EditMode)
+			if(context.IsEditMode())
 			{
 				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>(client))
 				{
@@ -2122,7 +2123,7 @@ namespace Sisus.Init
 		/// <exception cref="ArgumentNullException" > Thrown if the <paramref name="clientType"/> argument is <see langword="null"/>. </exception>
 		public static bool Clear<TArgument>([DisallowNull] Type clientType)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2156,7 +2157,7 @@ namespace Sisus.Init
 		/// </returns>
 		public static bool Clear<TFirstArgument, TSecondArgument>([DisallowNull] Type clientType)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2187,7 +2188,7 @@ namespace Sisus.Init
 		/// </returns>
 		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument>([DisallowNull] Type clientType)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2219,7 +2220,7 @@ namespace Sisus.Init
 		/// </returns>
 		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([DisallowNull] Type clientType)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2252,7 +2253,7 @@ namespace Sisus.Init
 		/// </returns>
 		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([DisallowNull] Type clientType)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2287,7 +2288,7 @@ namespace Sisus.Init
 		/// </returns>
 		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>([DisallowNull] Type clientType)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2420,7 +2421,7 @@ namespace Sisus.Init
 
 		internal static void Set<TArgument>([DisallowNull] Type clientType, TArgument argument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2437,7 +2438,7 @@ namespace Sisus.Init
 		internal static void Set<TFirstArgument, TSecondArgument>
 			([DisallowNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2454,7 +2455,7 @@ namespace Sisus.Init
 		internal static void Set<TFirstArgument, TSecondArgument, TThirdArgument>
 			([DisallowNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2472,7 +2473,7 @@ namespace Sisus.Init
 			([DisallowNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument,
 			TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2490,7 +2491,7 @@ namespace Sisus.Init
 			([DisallowNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument,
 			TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2508,7 +2509,7 @@ namespace Sisus.Init
 			([DisallowNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument,
 			TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2526,7 +2527,7 @@ namespace Sisus.Init
 			([DisallowNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument,
 			TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2545,7 +2546,7 @@ namespace Sisus.Init
 			TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument,
 			TSeventhArgument seventhArgument, TEighthArgument eighthArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2564,7 +2565,7 @@ namespace Sisus.Init
 			TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument,
 			TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2584,7 +2585,7 @@ namespace Sisus.Init
 			TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument,
 			TTenthArgument tenthArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2604,7 +2605,7 @@ namespace Sisus.Init
 			TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument,
 			TTenthArgument tenthArgument, TEleventhArgument eleventhArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));
@@ -2624,7 +2625,7 @@ namespace Sisus.Init
 			TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument,
 			TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument)
 		{
-			#if DEBUG
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(clientType is null)
 			{
 				throw new ArgumentNullException(nameof(clientType));

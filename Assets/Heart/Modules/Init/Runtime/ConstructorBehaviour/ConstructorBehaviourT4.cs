@@ -2,20 +2,13 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 using static Sisus.Init.Reflection.InjectionUtility;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
-#if UNITY_EDITOR
-using UnityEditor;
-using Sisus.Init.EditorOnly;
-#if UNITY_2021_1_OR_NEWER
-using UnityEditor.SceneManagement;
-#else
-using UnityEditor.Experimental.SceneManagement;
-#endif
-#endif
 
 namespace Sisus.Init
 {
@@ -41,13 +34,13 @@ namespace Sisus.Init
 	/// <typeparam name="TThirdArgument"> Type of the third object that the <see cref="Component"/> depends on. </typeparam>
 	/// <typeparam name="TFourthArgument"> Type of the fourth object that the <see cref="Component"/> depends on. </typeparam>
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
-	public abstract class ConstructorBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> : MonoBehaviour, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, ISerializationCallbackReceiver
+	public abstract class ConstructorBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> : MonoBehaviour, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, IInitializable, ISerializationCallbackReceiver
 		#if UNITY_EDITOR
-		, IInitializableEditorOnly
+		, EditorOnly.IInitializableEditorOnly
 		#endif
 	{
-		private static readonly ConcurrentDictionary<Type, (string, string, string, string)> initPropertyNamesCache = new ConcurrentDictionary<Type, (string, string, string, string)>();
-		private static readonly ConcurrentDictionary<Type, bool> isAnyInitPropertySerializedCache = new ConcurrentDictionary<Type, bool>();
+		private static readonly ConcurrentDictionary<Type, (string, string, string, string)> initPropertyNamesCache = new();
+		private static readonly ConcurrentDictionary<Type, bool> isAnyInitPropertySerializedCache = new();
 
 		/// <summary>
 		/// <see langword="true"/> if this object received the arguments that it depends on in the constructor
@@ -57,12 +50,13 @@ namespace Sisus.Init
 		/// any of the received arguments are <see langword="null"/> or not.
 		/// </para>
 		/// </summary>
-		private bool dependenciesReceived;
+		private InitState initState;
 
 		#if UNITY_EDITOR
 		private DateTime dependenciesReceivedTimeStamp = DateTime.MinValue;
-		IInitializer IInitializableEditorOnly.Initializer { get => TryGetInitializer(this, out var initializer) ? initializer : null; set => value.Target = this; }
-		bool IInitializableEditorOnly.CanInitSelfWhenInactive => true;
+		IInitializer EditorOnly.IInitializableEditorOnly.Initializer { get => TryGetInitializer(this, out IInitializer Initializer) ? Initializer : null; set { if(value != Null) value.Target = this; else if(TryGetInitializer(this, out IInitializer Initializer)) Initializer.Target = null; } }
+		bool EditorOnly.IInitializableEditorOnly.CanInitSelfWhenInactive => true;
+		InitState EditorOnly.IInitializableEditorOnly.InitState => initState;
 		#endif
 
 		/// <summary>
@@ -177,26 +171,23 @@ namespace Sisus.Init
 		/// </exception>
 		protected ConstructorBehaviour(out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument)
 		{
-			dependenciesReceived = InitArgs.TryGet(Context.Constructor, this, out firstArgument, out secondArgument, out thirdArgument, out fourthArgument);
+			initState = InitState.Initializing;
 
-			#if UNITY_EDITOR
-			if(dependenciesReceived) dependenciesReceivedTimeStamp = DateTime.UtcNow;
-			#endif
-
-			#if DEBUG
-			if(!dependenciesReceived)
-            {
+			if(!InitArgs.TryGet(Context.Constructor, this, out firstArgument, out secondArgument, out thirdArgument, out fourthArgument))
+			{
+				initState = InitState.Uninitialized;
 				return;
 			}
 
 			#if UNITY_EDITOR
-			if(EditorOnly.ThreadSafe.Application.IsExitingPlayMode)
-            {
-				return;
-            }
+			if(!EditorOnly.ThreadSafe.Application.IsExitingPlayMode)
 			#endif
+				ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument);
 
-			ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			initState = InitState.Initialized;
+			
+			#if UNITY_EDITOR
+			dependenciesReceivedTimeStamp = DateTime.UtcNow;
 			#endif
 		}
 
@@ -217,62 +208,27 @@ namespace Sisus.Init
 		/// <inheritdoc/>
 		void IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 			.Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
-        		=> Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			{
+				ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, Context.MainThread);
+				Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			}
 
-        private void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
-        {
+		private void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+		{
+			initState = InitState.Initializing;
+
 			(string firstField, string secondField, string thirdField, string fourthField) = GetInitArgumentClassMemberNames();
 			Inject<ConstructorBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this, firstField, firstArgument);
 			Inject<ConstructorBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this, secondField, secondArgument);
 			Inject<ConstructorBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this, thirdField, thirdArgument);
 			Inject<ConstructorBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this, fourthField, fourthArgument);
 			
-			dependenciesReceived = true;
 			#if UNITY_EDITOR
 			dependenciesReceivedTimeStamp = DateTime.UtcNow;
 			#endif
 
-			ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			initState = InitState.Initialized;
 		}
-
-		/// <summary>
-		/// Method that can be overridden and used to validate the initialization arguments that were received by this object.
-		/// <para>
-		/// You can use the <see cref="ThrowIfNull"/> method to throw an <see cref="ArgumentNullException"/>
-		/// if an argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
-		/// {
-		///		ThrowIfNull(inputManager);
-		///		ThrowIfNull(camera);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// You can use the <see cref="AssertNotNull"/> method to log an assertion to the Console
-		/// if an argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
-		/// {
-		///		AssertNotNull(inputManager);
-		///		AssertNotNull(camera);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// Calls to this method are ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="firstArgument"> The first received argument to validate. </param>
-		/// <param name="secondArgument"> The second received argument to validate. </param>
-		/// <param name="thirdArgument"> The third received argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth received argument to validate. </param>
-		[Conditional("DEBUG")]
-		protected virtual void ValidateArguments(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument) { }
 
 		/// <summary>
 		/// Gets the names of the fields and properties into which the four
@@ -306,7 +262,7 @@ namespace Sisus.Init
 		protected virtual (string firstField, string secondField, string thirdField, string fourthField) GetInitArgumentClassMemberNames()
 		{
 			if(initPropertyNamesCache.TryGetValue(GetType(), out (string, string, string, string) names))
-            {
+			{
 				return names;
 			}
 
@@ -383,27 +339,20 @@ namespace Sisus.Init
 		/// </summary>
 		protected virtual void OnAwake() { }
 
-        private protected void Awake()
-        {
-			if(!dependenciesReceived)
+		private protected void Awake()
+		{
+			if(initState == InitState.Uninitialized)
 			{
 				// Retry fetching arguments in Awake because scene services defined in Services components
-                // can't always be fetched in the constructor or in OnAfterDeserialize because examining
-                // the parent chains can only be done from the main thread.
+				// can't always be fetched in the constructor or in OnAfterDeserialize because examining
+				// the parent chains can only be done from the main thread.
 				if(InitArgs.TryGet(Context.Awake, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument))
 				{
+					ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, Context.Awake);
 					Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
 				}
 				else
 				{
-					#if UNITY_EDITOR
-					if(!Application.isPlaying || PrefabUtility.IsPartOfPrefabAsset(this) || PrefabStageUtility.GetPrefabStage(gameObject) != null)
-					{
-						return;
-					}
-					#endif
-
-					DestroyImmediate(this);
 					throw new MissingInitArgumentsException(this);
 				}
 			}
@@ -411,26 +360,53 @@ namespace Sisus.Init
 			OnAwake();
 		}
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() => OnBeforeSerialize();
+		bool IInitializable.HasInitializer => HasInitializer(this);
+		bool IInitializable.Init(Context context) => Init(context);
 
-        protected virtual void OnBeforeSerialize() { }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private bool Init(Context context)
+		{
+			if(initState != InitState.Uninitialized)
+			{
+				return true;
+			}
+
+			if(!InitArgs.TryGet(context, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument))
+			{
+				return false;
+			}
+
+			initState = InitState.Initializing;
+
+			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, context);
+			Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
+
+			initState = InitState.Initialized;
+
+			return true;
+		}
+
+		void ISerializationCallbackReceiver.OnBeforeSerialize() => OnBeforeSerialize();
+
+		protected virtual void OnBeforeSerialize() { }
 
 		void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-			if(dependenciesReceived && GetIsAnyInitPropertySerialized() && InitArgs.TryGet(Context.OnAfterDeserialize, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument))
-            {
+		{
+			if(initState == InitState.Initialized && GetIsAnyInitPropertySerialized() && InitArgs.TryGet(Context.OnAfterDeserialize, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument))
+			{
 				OnAfterDeserialize(new Args<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(firstArgument, secondArgument, thirdArgument, fourthArgument));
 			}
 			else
-            {
+			{
 				OnAfterDeserialize(Args<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>.None);
 			}
-        }
+		}
 
 		protected virtual void OnAfterDeserialize(Args<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> arguments)
 		{
 			if(arguments.provided)
-            {
+			{
+				ValidateArgumentsIfPlayMode(arguments.firstArgument, arguments.secondArgument, arguments.thirdArgument, arguments.fourthArgument, Context.OnAfterDeserialize);
 				Init(arguments.firstArgument, arguments.secondArgument, arguments.thirdArgument, arguments.fourthArgument);
 			}
 		}
@@ -453,10 +429,11 @@ namespace Sisus.Init
 			// its dependencies via InitArgs.TryGet in the constructor. Without this, Reset would always overwrite
 			// any dependencies that were manually passed via AddComponent or Instantiate, when the component has
 			// the InitOnResetAttribute.
-			if((!dependenciesReceived || (DateTime.UtcNow - dependenciesReceivedTimeStamp).TotalMilliseconds > 1000)
+			if((initState == InitState.Uninitialized || (DateTime.UtcNow - dependenciesReceivedTimeStamp).TotalMilliseconds > 1000)
 				&& InitArgs.TryGet(Context.Reset, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument,
 														out TThirdArgument thirdArgument, out TFourthArgument fourthArgument))
 			{
+				ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, Context.Reset);
 				Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
 			}
 
@@ -466,11 +443,11 @@ namespace Sisus.Init
 		#endif
 
 		private bool GetIsAnyInitPropertySerialized()
-        {
+		{
 			if(isAnyInitPropertySerializedCache.TryGetValue(GetType(), out bool isAnyInitPropertySerialized))
-            {
+			{
 				return isAnyInitPropertySerialized;
-            }
+			}
 
 			(string firstField, string secondField, string thirdField, string fourthField) = GetInitArgumentClassMemberNames();
 
@@ -484,209 +461,116 @@ namespace Sisus.Init
 			return isAnyInitPropertySerialized;
 		}
 
-		private bool TryGetConstructorParameterName(int parameterNumber, out string parameterName)
-        {
-			try
+		/// <summary>
+		/// Method that can be overridden and used to validate the initialization arguments that were received by this object.
+		/// <para>
+		/// You can use the <see cref="ThrowIfNull"/> method to throw an <see cref="ArgumentNullException"/>
+		/// if an argument is <see cref="Null">null</see>.
+		/// <example>
+		/// <code>
+		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
+		/// {
+		///		ThrowIfNull(inputManager);
+		///		ThrowIfNull(camera);
+		/// }
+		/// </code>
+		/// </example>
+		/// </para>
+		/// <para>
+		/// You can use the <see cref="AssertNotNull"/> method to log an assertion to the Console
+		/// if an argument is <see cref="Null">null</see>.
+		/// <example>
+		/// <code>
+		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
+		/// {
+		///		AssertNotNull(inputManager);
+		///		AssertNotNull(camera);
+		/// }
+		/// </code>
+		/// </example>
+		/// </para>
+		/// <para>
+		/// Calls to this method are ignored in non-development builds.
+		/// </para>
+		/// </summary>
+		/// <param name="firstArgument"> The first received argument to validate. </param>
+		/// <param name="secondArgument"> The second received argument to validate. </param>
+		/// <param name="thirdArgument"> The third received argument to validate. </param>
+		/// <param name="fourthArgument"> The fourth received argument to validate. </param>
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected virtual void ValidateArguments(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			AssertNotNull(firstArgument);
+			AssertNotNull(secondArgument);
+			AssertNotNull(thirdArgument);
+			AssertNotNull(fourthArgument);
+			#endif
+		}
+
+		[Conditional("EDITOR"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		#if UNITY_EDITOR
+        async
+        #endif
+        private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, Context context)
+		{
+			#if UNITY_EDITOR
+			if(context.TryDetermineIsEditMode(out bool editMode))
 			{
-				var names = GetInitArgumentClassMemberNames();
-				switch(parameterNumber)
+				if(editMode)
 				{
-					case 1:
-						parameterName = GetConstructorArgumentName(names.firstField);
-						return true;
-					case 2:
-						parameterName = GetConstructorArgumentName(names.secondField);
-						return true;
-					case 3:
-						parameterName = GetConstructorArgumentName(names.thirdField);
-						return true;
-					case 4:
-						parameterName = GetConstructorArgumentName(names.fourthField);
-						return true;
-					default:
-						throw new IndexOutOfRangeException(parameterNumber.ToString());
+					return;
+				}
+
+				if(!context.IsUnitySafeContext())
+				{
+					await Until.UnitySafeContext();
 				}
 			}
-			catch
-            {
-				parameterName = null;
-				return false;
-            }
-        }
+			else
+			{
+				await Until.UnitySafeContext();
 
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws
-		/// an <see cref="ArgumentNullException"/> if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void ThrowIfNull(TFirstArgument argument)
-		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
+				if(!Application.isPlaying)
+				{
+					return;
+				}
+			}
 
-			TryGetConstructorParameterName(1, out string parameterName);
-			throw new ArgumentNullException(parameterName, $"First argument passed to {GetType().Name} was null.");
+			if(ShouldSelfGuardAgainstNull(this))
+			{
+				ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			}
 			#endif
 		}
 
 		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs
-		/// an assertion message to the console if it is.
+		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws an <see cref="ArgumentNullException"/> if it is.
 		/// <para>
 		/// This method call is ignored in non-development builds.
 		/// </para>
 		/// </summary>
 		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void AssertNotNull(TFirstArgument argument)
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected void ThrowIfNull<TArgument>(TArgument argument)
 		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
-
-			string suffix = TryGetConstructorParameterName(1, out string parameterName) ? "\nParameter name: " + parameterName : "";
-			Debug.LogAssertion($"First argument passed to {GetType().Name} was null.{suffix}", this);
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(argument == Null) throw new ArgumentNullException(typeof(TArgument).Name, $"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.");
 			#endif
 		}
 
 		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws
-		/// an <see cref="ArgumentNullException"/> if it is.
+		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs an assertion message to the console if it is.
 		/// <para>
 		/// This method call is ignored in non-development builds.
 		/// </para>
 		/// </summary>
 		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void ThrowIfNull(TSecondArgument argument)
+		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected void AssertNotNull<TArgument>(TArgument argument)
 		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
-
-			TryGetConstructorParameterName(2, out string parameterName);
-			throw new ArgumentNullException(parameterName, $"Second argument passed to {GetType().Name} was null.");
-			#endif
-		}
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs
-		/// an assertion message to the console if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void AssertNotNull(TSecondArgument argument)
-		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
-
-			string suffix = TryGetConstructorParameterName(2, out string parameterName) ? "\nParameter name: " + parameterName : "";
-			Debug.LogAssertion($"Second argument passed to {GetType().Name} was null.{suffix}", this);
-			#endif
-		}
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws
-		/// an <see cref="ArgumentNullException"/> if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void ThrowIfNull(TThirdArgument argument)
-		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
-
-			TryGetConstructorParameterName(3, out string parameterName);
-			throw new ArgumentNullException(parameterName, $"Third argument passed to {GetType().Name} was null.");
-			#endif
-		}
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs
-		/// an assertion message to the console if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void AssertNotNull(TThirdArgument argument)
-		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
-
-			string suffix = TryGetConstructorParameterName(3, out string parameterName) ? "\nParameter name: " + parameterName : "";
-			Debug.LogAssertion($"Third argument passed to {GetType().Name} was null.{suffix}", this);
-			#endif
-		}
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws
-		/// an <see cref="ArgumentNullException"/> if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void ThrowIfNull(TFourthArgument argument)
-		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
-
-			TryGetConstructorParameterName(4, out string parameterName);
-			throw new ArgumentNullException(parameterName, $"Fourth argument passed to {GetType().Name} was null.");
-			#endif
-		}
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs
-		/// an assertion message to the console if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG")]
-		protected void AssertNotNull(TFourthArgument argument)
-		{
-			#if DEBUG
-			if(!dependenciesReceived || argument != Null)
-            {
-				return;
-            }
-
-			string suffix = TryGetConstructorParameterName(4, out string parameterName) ? "\nParameter name: " + parameterName : "";
-			Debug.LogAssertion($"Fourth argument passed to {GetType().Name} was null.{suffix}", this);
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(argument == Null) Debug.LogAssertion($"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.", this);
 			#endif
 		}
 	}

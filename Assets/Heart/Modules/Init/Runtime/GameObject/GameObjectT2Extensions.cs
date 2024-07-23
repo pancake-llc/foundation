@@ -5,7 +5,7 @@ namespace Sisus.Init
 	/// <summary>
 	/// Extensions methods for initializing <see cref="GameObject{TFirstComponent, TSecondComponent}"/> objects.
 	/// </summary>
-    public static class GameObjectT2Extensions
+	public static class GameObjectT2Extensions
 	{
 		#region InitBoth
 
@@ -76,14 +76,14 @@ namespace Sisus.Init
 			var components = new Components<TFirstComponent, TSecondComponent>();
 
 			if(@this.isClone || typeof(Transform).IsAssignableFrom(typeof(TFirstComponent)))
-            {
+			{
 				if(!@this.gameObject.TryGetComponent(out components.first))
 				{
 					components.first = @this.gameObject.AddComponent<TFirstComponent>();
 				}
 			}
 			else
-            {
+			{
 				components.first = @this.gameObject.AddComponent<TFirstComponent>();
 			}
 
@@ -109,11 +109,11 @@ namespace Sisus.Init
 				where TSecondComponent : Component
 		{
 			@this.OnBeforeFirstInit();
-            var components = new Components<TFirstComponent, TSecondComponent>
-            {
-                first = AddAndInit.Component<TFirstComponent, TArgument>(@this.gameObject, argument, !@this.leaveInactive)
-            };
-            return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			var components = new Components<TFirstComponent, TSecondComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TArgument>(@this.gameObject, argument, !@this.leaveInactive)
+			};
+			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -197,13 +197,13 @@ namespace Sisus.Init
 			TFirstArgument firstArgument, TSecondArgument secondArgument)
 				where TFirstComponent : Component, IArgs<TFirstArgument, TSecondArgument>
 				where TSecondComponent : Component
-        {
+		{
 			@this.OnBeforeFirstInit();
-            var components = new Components<TFirstComponent, TSecondComponent>
-            {
-                first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument>(@this.gameObject, firstArgument, secondArgument, !@this.leaveInactive)
-            };
-            return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			var components = new Components<TFirstComponent, TSecondComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument>(@this.gameObject, firstArgument, secondArgument, !@this.leaveInactive)
+			};
+			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -227,13 +227,13 @@ namespace Sisus.Init
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 				where TFirstComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 				where TSecondComponent : Component
-        {
+		{
 			@this.OnBeforeFirstInit();
-            var components = new Components<TFirstComponent, TSecondComponent>
-            {
-                first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, !@this.leaveInactive)
-            };
-            return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			var components = new Components<TFirstComponent, TSecondComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, !@this.leaveInactive)
+			};
+			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -293,13 +293,13 @@ namespace Sisus.Init
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 				where TFirstComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 				where TSecondComponent : Component
-        {
+		{
 			@this.OnBeforeFirstInit();
-            var components = new Components<TFirstComponent, TSecondComponent>
-            {
-                first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive)
-            };
-            return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			var components = new Components<TFirstComponent, TSecondComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive)
+			};
+			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -329,13 +329,13 @@ namespace Sisus.Init
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 				where TFirstComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 				where TSecondComponent : Component
-        {
+		{
 			@this.OnBeforeFirstInit();
-            var components = new Components<TFirstComponent, TSecondComponent>
-            {
-                first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, !@this.leaveInactive)
-            };
-            return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			var components = new Components<TFirstComponent, TSecondComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, !@this.leaveInactive)
+			};
+			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -362,7 +362,7 @@ namespace Sisus.Init
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, Second fourthArgument)
 				where TFirstComponent : Component, IFourArguments, IFirstArgument<TFirstArgument>, ISecondArgument<TSecondArgument>, IThirdArgument<TThirdArgument>
 				where TSecondComponent : Component
-        {
+		{
 			@this.OnBeforeFirstInit();
 			var components = new Components<TFirstComponent, TSecondComponent>();
 			if(!@this.gameObject.TryGetComponent(out components.second))
@@ -398,7 +398,7 @@ namespace Sisus.Init
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, Second fourthArgument, TFifthArgument fifthArgument)
 				where TFirstComponent : Component, IFiveArguments, IFirstArgument<TFirstArgument>, ISecondArgument<TSecondArgument>, IThirdArgument<TThirdArgument>, IFifthArgument<TFifthArgument>
 				where TSecondComponent : Component
-        {
+		{
 			@this.OnBeforeFirstInit();
 			var components = new Components<TFirstComponent, TSecondComponent>();
 			if(!@this.gameObject.TryGetComponent(out components.second))
@@ -435,7 +435,7 @@ namespace Sisus.Init
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, Second fifthArgument)
 				where TFirstComponent : Component, IFiveArguments, IFirstArgument<TFirstArgument>, ISecondArgument<TSecondArgument>, IThirdArgument<TThirdArgument>, IFourthArgument<TFourthArgument>
 				where TSecondComponent : Component
-        {
+		{
 			@this.OnBeforeFirstInit();
 			var components = new Components<TFirstComponent, TSecondComponent>();
 			if(!@this.gameObject.TryGetComponent(out components.second))
@@ -777,16 +777,16 @@ namespace Sisus.Init
 			Second argument)
 				where TFirstComponent : Component, IOneArgument
 				where TSecondComponent : Component
-        {
-            @this.OnBeforeFirstInit();
-            var components = new Components<TFirstComponent, TSecondComponent>();
-            if(!@this.gameObject.TryGetComponent(out components.second))
-            {
-                components.second = @this.gameObject.AddComponent<TSecondComponent>();
-            }
+		{
+			@this.OnBeforeFirstInit();
+			var components = new Components<TFirstComponent, TSecondComponent>();
+			if(!@this.gameObject.TryGetComponent(out components.second))
+			{
+				components.second = @this.gameObject.AddComponent<TSecondComponent>();
+			}
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent>(@this.gameObject, components.second, !@this.leaveInactive);
-            return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
-        }
+			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+		}
 
 		#endregion
 
@@ -1456,6 +1456,6 @@ namespace Sisus.Init
 			return @this.components;
 		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

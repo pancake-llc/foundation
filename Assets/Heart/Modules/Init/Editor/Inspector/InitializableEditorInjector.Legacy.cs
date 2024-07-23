@@ -146,7 +146,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				if(customEditorType.Assembly == thisAssembly)
 				{
 					#if DEV_MODE && DEBUG_OVERRIDE_EDITOR
-                    Debug.Log($"Won't override {type.Name} existing editor {GetCustomEditorType(type, false).Name}");
+					Debug.Log($"Won't override {type.Name} existing editor {GetCustomEditorType(type, false).Name}");
 					#endif
 					continue;
 				}
@@ -173,7 +173,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(!internalDictionary.Contains(inspectedType))
 			{
 				#if DEV_MODE && DEBUG_OVERRIDE_EDITOR
-                Debug.Log($"Replacing {inspectedType.Name} default editor with {overrideEditorType.Name}.");
+				Debug.Log($"Replacing {inspectedType.Name} default editor with {overrideEditorType.Name}.");
 				#endif
 
 				internalDictionary.Add(inspectedType, add.ToInternalTypeList());
@@ -184,7 +184,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				var list = internalDictionary[inspectedType] as IList;
 
 				#if DEV_MODE && DEBUG_OVERRIDE_EDITOR
-                Debug.Log($"Replacing {inspectedType.Name} editor {(MonoEditorType.m_InspectorTypeField.GetValue(list[0]) as Type).Name} with {overrideEditorType.Name}.");
+				Debug.Log($"Replacing {inspectedType.Name} editor {(MonoEditorType.m_InspectorTypeField.GetValue(list[0]) as Type).Name} with {overrideEditorType.Name}.");
 				#endif
 
 				list.Clear();
@@ -194,22 +194,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			#if ODIN_INSPECTOR
 			Sirenix.OdinInspector.Editor.CustomEditorUtility.SetCustomEditor(inspectedType, overrideEditorType, EditorForChildClasses, IsFallback);
 			#endif
-		}
-
-		public static void CreateCachedEditor(Object[] targets, ref Editor editor)
-		{
-			var editorType = GetCustomEditorType(targets[0].GetType(), targets.Length > 1);
-
-			if(InitializerEditorUtility.IsInitializableEditorType(editorType))
-			{
-				#if DEV_MODE
-				Debug.LogWarning(targets[0]);
-				#endif
-
-				editorType = CustomEditorUtility.GetGenericInspectorType();
-			}
-
-			Editor.CreateCachedEditor(targets[0], editorType, ref editor);
 		}
 
 		public static bool HasCustomEditor(Type componentType) => GetCustomEditorType(componentType, false) != CustomEditorUtility.genericInspectorType;
@@ -345,8 +329,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
 					Debug.LogError(e);
 				#else
-                catch
-                {
+				catch
+				{
 				#endif
 					instance = FormatterServices.GetUninitializedObject(internalMonoEditorType);
 				}

@@ -2,10 +2,10 @@
 
 namespace Sisus.Init
 {
-    /// <summary>
-    /// Extensions methods for initializing <see cref="GameObject{TComponent}"/> objects.
-    /// </summary>
-    public static class GameObjectT1Extensions
+	/// <summary>
+	/// Extensions methods for initializing <see cref="GameObject{TComponent}"/> objects.
+	/// </summary>
+	public static class GameObjectT1Extensions
 	{
 		/// <summary>
 		/// Initializes the added component without any arguments.
@@ -49,12 +49,12 @@ namespace Sisus.Init
 		public static TComponent Init<TComponent, TArgument>(this GameObject<TComponent> @this,
 			TArgument argument)
 				where TComponent : Component, IArgs<TArgument>
-        {
-            @this.OnBeforeInit();
+		{
+			@this.OnBeforeInit();
 
 			TComponent component;
 			if(!@this.isClone || !@this.gameObject.TryGetComponent(out component))
-            {
+			{
 				InitArgs.Set(typeof(TComponent), argument);
 
 				component = @this.gameObject.AddComponent<TComponent>();
@@ -64,17 +64,17 @@ namespace Sisus.Init
 					@this.OnAfterInit();
 					return component;
 				}
-            }
+			}
 
-            if(component is IInitializable<TArgument> initializable)
-            {
-                initializable.Init(argument);
+			if(component is IInitializable<TArgument> initializable)
+			{
+				initializable.Init(argument);
 				@this.OnAfterInit();
-                return component;
-            }
+				return component;
+			}
 
 			@this.OnBeforeException();
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		/// <summary>
@@ -119,7 +119,7 @@ namespace Sisus.Init
 			}
 
 			@this.OnBeforeException();
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		/// <summary>
@@ -166,7 +166,7 @@ namespace Sisus.Init
 			}
 
 			@this.OnBeforeException();
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		/// <summary>
@@ -215,7 +215,7 @@ namespace Sisus.Init
 			}
 
 			@this.OnBeforeException();
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		/// <summary>
@@ -267,7 +267,7 @@ namespace Sisus.Init
 			}
 
 			@this.OnBeforeException();
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 
 		/// <summary>
@@ -321,7 +321,7 @@ namespace Sisus.Init
 			}
 
 			@this.OnBeforeException();
-			throw new InitArgumentsNotReceivedException($"GameObject<{typeof(TComponent).Name}>.Init", typeof(TComponent));
+			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
 		}
 	}
 }
