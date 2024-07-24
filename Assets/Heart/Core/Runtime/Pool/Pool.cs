@@ -159,6 +159,7 @@ namespace Pancake
 
         private void Return(Poolable poolable)
         {
+            if(_insidePoolableInstances.Contains(poolable)) return;
             poolable.OnReturn();
             poolable.gameObject.SetActive(false);
             var instanceTransform = poolable.transform;
