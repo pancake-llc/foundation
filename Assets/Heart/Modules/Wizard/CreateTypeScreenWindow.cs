@@ -31,12 +31,7 @@ namespace PancakeEditor
 
             var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.SunsetOrange : Color.white}, fontStyle = FontStyle.Bold};
             if (_invalidTypeName) EditorGUILayout.LabelField("Invalid type name.", guiStyle);
-            else
-            {
-                if (_page) EditorGUILayout.LabelField("Result: " + $"{_typeText}Page".ToBold().SetColor(Uniform.Green), Uniform.RichLabel);
-                if (_sheet) EditorGUILayout.LabelField("Result: " + $"{_typeText}Sheet".ToBold().SetColor(Uniform.Orange), Uniform.RichLabel);
-                if (_popup) EditorGUILayout.LabelField("Result: " + $"{_typeText}Popup".ToBold().SetColor(Uniform.Orange), Uniform.RichLabel);
-            }
+            else EditorGUILayout.LabelField("Result: " + GetResultNameClass().ToBold().SetColor(Uniform.Green), Uniform.RichLabel);
 
             GUILayout.Label("Type".ToBold(), Uniform.CenterRichLabel);
             DrawTypeToggles();
@@ -158,7 +153,7 @@ namespace PancakeEditor
                 progress += 0.25f;
                 EditorUtility.DisplayProgressBar("Progress", "Completed!", progress);
 
-                EditorUtility.DisplayDialog("Success", $"{_typeText} was created!", "OK");
+                EditorUtility.DisplayDialog("Success", $"{GetResultNameClass()} was created!", "OK");
                 Close(false);
                 EditorGUIUtility.PingObject(newFile);
             }
@@ -166,11 +161,21 @@ namespace PancakeEditor
             if (GUILayout.Button("Cancel", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) editorWindow.Close();
         }
 
+        private string GetResultNameClass()
+        {
+            string str = _typeText;
+            if (_page) str += "Page";
+            else if (_sheet) str += "Sheet";
+            else if (_popup) str += "Popup";
+
+            return str;
+        }
+
         private void Close(bool hasError = true)
         {
             EditorUtility.ClearProgressBar();
             editorWindow.Close();
-            if (hasError) EditorUtility.DisplayDialog("Error", $"Failed to create {_typeText}", "OK");
+            if (hasError) EditorUtility.DisplayDialog("Error", $"Failed to create {GetResultNameClass()}", "OK");
         }
 
         private bool IsTypeNameValid()
