@@ -31,7 +31,7 @@ namespace Pancake.Game
             AudioStatic.StopAll(); // todo: check issue when click button play sound meanwhile call StopAll (StopAll call before sound click played)
             SceneManager.sceneLoaded += OnGameplaySceneLoaded;
             Static.sceneHolder.Remove(Constant.Scene.MENU);
-            SceneManager.UnloadSceneAsync(Constant.Scene.MENU);
+            await SceneManager.UnloadSceneAsync(Constant.Scene.MENU);
             await SceneManager.LoadSceneAsync(Constant.Scene.GAMEPLAY, LoadSceneMode.Additive);
         }
 
@@ -42,6 +42,6 @@ namespace Pancake.Game
             SceneManager.SetActiveScene(scene);
         }
 
-        private void OnDisable() { bgm.Stop(); }
+        private void OnDisable() { bgm?.Stop(); }
     }
 }

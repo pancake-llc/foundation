@@ -13,7 +13,7 @@ namespace Pancake.Game
             AudioStatic.StopAll();
             SceneManager.sceneLoaded += OnMenuSceneLoaded;
             Static.sceneHolder.Remove(Constant.Scene.GAMEPLAY);
-            SceneManager.UnloadSceneAsync(Constant.Scene.GAMEPLAY);
+            await SceneManager.UnloadSceneAsync(Constant.Scene.GAMEPLAY);
             await SceneManager.LoadSceneAsync(Constant.Scene.MENU, LoadSceneMode.Additive);
         }
 
