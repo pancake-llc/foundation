@@ -16,8 +16,6 @@ namespace Pancake.MobileInput
         {
             if (IsPointerOverGameObject())
             {
-                Debug.LogError("FFF");
-                Debug.Log(TouchWrapper.IsFingerDown);
                 if (TouchWrapper.IsFingerDown && _wasTouchingLastFrame == false) _touchInput.IsTouchOnLockedArea = true;
             }
 

@@ -418,10 +418,6 @@ namespace Pancake.MobileInput
             return dragDistance;
         }
 
-        public void OnEventTriggerPointerDown(UnityEngine.EventSystems.BaseEventData baseEventData)
-        {
-            IsTouchOnLockedArea = true;
-            Debug.LogError("AAA");
-        }
+        public void OnEventTriggerPointerDown(UnityEngine.EventSystems.BaseEventData baseEventData) { IsTouchOnLockedArea = true; }
     }
 }
