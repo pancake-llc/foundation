@@ -2,6 +2,11 @@
 
 namespace Pancake.MobileInput
 {
+    /// <summary>
+    /// A little helper script that allows to focus the camera on a transform either
+    /// via code, or by wiring it up with one of the many events of the touch camera
+    /// or picking controller.
+    /// </summary>
     [RequireComponent(typeof(TouchCamera))]
     public class FocusCameraOnItem : MonoBehaviour
     {
