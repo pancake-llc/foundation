@@ -343,16 +343,16 @@ namespace Pancake.MobileInput
             SelectColliderInternal(newCollider, isDoubleClick, isLongTap);
         }
 
-        private void RequestDragPickable(Vector3 fingerDownPos)
+        private void RequestDragPickable(Vector3 fingerDownPosition)
         {
-            var pickedCollider = GetClosestColliderAtScreenPoint(fingerDownPos, out var intersectionPoint);
+            var pickedCollider = GetClosestColliderAtScreenPoint(fingerDownPosition, out var intersectionPoint);
             if (pickedCollider != null && SelectedColliders.Contains(pickedCollider))
             {
-                RequestDragPickable(pickedCollider, fingerDownPos, intersectionPoint);
+                RequestDragPickable(pickedCollider, fingerDownPosition, intersectionPoint);
             }
         }
 
-        private void RequestDragPickable(Component colliderComponent, Vector2 fingerDownPos, Vector3 intersectionPoint)
+        private void RequestDragPickable(Component colliderComponent, Vector2 fingerDownPosition, Vector3 intersectionPoint)
         {
             if (requireLongTapForMove && _isSelectedViaLongTap == false) return;
 
@@ -392,21 +392,21 @@ namespace Pancake.MobileInput
                     }
 
                     _draggedTransformOffset = groundPosCenter - intersectionPoint;
-                    _itemInitialDragOffsetWorld = ComputeDragPosition(fingerDownPos, SnapToGrid) - CurrentlyDraggedTransform.position;
+                    _itemInitialDragOffsetWorld = ComputeDragPosition(fingerDownPosition, SnapToGrid) - CurrentlyDraggedTransform.position;
                 }
             }
         }
 
-        private void InputOnFingerDown(Vector3 fingerDownPos)
+        private void InputOnFingerDown(Vector3 fingerDownPosition)
         {
-            if (requireLongTapForMove == false || _isSelectedViaLongTap) RequestDragPickable(fingerDownPos);
+            if (requireLongTapForMove == false || _isSelectedViaLongTap) RequestDragPickable(fingerDownPosition);
         }
 
         private void InputOnFingerUp() { EndPickableTransformMove(); }
 
-        private Vector3 ComputeDragPosition(Vector3 dragPosCurrent, bool clampToGrid)
+        private Vector3 ComputeDragPosition(Vector3 dragPositionCurrent, bool clampToGrid)
         {
-            Ray dragRay = _touchCam.Cam.ScreenPointToRay(dragPosCurrent);
+            Ray dragRay = _touchCam.Cam.ScreenPointToRay(dragPositionCurrent);
 
             dragRay.origin += _draggedTransformOffset;
             bool hitSuccess = _touchCam.RaycastGround(dragRay, out var dragPosWorld);
@@ -452,7 +452,7 @@ namespace Pancake.MobileInput
             }
         }
 
-        private void InputOnDragUpdate(Vector3 dragPosStart, Vector3 dragPosCurrent, Vector3 correctionOffset, Vector3 delta)
+        private void InputOnDragUpdate(Vector3 dragPositionStart, Vector3 dragPositionCurrent, Vector3 correctionOffset, Vector3 delta)
         {
             if (CurrentlyDraggedTransform != null)
             {
@@ -460,7 +460,7 @@ namespace Pancake.MobileInput
 
                 //Accomodate for custom movements by user code that happen while an item is being dragged. E.g. this allows users to lift items slightly during a drag.
                 _draggedItemCustomOffset += CurrentlyDraggedTransform.position - _currentlyDraggedTransformPosition;
-                Vector3 dragPosWorld = ComputeDragPosition(dragPosCurrent, SnapToGrid);
+                Vector3 dragPosWorld = ComputeDragPosition(dragPositionCurrent, SnapToGrid);
                 CurrentlyDraggedTransform.position = dragPosWorld - _itemInitialDragOffsetWorld;
 
                 if (SelectedColliders.Count > 1)
@@ -510,7 +510,7 @@ namespace Pancake.MobileInput
 
         private float ComputeDistance2d(float x0, float y0, float x1, float y1) { return Mathf.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)); }
 
-        private void InputOnDragStop(Vector3 dragStopPos, Vector3 dragFinalMomentum) { EndPickableTransformMove(); }
+        private void InputOnDragStop(Vector3 dragStopPosition, Vector3 dragFinalMomentum) { EndPickableTransformMove(); }
 
         private void EndPickableTransformMove()
         {

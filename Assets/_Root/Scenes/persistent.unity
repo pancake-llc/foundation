@@ -480,6 +480,7 @@ GameObject:
   - component: {fileID: 2049456052}
   - component: {fileID: 2049456053}
   - component: {fileID: 2049456054}
+  - component: {fileID: 2049456055}
   m_Layer: 0
   m_Name: system
   m_TagString: Untagged
@@ -528,6 +529,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4268067864976840126, guid: 912f4821990e4ae429e089c6780f0140, type: 3}
   audioAsset: {fileID: 11400000, guid: d2bc6a294235ecd4d851642c08ce4343, type: 2}
+--- !u!114 &2049456055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049456051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd0aa5103dbbe8418040c315df9825e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCustom: 0
+  clickDurationThreshold: 0.7
+  doubleClickThreshold: 0.5
+  tiltVerticalThreshold: 0.7
+  tiltHorizontalThreshold: 0.5
+  dragThreshold: 0.05
+  longTapStartsDrag: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

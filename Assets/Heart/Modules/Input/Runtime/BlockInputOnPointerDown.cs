@@ -1,15 +1,16 @@
+using Sisus.Init;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Pancake.MobileInput
 {
-    public class BlockInputOnPointerDown : MonoBehaviour, IPointerDownHandler
+    [EditorIcon("icon_default")]
+    public class BlockInputOnPointerDown : MonoBehaviour<TouchInput>, IPointerDownHandler
     {
-        //[SerializeField] private BoolVariable statusTouchOnLockedArea;
+        private TouchInput _touchInput;
 
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            //statusTouchOnLockedArea.Value = true;
-        }
+        public void OnPointerDown(PointerEventData eventData) { _touchInput.OnEventTriggerPointerDown(eventData); }
+
+        protected override void Init(TouchInput argument) { _touchInput = argument; }
     }
 }

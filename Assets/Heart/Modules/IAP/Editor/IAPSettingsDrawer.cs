@@ -56,7 +56,7 @@ namespace Pancake.IAPEditor
             _reorderableList.elementHeightCallback += ElementHeightCallback;
             GUI.backgroundColor = Uniform.SunsetOrange;
             EditorGUILayout.HelpBox(
-                "\nProduct id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time\n",
+                "\nProduct id should look like : com.appname.itemid\n Ex: com.pancake.removeads\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time\n",
                 MessageType.Info);
             GUI.backgroundColor = Color.white;
 

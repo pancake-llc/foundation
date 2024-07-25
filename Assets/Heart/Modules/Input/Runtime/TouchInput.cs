@@ -3,27 +3,62 @@ using UnityEngine;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using Pancake.Common;
+using Sisus.Init;
 
 namespace Pancake.MobileInput
 {
     [EditorIcon("icon_input")]
+    [Service(typeof(TouchInput), FindFromScene = true)]
     public class TouchInput : MonoBehaviour
     {
         private const float DRAG_DURATION_THRESHOLD = 0.01f;
         private const int MOMENTUM_SAMPLES_COUNT = 5;
-
-        [field: SerializeField] private bool IsTouchOnLockedArea { get; set; }
+        public bool IsTouchOnLockedArea { get; set; }
 
         public static event Action<Vector3, bool> OnStartDrag;
+
+        /// <summary>
+        /// (Vector3 dragPositionStart, Vector3 dragPositionCurrent, Vector3 correctionOffset, Vector3 delta)
+        /// </summary>
         public static event Action<Vector3, Vector3, Vector3, Vector3> OnUpdateDrag;
+
+        /// <summary>
+        /// (Vector3 dragStopPosition, Vector3 dragFinalMomentum)
+        /// </summary>
         public static event Action<Vector3, Vector3> OnStopDrag;
+
+        /// <summary>
+        /// (Vector3 fingerDownPosition)
+        /// </summary>
         public static event Action<Vector3> OnFingerDown;
+
         public static event Action OnFingerUp;
+
+        /// <summary>
+        /// (Vector3 clickPosition, bool isDoubleClick, bool isLongTap)
+        /// </summary>
         public static event Action<Vector3, bool, bool> OnClick;
+
+        /// <summary>
+        /// (float time)
+        /// </summary>
         public static event Action<float> OnLongTapUpdate;
+
+        /// <summary>
+        /// ((Vector3 pinchCenter, float pinchDistance)
+        /// </summary>
         public static event Action<Vector3, float> OnStartPinch;
+
+        /// <summary>
+        /// (Vector3 pinchCenter, float pinchDistance, float pinchStartDistance)
+        /// </summary>
         public static event Action<Vector3, float, float> OnUpdatePinch;
+
+        /// <summary>
+        /// ((PinchData pinchData)
+        /// </summary>
         public static event Action<PinchData> OnUpdateExtendPinch;
+
         public static event Action OnStopPinch;
 
 #if UNITY_EDITOR
@@ -381,6 +416,12 @@ namespace Pancake.MobileInput
             Vector2 dragVector = pos0 - pos1;
             float dragDistance = new Vector2(dragVector.x / Screen.width, dragVector.y / Screen.height).magnitude;
             return dragDistance;
+        }
+
+        public void OnEventTriggerPointerDown(UnityEngine.EventSystems.BaseEventData baseEventData)
+        {
+            IsTouchOnLockedArea = true;
+            Debug.LogError("AAA");
         }
     }
 }
