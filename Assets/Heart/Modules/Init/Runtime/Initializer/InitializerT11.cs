@@ -110,7 +110,7 @@ namespace Sisus.Init
 			#endif
 
 			#if UNITY_EDITOR
-			if(target == null)
+			if(target)
 			#else
 			if(target is null)
 			#endif

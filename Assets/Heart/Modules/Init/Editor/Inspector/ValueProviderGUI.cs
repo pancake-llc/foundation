@@ -132,7 +132,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				DrawTagGUI(remainingRect);
 
 				// editor can be destroyed by DrawTagGUI if the discard button is pressed
-				if(editor != null)
+				if(editor)
 				{
 					editor.serializedObject.ApplyModifiedProperties();
 				}

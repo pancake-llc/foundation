@@ -10,7 +10,7 @@ namespace Sisus.Init.EditorOnly
 	/// the original GUI of the wrapped editor beneath it.
 	/// </para>
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public sealed class CustomEditorDecoratorAttribute : Attribute
 	{
 		/// <summary>

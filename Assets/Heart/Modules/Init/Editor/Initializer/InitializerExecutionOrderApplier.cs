@@ -17,7 +17,7 @@ namespace Sisus.Init
 	/// </summary>
 	internal sealed class InitializerExecutionOrderApplier
 	{
-		private readonly HashSet<Type> initializerInterfaceTypes = new HashSet<Type>()
+		private readonly HashSet<Type> initializerInterfaceTypes = new()
 		{
 			typeof(IInitializer<,>),
 			typeof(IInitializer<,,>),

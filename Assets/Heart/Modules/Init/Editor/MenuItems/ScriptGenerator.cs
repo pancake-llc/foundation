@@ -425,7 +425,7 @@ namespace Sisus.Init.EditorOnly.Internal
 								namespaces.Add(typeof(TextAreaAttribute).Namespace);
 								if(textArea.minLines == 3 && textArea.maxLines == 3)
 								{
-									members += $"\t\t\t[TextArea]\r\n";
+									members += "\t\t\t[TextArea]\r\n";
 								}
 								else
 								{

@@ -36,12 +36,16 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 			
 			var customEditorTypes = TypeCache.GetTypesWithAttribute<CustomEditor>();
-			customEditorsByTargetType = new(customEditorTypes.Count);
+			customEditorsByTargetType = new Dictionary<Type, (Type customEditorType, CustomEditor attribute, bool editorForChildClasses)>(customEditorTypes.Count + 20);
 			foreach(var customEditorType in customEditorTypes)
 			{
-				if(customEditorType.GetCustomAttribute<CustomEditor>() is { } customEditorAttribute
-				   && inspectedTypeGetter(customEditorAttribute) is Type targetType)
+// NOTE: Even though AllowMultiple is not enabled for CustomEditor, it is not sealed,
+				// so it is possible for another attribute to derive from it, and set AllowMultiple to true
+				// (this actually was the case with one customer).
+				foreach(var customEditorAttribute in customEditorType.GetCustomAttributes<CustomEditor>())
 				{
+					if (inspectedTypeGetter(customEditorAttribute) is not Type targetType) continue;
+
 					if(!customEditorsByTargetType.ContainsKey(targetType))
 					{
 						customEditorsByTargetType.Add(targetType, (customEditorType, customEditorAttribute, editorForChildClassesGetter(customEditorAttribute)));
