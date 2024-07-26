@@ -12,7 +12,7 @@ namespace Pancake.MobileInput
     {
         [SerializeField] private float transitionDuration = 0.5f;
 
-        [SerializeField] private AnimationCurve transitionCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
+        [SerializeField] private AnimationCurve transitionCurve = new(new Keyframe(0, 0), new Keyframe(1, 1));
 
         private TouchCamera TouchCamera { get; set; }
 

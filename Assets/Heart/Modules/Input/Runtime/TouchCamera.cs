@@ -43,12 +43,12 @@ namespace Pancake.MobileInput
         [SerializeField]
         [Tooltip(
             "These values define the scrolling borders for the camera. The camera will not scroll further than defined here. When a top-down camera is used, these 2 values are applied to the X/Z position.")]
-        private Vector2 boundaryMin = new Vector2(-1000, -1000);
+        private Vector2 boundaryMin = new(-1000, -1000);
 
         [SerializeField]
         [Tooltip(
             "These values define the scrolling borders for the camera. The camera will not scroll further than defined here. When a top-down camera is used, these 2 values are applied to the X/Z position.")]
-        private Vector2 boundaryMax = new Vector2(1000, 1000);
+        private Vector2 boundaryMax = new(1000, 1000);
 
         [Header("Advanced")]
         [SerializeField]
@@ -66,8 +66,7 @@ namespace Pancake.MobileInput
         private float autoScrollDamp = 300;
 
         [SerializeField] [Tooltip("This curve allows to modulate the auto scroll damp value over time.")]
-        private AnimationCurve autoScrollDampCurve =
-            new AnimationCurve(new Keyframe(0, 1, 0, 0), new Keyframe(0.7f, 0.9f, -0.5f, -0.5f), new Keyframe(1, 0.01f, -0.85f, -0.85f));
+        private AnimationCurve autoScrollDampCurve = new(new Keyframe(0, 1, 0, 0), new Keyframe(0.7f, 0.9f, -0.5f, -0.5f), new Keyframe(1, 0.01f, -0.85f, -0.85f));
 
         [SerializeField]
         [Tooltip(
@@ -114,7 +113,7 @@ namespace Pancake.MobileInput
         [Header("Keyboard & Mouse Input")]
         [Tooltip("Here you can define all platforms that should support keyboard and mouse input for controlling the camera.")]
         [SerializeField]
-        private List<RuntimePlatform> keyboardAndMousePlatforms = new List<RuntimePlatform>()
+        private List<RuntimePlatform> keyboardAndMousePlatforms = new()
         {
             RuntimePlatform.WindowsEditor,
             RuntimePlatform.WindowsPlayer,
@@ -128,7 +127,7 @@ namespace Pancake.MobileInput
         [SerializeField] private bool controlTweakablesEnabled;
 
         [SerializeField] [Tooltip("When any of these modifiers is pressed the arrow keys can be used for rotating the camera.")]
-        private List<KeyCode> keyboardControlsModifiers = new List<KeyCode>() {KeyCode.LeftAlt, KeyCode.RightAlt, KeyCode.LeftControl, KeyCode.RightControl};
+        private List<KeyCode> keyboardControlsModifiers = new() {KeyCode.LeftAlt, KeyCode.RightAlt, KeyCode.LeftControl, KeyCode.RightControl};
 
         [SerializeField] private float mouseRotationFactor = 0.01f;
         [SerializeField] private float mouseTiltFactor = 0.005f;
@@ -263,10 +262,7 @@ namespace Pancake.MobileInput
         {
             get
             {
-                if (cam.orthographic)
-                {
-                    return cam.orthographicSize;
-                }
+                if (cam.orthographic) return cam.orthographicSize;
 
                 if (IsTranslationZoom)
                 {
@@ -278,10 +274,7 @@ namespace Pancake.MobileInput
             }
             set
             {
-                if (cam.orthographic)
-                {
-                    cam.orthographicSize = value;
-                }
+                if (cam.orthographic) cam.orthographicSize = value;
                 else
                 {
                     if (IsTranslationZoom)
@@ -289,10 +282,7 @@ namespace Pancake.MobileInput
                         var camCenterIntersection = GetIntersectionPoint(GetCamCenterRay());
                         CachedTransform.position = camCenterIntersection - CachedTransform.forward * value;
                     }
-                    else
-                    {
-                        cam.fieldOfView = value;
-                    }
+                    else cam.fieldOfView = value;
                 }
 
                 ComputeCamBoundaries();
@@ -342,10 +332,7 @@ namespace Pancake.MobileInput
         {
             get
             {
-                if (is2dOverdragMarginEnabled)
-                {
-                    return camOverdragMargin2d;
-                }
+                if (is2dOverdragMarginEnabled) return camOverdragMargin2d;
 
                 return Vector2.one * camOverdragMargin;
             }
@@ -358,17 +345,14 @@ namespace Pancake.MobileInput
 
         private bool _isDraggingSceneObject;
 
-        private Plane _refPlaneXY = new Plane(new Vector3(0, 0, -1), 0);
-        private Plane _refPlaneXZ = new Plane(new Vector3(0, 1, 0), 0);
+        private Plane _refPlaneXY = new(new Vector3(0, 0, -1), 0);
+        private Plane _refPlaneXZ = new(new Vector3(0, 1, 0), 0);
 
         public Plane RefPlane
         {
             get
             {
-                if (CameraAxes == CameraPlaneAxes.XZTopDown)
-                {
-                    return _refPlaneXZ;
-                }
+                if (CameraAxes == CameraPlaneAxes.XZTopDown) return _refPlaneXZ;
 
                 return _refPlaneXY;
             }
@@ -430,10 +414,7 @@ namespace Pancake.MobileInput
             DragCameraMoveVector = new List<Vector3>();
             _refPlaneXY = new Plane(new Vector3(0, 0, -1), groundLevelOffset);
             _refPlaneXZ = new Plane(new Vector3(0, 1, 0), -groundLevelOffset);
-            if (EnableZoomTilt)
-            {
-                ResetZoomTilt();
-            }
+            if (EnableZoomTilt) ResetZoomTilt();
 
             ComputeCamBoundaries();
 
@@ -445,10 +426,7 @@ namespace Pancake.MobileInput
 
             //Errors for certain incorrect settings.
             string cameraAxesError = CheckCameraAxesErrors();
-            if (string.IsNullOrEmpty(cameraAxesError) == false)
-            {
-                Debug.LogError(cameraAxesError);
-            }
+            if (string.IsNullOrEmpty(cameraAxesError) == false) Debug.LogError(cameraAxesError);
         }
 
         public void Start()

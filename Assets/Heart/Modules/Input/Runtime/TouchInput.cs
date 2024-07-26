@@ -62,31 +62,33 @@ namespace Pancake.MobileInput
         public static event Action OnStopPinch;
 
 #if UNITY_EDITOR
-        [SerializeField] private bool isCustom;
+        [SerializeField] private bool advanceMode;
 #endif
 
-        [SerializeField, ShowIf("isCustom")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip("When the finger is held on an item for at least this duration without moving, the gesture is recognized as a long tap.")]
         private float clickDurationThreshold = 0.7f;
 
-        [SerializeField, ShowIf("isCustom")] [Tooltip("A double click gesture is recognized when the time between two consecutive taps is shorter than this duration.")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
+        [Tooltip("A double click gesture is recognized when the time between two consecutive taps is shorter than this duration.")]
         private float doubleClickThreshold = 0.5f;
 
-        [SerializeField, ShowIf("isCustom")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip("This value controls how close to a vertical line the user has to perform a tilt gesture for it to be recognized as such.")]
         private float tiltVerticalThreshold = 0.7f;
 
-        [SerializeField, ShowIf("isCustom")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip(
             "Threshold value for detecting whether the fingers are horizontal enough for starting the tilt. Using this value you can prevent vertical finger placement to be counted as tilt gesture.")]
         private float tiltHorizontalThreshold = 0.5f;
 
-        [SerializeField, ShowIf("isCustom")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip(
             "A drag is started as soon as the user moves his finger over a longer distance than this value. The value is defined as normalized value. Dragging the entire width of the screen equals 1. Dragging the entire height of the screen also equals 1.")]
         private float dragThreshold = 0.05f;
 
-        [SerializeField, ShowIf("isCustom")] [Tooltip("When this flag is enabled the drag started event is invoked immediately when the long tap time is succeeded.")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
+        [Tooltip("When this flag is enabled the drag started event is invoked immediately when the long tap time is succeeded.")]
         private bool longTapStartsDrag;
 
         private float _realTimeOfLastFinderDown;

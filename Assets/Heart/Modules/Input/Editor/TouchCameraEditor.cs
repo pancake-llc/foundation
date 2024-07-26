@@ -408,6 +408,7 @@ namespace Pancake.MobileInputEditor
             EditorGUILayout.PropertyField(_advanceModeProperty, true);
             if (_advanceModeProperty.boolValue)
             {
+                EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(_zoomBackSpringFactorProperty, true);
                 EditorGUILayout.PropertyField(_dragBackSpringFactorProperty, true);
                 EditorGUILayout.PropertyField(_autoScrollVelocityMaxProperty, true);
@@ -428,6 +429,7 @@ namespace Pancake.MobileInputEditor
                 EditorGUILayout.PropertyField(_is2dOverdragMarginEnabledProperty, true);
 
                 if (_is2dOverdragMarginEnabledProperty.boolValue) EditorGUILayout.PropertyField(_camOverdragMargin2dProperty, true);
+                EditorGUI.indentLevel--;
             }
 
             Uniform.DrawGroupFoldout("touch_camera_callback", "Callback", DrawCallback);

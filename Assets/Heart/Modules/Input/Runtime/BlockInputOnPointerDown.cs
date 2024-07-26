@@ -1,5 +1,4 @@
 using Sisus.Init;
-using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Pancake.MobileInput

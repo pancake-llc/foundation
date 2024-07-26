@@ -2,13 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using Pancake.Common;
+using Sisus.Init;
 using UnityEngine.Events;
 
 namespace Pancake.MobileInput
 {
     [EditorIcon("icon_manager")]
     [RequireComponent(typeof(TouchCamera))]
-    public class PickingController : MonoBehaviour
+    public class PickingController : MonoBehaviour<TouchInput>
     {
         public enum SelectionAction
         {
@@ -45,16 +46,16 @@ namespace Pancake.MobileInput
         [Space] [SerializeField] private bool advanceMode;
 #endif
 
-        [SerializeField, ShowIf("advanceMode")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip(
             "When setting this to false, pickables will not become deselected when the user clicks somewhere on the screen, except when he clicks on another pickable.")]
         private bool deselectPreviousColliderOnClick = true;
 
-        [SerializeField, ShowIf("advanceMode")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip("When setting this to false, the OnPickableTransformSelect event will only be sent once when clicking on the same pickable repeatedly.")]
         private bool repeatEventSelectedOnClick = true;
 
-        [SerializeField, ShowIf("advanceMode")] [Tooltip("May have fired the OnPickableTransformMoveStarted too early, when it hasn't actually been moved.")]
+        [SerializeField, ShowIf("advanceMode"), Indent] [Tooltip("May have fired the OnPickableTransformMoveStarted too early, when it hasn't actually been moved.")]
         private bool useLegacyTransformMoved;
 
         [Space] [SerializeField, FoldoutGroup("Pickable Callback")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected.")]
@@ -78,12 +79,11 @@ namespace Pancake.MobileInput
             "Here you can set up callbacks to be invoked when the moving of a pickable transform is ended. The event requires 2 parameters. The first is the start position of the drag. The second is the dragged transform. The start position can be used to reset the transform in case the drag has ended on an invalid position.")]
         private Vector3TransformUnityEvent onTransformMoveEndedCallback;
 
-        [SerializeField] private bool longTapStartsDrag;
-
         #endregion
 
 
         private TouchCamera _touchCam;
+        private TouchInput _touchInput;
 
         private Component SelectedCollider => SelectedColliders.Count == 0 ? null : SelectedColliders[^1];
 
@@ -129,14 +129,13 @@ namespace Pancake.MobileInput
             set
             {
                 isMultiSelectionEnabled = value;
-                if (value == false)
-                {
-                    DeselectAll();
-                }
+                if (value == false) DeselectAll();
             }
         }
 
-        private Dictionary<Component, Vector3> _selectionPositionOffsets = new Dictionary<Component, Vector3>();
+        private Dictionary<Component, Vector3> _selectionPositionOffsets = new();
+
+        protected override void Init(TouchInput argument) { _touchInput = argument; }
 
         public void Awake()
         {
@@ -429,7 +428,7 @@ namespace Pancake.MobileInput
 
         private void InputOnDragStart(Vector3 clickPosition, bool isLongTap)
         {
-            if (isLongTap && longTapStartsDrag)
+            if (isLongTap && _touchInput.LongTapStartsDrag)
             {
                 var newCollider = GetClosestColliderAtScreenPoint(clickPosition, out _);
                 if (newCollider != null)
