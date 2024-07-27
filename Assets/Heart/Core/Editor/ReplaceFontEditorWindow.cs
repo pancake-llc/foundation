@@ -37,9 +37,9 @@ namespace Pancake.ReplacerEditor
             GUILayout.Space(10);
 
             ScriptableObject target = this;
-            SerializedObject so = new SerializedObject(target);
-            SerializedProperty specifiedLegacyTextObjectsProperty = so.FindProperty(nameof(specifiedLegacyTextObjects));
-            SerializedProperty specifiedTMPObjectsProperty = so.FindProperty(nameof(specifiedTMPObjects));
+            var so = new SerializedObject(target);
+            var specifiedLegacyTextObjectsProperty = so.FindProperty(nameof(specifiedLegacyTextObjects));
+            var specifiedTMPObjectsProperty = so.FindProperty(nameof(specifiedTMPObjects));
 
             if (_fontType == FontType.LegacyText) _newFont = EditorGUILayout.ObjectField("New font", _newFont, typeof(Font), false) as Font;
             else _newTMPfont = EditorGUILayout.ObjectField("New font", _newTMPfont, typeof(TMP_FontAsset), false) as TMP_FontAsset;
