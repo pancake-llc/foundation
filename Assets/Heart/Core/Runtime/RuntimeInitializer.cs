@@ -3,9 +3,9 @@ using UnityEngine;
 namespace Pancake
 {
     [EditorIcon("icon_default")]
-    public class RuntimeInitializer : GameComponent
+    public class RuntimeInitializer : MonoBehaviour
     {
-        [SerializeField] private Initialize[] initializes;
+        [SerializeField] private BaseInitialization[] initializes;
 
         private void Start()
         {

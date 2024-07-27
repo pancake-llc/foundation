@@ -1,17 +1,18 @@
+using System;
 using Pancake.Common;
 using Pancake.UI;
+using UnityEngine;
 
 namespace Pancake.Game
 {
-    using UnityEngine;
-
     [EditorIcon("icon_default")]
-    public class RequireInternetChecker : MonoBehaviour
+    [Serializable]
+    public class RequireInternetInitialization : BaseInitialization
     {
         [SerializeField] private float timeCheckAgain = 5f;
         [SerializeField, PopupPickup] private string noInternetPopupKey;
 
-        public void Start()
+        public override void Init()
         {
             if (!HeartSettings.RequireInternet) return;
             App.Delay(this, timeCheckAgain, OnUpdateCallback, isLooped: true);

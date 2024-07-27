@@ -11,6 +11,7 @@ namespace Pancake.Game
             public const string KEY_VIBRATE = "user_vibrate";
             public const string KEY_FIRST_OPEN = "user_first_open";
             public const string KEY_ID = "user_id";
+            public const string AGREE_PRIVACY = "user_agree_privacy";
         }
 
         public static class Scene

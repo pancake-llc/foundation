@@ -127,8 +127,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498101907}
-  - component: {fileID: 498101906}
+  - component: {fileID: 498101911}
   - component: {fileID: 498101908}
+  - component: {fileID: 498101910}
+  - component: {fileID: 498101909}
   m_Layer: 0
   m_Name: initialization
   m_TagString: Untagged
@@ -136,19 +138,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &498101906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 498101905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27ef1c32c8b34697b6bb6306856a2be4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  environment: 0
 --- !u!4 &498101907
 Transform:
   m_ObjectHideFlags: 0
@@ -178,6 +167,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeCheckAgain: 5
   noInternetPopupKey: NoInternetPopup
+--- !u!114 &498101909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498101905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec777f8b4d05cb4a9725c4ca590e93f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &498101910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498101905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df941cdcf31986e45bfdd48400c325ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &498101911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498101905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 244a430ee0af504419320841973aa8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initializes:
+  - {fileID: 498101908}
+  - {fileID: 498101910}
+  - {fileID: 498101909}
 --- !u!1 &694698843
 GameObject:
   m_ObjectHideFlags: 0
@@ -540,6 +569,9 @@ GameObject:
   - component: {fileID: 2049456052}
   - component: {fileID: 2049456053}
   - component: {fileID: 2049456054}
+  - component: {fileID: 2049456055}
+  - component: {fileID: 2049456057}
+  - component: {fileID: 2049456056}
   m_Layer: 0
   m_Name: system
   m_TagString: Untagged
@@ -569,7 +601,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2049456051}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b133bd34ef474b08966eaaa2518f1c8f, type: 3}
   m_Name: 
@@ -588,6 +620,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4268067864976840126, guid: 912f4821990e4ae429e089c6780f0140, type: 3}
   audioAsset: {fileID: 11400000, guid: d2bc6a294235ecd4d851642c08ce4343, type: 2}
+--- !u!114 &2049456055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049456051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ef1c32c8b34697b6bb6306856a2be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  environment: 0
+--- !u!114 &2049456056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049456051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 48349d879ceb20e4f9f59c1dcdeec755, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+--- !u!114 &2049456057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049456051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deb1e3b962cda364dbd71312ccab1079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 2049456056}
+  referenceResolution: {x: 600, y: 800}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

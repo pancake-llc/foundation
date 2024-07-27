@@ -15,8 +15,9 @@ namespace PancakeEditor.Common
             {"com.annulusgames.lit-motion", "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v1.9.0"},
             {
                 "com.annulusgames.component-cache-generator",
-                "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator"
+                "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator#v0.1.1"
             },
+            {"com.annulusgames.debug-ui", "https://github.com/AnnulusGames/DebugUI.git?path=src/DebugUI/Assets/DebugUI#v1.0.2"},
             {"jp.hadashikick.vitalrouter", "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.4"},
         };
 
