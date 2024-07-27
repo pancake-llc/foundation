@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23c351e45916415fa870992171e2731d, type: 3}
-  m_Name: locale_text_loading
+  m_Name: locale_text_message_no_internet
   m_EditorClassIdentifier: 
   items:
   - language:
       name: English
       code: en
       custom: 0
-    value: Loading {0}%
+    value: Please check your internet connection and try again
   - language:
       name: Vietnamese
       code: vi
       custom: 0
-    value: "\u0110ang t\u1EA3i {0}%"
+    value: "Vui l\xF2ng ki\u1EC3m tra k\u1EBFt n\u1ED1i internet c\u1EE7a b\u1EA1n
+      v\xE0 th\u1EED l\u1EA1i"
