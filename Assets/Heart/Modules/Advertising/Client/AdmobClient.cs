@@ -18,24 +18,24 @@ namespace Pancake.Monetization
                     // Indicates if the Unity app should be paused when a full-screen ad is displayed.
                     // On Android, Unity is paused when displaying full-screen ads. Calling this method with true duplicates this behavior on iOS.
                     MobileAds.SetiOSAppPauseOnBackground(true);
-                    if (!adSettings.AdmobEnableTestMode) return;
-                    var configuration = new RequestConfiguration {TestDeviceIds = adSettings.AdmobDevicesTest};
+                    if (!AdSettings.AdmobEnableTestMode) return;
+                    var configuration = new RequestConfiguration {TestDeviceIds = AdSettings.AdmobDevicesTest};
                     MobileAds.SetRequestConfiguration(configuration);
                 });
             });
 
-            adSettings.AdmobBanner.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.AdmobInter.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.AdmobReward.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.AdmobRewardInter.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.AdmobAppOpen.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.AdmobBanner.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.AdmobInter.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.AdmobReward.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.AdmobRewardInter.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.AdmobAppOpen.paidedCallback = AppTracking.TrackRevenue;
             RegisterAppStateChange();
             LoadInterstitial();
             LoadRewarded();
             LoadRewardedInterstitial();
             LoadAppOpen();
             LoadBanner();
-            (adSettings.AdmobBanner as IBannerHide)?.Hide(); // hide banner first time when banner auto show when loaded
+            (AdSettings.AdmobBanner as IBannerHide)?.Hide(); // hide banner first time when banner auto show when loaded
 #endif
         }
 
@@ -82,7 +82,7 @@ namespace Pancake.Monetization
         {
             if (state == GoogleMobileAds.Common.AppState.Foreground)
             {
-                if (adSettings.CurrentNetwork == EAdNetwork.Admob) ShowAppOpen();
+                if (AdSettings.CurrentNetwork == EAdNetwork.Admob) ShowAppOpen();
             }
         }
 #endif

@@ -93,7 +93,7 @@ namespace PancakeEditor
             var previousColor = GUI.color;
             if (gpgsInstalled) GUI.color = Uniform.Green;
 
-            GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+            GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT));
             GUI.color = previousColor;
             GUI.backgroundColor = Color.white;
             if (GUILayout.Button("Add GPGS Symbol (2)", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))

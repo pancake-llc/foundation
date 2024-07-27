@@ -10,7 +10,6 @@ namespace Pancake.Monetization
         public override void Init()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            MaxSdk.SetSdkKey(AdSettings.SDKKey);
             MaxSdk.InitializeSdk();
             MaxSdk.SetIsAgeRestrictedUser(AdSettings.ApplovinEnableAgeRestrictedUser);
             AdSettings.ApplovinBanner.paidedCallback = AppTracking.TrackRevenue;

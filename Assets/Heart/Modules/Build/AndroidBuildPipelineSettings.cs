@@ -251,7 +251,7 @@ namespace PancakeEditor
 
             GUI.enabled = status;
             if (status) GUI.color = Uniform.Green;
-            GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+            GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(30));
             GUI.color = previousColor;
             GUI.backgroundColor = Color.white;
 

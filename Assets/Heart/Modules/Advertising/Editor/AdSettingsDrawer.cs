@@ -24,7 +24,6 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _admobRewardInterProperty;
         private SerializedProperty _admobAppOpenProperty;
 
-        private SerializedProperty _sdkKeyPropertyProperty;
         private SerializedProperty _applovinBannerProperty;
         private SerializedProperty _applovinInterProperty;
         private SerializedProperty _applovinRewardProperty;
@@ -48,7 +47,6 @@ namespace Pancake.MonetizationEditor
             _admobRewardInterProperty = serializedObject.FindProperty("admobRewardInter");
             _admobAppOpenProperty = serializedObject.FindProperty("admobAppOpen");
 
-            _sdkKeyPropertyProperty = serializedObject.FindProperty("sdkKey");
             _applovinBannerProperty = serializedObject.FindProperty("applovinBanner");
             _applovinInterProperty = serializedObject.FindProperty("applovinInter");
             _applovinRewardProperty = serializedObject.FindProperty("applovinReward");
@@ -127,6 +125,7 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
+                var currentRect = EditorGUILayout.GetControlRect(false, 0);
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Import Mediation", GUILayout.Height(24)))
                 {
@@ -134,65 +133,81 @@ namespace Pancake.MonetizationEditor
                     AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob-mediation.unitypackage"), false);
                 }
 
-                if (GUILayout.Button("Copy Test AppId", GUILayout.Height(24)))
+                if (GUILayout.Button("Take Test Id", GUILayout.Height(24)))
                 {
-                    "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
-                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy AppId Test Id Success!");
-                }
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("App Id"),
+                        false,
+                        () =>
+                        {
+                            "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy AppId Test Id Success!");
+                        });
 
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Test BannerId", GUILayout.Height(24)))
-                {
+                    menu.AddItem(new GUIContent("Banner Id"),
+                        false,
+                        () =>
+                        {
 #if UNITY_ANDROID
-                    "ca-app-pub-3940256099942544/6300978111".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/6300978111".CopyToClipboard();
 #elif UNITY_IOS
-                    "ca-app-pub-3940256099942544/2934735716".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/2934735716".CopyToClipboard();
 #endif
-                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Banner Test Unit Id Success!");
-                }
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Banner Test Unit Id Success!");
+                        });
 
-                if (GUILayout.Button("Copy Test InterId", GUILayout.Height(24)))
-                {
+                    menu.AddItem(new GUIContent("Interstitial Id"),
+                        false,
+                        () =>
+                        {
 #if UNITY_ANDROID
-                    "ca-app-pub-3940256099942544/1033173712".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/1033173712".CopyToClipboard();
 #elif UNITY_IOS
-                    "ca-app-pub-3940256099942544/4411468910".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/4411468910".CopyToClipboard();
 #endif
-                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Interstitial Test Unit Id Success!");
-                }
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Interstitial Test Unit Id Success!");
+                        });
 
-                if (GUILayout.Button("Copy Test RewardId", GUILayout.Height(24)))
-                {
+                    menu.AddItem(new GUIContent("Rewarded Id"),
+                        false,
+                        () =>
+                        {
 #if UNITY_ANDROID
-                    "ca-app-pub-3940256099942544/5224354917".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/5224354917".CopyToClipboard();
 #elif UNITY_IOS
                     "ca-app-pub-3940256099942544/1712485313".CopyToClipboard();
 #endif
-                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Test Unit Id Success!");
-                }
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Test Unit Id Success!");
+                        });
 
-                EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Test RewardInterId", GUILayout.Height(24)))
-                {
+                    menu.AddItem(new GUIContent("Rewarded Interstitial Id"),
+                        false,
+                        () =>
+                        {
 #if UNITY_ANDROID
-                    "ca-app-pub-3940256099942544/5354046379".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/5354046379".CopyToClipboard();
 #elif UNITY_IOS
-                    "ca-app-pub-3940256099942544/6978759866".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/6978759866".CopyToClipboard();
 #endif
-                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Interstitial Test Unit Id Success!");
-                }
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Interstitial Test Unit Id Success!");
+                        });
 
-                if (GUILayout.Button("Copy Test AppOpenId", GUILayout.Height(24)))
-                {
+                    menu.AddItem(new GUIContent("App Open Id"),
+                        false,
+                        () =>
+                        {
 #if UNITY_ANDROID
-                    "ca-app-pub-3940256099942544/9257395921".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/9257395921".CopyToClipboard();
 #elif UNITY_IOS
-                    "ca-app-pub-3940256099942544/5575463023".CopyToClipboard();
+                            "ca-app-pub-3940256099942544/5575463023".CopyToClipboard();
 #endif
-                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy App Open Test Unit Id Success!");
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy App Open Test Unit Id Success!");
+                        });
+
+                    var windowRect = EditorWindow.focusedWindow.position;
+                    float width = windowRect.width - 240;
+                    menu.DropDown(new Rect(currentRect.position + new Vector2(width / 2f, 8), Vector2.zero));
                 }
 
                 EditorGUILayout.EndHorizontal();
@@ -214,11 +229,11 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.BeginHorizontal();
 
                 bool googleMobileAdsInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.dll");
-                var contentInstallLabel = "Install Admob SDK v9.1.0 (1)";
+                var contentInstallLabel = "Install Admob SDK v9.2.0 (1)";
                 if (googleMobileAdsInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Admob SDK v9.1.0 Installed (1)";
+                    contentInstallLabel = "Admob SDK v9.2.0 Installed (1)";
                 }
                 else
                 {
@@ -235,7 +250,7 @@ namespace Pancake.MonetizationEditor
                 if (googleMobileAdsInstalled) GUI.color = Uniform.Green;
 
                 GUI.enabled = googleMobileAdsInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 2, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 
@@ -258,7 +273,7 @@ namespace Pancake.MonetizationEditor
             {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
                 GUI.backgroundColor = Uniform.Green;
-                EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
+                EditorGUILayout.HelpBox("Applovin plugin was imported. Please click Open AppLovin Integration and enter SDK key", MessageType.Info);
                 GUI.backgroundColor = Color.white;
 
                 EditorGUILayout.BeginHorizontal();
@@ -285,7 +300,6 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.PropertyField(_sdkKeyPropertyProperty);
                 EditorGUILayout.PropertyField(_applovinEnableAgeRestrictedUserProperty, new GUIContent("Age Restricted"));
                 EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
                 EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
@@ -300,11 +314,11 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
                 bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
-                var contentInstallLabel = "Install Applovin v6.5.2 (1)";
+                var contentInstallLabel = "Install Applovin v6.6.1 (1)";
                 if (applovinInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Applovin SDK v6.5.2 Installed (1)";
+                    contentInstallLabel = "Applovin SDK v6.6.1 Installed (1)";
                 }
                 else
                 {
@@ -320,7 +334,7 @@ namespace Pancake.MonetizationEditor
                 var previousColor = GUI.color;
                 if (applovinInstalled) GUI.color = Uniform.Green;
                 GUI.enabled = applovinInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 2, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 

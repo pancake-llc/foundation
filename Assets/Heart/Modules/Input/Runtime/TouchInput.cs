@@ -8,7 +8,7 @@ using Sisus.Init;
 namespace Pancake.MobileInput
 {
     [EditorIcon("icon_input")]
-    [Service(typeof(TouchInput), FindFromScene = true)]
+    [Service(typeof(TouchInput))]
     public class TouchInput : MonoBehaviour
     {
         private const float DRAG_DURATION_THRESHOLD = 0.01f;

@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using Alchemy.Inspector;
 using Pancake.Common;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
@@ -13,6 +14,7 @@ namespace Pancake.Monetization
     {
         public EBannerSize size = EBannerSize.Adaptive;
         public EBannerPosition position = EBannerPosition.Bottom;
+        public EBannerCollapsiblePosition collapsiblePosition = EBannerCollapsiblePosition.None;
         private bool _isBannerShowing;
         private bool _previousBannerShowStatus;
 
@@ -35,7 +37,9 @@ namespace Pancake.Monetization
             _bannerView.OnBannerAdLoaded += OnAdLoaded;
             _bannerView.OnAdFullScreenContentOpened += OnAdOpening;
             _bannerView.OnAdPaid += OnAdPaided;
-            _bannerView.LoadAd(new AdRequest());
+            var adRequest = new AdRequest();
+            if (collapsiblePosition != EBannerCollapsiblePosition.None) adRequest.Extras.Add("collapsible", collapsiblePosition.ToString().ToLower());
+            _bannerView.LoadAd(adRequest);
 #endif
         }
 
@@ -116,6 +120,8 @@ namespace Pancake.Monetization
                 default: return AdPosition.Bottom;
             }
         }
+
+        public bool IsCollapsible() { return collapsiblePosition != EBannerCollapsiblePosition.None && _bannerView.IsCollapsible(); }
 
         private void OnAdPaided(AdValue value)
         {

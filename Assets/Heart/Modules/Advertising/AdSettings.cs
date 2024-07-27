@@ -29,16 +29,13 @@ namespace Pancake.Monetization
         public static AdUnit AdmobRewardInter => Instance.admobRewardInter;
         public static AdUnit AdmobAppOpen => Instance.admobAppOpen;
 
-        [Header("[applovin]")] [SerializeField, TextArea] private string sdkKey;
-
-        [SerializeField] private ApplovinBanner applovinBanner = new();
+        [Header("[applovin]")] [SerializeField] private ApplovinBanner applovinBanner = new();
         [SerializeField] private ApplovinInter applovinInter = new();
         [SerializeField] private ApplovinReward applovinReward = new();
         [SerializeField] private ApplovinRewardInter applovinRewardInter = new();
         [SerializeField] private ApplovinAppOpen applovinAppOpen = new();
         [SerializeField] private bool applovinEnableAgeRestrictedUser;
 
-        public static string SDKKey => Instance.sdkKey;
         public static AdUnit ApplovinBanner => Instance.applovinBanner;
         public static AdUnit ApplovinInter => Instance.applovinInter;
         public static AdUnit ApplovinReward => Instance.applovinReward;
