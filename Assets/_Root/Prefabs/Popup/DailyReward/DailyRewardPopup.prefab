@@ -911,8 +911,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4289177250
-  m_fontColor: {r: 0.63529414, g: 0.6509804, b: 0.654902, a: 1}
+    rgba: 4280583862
+  m_fontColor: {r: 0.7137255, g: 0.5254902, b: 0.14117648, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1450,6 +1450,7 @@ RectTransform:
   - {fileID: 6596058412061958113}
   - {fileID: 170174253728640955}
   - {fileID: 5789718122377234395}
+  - {fileID: 4595770208726840377}
   - {fileID: 5898794583763656185}
   - {fileID: 8489074588268510858}
   - {fileID: 8809127080823707122}
@@ -1476,7 +1477,8 @@ MonoBehaviour:
   localeTextDay: {fileID: 7201352414303898723}
   content: {fileID: 170174253728640955}
   claimedOverlayObject: {fileID: 4719806906860729500}
-  defaultColor: {r: 0.63529414, g: 0.6509804, b: 0.65882355, a: 1}
+  boderCurrentDay: {fileID: 7004842183559765881}
+  defaultColor: {r: 0.7137255, g: 0.5254902, b: 0.14117648, a: 1}
   imageCircleClaimed: {fileID: 8269177741753164855}
   imageTickClaimed: {fileID: 6168000700955740004}
   __alchemySerializationData_Pancake_Game_UI_DailyRewardDayElement:
@@ -3130,6 +3132,81 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 38
+--- !u!1 &8933716197241632603
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4595770208726840377}
+  - component: {fileID: 7230076434441568395}
+  - component: {fileID: 7004842183559765881}
+  m_Layer: 5
+  m_Name: image_boder_current_day
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &4595770208726840377
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8933716197241632603}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2084074565021634486}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 4, y: 4}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7230076434441568395
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8933716197241632603}
+  m_CullTransparentMesh: 1
+--- !u!114 &7004842183559765881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8933716197241632603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5639219, g: 1, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: e57393946084ca74fae27a71fa7f508c, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1.54
 --- !u!1 &9026366243723693068
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,6 +20,7 @@ namespace Pancake.Game.UI
         [SerializeField] private LocaleTextComponent localeTextDay;
         [SerializeField] private Transform content;
         [SerializeField] private GameObject claimedOverlayObject;
+        [SerializeField] private Image boderCurrentDay;
         [SerializeField] private Color defaultColor;
         [SerializeField] private Image imageCircleClaimed;
         [SerializeField] private Image imageTickClaimed;
@@ -50,6 +51,16 @@ namespace Pancake.Game.UI
                 if (_data.day == currentDay)
                 {
                     textDay.color = claimableColor;
+                    if (_data.day != 7)
+                    {
+                        boderCurrentDay.gameObject.SetActive(true);
+                        LMotion.Create(0f, 1f, 1f).WithEase(Ease.Linear).WithLoops(-1, LoopType.Yoyo).BindToColorA(boderCurrentDay).AddTo(gameObject);
+                    }
+                    else
+                    {
+                        boderCurrentDay.gameObject.SetActive(false);
+                    }
+
                     _dayStatusViews[EDailyRewardDayStatus.Claimable].SetActive(true);
                     var button = _dayStatusViews[EDailyRewardDayStatus.Claimable].GetComponent<Button>();
                     button.onClick.RemoveListener(OnButtonClaimPressed);
