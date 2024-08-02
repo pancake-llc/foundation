@@ -1,3 +1,4 @@
+using System;
 using Alchemy.Inspector;
 using Pancake.Sound;
 using Pancake.UI;
@@ -45,6 +46,20 @@ namespace Pancake.Game
             SceneManager.SetActiveScene(scene);
         }
 
-        private void OnDisable() { bgm?.Stop(); }
+        private void OnDisable()
+        {
+#if UNITY_EDITOR
+            try
+            {
+#endif
+                bgm.Stop();
+#if UNITY_EDITOR
+            }
+            catch (Exception)
+            {
+                // ingored
+            }
+#endif
+        }
     }
 }
