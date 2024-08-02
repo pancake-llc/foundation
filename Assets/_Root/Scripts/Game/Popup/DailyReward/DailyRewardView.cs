@@ -1,0 +1,70 @@
+using System;
+using System.Collections.Generic;
+using Alchemy.Serialization;
+using Cysharp.Threading.Tasks;
+using Pancake.Common;
+using Pancake.Linq;
+using Pancake.UI;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Pancake.Game.UI
+{
+    [AlchemySerialize]
+    public partial class DailyRewardView : View
+    {
+        [SerializeField] private Button buttonClose;
+        [SerializeField] private DailyRewardDayElement dayPrefab;
+        [SerializeField] private Transform content;
+        [SerializeField] private List<DailyRewardData> datas;
+        [SerializeField] private DailyRewardData specialDayData;
+        [SerializeField] private DailyRewardDayElement specialDayElement;
+        [SerializeField] private ScrollRect scroll;
+        [AlchemySerializeField, NonSerialized] private Dictionary<EDailyRewardType, DayRewardComponent> _dayRewards = new();
+        [SerializeField] private Color claimableColor;
+
+        private readonly List<DailyRewardDayElement> _days = new();
+
+        protected override UniTask Initialize()
+        {
+            buttonClose.onClick.AddListener(OnButtonClosePressed);
+
+            foreach (var data in datas)
+            {
+                var dayElement = Instantiate(dayPrefab, content);
+                dayElement.Setup(data, GetRewardFunc, claimableColor, RefreshAll);
+                _days.Add(dayElement);
+            }
+
+            specialDayElement.Setup(specialDayData, GetRewardFunc, claimableColor, RefreshAll);
+            App.Delay(0.1f,
+                () =>
+                {
+                    int currentDay = UserData.GetDailyRewardDay();
+                    var element = _days.Filter(d => d.Day == currentDay);
+                    if (element.IsNullOrEmpty() || currentDay == 1) scroll.normalizedPosition = new Vector2(0, 1);
+                    else scroll.ScrollTo(element[0].transform);
+                });
+            return UniTask.CompletedTask;
+        }
+
+        private void RefreshAll()
+        {
+            for (var i = 0; i < _days.Count; i++)
+            {
+                var day = _days[i];
+                day.Setup(datas[i], GetRewardFunc, claimableColor, RefreshAll);
+            }
+
+            specialDayElement.Setup(specialDayData, GetRewardFunc, claimableColor, RefreshAll);
+        }
+
+        private DayRewardComponent GetRewardFunc(EDailyRewardType rewardType) { return _dayRewards[rewardType]; }
+
+        private void OnButtonClosePressed()
+        {
+            PlaySoundClose();
+            PopupHelper.Close(transform);
+        }
+    }
+}

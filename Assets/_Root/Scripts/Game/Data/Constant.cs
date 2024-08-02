@@ -12,6 +12,14 @@ namespace Pancake.Game
             public const string KEY_FIRST_OPEN = "user_first_open";
             public const string KEY_ID = "user_id";
             public const string AGREE_PRIVACY = "user_agree_privacy";
+
+            public static class DailyReward
+            {
+                public const string CURRENT_WEEK = "user_current_week_dr";
+                public const string CURRENT_DAY = "user_current_day_dr";
+                public const string LAST_TIME_UPDATE = "user_last_time_update_dr";
+                public const string ALL_DAY_CLAIMED_IN_WEEK = "user_all_day_claimed_dr";
+            }
         }
 
         public static class Scene
