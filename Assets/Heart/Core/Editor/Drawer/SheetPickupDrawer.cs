@@ -17,7 +17,7 @@ namespace PancakeEditor
             // Create a container for the horizontal layout
             var container = new VisualElement {style = {flexDirection = FlexDirection.Row, alignItems = Align.Center, marginBottom = 4}};
 
-            var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name.ToCamelCase())) {style = {marginLeft = 3, marginRight = 10, flexGrow = 0}};
+            var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name.ToCamelCase())) {style = {marginLeft = 3, marginRight = 0, flexGrow = 1}};
 
             var button = new Button
             {
@@ -25,7 +25,7 @@ namespace PancakeEditor
                 style =
                 {
                     flexGrow = 1,
-                    marginLeft = 10,
+                    marginLeft = 0,
                     flexShrink = 0,
                     marginRight = -3,
                     backgroundColor = Uniform.Error,
