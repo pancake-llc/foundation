@@ -1737,5 +1737,22 @@ namespace Pancake.Common
             var worldPosition = cam.WorldToViewportPoint(pos);
             return worldPosition;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scroll"></param>
+        /// <param name="target"></param>
+        /// <param name="isVertical"></param>
+        public static void ScrollTo(this UnityEngine.UI.ScrollRect scroll, Transform target, bool isVertical = true)
+        {
+            if (isVertical)
+            {
+                scroll.normalizedPosition = new Vector2(0, 1 - (scroll.content.rect.height / 2 - target.localPosition.y) / scroll.content.rect.height);
+                return;
+            }
+
+            scroll.normalizedPosition = new Vector2(1 - (scroll.content.rect.width / 2 - target.localPosition.x) / scroll.content.rect.width, 0);
+        }
     }
 }
