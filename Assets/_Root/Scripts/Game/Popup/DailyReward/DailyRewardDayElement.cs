@@ -41,7 +41,7 @@ namespace Pancake.Game.UI
             {
                 var prefab = getObjectRewardFunc.Invoke(reward.typeReward);
                 var dayReward = Instantiate(prefab, content);
-                dayReward.Setup(reward.amout);
+                dayReward.Setup(reward.amount);
             }
 
             int currentDay = UserData.GetDailyRewardDay();
