@@ -16,8 +16,10 @@ MonoBehaviour:
   packageName: {fileID: 11400000, guid: 25b5dbb07541a6c44b8815f0723a5f6b, type: 2}
   packageNameColor: {r: 0.27058825, g: 0.28627452, b: 0.33333334, a: 1}
   packageContentColor: {r: 0.3254902, g: 0.5058824, b: 0.5647059, a: 1}
+  hasNameTag: 1
+  nameTag: {fileID: 11400000, guid: cf95475e1528641448aad78adfb95bcf, type: 2}
   rewards:
   - type: 0
     value: 500
-  iapData: {fileID: 11400000, guid: 98ba33b2c10bb71429ad5bbb79ee2d13, type: 2}
   editorPrice: 4.99$
+  iapData: {fileID: 11400000, guid: 98ba33b2c10bb71429ad5bbb79ee2d13, type: 2}

@@ -15,7 +15,7 @@ namespace Pancake.Game.UI
         [SerializeField] private Transform groupReward;
         [SerializeField] private LocaleTextComponent localeTextRewardInfoPrefab;
         [SerializeField] private GameObject tagObject;
-        [SerializeField] private TextMeshProUGUI textTag;
+        [SerializeField] private LocaleTextComponent localeTextTag;
         [SerializeField] private LocaleTextComponent localeTextName;
         [SerializeField] private TextMeshProUGUI textName;
         [SerializeField] private TextMeshProUGUI textCost;
@@ -29,6 +29,8 @@ namespace Pancake.Game.UI
             imageBackground.sprite = data.PackageSprite;
             localeTextName.Variable = data.PackageName;
             textName.color = data.PackageNameColor;
+            tagObject.SetActive(data.HasNameTag);
+            localeTextTag.Variable = data.NameTag;
 
 #if UNITY_EDITOR
             textCost.text = data.EditorPrice;

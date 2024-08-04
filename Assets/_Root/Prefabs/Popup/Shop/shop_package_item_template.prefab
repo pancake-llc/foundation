@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 3558479721060599972}
   - component: {fileID: 3422021029771367112}
   - component: {fileID: 6206778116074254087}
+  - component: {fileID: 3425471720704050207}
   m_Layer: 5
   m_Name: text_tag
   m_TagString: Untagged
@@ -212,6 +213,24 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3425471720704050207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060728500685276604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c43f4ebada4d6ab7202113210604cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 6206778116074254087}
+  property:
+    enabled: 0
+    value: text
+  variable: {fileID: 0}
+  formatArgs: []
 --- !u!1 &1689326811364825837
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +419,7 @@ MonoBehaviour:
   groupReward: {fileID: 5771423821051723351}
   localeTextRewardInfoPrefab: {fileID: -2548502897078286595, guid: 620a193e03f9e9e49b18d55aaf14d4a4, type: 3}
   tagObject: {fileID: 217206992521092568}
-  textTag: {fileID: 6206778116074254087}
+  localeTextTag: {fileID: 3425471720704050207}
   localeTextName: {fileID: 6647732323169004333}
   textName: {fileID: 795542045441934959}
   textCost: {fileID: 1707440295433673494}
