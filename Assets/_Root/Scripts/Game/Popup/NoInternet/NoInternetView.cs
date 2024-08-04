@@ -1,8 +1,9 @@
 using Cysharp.Threading.Tasks;
+using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Pancake.UI
+namespace Pancake.Game.UI
 {
     public sealed class NoInternetView : View
     {

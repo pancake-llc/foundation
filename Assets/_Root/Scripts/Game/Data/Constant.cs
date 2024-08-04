@@ -20,6 +20,11 @@ namespace Pancake.Game
                 public const string LAST_TIME_UPDATE = "user_last_time_update_dr";
                 public const string ALL_DAY_CLAIMED_IN_WEEK = "user_all_day_claimed_dr";
             }
+
+            public static class Shop
+            {
+                public const string FIRST_PURCHASE = "user_first_purchase";
+            }
         }
 
         public static class Scene

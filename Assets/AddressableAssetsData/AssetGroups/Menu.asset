@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Menu
   m_GUID: 57cbe7d2de3f7a04397414e2d1d9aa03
   m_SerializeEntries:
+  - m_GUID: 961ba3403b66b18449dd85d599516d99
+    m_Address: ShopPopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: adf5473374f980245b60129cb2990f24
     m_Address: SettingPopup
     m_ReadOnly: 0

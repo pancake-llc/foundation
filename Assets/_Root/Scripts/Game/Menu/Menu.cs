@@ -13,9 +13,11 @@ namespace Pancake.Game
     {
         [SerializeField] private Button buttonSetting;
         [SerializeField] private Button buttonDailyReward;
+        [SerializeField] private Button buttonShop;
 
         [HorizontalLine, SerializeField, PopupPickup] private string settingPopupKey;
         [SerializeField, PopupPickup] private string dailyRewardPopupKey;
+        [SerializeField, PopupPickup] private string shopPopupKey;
 
         [HorizontalLine, SerializeField, AudioPickup] private AudioId bgm;
 
@@ -24,7 +26,10 @@ namespace Pancake.Game
             bgm.Play();
             buttonSetting.onClick.AddListener(OnButtonSettingPressed);
             buttonDailyReward.onClick.AddListener(OnButtonDailyRewardPressed);
+            buttonShop.onClick.AddListener(OnButtonShopPressed);
         }
+
+        private void OnButtonShopPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(shopPopupKey, true); }
 
         private void OnButtonDailyRewardPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(dailyRewardPopupKey, true); }
 

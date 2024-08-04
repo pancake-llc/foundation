@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 936937000d4ac764aaae1f3e06b1639d, type: 3}
+  m_Name: scriptable_iap_rocketgrowth
+  m_EditorClassIdentifier: 
+  id: com.pancake.rocketgrowth
+  productType: 1
+  price: 0
+  localizedPrice: $0.01
+  isoCurrencyCode: USD
+  localizedDescription: Fake description
+  localizedTitle: Fake title for com.pancake.rocketgrowth
+  receipt: 
+  onPurchaseSuccess: {fileID: 11400000, guid: dafc17f6a1d9fb4439cc3ec7dc208dbe, type: 2}
+  onPurchaseFailed: {fileID: 11400000, guid: 9fda3006d73d072489444bee4997c9af, type: 2}

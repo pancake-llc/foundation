@@ -76,5 +76,8 @@ namespace Pancake.Game
         }
 
         public static void SetDailyRewardLastTimeUpdate() { Data.Save(LAST_TIME_UPDATE, DateTime.Now.ToShortDateString()); }
+
+        public static bool GetFirstPurchase() => Data.Load(Shop.FIRST_PURCHASE, false);
+        internal static void SetFirstPurchase(bool status) => Data.Save(Shop.FIRST_PURCHASE, status);
     }
 }

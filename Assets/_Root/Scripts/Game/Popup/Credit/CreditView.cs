@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using Alchemy.Serialization;
 using Cysharp.Threading.Tasks;
-using Pancake.Game.UI;
+using Pancake.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Pancake.UI
+namespace Pancake.Game.UI
 {
     [AlchemySerialize]
     public partial class CreditView : View
