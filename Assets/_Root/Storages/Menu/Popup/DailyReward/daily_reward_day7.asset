@@ -15,8 +15,8 @@ MonoBehaviour:
   day: 7
   rewards:
   - typeReward: 0
-    amout: 500
+    amount: 1000
   - typeReward: 1
-    amout: 20
+    amount: 500
   - typeReward: 2
-    amout: 1
+    amount: 1

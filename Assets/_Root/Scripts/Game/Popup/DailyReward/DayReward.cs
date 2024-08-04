@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine.Serialization;
 
 namespace Pancake.Game.UI
 {
@@ -7,7 +6,7 @@ namespace Pancake.Game.UI
     public class DayReward
     {
         public EDailyRewardType typeReward;
-        [FormerlySerializedAs("amout")] public int amount;
+        public int amount;
     }
 
     public enum EDailyRewardType
