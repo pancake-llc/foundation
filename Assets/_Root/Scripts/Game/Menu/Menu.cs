@@ -1,10 +1,13 @@
 using System;
 using Alchemy.Inspector;
+using Pancake.Component;
+using Pancake.Localization;
 using Pancake.Sound;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using VitalRouter;
 
 namespace Pancake.Game
 {
@@ -14,6 +17,9 @@ namespace Pancake.Game
         [SerializeField] private Button buttonSetting;
         [SerializeField] private Button buttonDailyReward;
         [SerializeField] private Button buttonShop;
+        [SerializeField] private Button buttonGoToGameplay;
+        [SerializeField] private Button buttonInGameNoti;
+        [SerializeField] private LocaleText localeTextInGameNoti;
 
         [HorizontalLine, SerializeField, PopupPickup] private string settingPopupKey;
         [SerializeField, PopupPickup] private string dailyRewardPopupKey;
@@ -27,7 +33,11 @@ namespace Pancake.Game
             buttonSetting.onClick.AddListener(OnButtonSettingPressed);
             buttonDailyReward.onClick.AddListener(OnButtonDailyRewardPressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
+            buttonGoToGameplay.onClick.AddListener(OnButtonGotoGameplayPressed);
+            buttonInGameNoti.onClick.AddListener(OnButtonInGameNotiPressed);
         }
+
+        private void OnButtonInGameNotiPressed() { Router.Default.PublishAsync(new SpawnInGameNotiCommand(localeTextInGameNoti)); }
 
         private void OnButtonShopPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(shopPopupKey, true); }
 
@@ -35,7 +45,7 @@ namespace Pancake.Game
 
         private void OnButtonSettingPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(settingPopupKey, true); }
 
-        public async void GotoGameplay()
+        private async void OnButtonGotoGameplayPressed()
         {
             AudioStatic.StopAll(); // todo: check issue when click button play sound meanwhile call StopAll (StopAll call before sound click played)
             SceneManager.sceneLoaded += OnGameplaySceneLoaded;

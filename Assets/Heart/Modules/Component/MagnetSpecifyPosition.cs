@@ -1,23 +1,26 @@
 using System.Collections;
 using Pancake.Common;
-using Pancake.Component;
 using UnityEngine;
 
-public class MagnetSpecifyPosition : MonoBehaviour
+namespace Pancake.Component
 {
-    private RectTransform _rectTransform;
-    private VfxMagnetComponent _component;
-
-    private void OnEnable()
+    [EditorIcon("icon_default")]
+    public class MagnetSpecifyPosition : MonoBehaviour
     {
-        if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
-        if (_component == null) _component = FindFirstObjectByType<VfxMagnetComponent>();
-        App.StartCoroutine(IeExecute());
-    }
+        private RectTransform _rectTransform;
+        private VfxMagnetComponent _component;
 
-    private IEnumerator IeExecute()
-    {
-        yield return new WaitForSeconds(0.1f);
-        if (_component != null) _component.transform.position = _rectTransform.ToWorldPosition();
+        private void OnEnable()
+        {
+            if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
+            if (_component == null) _component = FindFirstObjectByType<VfxMagnetComponent>();
+            App.StartCoroutine(IeExecute());
+        }
+
+        private IEnumerator IeExecute()
+        {
+            yield return new WaitForSeconds(0.1f);
+            if (_component != null) _component.transform.position = _rectTransform.ToWorldPosition();
+        }
     }
 }

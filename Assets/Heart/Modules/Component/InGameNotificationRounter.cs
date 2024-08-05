@@ -6,12 +6,12 @@ using VitalRouter;
 namespace Pancake.Component
 {
     [Routes]
+    [EditorIcon("icon_default")]
     public partial class InGameNotificationRouter : GameComponent
     {
         [SerializeField] private GameObject notificationPrefab;
         [SerializeField] private RectTransform root;
-
-
+        
         private void Awake() { MapTo(Router.Default); }
 
         public void OnSpawn(SpawnInGameNotiCommand cmd)

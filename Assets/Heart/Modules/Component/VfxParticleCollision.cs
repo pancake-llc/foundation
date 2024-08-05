@@ -12,6 +12,7 @@ using VitalRouter;
 namespace Pancake.Component
 {
     [AlchemySerialize]
+    [EditorIcon("icon_default")]
     public partial class VfxParticleCollision : GameComponent
     {
         public StringConstant type;

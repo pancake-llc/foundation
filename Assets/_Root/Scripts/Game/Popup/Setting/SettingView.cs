@@ -233,7 +233,6 @@ namespace Pancake.Game.UI
                     case EQuality.Medium:
                         button.Value.onClick.AddListener(SelectMediumQuality);
                         break;
-
                     case EQuality.High:
                         button.Value.onClick.AddListener(SelectHighQuality);
                         break;

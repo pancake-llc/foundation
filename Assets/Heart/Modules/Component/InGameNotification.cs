@@ -8,11 +8,13 @@ using LitMotion.Extensions;
 using Pancake.Common;
 using Pancake.Localization;
 using Pancake.Pools;
+using Pancake.Sound;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pancake.Component
 {
+    [EditorIcon("icon_default")]
     public class InGameNotification : GameComponent
     {
         [SerializeField] private Image imageBackgound;
@@ -24,17 +26,17 @@ namespace Pancake.Component
 
         [Header("SOUND"), SerializeField] protected bool enabledSound;
 
-// #if PANCAKE_ALCHEMY
-//         [ShowIf(nameof(enabledSound))]
-// #endif
-//         [SerializeField]
-//         protected Audio audioOpen;
-//
-// #if PANCAKE_ALCHEMY
-//         [ShowIf(nameof(enabledSound))]
-// #endif
-//         [SerializeField]
-//         protected Audio audioClose;
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(enabledSound))]
+#endif
+        [SerializeField, AudioPickup]
+        protected AudioId audioOpen;
+
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(enabledSound))]
+#endif
+        [SerializeField, AudioPickup]
+        protected AudioId audioClose;
 
         public void Show(LocaleText localeText)
         {
@@ -58,7 +60,7 @@ namespace Pancake.Component
             localeTextMessage.gameObject.SetActive(false);
 #if PANCAKE_LITMOTION
             LMotion.Create(imageBackgound.rectTransform.sizeDelta, new Vector2(-GetComponent<RectTransform>().rect.width + sizeYColapse, sizeYColapse), timeAnimate)
-                 .WithOnComplete(() => gameObject.Return())
+                .WithOnComplete(() => gameObject.Return())
                 .BindToSizeDelta(imageBackgound.rectTransform)
                 .AddTo(gameObject);
 #endif
@@ -66,12 +68,12 @@ namespace Pancake.Component
 
         private void PlaySoundOpen()
         {
-            //if (enabledSound && audioOpen != null) audioOpen.PlaySfx();
+            if (enabledSound) audioOpen.Play();
         }
 
         private void PlaySoundClose()
         {
-            //if (enabledSound && audioClose != null) audioClose.PlaySfx();
+            if (enabledSound) audioClose.Play();
         }
     }
 }
