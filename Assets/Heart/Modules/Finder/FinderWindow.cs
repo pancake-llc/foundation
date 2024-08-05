@@ -204,7 +204,14 @@ namespace PancakeEditor.Finder
                 settings.historyIndex = i;
             }
 
-            EditorUtility.SetDirty(this);
+            try
+            {
+                EditorUtility.SetDirty(this);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         private bool IsScenePanelVisible
