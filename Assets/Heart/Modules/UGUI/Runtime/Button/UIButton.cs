@@ -213,7 +213,7 @@ namespace Pancake.UI
             base.OnPointerUp(eventData);
             IsRelease = true;
             InternalInvokePointerUpEvent();
-            if (IsDetectLongCLick) CancelLongClick();
+            if (IsDetectLongCLick) ResetLongClick();
             if (IsDetectHold)
             {
                 if (_holding)
@@ -223,7 +223,7 @@ namespace Pancake.UI
                     _holdDone = true;
                 }
 
-                CancelHold();
+                ResetHold();
             }
 
             RunMotionPointerUp();
@@ -461,15 +461,6 @@ namespace Pancake.UI
             _routineLongClick = StartCoroutine(IeExcuteLongClick());
         }
 
-        /// <summary>
-        /// reset long click and stop sheduler wait detect long click
-        /// </summary>
-        private void CancelLongClick()
-        {
-            if (_longClickDone || !IsDetectLongCLick) return;
-            ResetLongClick();
-        }
-
         private void InternalInvokeLongClickdEvent()
         {
             onLongClickEvent?.Invoke();
@@ -534,15 +525,6 @@ namespace Pancake.UI
             if (_holdDone || !IsDetectHold) return;
             ResetHold();
             _routineHold = StartCoroutine(IeExcuteHold());
-        }
-
-        /// <summary>
-        /// reset hold and stop sheduler wait detect hold
-        /// </summary>
-        private void CancelHold()
-        {
-            if (_holdDone || !IsDetectHold) return;
-            ResetHold();
         }
 
         private void InternalInvokeHoldEvent(float time)
