@@ -22,6 +22,8 @@ namespace Pancake.Game.UI
         [SerializeField] private ScrollRect scroll;
         [AlchemySerializeField, NonSerialized] private Dictionary<EDailyRewardType, DayRewardComponent> _dayRewards = new();
         [SerializeField] private Color claimableColor;
+        [SerializeField] private StringConstant coinCurrencyType;
+        [SerializeField] private StringConstant gemCurrencyType;
 
         private readonly List<DailyRewardDayElement> _days = new();
 
@@ -32,11 +34,19 @@ namespace Pancake.Game.UI
             foreach (var data in datas)
             {
                 var dayElement = Instantiate(dayPrefab, content);
-                dayElement.Setup(data, GetRewardFunc, claimableColor, RefreshAll);
+                dayElement.Setup(data,
+                    GetRewardFunc,
+                    GetFxCurrencyType,
+                    claimableColor,
+                    RefreshAll);
                 _days.Add(dayElement);
             }
 
-            specialDayElement.Setup(specialDayData, GetRewardFunc, claimableColor, RefreshAll);
+            specialDayElement.Setup(specialDayData,
+                GetRewardFunc,
+                GetFxCurrencyType,
+                claimableColor,
+                RefreshAll);
             App.Delay(0.1f,
                 () =>
                 {
@@ -53,13 +63,35 @@ namespace Pancake.Game.UI
             for (var i = 0; i < _days.Count; i++)
             {
                 var day = _days[i];
-                day.Setup(datas[i], GetRewardFunc, claimableColor, RefreshAll);
+                day.Setup(datas[i],
+                    GetRewardFunc,
+                    GetFxCurrencyType,
+                    claimableColor,
+                    RefreshAll);
             }
 
-            specialDayElement.Setup(specialDayData, GetRewardFunc, claimableColor, RefreshAll);
+            specialDayElement.Setup(specialDayData,
+                GetRewardFunc,
+                GetFxCurrencyType,
+                claimableColor,
+                RefreshAll);
         }
 
         private DayRewardComponent GetRewardFunc(EDailyRewardType rewardType) { return _dayRewards[rewardType]; }
+
+        private StringConstant GetFxCurrencyType(EDailyRewardType rewardType)
+        {
+            switch (rewardType)
+            {
+                case EDailyRewardType.Coin:
+                    return coinCurrencyType;
+                case EDailyRewardType.Gem:
+                    return gemCurrencyType;
+                case EDailyRewardType.Chest:
+                default:
+                    return null;
+            }
+        }
 
         private void OnButtonClosePressed()
         {

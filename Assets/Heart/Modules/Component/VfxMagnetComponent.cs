@@ -9,13 +9,13 @@ using VitalRouter;
 
 namespace Pancake.Component
 {
-    public readonly struct VfxMangnetCommand : ICommand
+    public readonly struct VfxMagnetCommand : ICommand
     {
         public string Type { get; }
         public Vector3 Position { get; }
         public int Value { get; }
 
-        public VfxMangnetCommand(string type, Vector3 position, int value)
+        public VfxMagnetCommand(string type, Vector3 position, int value)
         {
             Type = type;
             Position = position;
@@ -50,7 +50,7 @@ namespace Pancake.Component
 
         private bool IsFxInstanceEmpty() => _fxInstances.Count == 0;
 
-        public void OnSpawnVfx(VfxMangnetCommand data)
+        public void OnSpawnVfx(VfxMagnetCommand data)
         {
             if (data.Type != type.Value) return;
 

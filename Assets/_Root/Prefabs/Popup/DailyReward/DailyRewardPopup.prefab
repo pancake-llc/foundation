@@ -2083,6 +2083,8 @@ MonoBehaviour:
   specialDayElement: {fileID: 817786717654519813}
   scroll: {fileID: 2479288546529336174}
   claimableColor: {r: 0.5372549, g: 0.7490196, b: 0.20392159, a: 1}
+  coinCurrencyType: {fileID: 11400000, guid: 5e9faa2c569639743aa47e77a2804ee5, type: 2}
+  gemCurrencyType: {fileID: 11400000, guid: ec47688ba2fca434a93e02066adf4890, type: 2}
   __alchemySerializationData_Pancake_Game_UI_DailyRewardView:
     _dayRewards:
       isCreated: 1

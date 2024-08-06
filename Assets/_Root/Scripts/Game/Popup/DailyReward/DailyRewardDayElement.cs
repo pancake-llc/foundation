@@ -5,9 +5,11 @@ using Cysharp.Threading.Tasks;
 using LitMotion;
 using LitMotion.Extensions;
 using Pancake.Common;
+using Pancake.Component;
 using Pancake.Localization;
 using TMPro;
 using UnityEngine.UI;
+using VitalRouter;
 
 namespace Pancake.Game.UI
 {
@@ -28,13 +30,20 @@ namespace Pancake.Game.UI
 
         private DailyRewardData _data;
         private Action _refreshAllElement;
+        private Func<EDailyRewardType, StringConstant> _getFxColelctType;
 
         public int Day => _data.day;
 
-        public void Setup(DailyRewardData data, Func<EDailyRewardType, DayRewardComponent> getObjectRewardFunc, Color claimableColor, Action refreshAllElement)
+        public void Setup(
+            DailyRewardData data,
+            Func<EDailyRewardType, DayRewardComponent> getObjectRewardFunc,
+            Func<EDailyRewardType, StringConstant> getFxColelctType,
+            Color claimableColor,
+            Action refreshAllElement)
         {
             _data = data;
             _refreshAllElement = refreshAllElement;
+            _getFxColelctType = getFxColelctType;
             localeTextDay.UpdateArgs($"{data.day}");
             content.RemoveAllChildren();
             foreach (var reward in data.rewards)
@@ -107,6 +116,10 @@ namespace Pancake.Game.UI
             foreach (var reward in _data.rewards)
             {
                 // todo claim reward
+                var pos = _dayStatusViews[EDailyRewardDayStatus.Claimable].transform.position;
+                if (reward.typeReward == EDailyRewardType.Coin) pos += Vector3.left * 3f;
+                else pos += Vector3.left * 1.5f;
+                Router.Default.PublishAsync(new VfxMagnetCommand(_getFxColelctType?.Invoke(reward.typeReward).Value, pos, reward.amount));
             }
 
             if (UserData.GetDailyRewardDay() == 7)
