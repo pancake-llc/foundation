@@ -25,62 +25,54 @@ namespace Pancake.UI
             _changeTiming = changeTiming;
         }
 
-        public AsyncProcessHandle BeforePopupEnter(Popup popup, bool playAnimation)
+        public AsyncProcessHandle BeforePopupEnter(Popup popup, int popupIndex, bool playAnimation)
         {
             var parent = (RectTransform) popup.transform.parent;
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
 
-            // If it is the first modal, generate a new backdrop
-            if (modalSiblingIndex == 0)
+            // If it is the first popup, generate a new backdrop
+            if (popupIndex == 0)
             {
                 var backdrop = Object.Instantiate(_prefab);
-                backdrop.Setup(parent);
+                backdrop.Setup(parent, popupIndex);
                 backdrop.transform.SetSiblingIndex(0);
                 _instance = backdrop;
                 return backdrop.Enter(playAnimation);
             }
 
-            // For the second and subsequent modals, change the drawing order of the backdrop
-            int backdropSiblingIndex = modalSiblingIndex - 1;
-            if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(backdropSiblingIndex);
+            // For the second and subsequent popups, change the drawing order of the backdrop
+            if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(popupIndex);
 
             return AsyncProcessHandle.Completed();
         }
 
-        public void AfterPopupEnter(Popup popup, bool playAnimation)
+        public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation)
         {
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
-            int backdropSiblingIndex = modalSiblingIndex - 1;
-            // For the second and subsequent modals, change the drawing order of the backdrop
-            if (_changeTiming == ChangeTiming.AfterAnimation) _instance.transform.SetSiblingIndex(backdropSiblingIndex);
+            // For the second and subsequent popups, change the drawing order of the backdrop
+            if (_changeTiming == ChangeTiming.AfterAnimation) _instance.transform.SetSiblingIndex(popupIndex);
         }
 
-        public AsyncProcessHandle BeforePopupExit(Popup popup, bool playAnimation)
+        public AsyncProcessHandle BeforePopupExit(Popup popup, int popupIndex, bool playAnimation)
         {
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
+            // If it is the first popup, play the backdrop animation
+            if (popupIndex == 0) return _instance.Exit(playAnimation);
 
-            // If it is the first modal, play the backdrop animation
-            if (modalSiblingIndex == 1) return _instance.Exit(playAnimation);
-
-            // For the second and subsequent modals, change the drawing order of the backdrop
-            if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(modalSiblingIndex - 2);
+            // For the second and subsequent popups, change the drawing order of the backdrop
+            if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(popupIndex - 1);
 
             return AsyncProcessHandle.Completed();
         }
 
-        public void AfterPopupExit(Popup popup, bool playAnimation)
+        public void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation)
         {
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
-
-            // If it is the first modal, remove the backdrop
-            if (modalSiblingIndex == 1)
+            // If it is the first popup, remove the backdrop
+            if (popupIndex == 0)
             {
                 Object.Destroy(_instance.gameObject);
                 return;
             }
 
-            // For the second and subsequent modals, change the drawing order of the backdrop
-            if (_changeTiming == ChangeTiming.AfterAnimation) _instance.transform.SetSiblingIndex(modalSiblingIndex - 2);
+            // For the second and subsequent popups, change the drawing order of the backdrop
+            if (_changeTiming == ChangeTiming.AfterAnimation) _instance.transform.SetSiblingIndex(popupIndex - 1);
         }
     }
 }

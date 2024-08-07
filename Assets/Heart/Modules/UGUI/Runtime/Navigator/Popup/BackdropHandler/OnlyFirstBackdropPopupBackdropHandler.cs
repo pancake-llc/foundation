@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.UI
 {
     /// <summary>
-    ///     Implementation of <see cref="IPopupBackdropHandler" /> that generates a backdrop only for the first modal
+    ///     Implementation of <see cref="IPopupBackdropHandler" /> that generates a backdrop only for the first popup
     /// </summary>
     internal sealed class OnlyFirstBackdropPopupBackdropHandler : IPopupBackdropHandler
     {
@@ -12,39 +12,34 @@ namespace Pancake.UI
 
         public OnlyFirstBackdropPopupBackdropHandler(PopupBackdrop prefab) { _prefab = prefab; }
 
-        public AsyncProcessHandle BeforePopupEnter(Popup popup, bool playAnimation)
+        public AsyncProcessHandle BeforePopupEnter(Popup popup, int popupIndex, bool playAnimation)
         {
             var parent = (RectTransform) popup.transform.parent;
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
 
-            // Do not generate a backdrop for the first modal
-            if (modalSiblingIndex != 0) return AsyncProcessHandle.Completed();
+            // Do not generate a backdrop for the first popup
+            if (popupIndex != 0) return AsyncProcessHandle.Completed();
 
             var backdrop = Object.Instantiate(_prefab);
-            backdrop.Setup(parent);
+            backdrop.Setup(parent, popupIndex);
             backdrop.transform.SetSiblingIndex(0);
             return backdrop.Enter(playAnimation);
         }
 
-        public void AfterPopupEnter(Popup popup, bool playAnimation) { }
+        public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation) { }
 
-        public AsyncProcessHandle BeforePopupExit(Popup popup, bool playAnimation)
+        public AsyncProcessHandle BeforePopupExit(Popup popup, int popupIndex, bool playAnimation)
         {
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
-
-            // Do not remove the backdrop for the first modal
-            if (modalSiblingIndex != 1) return AsyncProcessHandle.Completed();
+            // Do not remove the backdrop for the first popup
+            if (popupIndex != 0) return AsyncProcessHandle.Completed();
 
             var backdrop = popup.transform.parent.GetChild(0).GetComponent<PopupBackdrop>();
             return backdrop.Exit(playAnimation);
         }
 
-        public void AfterPopupExit(Popup popup, bool playAnimation)
+        public void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation)
         {
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
-
-            // Do not remove the backdrop for the first modal
-            if (modalSiblingIndex != 1) return;
+            // Do not remove the backdrop for the first popup
+            if (popupIndex != 0) return;
 
             var backdrop = popup.transform.parent.GetChild(0).GetComponent<PopupBackdrop>();
             Object.Destroy(backdrop.gameObject);

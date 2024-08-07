@@ -4,12 +4,12 @@ namespace Pancake.UI
 {
     public interface IPopupBackdropHandler
     {
-        AsyncProcessHandle BeforePopupEnter(Popup popup, bool playAnimation);
+        AsyncProcessHandle BeforePopupEnter(Popup popup, int popupIndex, bool playAnimation);
 
-        void AfterPopupEnter(Popup popup, bool playAnimation);
+        void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation);
 
-        AsyncProcessHandle BeforePopupExit(Popup popup, bool playAnimation);
+        AsyncProcessHandle BeforePopupExit(Popup popup, int popupIndex, bool playAnimation);
 
-        void AfterPopupExit(Popup popup, bool playAnimation);
+        void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation);
     }
 }

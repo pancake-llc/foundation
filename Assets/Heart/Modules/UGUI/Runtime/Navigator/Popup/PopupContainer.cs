@@ -20,7 +20,7 @@ namespace Pancake.UI
 
         [SerializeField, LabelText("Name")] private string displayName;
         [SerializeField] private bool overrideBackdrop;
-        [SerializeField, ShowIf(nameof(overrideBackdrop)), Indent] private EPopupBackdropStrategy backdropStrategy;
+        [SerializeField, ShowIf(nameof(overrideBackdrop)), Indent] private EPopupBackdropStrategy backdropStrategy = EPopupBackdropStrategy.GeneratePerPopup;
         [SerializeField, ShowIf(nameof(overrideBackdrop)), Indent] private PopupBackdrop backdropPrefab;
 
         private readonly Dictionary<string, AssetLoadHandle<GameObject>> _assetLoadHandles = new();
@@ -319,8 +319,9 @@ namespace Pancake.UI
             }
 
             // Play Animation
+            int enterPopupIndex = _popups.Count;
             var animationHandles = new List<AsyncProcessHandle>();
-            animationHandles.Add(_backdropHandler.BeforePopupEnter(enterPopup, playAnimation));
+            animationHandles.Add(_backdropHandler.BeforePopupEnter(enterPopup, enterPopupIndex, playAnimation));
 
             if (exitPopup != null) animationHandles.Add(exitPopup.Exit(true, playAnimation, enterPopup));
 
@@ -330,8 +331,8 @@ namespace Pancake.UI
             {
                 while (!coroutineHandle.IsTerminated) yield return coroutineHandle;
             }
-            
-            _backdropHandler.AfterPopupEnter(enterPopup, true);
+
+            _backdropHandler.AfterPopupEnter(enterPopup, enterPopupIndex, true);
 
             // End Transition
             _popups.Add(popupId, enterPopup);
@@ -397,11 +398,13 @@ namespace Pancake.UI
 
             var unusedPopupIds = new List<string>();
             var unusedPopups = new List<Popup>();
+            var unusedPopupIndices = new List<int>();
             for (var i = _orderedPopupIds.Count - 1; i >= _orderedPopupIds.Count - popCount; i--)
             {
                 var unusedPopupId = _orderedPopupIds[i];
                 unusedPopupIds.Add(unusedPopupId);
                 unusedPopups.Add(_popups[unusedPopupId]);
+                unusedPopupIndices.Add(i);
             }
 
             var enterPopupIndex = _orderedPopupIds.Count - popCount - 1;
@@ -424,9 +427,10 @@ namespace Pancake.UI
             {
                 var unusedPopupId = unusedPopupIds[i];
                 var unusedPopup = _popups[unusedPopupId];
+                var unusedPopupIndex = unusedPopupIndices[i];
                 var partnerPopupId = i == 0 ? enterPopupId : unusedPopupIds[i - 1];
                 var partnerPopup = partnerPopupId == null ? null : _popups[partnerPopupId];
-                animationHandles.Add(_backdropHandler.BeforePopupExit(unusedPopup, playAnimation));
+                animationHandles.Add(_backdropHandler.BeforePopupExit(unusedPopup, unusedPopupIndex, playAnimation));
                 animationHandles.Add(unusedPopup.Exit(false, playAnimation, partnerPopup));
             }
 
@@ -449,7 +453,6 @@ namespace Pancake.UI
             // Postprocess
             exitPopup.AfterExit(false, enterPopup);
             if (enterPopup != null) enterPopup.AfterEnter(false, exitPopup);
-            _backdropHandler.AfterPopupExit(exitPopup, playAnimation);
 
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.AfterPop(enterPopup, exitPopup);
 
@@ -461,10 +464,12 @@ namespace Pancake.UI
             {
                 var unusedPopupId = unusedPopupIds[i];
                 var unusedPopup = unusedPopups[i];
+                var unusedPopupIndex = unusedPopupIndices[i];
                 var loadHandle = _assetLoadHandles[unusedPopupId];
                 Destroy(unusedPopup.gameObject);
                 AssetLoader.Release(loadHandle);
                 _assetLoadHandles.Remove(unusedPopupId);
+                _backdropHandler.AfterPopupExit(exitPopup, unusedPopupIndex, playAnimation);
             }
 
             if (!DefaultNavigatorSetting.EnableInteractionInTransition)

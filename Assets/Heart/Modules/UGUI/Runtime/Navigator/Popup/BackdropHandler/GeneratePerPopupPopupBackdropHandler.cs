@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.UI
 {
     /// <summary>
-    ///     en: Implementation of <see cref="IPopupBackdropHandler" /> that generates a backdrop for each modal
+    ///     Implementation of <see cref="IPopupBackdropHandler" /> that generates a backdrop for each popup
     /// </summary>
     internal sealed class GeneratePerPopupPopupBackdropHandler : IPopupBackdropHandler
     {
@@ -12,30 +12,28 @@ namespace Pancake.UI
 
         public GeneratePerPopupPopupBackdropHandler(PopupBackdrop prefab) { _prefab = prefab; }
 
-        public AsyncProcessHandle BeforePopupEnter(Popup popup, bool playAnimation)
+        public AsyncProcessHandle BeforePopupEnter(Popup popup, int popupIndex, bool playAnimation)
         {
             var parent = (RectTransform) popup.transform.parent;
-            int siblingIndex = popup.transform.GetSiblingIndex();
             var backdrop = Object.Instantiate(_prefab);
-            backdrop.Setup(parent);
-            backdrop.transform.SetSiblingIndex(siblingIndex);
+            backdrop.Setup(parent, popupIndex);
+            int backdropSiblingIndex = popupIndex * 2;
+            backdrop.transform.SetSiblingIndex(backdropSiblingIndex);
             return backdrop.Enter(playAnimation);
         }
 
-        public void AfterPopupEnter(Popup popup, bool playAnimation) { }
+        public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation) { }
 
-        public AsyncProcessHandle BeforePopupExit(Popup popup, bool playAnimation)
+        public AsyncProcessHandle BeforePopupExit(Popup popup, int popupIndex, bool playAnimation)
         {
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
-            int backdropSiblingIndex = modalSiblingIndex - 1;
+            var backdropSiblingIndex = popupIndex * 2;
             var backdrop = popup.transform.parent.GetChild(backdropSiblingIndex).GetComponent<PopupBackdrop>();
             return backdrop.Exit(playAnimation);
         }
 
-        public void AfterPopupExit(Popup popup, bool playAnimation)
+        public void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation)
         {
-            int modalSiblingIndex = popup.transform.GetSiblingIndex();
-            int backdropSiblingIndex = modalSiblingIndex - 1;
+            var backdropSiblingIndex = popupIndex * 2;
             var backdrop = popup.transform.parent.GetChild(backdropSiblingIndex).GetComponent<PopupBackdrop>();
             Object.Destroy(backdrop.gameObject);
         }

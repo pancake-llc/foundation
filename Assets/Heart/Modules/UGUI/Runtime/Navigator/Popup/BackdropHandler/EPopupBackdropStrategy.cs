@@ -2,7 +2,7 @@
 {
     public enum EPopupBackdropStrategy
     {
-        GeneratePerModal,
+        GeneratePerPopup,
         OnlyFirstBackdrop,
         ChangeOrderBeforeAnimation,
         ChangeOrderAfterAnimation

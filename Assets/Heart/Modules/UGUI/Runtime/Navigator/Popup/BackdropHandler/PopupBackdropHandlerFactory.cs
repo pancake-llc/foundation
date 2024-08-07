@@ -8,7 +8,7 @@ namespace Pancake.UI
         {
             return strategy switch
             {
-                EPopupBackdropStrategy.GeneratePerModal => new GeneratePerPopupPopupBackdropHandler(prefab),
+                EPopupBackdropStrategy.GeneratePerPopup => new GeneratePerPopupPopupBackdropHandler(prefab),
                 EPopupBackdropStrategy.OnlyFirstBackdrop => new OnlyFirstBackdropPopupBackdropHandler(prefab),
                 EPopupBackdropStrategy.ChangeOrderBeforeAnimation => new ChangeOrderPopupBackdropHandler(prefab,
                     ChangeOrderPopupBackdropHandler.ChangeTiming.BeforeAnimation),

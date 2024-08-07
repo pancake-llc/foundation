@@ -49,13 +49,16 @@ namespace Pancake.UI
             }
         }
 
-        public void Setup(RectTransform parent)
+        public void Setup(RectTransform parent, int popupIndex)
         {
             _parentTransform = parent;
             _rectTransform.FillWithParent(_parentTransform);
             _canvasGroup.interactable = closePopupWhenClicked;
+            OnSetup(_parentTransform, popupIndex);
             gameObject.SetActive(false);
         }
+
+        protected virtual void OnSetup(RectTransform parentTransform, int popupIndex) { }
 
         internal AsyncProcessHandle Enter(bool playAnimation) { return App.StartCoroutine(EnterRoutine(playAnimation)); }
 
