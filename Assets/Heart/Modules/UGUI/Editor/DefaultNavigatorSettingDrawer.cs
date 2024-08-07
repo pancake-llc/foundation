@@ -20,6 +20,7 @@ namespace PancakeEditor
         private SerializedProperty _popupExitAnimProperty;
         private SerializedProperty _popupBackdropEnterAnimProperty;
         private SerializedProperty _popupBackdropExitAnimProperty;
+        private SerializedProperty _popupBackdropStrategyProperty;
         private SerializedProperty _popupBackdropPrefabProperty;
         private SerializedProperty _assetLoaderProperty;
         private SerializedProperty _enableInteractionInTransitionProperty;
@@ -39,6 +40,7 @@ namespace PancakeEditor
             _popupExitAnimProperty = serializedObject.FindProperty("popupExitAnim");
             _popupBackdropEnterAnimProperty = serializedObject.FindProperty("popupBackdropEnterAnim");
             _popupBackdropExitAnimProperty = serializedObject.FindProperty("popupBackdropExitAnim");
+            _popupBackdropStrategyProperty = serializedObject.FindProperty("popupBackdropStrategy");
             _popupBackdropPrefabProperty = serializedObject.FindProperty("popupBackdropPrefab");
             _assetLoaderProperty = serializedObject.FindProperty("assetLoader");
             _enableInteractionInTransitionProperty = serializedObject.FindProperty("enableInteractionInTransition");
@@ -75,6 +77,7 @@ namespace PancakeEditor
 
             GUILayout.Label("[Backdrop]".ToWhiteBold(), Uniform.RichLabel);
             EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_popupBackdropStrategyProperty, new GUIContent("Strategy"));
             EditorGUILayout.PropertyField(_popupBackdropPrefabProperty, new GUIContent("Prefab"));
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(_popupBackdropEnterAnimProperty, new GUIContent("Enter Anim"));

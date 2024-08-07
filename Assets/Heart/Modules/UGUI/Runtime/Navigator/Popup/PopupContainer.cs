@@ -29,7 +29,6 @@ namespace Pancake.UI
         private readonly List<string> _orderedPopupIds = new();
         private readonly Dictionary<string, AssetLoadHandle<GameObject>> _preloadedResourceHandles = new();
         private IAssetLoader _assetLoader;
-        private PopupBackdrop _backdropPrefab;
         private CanvasGroup _canvasGroup;
 
         public static List<PopupContainer> Instances { get; } = new();
@@ -66,10 +65,10 @@ namespace Pancake.UI
             _callbackReceivers.AddRange(GetComponents<IPopupContainerCallbackReceiver>());
             if (!string.IsNullOrWhiteSpace(displayName)) InstanceCacheByName.Add(displayName, this);
 
-            _backdropPrefab = overrideBackdrop ? backdropPrefab : DefaultNavigatorSetting.PopupBackdropPrefab;
-
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
-            _backdropHandler = PopupBackdropHandlerFactory.Create(backdropStrategy, _backdropPrefab);
+            _backdropHandler = overrideBackdrop
+                ? PopupBackdropHandlerFactory.Create(backdropStrategy, backdropPrefab)
+                : PopupBackdropHandlerFactory.Create(DefaultNavigatorSetting.PopupBackdropStrategy, DefaultNavigatorSetting.PopupBackdropPrefab);
         }
 
         private void OnDestroy()

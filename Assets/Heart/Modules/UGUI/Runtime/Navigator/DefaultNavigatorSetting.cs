@@ -19,6 +19,7 @@ namespace Pancake.UI
         [SerializeField] private UITransitionAnimationSO popupExitAnim;
         [SerializeField] private UITransitionAnimationSO popupBackdropEnterAnim;
         [SerializeField] private UITransitionAnimationSO popupBackdropExitAnim;
+        [SerializeField] private EPopupBackdropStrategy popupBackdropStrategy;
         [SerializeField] private PopupBackdrop popupBackdropPrefab;
         [SerializeField] private AssetLoaderObject assetLoader;
         [SerializeField] private bool enableInteractionInTransition;
@@ -36,6 +37,8 @@ namespace Pancake.UI
         public static ITransitionAnimation GetDefaultPopupTransition(bool enter) { return enter ? Instance.popupEnterAnim : Instance.popupExitAnim; }
 
         public static ITransitionAnimation GetDefaultSheetTransition(bool enter) { return enter ? Instance.sheetEnterAnim : Instance.sheetExitAnim; }
+
+        public static EPopupBackdropStrategy PopupBackdropStrategy => Instance.popupBackdropStrategy;
 
         public static PopupBackdrop PopupBackdropPrefab
         {
