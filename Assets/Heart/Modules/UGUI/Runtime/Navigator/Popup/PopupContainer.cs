@@ -13,13 +13,14 @@ namespace Pancake.UI
 {
     [RequireComponent(typeof(RectMask2D))]
     [EditorIcon("icon_popup")]
-    public class PopupContainer : MonoBehaviour , IUIContainer
+    public class PopupContainer : MonoBehaviour, IUIContainer
     {
         private static readonly Dictionary<int, PopupContainer> InstanceCacheByTransform = new();
         private static readonly Dictionary<string, PopupContainer> InstanceCacheByName = new();
 
         [SerializeField, LabelText("Name")] private string displayName;
         [SerializeField] private bool overrideBackdrop;
+        [SerializeField, ShowIf(nameof(overrideBackdrop)), Indent] private EPopupBackdropStrategy backdropStrategy;
         [SerializeField, ShowIf(nameof(overrideBackdrop)), Indent] private PopupBackdrop backdropPrefab;
 
         private readonly Dictionary<string, AssetLoadHandle<GameObject>> _assetLoadHandles = new();
@@ -31,8 +32,9 @@ namespace Pancake.UI
         private PopupBackdrop _backdropPrefab;
         private CanvasGroup _canvasGroup;
 
-        public List<PopupBackdrop> Backdrops { get; } = new();
         public static List<PopupContainer> Instances { get; } = new();
+
+        private IPopupBackdropHandler _backdropHandler;
 
         /// <summary>
         ///     By default, <see cref="IAssetLoader" /> in <see cref="DefaultNavigatorSetting" /> is used.
@@ -67,6 +69,7 @@ namespace Pancake.UI
             _backdropPrefab = overrideBackdrop ? backdropPrefab : DefaultNavigatorSetting.PopupBackdropPrefab;
 
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
+            _backdropHandler = PopupBackdropHandlerFactory.Create(backdropStrategy, _backdropPrefab);
         }
 
         private void OnDestroy()
@@ -289,10 +292,6 @@ namespace Pancake.UI
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
 
-            var backdrop = Instantiate(_backdropPrefab);
-            backdrop.Setup((RectTransform) transform);
-            Backdrops.Add(backdrop);
-
             var instance = Instantiate(assetLoadHandle.Result);
             if (!instance.TryGetComponent(popupType, out var c)) c = instance.AddComponent(popupType);
             var enterPopup = (Popup) c;
@@ -321,7 +320,7 @@ namespace Pancake.UI
 
             // Play Animation
             var animationHandles = new List<AsyncProcessHandle>();
-            animationHandles.Add(backdrop.Enter(playAnimation));
+            animationHandles.Add(_backdropHandler.BeforePopupEnter(enterPopup, playAnimation));
 
             if (exitPopup != null) animationHandles.Add(exitPopup.Exit(true, playAnimation, enterPopup));
 
@@ -331,6 +330,8 @@ namespace Pancake.UI
             {
                 while (!coroutineHandle.IsTerminated) yield return coroutineHandle;
             }
+            
+            _backdropHandler.AfterPopupEnter(enterPopup, true);
 
             // End Transition
             _popups.Add(popupId, enterPopup);
@@ -396,13 +397,11 @@ namespace Pancake.UI
 
             var unusedPopupIds = new List<string>();
             var unusedPopups = new List<Popup>();
-            var unusedBackdrops = new List<PopupBackdrop>();
             for (var i = _orderedPopupIds.Count - 1; i >= _orderedPopupIds.Count - popCount; i--)
             {
                 var unusedPopupId = _orderedPopupIds[i];
                 unusedPopupIds.Add(unusedPopupId);
                 unusedPopups.Add(_popups[unusedPopupId]);
-                unusedBackdrops.Add(Backdrops[i]);
             }
 
             var enterPopupIndex = _orderedPopupIds.Count - popCount - 1;
@@ -425,11 +424,10 @@ namespace Pancake.UI
             {
                 var unusedPopupId = unusedPopupIds[i];
                 var unusedPopup = _popups[unusedPopupId];
-                var unusedBackdrop = unusedBackdrops[i];
                 var partnerPopupId = i == 0 ? enterPopupId : unusedPopupIds[i - 1];
                 var partnerPopup = partnerPopupId == null ? null : _popups[partnerPopupId];
+                animationHandles.Add(_backdropHandler.BeforePopupExit(unusedPopup, playAnimation));
                 animationHandles.Add(unusedPopup.Exit(false, playAnimation, partnerPopup));
-                animationHandles.Add(unusedBackdrop.Exit(playAnimation));
             }
 
             if (enterPopup != null) animationHandles.Add(enterPopup.Enter(false, playAnimation, exitPopup));
@@ -451,6 +449,7 @@ namespace Pancake.UI
             // Postprocess
             exitPopup.AfterExit(false, enterPopup);
             if (enterPopup != null) enterPopup.AfterEnter(false, exitPopup);
+            _backdropHandler.AfterPopupExit(exitPopup, playAnimation);
 
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.AfterPop(enterPopup, exitPopup);
 
@@ -466,12 +465,6 @@ namespace Pancake.UI
                 Destroy(unusedPopup.gameObject);
                 AssetLoader.Release(loadHandle);
                 _assetLoadHandles.Remove(unusedPopupId);
-            }
-
-            foreach (var unusedBackdrop in unusedBackdrops)
-            {
-                Backdrops.Remove(unusedBackdrop);
-                Destroy(unusedBackdrop.gameObject);
             }
 
             if (!DefaultNavigatorSetting.EnableInteractionInTransition)
