@@ -14,7 +14,7 @@ namespace Pancake.Common
 
         public int Id { get; }
 
-        public object Result { get; private set; } 
+        public object Result { get; private set; }
 
         public bool IsTerminated { get; private set; }
 
@@ -40,6 +40,22 @@ namespace Pancake.Common
             IsTerminated = true;
             OnTerminate?.Invoke();
             _tcs.SetException(ex);
+        }
+
+        public static AsyncProcessHandle Completed()
+        {
+            var handle = new AsyncProcessHandle(-1);
+            var handleSetter = (IAsyncProcessHandleSetter) handle;
+            handleSetter.Complete(null);
+            return handle;
+        }
+
+        public static AsyncProcessHandle Completed<T>(T result)
+        {
+            var handle = new AsyncProcessHandle(-1);
+            var handleSetter = (IAsyncProcessHandleSetter) handle;
+            handleSetter.Complete(result);
+            return handle;
         }
     }
 }
