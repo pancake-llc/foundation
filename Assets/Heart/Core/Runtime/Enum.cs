@@ -56,4 +56,12 @@ namespace Pancake
         Bottom,
         Center
     }
+
+    public enum EFourDirection
+    {
+        Left,
+        Right,
+        Top,
+        Down,
+    }
 }

@@ -28,4 +28,18 @@ namespace Pancake.Component
 
         public SpawnInGameNotiCommand(LocaleText localeText) { LocaleText = localeText; }
     }
+
+    public readonly struct UIHideBeforeCommand : ICommand
+    {
+        public string Group { get; }
+
+        public UIHideBeforeCommand(string group) { Group = group; }
+    }
+
+    public readonly struct UIShowAfterCommand : ICommand
+    {
+        public string Group { get; }
+
+        public UIShowAfterCommand(string group) { Group = group; }
+    }
 }
