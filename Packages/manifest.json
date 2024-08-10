@@ -7,7 +7,7 @@
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.5",
     "com.google.external-dependency-manager": "https://github.com/google-unity/external-dependency-manager.git#1.2.179",
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.addressables": "2.1.0",
+    "com.unity.addressables": "2.2.2",
     "com.unity.burst": "1.8.17",
     "com.unity.collections": "2.4.2",
     "com.unity.ide.rider": "3.0.31",
@@ -16,6 +16,8 @@
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.purchasing": "4.12.2",
     "com.unity.serialization": "3.1.1",
+    "com.unity.services.cloudsave": "3.1.0",
+    "com.unity.services.leaderboards": "2.1.0",
     "com.unity.ugui": "2.0.0",
     "jp.hadashikick.vitalrouter": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#1.0.1",
     "com.unity.modules.accessibility": "1.0.0",
@@ -46,8 +48,6 @@
     "com.unity.modules.unitywebrequesttexture": "1.0.0",
     "com.unity.modules.unitywebrequestwww": "1.0.0",
     "com.unity.modules.vehicles": "1.0.0",
-    "com.unity.modules.video": "1.0.0",
-    "com.unity.services.leaderboards": "2.1.0",
-    "com.unity.services.cloudsave": "3.1.0"
+    "com.unity.modules.video": "1.0.0"
   }
 }
