@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Menu
   m_GUID: 57cbe7d2de3f7a04397414e2d1d9aa03
   m_SerializeEntries:
+  - m_GUID: 1cd066271e0ca5940bc4a84b6b36dd9d
+    m_Address: RenamePopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 961ba3403b66b18449dd85d599516d99
     m_Address: ShopPopup
     m_ReadOnly: 0
@@ -32,6 +37,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bdb2518e838ea26439ac5d512807347b
     m_Address: CreditPopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdf2a7b1fb56a3f42b18e2fa7141553b
+    m_Address: LeaderboardPopup
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

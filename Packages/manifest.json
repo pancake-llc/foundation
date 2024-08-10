@@ -4,8 +4,6 @@
     "com.annulusgames.component-cache-generator": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",
     "com.annulusgames.debug-ui": "https://github.com/AnnulusGames/DebugUI.git?path=src/DebugUI/Assets/DebugUI",
     "com.annulusgames.lit-motion": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v1.9.0",
-    "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10",
-    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.1",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.5",
     "com.google.external-dependency-manager": "https://github.com/google-unity/external-dependency-manager.git#1.2.179",
     "com.unity.2d.sprite": "1.0.0",
@@ -48,6 +46,8 @@
     "com.unity.modules.unitywebrequesttexture": "1.0.0",
     "com.unity.modules.unitywebrequestwww": "1.0.0",
     "com.unity.modules.vehicles": "1.0.0",
-    "com.unity.modules.video": "1.0.0"
+    "com.unity.modules.video": "1.0.0",
+    "com.unity.services.leaderboards": "2.1.0",
+    "com.unity.services.cloudsave": "3.1.0"
   }
 }

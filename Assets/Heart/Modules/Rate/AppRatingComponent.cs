@@ -7,6 +7,7 @@ namespace Pancake.Rate
 {
 #if UNITY_IOS
     using UnityEngine.iOS;
+
 #elif UNITY_ANDROID && PANCAKE_REVIEW
     using Google.Play.Review;
 #endif
@@ -70,7 +71,7 @@ namespace Pancake.Rate
             yield return requestFlowOperation;
             if (requestFlowOperation.Error != ReviewErrorCode.NoError)
             {
-                if (force) C.GotoStore();
+                if (force) GotoStore();
                 yield break;
             }
 
@@ -90,13 +91,32 @@ namespace Pancake.Rate
             _playReviewInfo = null;
             if (launchFlowOperation.Error != ReviewErrorCode.NoError)
             {
-                C.GotoStore();
+                GotoStore();
                 yield break;
             }
         }
 #endif
 
-        public static void InitReview() { InitReviewEvent?.Invoke(); }
+        public static void InitReview()
+        {
+#if UNITY_ANDROID
+            InitReviewEvent?.Invoke();
+#endif
+        }
+
         public static void LaunchReview() { ReviewEvent?.Invoke(); }
+
+        public static void GotoStore()
+        {
+            string url = Application.platform switch
+            {
+#if UNITY_IPHONE
+                RuntimePlatform.IPhonePlayer => $"https://apps.apple.com/us/app/{HeartSettings.AppstoreAppId}",
+#endif
+                _ => "market://details?id=" + Application.identifier
+            };
+
+            Application.OpenURL(url);
+        }
     }
 }

@@ -13,7 +13,9 @@ namespace Pancake.Game.UI
 {
     public sealed class ShopView : View
     {
+#pragma warning disable 0414
         [SerializeField] private bool firstPurchaseDouble = true;
+#pragma warning restore 0414
         [Header("Button")] [SerializeField] private UIButtonText buttonPackage;
         [SerializeField] private UIButtonText buttonGem;
         [SerializeField] private UIButtonText buttonItem;

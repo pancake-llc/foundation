@@ -19,11 +19,13 @@ namespace Pancake.Game
         [SerializeField] private Button buttonShop;
         [SerializeField] private Button buttonGoToGameplay;
         [SerializeField] private Button buttonInGameNoti;
+        [SerializeField] private Button buttonLeaderboard;
         [SerializeField] private LocaleText localeTextInGameNoti;
 
         [HorizontalLine, SerializeField, PopupPickup] private string settingPopupKey;
         [SerializeField, PopupPickup] private string dailyRewardPopupKey;
         [SerializeField, PopupPickup] private string shopPopupKey;
+        [SerializeField, PopupPickup] private string leaderboardPopupKey;
 
         [HorizontalLine, SerializeField, AudioPickup] private AudioId bgm;
 
@@ -35,7 +37,10 @@ namespace Pancake.Game
             buttonShop.onClick.AddListener(OnButtonShopPressed);
             buttonGoToGameplay.onClick.AddListener(OnButtonGotoGameplayPressed);
             buttonInGameNoti.onClick.AddListener(OnButtonInGameNotiPressed);
+            buttonLeaderboard.onClick.AddListener(OnButtonLeaderboardPressed);
         }
+
+        private void OnButtonLeaderboardPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(leaderboardPopupKey, true); }
 
         private void OnButtonInGameNotiPressed() { Router.Default.PublishAsync(new SpawnInGameNotiCommand(localeTextInGameNoti)); }
 

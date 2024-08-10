@@ -12,7 +12,7 @@ namespace PancakeEditor
             GUILayout.Space(4);
 
 #if PANCAKE_ATT
-            UninstallAtt();
+            Uninstall("ATT 1.2.0", "com.unity.ads.ios-support");
 #else
             InstallAtt();
 #endif
@@ -82,31 +82,6 @@ namespace PancakeEditor
             }
 
             GUI.enabled = true;
-        }
-
-        private static void UninstallAtt()
-        {
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("ATT 1.2.0", new RectOffset(0, 0, 6, 0));
-
-            GUI.backgroundColor = Uniform.Red;
-            GUILayout.FlexibleSpace();
-
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall iOS14AdvertisingSupport",
-                    "Are you sure you want to uninstall iOS 14 Advertising Support package ?",
-                    "Yes",
-                    "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.unity.ads.ios-support");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
         }
 
         private static void InstallParticleEffectUGUI()

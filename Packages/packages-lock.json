@@ -32,23 +32,6 @@
       },
       "hash": "b6002a25d18b889216d886ee787fe1878e66be00"
     },
-    "com.coffee.ui-effect": {
-      "version": "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "332340e7bc2f8257816dd28784607a1edf6b6c2a"
-    },
-    "com.coffee.ui-particle": {
-      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.modules.particlesystem": "1.0.0"
-      },
-      "hash": "025efcbc5d3175aa1aaf5cb42a667cd7727457ae"
-    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.5",
       "depth": 0,
@@ -198,6 +181,28 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.services.authentication": {
+      "version": "3.3.3",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1",
+        "com.unity.services.core": "1.13.0",
+        "com.unity.modules.unitywebrequest": "1.0.0",
+        "com.unity.ugui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.services.cloudsave": {
+      "version": "3.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.services.authentication": "2.6.1",
+        "com.unity.services.core": "1.4.3"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.services.core": {
       "version": "1.13.0",
       "depth": 1,
@@ -206,6 +211,16 @@
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.nuget.newtonsoft-json": "3.2.1",
         "com.unity.modules.androidjni": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.services.leaderboards": {
+      "version": "2.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.services.authentication": "3.3.3",
+        "com.unity.services.core": "1.13.0"
       },
       "url": "https://packages.unity.com"
     },

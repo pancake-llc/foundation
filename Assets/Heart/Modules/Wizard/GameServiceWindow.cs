@@ -12,14 +12,14 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_LEADERBOARD
-            Uniform.DrawInstalled("Leaderboard Version 2.1.0");
+            Uniform.DrawInstalled("Leaderboard 2.1.0");
 #endif
 #if PANCAKE_CLOUDSAVE
-            Uniform.DrawInstalled("CloudSave Version 3.1.0");
+            Uniform.DrawInstalled("CloudSave 3.1.0");
 #endif
 
 #if PANCAKE_APPLE_SIGNIN
-            Uniform.DrawInstalled("Apple SignIn Version 1.4.3");
+            Uniform.DrawInstalled("Apple SignIn 1.4.3");
 #endif
 
             GUI.enabled = !EditorApplication.isCompiling;

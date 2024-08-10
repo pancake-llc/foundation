@@ -203,8 +203,8 @@ namespace Pancake.Common
         /// <param name="onUpdate">A function to call each tick of the DelayHandle. Takes the number of seconds elapsed since
         /// the start of the current cycle.</param>
         /// <param name="isLooped">Whether the DelayHandle should restart after executing.</param>
-        /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow-mo or pausing) or
-        /// game-time(affected by time scale changes).</param>
+        /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow-motion or pausing) or
+        /// game-time(affected by timescale changes).</param>
         public static DelayHandle Delay(
             this MonoBehaviour target,
             float duration,
@@ -219,22 +219,6 @@ namespace Pancake.Common
                 onUpdate,
                 isLooped,
                 useRealTime);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void GotoStore()
-        {
-            string url = Application.platform switch
-            {
-#if UNITY_IPHONE
-                RuntimePlatform.IPhonePlayer => $"https://apps.apple.com/us/app/{HeartSettings.AppstoreAppId}",
-#endif
-                _ => "market://details?id=" + Application.identifier
-            };
-
-            Application.OpenURL(url);
         }
     }
 }

@@ -12,6 +12,7 @@ using UnityEngine.Purchasing.Extension;
 
 namespace Pancake.IAP
 {
+    [EditorIcon("icon_manager")]
     public class IAPManager : GameComponent, IDetailedStoreListener
     {
         private IStoreController _controller;

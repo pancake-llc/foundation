@@ -2,7 +2,7 @@ using System;
 using Pancake.Common;
 using Pancake.Tracking;
 using UnityEngine;
-#if UNITY_IOS
+#if UNITY_IOS && PANCAKE_ATT
 using Unity.Advertisement.IosSupport;
 #endif
 
@@ -13,7 +13,7 @@ namespace Pancake.Game
     {
         public override void Init()
         {
-#if UNITY_IOS
+#if UNITY_IOS && PANCAKE_ATT
             SkAdNetworkBinding.SkAdNetworkRegisterAppForNetworkAttribution();
             SkAdNetworkBinding.SkAdNetworkUpdateConversionValue(HeartSettings.SkAdConversionValue);
 #endif
@@ -27,7 +27,7 @@ namespace Pancake.Game
 
         private static void RequestAuthorizationTracking()
         {
-#if UNITY_IOS
+#if UNITY_IOS && PANCAKE_ATT
             if (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() == ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
             {
                 ATTrackingStatusBinding.RequestAuthorizationTracking(CallbackAuthorizationTracking);

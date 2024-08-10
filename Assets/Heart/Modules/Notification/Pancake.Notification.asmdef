@@ -5,6 +5,7 @@
         "GUID:88be65f96b86746888c927a5c8ff3534",
         "GUID:ac145e6b8c6034cdbadc8c6e26aedbcf",
         "GUID:1e8e55397bd004beaba78a667566665f",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:adac8d59ad7e8504f82d387cded797a7",
         "GUID:c7e7793e0b5d326429f90e6fd716775e",
         "GUID:2bb2982fd552689428d4c3ae8bb26fb7"
@@ -15,9 +16,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "PANCAKE_NOTIFICATION"
-    ],
+    "defineConstraints": [],
     "versionDefines": [
         {
             "name": "com.unity.mobile.notifications",
