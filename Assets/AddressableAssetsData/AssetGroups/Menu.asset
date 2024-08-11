@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac3e217f973804c419cc90d7b73d0350
+    m_Address: ChoosePlatfomLoginPopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: adf5473374f980245b60129cb2990f24
     m_Address: SettingPopup
     m_ReadOnly: 0

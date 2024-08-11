@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: General
   m_GUID: 86b532fd418312245b513f99974cd3e2
   m_SerializeEntries:
+  - m_GUID: 5eef4ea9c5f50f640b650ba96999a4b7
+    m_Address: QuestionPopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 97a2c5d880873644f8f8a5baf8887235
     m_Address: NotificationPopup
     m_ReadOnly: 0
@@ -22,6 +27,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bb6f2fc7e75efe346b275100a71a9280
     m_Address: NoInternetPopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efaaf865e382c2d43ad35a3f4227bb3d
+    m_Address: TransitionPopup
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

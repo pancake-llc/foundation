@@ -53,17 +53,7 @@ namespace Pancake.Game
         private async void OnButtonGotoGameplayPressed()
         {
             AudioStatic.StopAll(); // todo: check issue when click button play sound meanwhile call StopAll (StopAll call before sound click played)
-            SceneManager.sceneLoaded += OnGameplaySceneLoaded;
-            Static.sceneHolder.Remove(Constant.Scene.MENU);
-            await SceneManager.UnloadSceneAsync(Constant.Scene.MENU);
-            await SceneManager.LoadSceneAsync(Constant.Scene.GAMEPLAY, LoadSceneMode.Additive);
-        }
-
-        private void OnGameplaySceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
-            Static.sceneHolder.Add(scene.name, scene);
-            SceneManager.SetActiveScene(scene);
+            await SceneLoader.LoadScene(Constant.Scene.GAMEPLAY);
         }
 
         private void OnDisable()

@@ -34,5 +34,7 @@ namespace Pancake.Game
             public const string GAMEPLAY = "gameplay";
             public const string PERSISTENT = "persistent";
         }
+
+        public const string PERSISTENT_POPUP_CONTAINER = "persistent_popup_container";
     }
 }

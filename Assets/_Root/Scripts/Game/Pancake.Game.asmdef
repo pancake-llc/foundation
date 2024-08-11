@@ -27,7 +27,8 @@
         "GUID:2073209246492244c9ad62c89d8d37bb",
         "GUID:00c479e63b1c74419820a39073267645",
         "GUID:1ed07ff861e5f468287b0baef844706d",
-        "GUID:837b3842fcf669f42838802a1f10305e"
+        "GUID:837b3842fcf669f42838802a1f10305e",
+        "GUID:be0d2672886cc45b2bcea5a5053a5347"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -41,6 +42,11 @@
             "name": "com.unity.ads.ios-support",
             "expression": "1.2.0",
             "define": "PANCAKE_ATT"
+        },
+        {
+            "name": "com.unity.services.cloudsave",
+            "expression": "2.0.0",
+            "define": "PANCAKE_CLOUD_SAVE"
         }
     ],
     "noEngineReferences": false

@@ -1,5 +1,4 @@
 using Pancake.Sound;
-using UnityEngine.SceneManagement;
 
 namespace Pancake.Game
 {
@@ -11,17 +10,7 @@ namespace Pancake.Game
         public async void GotoMenu()
         {
             AudioStatic.StopAll();
-            SceneManager.sceneLoaded += OnMenuSceneLoaded;
-            Static.sceneHolder.Remove(Constant.Scene.GAMEPLAY);
-            await SceneManager.UnloadSceneAsync(Constant.Scene.GAMEPLAY);
-            await SceneManager.LoadSceneAsync(Constant.Scene.MENU, LoadSceneMode.Additive);
-        }
-
-        private void OnMenuSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            SceneManager.sceneLoaded -= OnMenuSceneLoaded;
-            Static.sceneHolder.Add(scene.name, scene);
-            SceneManager.SetActiveScene(scene);
+            await SceneLoader.LoadScene(Constant.Scene.MENU);
         }
     }
 }
