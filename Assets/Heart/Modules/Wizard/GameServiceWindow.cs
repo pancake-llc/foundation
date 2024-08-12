@@ -16,7 +16,7 @@ namespace PancakeEditor
             Uniform.DrawInstalled("Leaderboard 2.1.0");
 #endif
 #if PANCAKE_CLOUDSAVE
-            Uniform.DrawInstalled("CloudSave 3.1.0");
+            Uniform.DrawInstalled("CloudSave 3.2.0");
 #endif
 
 #if PANCAKE_APPLE_SIGNIN
@@ -35,7 +35,7 @@ namespace PancakeEditor
 #if !PANCAKE_CLOUDSAVE
             if (GUILayout.Button("Install Package CloudSave", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.services.cloudsave", "3.1.0");
+                RegistryManager.Add("com.unity.services.cloudsave", "3.2.0");
                 RegistryManager.Resolve();
             }
 #endif
