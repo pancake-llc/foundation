@@ -1,6 +1,7 @@
 using System.IO;
 using Pancake;
 using Pancake.Common;
+using Pancake.SignIn;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
@@ -38,6 +39,33 @@ namespace PancakeEditor
                 RegistryManager.Resolve();
             }
 #endif
+
+            GUILayout.Space(4);
+            var gameServiceSettings = Resources.Load<GameServiceSettings>(nameof(GameServiceSettings));
+            if (gameServiceSettings == null)
+            {
+                GUI.enabled = !EditorApplication.isCompiling;
+                GUI.backgroundColor = Uniform.Pink;
+                if (GUILayout.Button("Create Game Service Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                {
+                    var setting = ScriptableObject.CreateInstance<GameServiceSettings>();
+                    if (!Directory.Exists(Common.Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(GameServiceSettings)}.asset");
+                    Debug.Log(
+                        $"{nameof(GameServiceSettings).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(GameServiceSettings)}.asset");
+
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                }
+
+                GUI.backgroundColor = Color.white;
+                GUI.enabled = true;
+            }
+            else
+            {
+                var editorGameServiceSetting = UnityEditor.Editor.CreateEditor(gameServiceSettings);
+                editorGameServiceSetting.OnInspectorGUI();
+            }
 
             GUILayout.FlexibleSpace();
 #if PANCAKE_LEADERBOARD
