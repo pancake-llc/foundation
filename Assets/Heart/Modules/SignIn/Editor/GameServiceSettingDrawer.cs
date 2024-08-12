@@ -27,8 +27,10 @@ namespace PancakeEditor.SignIn
             if (_enableAutoBackupProperty.boolValue)
             {
                 EditorGUI.indentLevel++;
+                EditorGUILayout.HelpBox("Backup data at regular intervals", MessageType.None);
                 EditorGUILayout.PropertyField(_byTimeProperty, new GUIContent("By Time"));
                 if (_byTimeProperty.boolValue) EditorGUILayout.PropertyField(_backupTimeIntervalProperty, new GUIContent("Time Interval (second)"));
+                EditorGUILayout.HelpBox("Backup data every time you exit the application", MessageType.None);
                 EditorGUILayout.PropertyField(_byApplicationQuitProperty, new GUIContent("When Application Quit"));
                 EditorGUI.indentLevel--;
             }

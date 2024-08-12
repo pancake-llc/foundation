@@ -28,11 +28,9 @@ namespace Pancake.Game.UI
         [SerializeField] private LocaleText localeRestoreSuccess;
 
         private bool _isBackup;
-        private PopupContainer _popupContainer;
 
         protected override UniTask Initialize()
         {
-            _popupContainer = MainUIContainer.In.GetMain<PopupContainer>();
 #if UNITY_ANDROID && PANCAKE_GPGS
             buttonGpgs.onClick.AddListener(OnButtonGpgsPressed);
             buttonGpgs.gameObject.SetActive(true);
@@ -74,9 +72,8 @@ namespace Pancake.Game.UI
 
                 if (string.IsNullOrEmpty(SignInEvent.ServerCode))
                 {
-                    await _popupContainer.Push<NotificationPopup>(popupNotification,
-                        true,
-                        onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
+                    await MainUIContainer.In.GetMain<PopupContainer>()
+                        .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
                     return;
                 }
             }
@@ -106,7 +103,7 @@ namespace Pancake.Game.UI
                 byte[] inputBytes = await LoadFileBytes(bucket);
                 Data.Restore(inputBytes);
 
-                await _popupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeRestoreSuccess, ActionOk));
+                await MainUIContainer.In.GetMain<PopupContainer>().Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeRestoreSuccess, ActionOk));
                 return;
 
                 async void ActionOk()
@@ -129,9 +126,8 @@ namespace Pancake.Game.UI
 
                 if (string.IsNullOrEmpty(SignInEvent.ServerCode))
                 {
-                    await _popupContainer.Push<NotificationPopup>(popupNotification,
-                        true,
-                        onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
+                    await MainUIContainer.In.GetMain<PopupContainer>()
+                        .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
                     return;
                 }
             }
@@ -161,7 +157,8 @@ namespace Pancake.Game.UI
                 byte[] inputBytes = Data.Backup();
                 await SaveFileBytes(bucket, inputBytes);
 
-                await _popupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeBackupSuccess, TurnOffBlock));
+                await MainUIContainer.In.GetMain<PopupContainer>()
+                    .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeBackupSuccess, TurnOffBlock));
             }
         }
 
@@ -189,9 +186,8 @@ namespace Pancake.Game.UI
 
             if (string.IsNullOrEmpty(SignInEvent.ServerCode))
             {
-                await _popupContainer.Push<NotificationPopup>(popupNotification,
-                    true,
-                    onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
+                await MainUIContainer.In.GetMain<PopupContainer>()
+                    .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
                 return;
             }
 
@@ -214,7 +210,8 @@ namespace Pancake.Game.UI
                 byte[] inputBytes = await LoadFileBytes(bucket);
                 Data.Restore(inputBytes);
 
-                await _popupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeRestoreSuccess, ActionOk));
+                await MainUIContainer.In.GetMain<PopupContainer>()
+                    .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeRestoreSuccess, ActionOk));
                 return;
 
                 async void ActionOk()
@@ -235,9 +232,8 @@ namespace Pancake.Game.UI
 
             if (string.IsNullOrEmpty(SignInEvent.ServerCode))
             {
-                await _popupContainer.Push<NotificationPopup>(popupNotification,
-                    true,
-                    onLoad: tuple => tuple.popup.view.Setup(localeLoginAppleFail, OnButtonClosePressed));
+                await MainUIContainer.In.GetMain<PopupContainer>()
+                    .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginAppleFail, OnButtonClosePressed));
                 return;
             }
 
@@ -260,7 +256,8 @@ namespace Pancake.Game.UI
                 byte[] inputBytes = Data.Backup();
                 await SaveFileBytes(bucket, inputBytes);
 
-                await _popupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeBackupSuccess, TurnOffBlock));
+                await MainUIContainer.In.GetMain<PopupContainer>()
+                    .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeBackupSuccess, TurnOffBlock));
             }
         }
 
