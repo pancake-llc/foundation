@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2309279994764400843
 RectTransform:
   m_ObjectHideFlags: 0
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 7832027202416956180}
   - component: {fileID: 7561597090581797016}
   m_Layer: 5
-  m_Name: ChoosePlatfomLoginPopup
+  m_Name: ChoosePlatformLoginPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -971,7 +971,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2761072148160187853
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1393,7 +1393,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Choose Plaform
+  m_text: Choose Platform
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebd567123ceed8449a3a2cbda0e215be, type: 2}
   m_sharedMaterial: {fileID: 1872832085346666087, guid: ebd567123ceed8449a3a2cbda0e215be, type: 2}
@@ -1479,7 +1479,7 @@ MonoBehaviour:
   target: {fileID: 8745761700832500333}
   nullArgumentGuard: 3
   firstArgument:
-    reference: {fileID: 11400000, guid: f902de417999a1c4e877a1ff6b580d45, type: 2}
+    reference: {fileID: 11400000, guid: 5431cc7b6be2baa45b5e04d7ba7d4c1a, type: 2}
     value: 
   secondArgument:
     reference: {fileID: 11400000, guid: f34abdf23624edd458a483aee76c5640, type: 2}

@@ -499,7 +499,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: -2532}
+  m_AnchoredPosition: {x: 20, y: -2160}
   m_SizeDelta: {x: -40, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &5812871064201299233
@@ -635,8 +635,15 @@ MonoBehaviour:
   __alchemySerializationData_Pancake_Game_UI_CreditView:
     _prefabContainer:
       isCreated: 1
-      data: '[]'
-    unityObjectReferences: []
+      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": 0\n    },\n    {\n       
+        \"Key\": 1,\n        \"Value\": 1\n    },\n    {\n        \"Key\": 2,\n       
+        \"Value\": 2\n    },\n    {\n        \"Key\": 3,\n        \"Value\": 3\n   
+        }\n]"
+    unityObjectReferences:
+    - {fileID: 995968833226339298, guid: 9ff642a41b80bd145b2998394decfd20, type: 3}
+    - {fileID: 2751185077155432247, guid: 1b6b5dac5fabf204fad126c0553e69f9, type: 3}
+    - {fileID: 3685194583428526754, guid: ebf548ca3e8f3584198d42f48bd10208, type: 3}
+    - {fileID: 8713169971505445862, guid: 0527cc17a3766464e995bb92259edb91, type: 3}
 --- !u!114 &3447712721848528053
 MonoBehaviour:
   m_ObjectHideFlags: 0

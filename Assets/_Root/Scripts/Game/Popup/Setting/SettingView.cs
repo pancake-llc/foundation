@@ -31,6 +31,7 @@ namespace Pancake.Game.UI
         [SerializeField] private Button buttonTerm;
         [SerializeField] private Button buttonPrivacy;
         [SerializeField] private Button buttonCredit;
+        [SerializeField] private Button buttonBackup;
         [SerializeField] private Button buttonClose;
         [AlchemySerializeField, NonSerialized] private Dictionary<SystemLanguage, UIButtonText> _buttonsLanguage = new();
         [AlchemySerializeField, NonSerialized] private Dictionary<EQuality, UIButtonText> _buttonsQuality = new();
@@ -43,7 +44,8 @@ namespace Pancake.Game.UI
         [SerializeField] private LocaleText localeTextOff;
 
         [SerializeField, HorizontalLine] private string groupFacebookURL;
-        [SerializeField, PopupPickup] private string nameCreditPopup;
+        [SerializeField, PopupPickup] private string creditPopupKey;
+        [SerializeField, PopupPickup] private string backupDataPopupKey;
 
         protected override UniTask Initialize()
         {
@@ -61,6 +63,7 @@ namespace Pancake.Game.UI
             buttonFacebook.onClick.AddListener(OnButtonGroupFaceookPressed);
             buttonPrivacy.onClick.AddListener(OnButtonPrivacyPressed);
             buttonCredit.onClick.AddListener(OnButtonCreditPressed);
+            buttonBackup.onClick.AddListener(OnButtonBackupPressed);
 
             textVersion.UpdateArgs(Application.version);
 
@@ -70,7 +73,9 @@ namespace Pancake.Game.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonCreditPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(nameCreditPopup, true); }
+        private void OnButtonBackupPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(backupDataPopupKey, true); }
+
+        private void OnButtonCreditPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(creditPopupKey, true); }
 
         private void OnButtonGifcodePressed()
         {

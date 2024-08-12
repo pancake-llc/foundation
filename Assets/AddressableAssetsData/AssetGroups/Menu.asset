@@ -15,8 +15,18 @@ MonoBehaviour:
   m_GroupName: Menu
   m_GUID: 57cbe7d2de3f7a04397414e2d1d9aa03
   m_SerializeEntries:
+  - m_GUID: 0406b0903de78bf47ac2b54e0bc1f7e8
+    m_Address: RestoreDataPopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1cd066271e0ca5940bc4a84b6b36dd9d
     m_Address: RenamePopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5940e501edbee35458316cf7ce49b346
+    m_Address: BackupDataPopup
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -26,7 +36,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ac3e217f973804c419cc90d7b73d0350
-    m_Address: ChoosePlatfomLoginPopup
+    m_Address: ChoosePlatformLoginPopup
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
