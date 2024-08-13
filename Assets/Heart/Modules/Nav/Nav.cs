@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 namespace Pancake.AI
 {
-    public static partial class C
+    public static class Nav
     {
         public static bool RandomPositionNavInsideUnitSphere(Vector3 center, float range, out Vector3 result, int numberQuery = 3, float maxDistance = 1f)
         {
@@ -35,6 +35,23 @@ namespace Pancake.AI
             }
 
             result = Vector3.zero;
+            return false;
+        }
+
+        public static bool TryGetNearestNavMeshPoint(Vector3 checkPosition, out Vector3 nearestNavMeshPoint, Vector3 direction, int step, float stepValue)
+        {
+            for (int i = step - 1; i >= 0; i--)
+            {
+                if (NavMesh.SamplePosition(checkPosition, out var hit, stepValue, NavMesh.AllAreas))
+                {
+                    nearestNavMeshPoint = hit.position;
+                    return true;
+                }
+
+                checkPosition -= direction * stepValue;
+            }
+
+            nearestNavMeshPoint = checkPosition;
             return false;
         }
     }
