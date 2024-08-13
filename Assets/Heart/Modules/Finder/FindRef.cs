@@ -1056,7 +1056,10 @@ namespace PancakeEditor.Finder
                             rs2.targetType,
                             _getSortMode() == Sort.Path);
                     }
-
+                    
+                    if (r1.asset == null) return -1;
+                    if (r2.asset == null) return 1;
+                    
                     return SortAsset(r1.asset.AssetPath,
                         r2.asset.AssetPath,
                         r1.asset.Extension,

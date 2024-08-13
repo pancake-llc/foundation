@@ -54,10 +54,16 @@ namespace PancakeEditor.Finder
             ".prefs",
             ".spriteatlas",
             ".terrainlayer",
-            ".asmdef"
+            ".asmdef",
+            ".preset",
+            ".spriteLib"
         };
 
-        private static readonly HashSet<string> ReferencableJson = new() {".shadergraph"};
+        private static readonly HashSet<string> ReferencableJson = new() {".shadergraph", ".shadersubgraph"};
+        
+        private static readonly HashSet<string> UiToolkit = new() {".uss", ".uxml", ".tss"};
+
+        private static readonly HashSet<string> ReferencableMeta = new() {".texture2darray"};
 
         private static readonly Dictionary<long, Type> HashClasses = new();
         internal static Dictionary<string, GUIContent> cacheImage = new();
@@ -285,6 +291,7 @@ namespace PancakeEditor.Finder
                 {
                     string id = useGUIDsList[i].guid;
                     if (_useGUIDs.ContainsKey(id))
+                    {
                         for (var j = 0; j < useGUIDsList[i].ids.Count; j++)
                         {
                             long val = useGUIDsList[i].ids[j];
@@ -292,6 +299,7 @@ namespace PancakeEditor.Finder
 
                             _useGUIDs[id].Add(useGUIDsList[i].ids[j]);
                         }
+                    }
                     else _useGUIDs.Add(id, new HashSet<long>(useGUIDsList[i].ids));
                 }
 
@@ -340,8 +348,7 @@ namespace PancakeEditor.Finder
 
             FinderUtility.SplitPath(_mAssetPath, out _mAssetName, out _mExtension, out _mAssetFolder);
 
-            if (_mAssetFolder.StartsWith("Assets/"))
-                _mAssetFolder = _mAssetFolder.Substring(7);
+            if (_mAssetFolder.StartsWith("Assets/")) _mAssetFolder = _mAssetFolder.Substring(7);
             else if (!FinderUtility.StringStartsWith(_mAssetPath, "Packages/", "Project Settings/", "Library/")) _mAssetFolder = "built-in/";
 
             _inEditor = _mAssetPath.Contains("/Editor/") || _mAssetPath.Contains("/Editor Default Resources/");
@@ -380,11 +387,7 @@ namespace PancakeEditor.Finder
 
             mFileInfoReadTs = FinderUtility.Epoch(DateTime.Now);
 
-            if (IsMissing)
-            {
-                //Debug.LogWarning("Should never be here! - missing files can not trigger LoadFileInfo()");
-                return;
-            }
+            if (IsMissing) return;
 
             if (!ExistOnDisk())
             {
@@ -506,9 +509,13 @@ namespace PancakeEditor.Finder
                     if (str != "%YAML") type = EFinderAssetType.BinaryAsset;
                 }
             }
-            else if (ReferencableJson.Contains(_mExtension))
+            else if (ReferencableJson.Contains(_mExtension) || UiToolkit.Contains(_mExtension))
             {
                 type = EFinderAssetType.Referencable;
+            }
+            else if (ReferencableMeta.Contains(_mExtension))
+            {
+                type = EFinderAssetType.Referencable;   
             }
             else if (_mExtension == ".fbx") type = EFinderAssetType.Model;
             else if (_mExtension == ".dll") type = EFinderAssetType.DLL;
@@ -538,22 +545,25 @@ namespace PancakeEditor.Finder
             else if (IsBinaryAsset) LoadBinaryAsset();
         }
 
-        internal void AddUseGuid(string fguid, long fFileId = -1, bool checkExist = true)
+        internal void AddUseGuid(string fguid, long fFileId = -1)
+        {
+            AddUseGuid(fguid, fFileId, true);
+        }
+        
+        internal void AddUseGuid(string fguid, long fFileId, bool checkExist)
         {
             if (!UseGUIDs.ContainsKey(fguid))
             {
                 useGUIDsList.Add(new Classes {guid = fguid, ids = new List<long>()});
                 UseGUIDs.Add(fguid, new HashSet<long>());
             }
-
-            if (fFileId != -1)
-            {
-                if (UseGUIDs[fguid].Contains(fFileId)) return;
-
-                UseGUIDs[fguid].Add(fFileId);
-                var i = useGUIDsList.FirstOrDefault(x => x.guid == fguid);
-                i?.ids.Add(fFileId);
-            }
+            
+            if (fFileId == -1) return;
+            if (UseGUIDs[fguid].Contains(fFileId)) return;
+            
+            UseGUIDs[fguid].Add(fFileId);
+            var i = useGUIDsList.FirstOrDefault(x => x.guid == fguid);
+            if (i != null) i.ids.Add(fFileId);
         }
 
         // ----------------------------- STATIC  ---------------------------------------
@@ -561,7 +571,6 @@ namespace PancakeEditor.Finder
         internal static int SortByExtension(FindAsset a1, FindAsset a2)
         {
             if (a1 == null) return -1;
-
             if (a2 == null) return 1;
 
             int result = string.Compare(a1._mExtension, a2._mExtension, StringComparison.Ordinal);
@@ -680,11 +689,12 @@ namespace PancakeEditor.Finder
 
             float pathW = drawPath ? EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(_mAssetFolder)).x : 0;
             float nameW = EditorStyles.boldLabel.CalcSize(MyGUIContent.FromString(_mAssetName)).x;
+            float extW = EditorStyles.boldLabel.CalcSize(MyGUIContent.FromString(_mExtension)).x;
             var cc = FinderWindowBase.SelectedColor;
 
             if (singleLine)
             {
-                var lbRect = GUI2.LeftRect(pathW + nameW, ref r);
+                var lbRect = GUI2.LeftRect(pathW + nameW + extW + 8f, ref r);
 
                 if (selected)
                 {
@@ -704,16 +714,20 @@ namespace PancakeEditor.Finder
                     lbRect.xMin -= 4f;
                     GUI.Label(lbRect, MyGUIContent.FromString(_mAssetName), EditorStyles.boldLabel);
                 }
-                else
-                    GUI.Label(lbRect, MyGUIContent.FromString(_mAssetName));
+                else GUI.Label(lbRect, MyGUIContent.FromString(_mAssetName));
+                
+                lbRect.xMin += nameW-2f;
+                
+                var c3 = GUI.color;
+                GUI.color = new Color(c3.r, c3.g, c3.b, c3.a * 0.5f);
+                GUI.Label(lbRect, MyGUIContent.FromString(_mExtension), EditorStyles.miniLabel);
+                GUI.color = c3;
             }
             else
             {
                 if (drawPath) GUI.Label(new Rect(r.x, r.y + 16f, r.width, r.height), MyGUIContent.FromString(_mAssetFolder), EditorStyles.miniLabel);
-
                 var lbRect = GUI2.LeftRect(nameW, ref r);
                 if (selected) GUI2.Rect(lbRect, cc);
-
                 GUI.Label(lbRect, MyGUIContent.FromString(_mAssetName), EditorStyles.boldLabel);
             }
 
@@ -974,6 +988,8 @@ namespace PancakeEditor.Finder
 
         internal void LoadYaml2()
         {
+            if (!_mPathLoaded) LoadPathInfo();
+            
             if (!File.Exists(_mAssetPath))
             {
                 state = EFinderAssetState.Missing;
@@ -992,55 +1008,34 @@ namespace PancakeEditor.Finder
                     AddUseGuid(id, 0);
                 }
             }
-
-            if (ReferencableJson.Contains(_mExtension))
+            
+            if (string.IsNullOrEmpty(_mExtension)) Debug.LogWarning($"Something wrong? <{_mExtension}>");
+            
+            if (UiToolkit.Contains(_mExtension))
             {
-                var result = FinderShaderGraphReader.ExtractFileIDGuidPairs(AssetPath);
-
-                foreach (var (fileId, gId) in result)
+                if (_mExtension == ".tss")
                 {
-                    AddUseGuid(gId, fileId);
+                    FinderParser.ReadTss(_mAssetPath, AddUseGuid);
+                } else
+                {
+                    FinderParser.ReadUssUxml(_mAssetPath, AddUseGuid);
                 }
-
                 return;
             }
 
-            try
+            if (ReferencableJson.Contains(_mExtension))
             {
-                using (var sr = new StreamReader(_mAssetPath))
-                {
-                    while (sr.Peek() >= 0)
-                    {
-                        string line = sr.ReadLine();
-                        int index = line.IndexOf("guid: ", StringComparison.Ordinal);
-                        if (index < 0) continue;
-
-                        string refGuid = line.Substring(index + 6, 32);
-                        int indexFileId = line.IndexOf("fileID: ", StringComparison.Ordinal);
-                        int fileID = -1;
-                        if (indexFileId >= 0)
-                        {
-                            indexFileId += 8;
-                            string fileIDStr = line.Substring(indexFileId, line.IndexOf(',', indexFileId) - indexFileId);
-                            try
-                            {
-                                fileID = int.Parse(fileIDStr) / 100000;
-                            }
-                            catch
-                            {
-                                // ignored
-                            }
-                        }
-
-                        AddUseGuid(refGuid, fileID);
-                    }
-                }
+                FinderParser.ReadJson(_mAssetPath, AddUseGuid);
+                return;
             }
 
-            catch
+            if (ReferencableMeta.Contains(_mExtension))
             {
-                state = EFinderAssetState.Missing;
+                FinderParser.ReadYaml($"{_mAssetPath}.meta", AddUseGuid);
+                return;
             }
+            
+            FinderParser.ReadYaml(_mAssetPath, AddUseGuid);
         }
 
         internal void LoadFolder()
@@ -1053,7 +1048,6 @@ namespace PancakeEditor.Finder
 
             // do not analyse folders outside project
             if (!_mAssetPath.StartsWith("Assets/")) return;
-
 
             try
             {
@@ -1155,16 +1149,36 @@ namespace PancakeEditor.Finder
                     terrain.treePrototypes = arr2;
                 }
 
-
-                fromObj = null;
-                toObj = null;
-                terrain = null;
-
                 return found > 0;
             }
 
-            Debug.LogWarning("Something wrong, should never be here - Ignored <" + _mAssetPath + "> : not a readable type, can not replace ! " + type);
             return false;
+        }
+        
+        internal string ReplaceFileIdIfNeeded(string line, long toFileId)
+        {
+            const string fileID = "fileID: ";
+            int index = line.IndexOf(fileID, StringComparison.Ordinal);
+            if (index < 0 || toFileId <= 0) return line;
+            int startIndex = index + fileID.Length;
+            int endIndex = line.IndexOf(',', startIndex);
+            if (endIndex > startIndex)
+            {
+                string fromFileId = line.Substring(startIndex, endIndex - startIndex);
+                if (long.TryParse(fromFileId, out long fileType) && 
+                    fileType.ToString().StartsWith(toFileId.ToString().Substring(0, 3)))
+                {
+                    Debug.Log($"ReplaceReference: fromFileId {fromFileId} to File Id {toFileId}");
+                    return line.Replace(fromFileId, toFileId.ToString());
+                }
+
+                Debug.LogWarning($"[Skip] Difference file type: {fromFileId} -> {toFileId}");
+            }
+            else
+            {
+                Debug.LogWarning("Cannot parse fileID in the line.");
+            }
+            return line;
         }
 
         internal bool ReplaceReference(string fromGuid, string toGuid, long toFileId, TerrainData terrain = null)
@@ -1178,53 +1192,44 @@ namespace PancakeEditor.Finder
                 if (!File.Exists(_mAssetPath))
                 {
                     state = EFinderAssetState.Missing;
-
                     return false;
                 }
 
                 try
                 {
                     var sb = new StringBuilder();
-                    string text = File.ReadAllText(AssetPath).Replace("\r", "\n");
-                    string[] lines = text.Split('\n');
+                    string text = File.ReadAllText(AssetPath);
+                    var currentIndex = 0;
 
-                    for (var i = 0; i < lines.Length; i++)
+                    while (currentIndex < text.Length)
                     {
-                        string line = lines[i];
-                        if (line.IndexOf(fromGuid, StringComparison.Ordinal) >= 0)
+                        int lineEndIndex = text.IndexOfAny(new[] { '\r', '\n' }, currentIndex);
+                        if (lineEndIndex == -1) lineEndIndex = text.Length;
+                      
+                        string line = text.Substring(currentIndex, lineEndIndex - currentIndex);
+
+                        // Check if the line contains the GUID and possibly the fileID
+                        if (line.Contains(fromGuid))
                         {
-                            if (toFileId > 0)
-                            {
-                                const string fileID = "fileID: ";
-                                int index = line.IndexOf(fileID, StringComparison.Ordinal);
-                                if (index >= 0)
-                                {
-                                    string fromFileId = line.Substring(index + fileID.Length, line.IndexOf(',', index) - (index + fileID.Length));
-                                    if (!long.TryParse(fromFileId, out long fileType))
-                                    {
-                                        Debug.LogWarning("cannot parse file");
-                                        return false;
-                                    }
-
-                                    if (fileType.ToString().Substring(0, 3) != toFileId.ToString().Substring(0, 3))
-                                    {
-                                        //difference file type
-                                        Debug.LogWarning($"[Skip] Difference file type: {fromFileId} -> {toFileId}");
-                                        sb.Append(line);
-                                        if (i < lines.Length - 1) sb.AppendLine();
-                                        continue;
-                                    }
-
-                                    Debug.Log("ReplaceReference: fromFileId " + fromFileId + "  to File Id " + toFileId);
-                                    line = line.Replace(fromFileId, toFileId.ToString());
-                                }
-                            }
-
+                            line = ReplaceFileIdIfNeeded(line, toFileId);
                             line = line.Replace(fromGuid, toGuid);
                         }
-
+                        
                         sb.Append(line);
-                        if (i < lines.Length - 1) sb.AppendLine();
+
+                        // Skip through any EOL characters
+                        while (lineEndIndex < text.Length)
+                        {
+                            char c = text[lineEndIndex];
+                            if (c == '\r' || c == '\n')
+                            {
+                                sb.Append(c);
+                                lineEndIndex++;
+                            }
+                            break;
+                        }
+
+                        currentIndex = lineEndIndex;
                     }
 
                     File.WriteAllText(AssetPath, sb.ToString());

@@ -170,15 +170,14 @@ namespace PancakeEditor.Finder
         public static void SplitPath(string assetPath, out string assetName, out string assetExtension, out string assetFolder)
         {
             assetName = string.Empty;
-            assetExtension = string.Empty;
             assetFolder = string.Empty;
+            assetExtension = string.Empty;
 
             if (string.IsNullOrEmpty(assetPath)) return;
+            
+            assetExtension = Path.GetExtension(assetPath);
+            assetName = Path.GetFileNameWithoutExtension(assetPath);
             int lastSlash = assetPath.LastIndexOf("/", StringComparison.Ordinal) + 1;
-            int lastDot = assetPath.LastIndexOf(".", StringComparison.Ordinal);
-
-            assetName = assetPath.Substring(lastSlash, assetPath.Length - lastSlash);
-            assetExtension = lastDot > lastSlash && lastDot > 0 ? assetPath.Substring(lastDot, assetPath.Length - lastDot).ToLower() : string.Empty;
             assetFolder = assetPath.Substring(0, lastSlash);
         }
 
