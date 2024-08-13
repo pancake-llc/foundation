@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Pancake.Common;
@@ -6,7 +5,6 @@ using Pancake.Localization;
 using Pancake.SignIn;
 using Pancake.UI;
 using Unity.Services.Authentication;
-using Unity.Services.CloudSave;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -100,10 +98,11 @@ namespace Pancake.Game.UI
             async Task FetchData()
             {
                 // save process
-                byte[] inputBytes = await LoadFileBytes(bucket);
+                byte[] inputBytes = await BackupDataHelper.LoadFileBytes(bucket);
                 Data.Restore(inputBytes);
 
-                await MainUIContainer.In.GetMain<PopupContainer>().Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeRestoreSuccess, ActionOk));
+                await MainUIContainer.In.GetMain<PopupContainer>()
+                    .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeRestoreSuccess, ActionOk));
                 return;
 
                 async void ActionOk()
@@ -140,8 +139,7 @@ namespace Pancake.Game.UI
 
             if (AuthenticationService.Instance.SessionTokenExists)
             {
-                // signin cached
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                await AuthenticationService.Instance.SignInAnonymouslyAsync(); // signin cached
             }
             else
             {
@@ -155,7 +153,7 @@ namespace Pancake.Game.UI
             {
                 // save process
                 byte[] inputBytes = Data.Backup();
-                await SaveFileBytes(bucket, inputBytes);
+                await BackupDataHelper.SaveFileBytes(bucket, inputBytes);
 
                 await MainUIContainer.In.GetMain<PopupContainer>()
                     .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeBackupSuccess, TurnOffBlock));
@@ -193,8 +191,7 @@ namespace Pancake.Game.UI
 
             if (AuthenticationService.Instance.SessionTokenExists)
             {
-                // signin cached
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                await AuthenticationService.Instance.SignInAnonymouslyAsync(); // signin cached
             }
             else
             {
@@ -206,8 +203,8 @@ namespace Pancake.Game.UI
 
             async Task FetchData()
             {
-                // save process
-                byte[] inputBytes = await LoadFileBytes(bucket);
+                // load process
+                byte[] inputBytes = await BackupDataHelper.LoadFileBytes(bucket);
                 Data.Restore(inputBytes);
 
                 await MainUIContainer.In.GetMain<PopupContainer>()
@@ -239,8 +236,7 @@ namespace Pancake.Game.UI
 
             if (AuthenticationService.Instance.SessionTokenExists)
             {
-                // signin cached
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                await AuthenticationService.Instance.SignInAnonymouslyAsync(); // signin cached
             }
             else
             {
@@ -254,7 +250,7 @@ namespace Pancake.Game.UI
             {
                 // save process
                 byte[] inputBytes = Data.Backup();
-                await SaveFileBytes(bucket, inputBytes);
+                await BackupDataHelper.SaveFileBytes(bucket, inputBytes);
 
                 await MainUIContainer.In.GetMain<PopupContainer>()
                     .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeBackupSuccess, TurnOffBlock));
@@ -272,32 +268,6 @@ namespace Pancake.Game.UI
 
         private void TurnOffBlock() { block.SetActive(false); }
 
-        private async Task SaveFileBytes(string key, byte[] bytes)
-        {
-            try
-            {
-                await CloudSaveService.Instance.Files.Player.SaveAsync(key, bytes);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-        }
-
-        private async Task<byte[]> LoadFileBytes(string key)
-        {
-            try
-            {
-                byte[] results = await CloudSaveService.Instance.Files.Player.LoadBytesAsync(key);
-                return results;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-
-            return null;
-        }
 
         private void OnButtonClosePressed()
         {

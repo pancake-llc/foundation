@@ -1,5 +1,4 @@
-﻿using Alchemy.Inspector;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake.SignIn
 {
