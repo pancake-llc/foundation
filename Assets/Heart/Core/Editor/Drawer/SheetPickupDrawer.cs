@@ -15,7 +15,7 @@ namespace PancakeEditor
         public override void OnCreateElement()
         {
             // Create a container for the horizontal layout
-            var container = new VisualElement {style = {flexDirection = FlexDirection.Row, alignItems = Align.Center, marginBottom = 4}};
+            var container = new VisualElement {style = {flexDirection = FlexDirection.Row, alignItems = Align.Center, marginBottom = 2}};
 
             var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name.ToCamelCase())) {style = {marginLeft = 3, marginRight = 0, flexGrow = 1}};
 

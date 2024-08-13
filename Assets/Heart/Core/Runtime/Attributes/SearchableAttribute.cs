@@ -8,7 +8,7 @@ namespace Pancake
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public class SearchableAttribute : System.Attribute
+    public class SearchableAttribute : Attribute
     {
     }
 }
