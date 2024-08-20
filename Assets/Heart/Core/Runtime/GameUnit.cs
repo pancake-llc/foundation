@@ -6,8 +6,8 @@ namespace Pancake
 {
     public abstract class GameUnit : GameComponent, IUpdate, IFixedUpdate, ILateUpdate
     {
-        [Header("base"), SerializeField] private EGameLoopType gameLoop;
-
+        [SerializeField] private EGameLoopType gameLoop;
+        
         private void OnEnable()
         {
             Register();
