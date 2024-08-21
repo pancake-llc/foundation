@@ -373,23 +373,9 @@ namespace RedBlueGames.MulliganRenamer
             // Breadcrumbs take up more than a single line so we add a bit more
             var toolbarRect = new Rect(0.0f, 0.0f, this.position.width, EditorGUIUtility.singleLineHeight + 3.0f);
             this.DrawToolbar(toolbarRect);
-
-            var reviewPromptHeight = 0.0f;
-            if (this.NeedsReview)
-            {
-                // Responsiveness: Expand height as the window shrinks to better fit the text
-                if (this.position.width > 800.0f)
-                {
-                    reviewPromptHeight = 38.0f;
-                }
-                else
-                {
-                    reviewPromptHeight = 48.0f;
-                }
-            }
-
+            
             var reviewPromptPaddingY = 16.0f;
-            var footerHeight = 60.0f + reviewPromptHeight + reviewPromptPaddingY;
+            var footerHeight = 60.0f + reviewPromptPaddingY;
             var operationPanelRect = new Rect(0.0f, 0.0f, OperationPanelWidth, this.position.height - toolbarRect.height - footerHeight);
             this.DrawOperationsPanel(operationPanelRect);
 
@@ -401,23 +387,12 @@ namespace RedBlueGames.MulliganRenamer
 
             this.DrawPreviewPanel(previewPanelRect, this.BulkRenamePreview);
 
-            var rectForReviewWidth = this.position.width * 0.98f;
-            var rectForReviewPrompt = new Rect((this.position.width - rectForReviewWidth) * 0.5f,
-                previewPanelRect.y + previewPanelRect.height + reviewPromptPaddingY,
-                rectForReviewWidth,
-                reviewPromptHeight);
-
-            if (this.NeedsReview)
-            {
-                this.DrawReviewPrompt(rectForReviewPrompt);
-            }
-
             var disableRenameButton = this.RenameOperatationsHaveErrors() || this.ObjectsToRename.Count == 0;
             EditorGUI.BeginDisabledGroup(disableRenameButton);
             var renameButtonPadding = new Vector4(30.0f, 16.0f, 30.0f, 16.0f);
             var renameButtonSize = new Vector2(this.position.width - renameButtonPadding.x - renameButtonPadding.z, 24.0f);
             var renameButtonRect = new Rect(renameButtonPadding.x,
-                rectForReviewPrompt.y + rectForReviewPrompt.height + renameButtonPadding.y,
+                previewPanelRect.y + previewPanelRect.height + renameButtonPadding.y,
                 renameButtonSize.x,
                 renameButtonSize.y);
 
@@ -461,7 +436,7 @@ namespace RedBlueGames.MulliganRenamer
 
             EditorGUI.EndDisabledGroup();
 
-            var copyrightRect = new Rect(0.0f, renameButtonRect.y + renameButtonRect.height + 2.0f, this.position.width, EditorGUIUtility.singleLineHeight);
+            var copyrightRect = new Rect(0.0f, renameButtonRect.y + renameButtonRect.height + 16.0f, this.position.width, EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(copyrightRect, this.guiContents.CopyrightLabel, this.guiStyles.CopyrightLabel);
 
             this.FocusForcedFocusControl();
@@ -828,76 +803,6 @@ namespace RedBlueGames.MulliganRenamer
             this.previewPanel.DeletionTextColor = this.ActivePreferences.DeletionTextColor;
             this.previewPanel.DeletionBackgroundColor = this.ActivePreferences.DeletionBackgroundColor;
             this.previewPanelScrollPosition = this.previewPanel.Draw(previewPanelRect, this.previewPanelScrollPosition, bulkRenamePreview);
-        }
-
-        private void DrawReviewPrompt(Rect rect)
-        {
-            var reviewPrompt = string.Empty;
-            Color color = Color.blue;
-            if (ActivePreferences.HasConfirmedReviewPrompt)
-            {
-                color = new AddStringOperationDrawer().HighlightColor;
-                if (RBPackageSettings.IsGitHubRelease)
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForSupport"));
-                }
-                else
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForReview"));
-                }
-            }
-            else
-            {
-                color = new ReplaceNameOperationDrawer().HighlightColor;
-
-                if (RBPackageSettings.IsGitHubRelease)
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForUsing"));
-                }
-                else
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForPurchasing"));
-                }
-            }
-
-            DrawReviewBanner(rect, color, reviewPrompt, !ActivePreferences.HasConfirmedReviewPrompt);
-        }
-
-        private void DrawReviewBanner(Rect rect, Color color, string prompt, bool showButton)
-        {
-            var oldColor = GUI.color;
-            GUI.color = color;
-            GUI.DrawTexture(rect, Texture2D.whiteTexture);
-            GUI.color = oldColor;
-
-            var reviewStyle = new GUIStyle(EditorStyles.largeLabel);
-            reviewStyle.fontStyle = FontStyle.Bold;
-            reviewStyle.alignment = TextAnchor.MiddleCenter;
-            reviewStyle.wordWrap = true;
-            reviewStyle.richText = true;
-
-            var buttonRect = new Rect(rect);
-            buttonRect.width = showButton ? 140.0f : 0.0f;
-            buttonRect.height = 16.0f;
-            var buttonPaddingLR = 10.0f;
-
-            buttonRect.x = rect.width - (buttonRect.width + buttonPaddingLR);
-            buttonRect.y += (rect.height * 0.5f) - (buttonRect.height * 0.5f);
-
-            var labelRect = new Rect(rect);
-            var labelPaddingL = 10.0f;
-            labelRect.x += labelPaddingL;
-            labelRect.width = (buttonRect.x - rect.x) - (buttonPaddingLR + labelPaddingL);
-
-            GUI.Label(labelRect, prompt, reviewStyle);
-            if (showButton && GUI.Button(buttonRect, LocalizationManager.Instance.GetTranslation("openAssetStore")))
-            {
-                this.ActivePreferences.HasConfirmedReviewPrompt = true;
-                Application.OpenURL("https://assetstore.unity.com/packages/slug/99843");
-
-                // Set a flag to continue to show the banner for this session
-                this.IsShowingThanksForReview = true;
-            }
         }
 
         private void ShowSavePresetWindow()
