@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using static Sisus.Init.Internal.TypeUtility;
+
+[assembly: InternalsVisibleTo("ComponentNames.Editor")]
 
 namespace Sisus.Init.EditorOnly.Internal
 {
@@ -341,5 +344,24 @@ namespace Sisus.Init.EditorOnly.Internal
 				return false;
 			}
 		}
+		
+		[return: MaybeNull]
+		internal static Type GetMemberType([DisallowNull] this SerializedProperty serializedProperty)
+		{
+			string propertyPath = serializedProperty.propertyPath;
+			var previousType = serializedProperty.serializedObject.targetObject.GetType();
+			var type = previousType;
+            
+			var startIndex = 0;
+			Property property = default;
+			while(TryGetNextProperty(propertyPath, ref startIndex, ref property))
+			{
+				previousType = type;
+				type = GetMemberType(previousType, property);
+			}
+
+			return type;
+		}
+		
 	}
 }

@@ -36,7 +36,7 @@ namespace PancakeEditor.ComponentHeader
             var container = new VisualElement {pickingMode = PickingMode.Ignore, style = {flexDirection = FlexDirection.RowReverse, height = 22,}};
 
             var imageCreator = new ImageCreator(headerElementName, onRefresh);
-            var removeComponentImage = imageCreator.CreateButton(ButtonType.Remove, Undo.DestroyObjectImmediate);
+            var removeComponentImage = imageCreator.CreateButton(ButtonType.Remove, DestroyComponent);
             var moveUpElement = imageCreator.CreateButton(ButtonType.MoveUp, x => ComponentUtility.MoveComponentUp(x));
             var moveDownElement = imageCreator.CreateButton(ButtonType.MoveDown, x => ComponentUtility.MoveComponentDown(x));
             var copyComponentElement = imageCreator.CreateButton(ButtonType.CopyComponent, CopyComponent);
@@ -51,6 +51,18 @@ namespace PancakeEditor.ComponentHeader
             container.Add(loadComponentElement);
 
             return container;
+        }
+
+        private static void DestroyComponent(Component component)
+        {
+            if (component == null)
+            {
+                Debug.LogWarning(
+                    "This component cannot be removed because the component name has been changed or the source file no longer exists in the project, please use the RemoveComponent menu to remove it.");
+                return;
+            }
+
+            Undo.DestroyObjectImmediate(component);
         }
 
         private static void LoadComponent(Component component)
