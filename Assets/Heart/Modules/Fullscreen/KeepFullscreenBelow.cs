@@ -32,33 +32,27 @@ namespace FullscreenEditor
 
         public static void BringWindowsAbove()
         {
-            if (!FullscreenPreferences.KeepFullscreenBelow)
-                return;
+            if (!FullscreenPreferences.KeepFullscreenBelow) return;
 
             var fullscreens = Fullscreen.GetAllFullscreen();
-            if (fullscreens.Length == 0)
-                return;
+            if (fullscreens.Length == 0) return;
 
             var methodName = "Internal_BringLiveAfterCreation";
             var windows = GetAllContainerWindowsOrdered()
                 .Where(w => !Fullscreen.GetFullscreenFromView(w))
                 .Where(w =>
                 {
-                    if (w.GetPropertyValue<int>("showMode") == (int) ShowMode.MainWindow)
-                        return false; // Main Window should be kept below everything
+                    if (w.GetPropertyValue<int>("showMode") == (int) ShowMode.MainWindow) return false; // Main Window should be kept below everything
 
-                    if (fullscreens.FirstOrDefault((f) => f.m_src.Container == w))
-                        return false; // Keep other fullscreen containers below
+                    if (fullscreens.FirstOrDefault((f) => f.m_src.Container == w)) return false; // Keep other fullscreen containers below
 
                     return true;
                 });
 
             foreach (var w in windows)
             {
-                if (w.HasMethod(methodName, new Type[] {typeof(bool), typeof(bool), typeof(bool)}))
-                    w.InvokeMethod(methodName, true, false, false);
-                else
-                    w.InvokeMethod(methodName, true, false);
+                if (w.HasMethod(methodName, new Type[] {typeof(bool), typeof(bool), typeof(bool)})) w.InvokeMethod(methodName, true, false, false);
+                else w.InvokeMethod(methodName, true, false);
             }
         }
     }

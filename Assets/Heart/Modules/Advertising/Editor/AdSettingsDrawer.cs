@@ -256,7 +256,7 @@ namespace Pancake.MonetizationEditor
 
                 if (GUILayout.Button("Add Admob Symbol (2)", GUILayout.Height(24)))
                 {
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB"))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
                         AssetDatabase.SaveAssets();
@@ -340,7 +340,7 @@ namespace Pancake.MonetizationEditor
 
                 if (GUILayout.Button("Add AppLovin Symbol (2)", GUILayout.Height(24)))
                 {
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN"))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
                         AssetDatabase.SaveAssets();

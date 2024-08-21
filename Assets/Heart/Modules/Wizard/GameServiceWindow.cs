@@ -126,7 +126,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
             if (GUILayout.Button("Add GPGS Symbol (2)", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_GPGS", BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)))
+                if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_GPGS"))
                 {
                     ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_GPGS");
                     AssetDatabase.SaveAssets();

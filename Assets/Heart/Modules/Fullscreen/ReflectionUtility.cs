@@ -18,18 +18,15 @@ namespace FullscreenEditor
             // return typeof(Editor).Assembly.GetType(name, false, true);
             var result = FindTypeInAssembly(name, typeof(Editor).Assembly);
 
-            if (result != null)
-                return result;
+            if (result != null) return result;
 
-            if (cachedAssemblies == null)
-                cachedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            if (cachedAssemblies == null) cachedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             for (var i = 0; i < cachedAssemblies.Length; i++)
             {
                 result = FindTypeInAssembly(name, cachedAssemblies[i]);
 
-                if (result != null)
-                    return result;
+                if (result != null) return result;
             }
 
             return result;
@@ -40,13 +37,11 @@ namespace FullscreenEditor
         /// <summary>Find a field of a type by its name.</summary>
         public static FieldInfo FindField(this Type type, string fieldName, bool throwNotFound = true)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException("type");
 
             var field = type.GetField(fieldName, FULL_BINDING);
 
-            if (field == null && throwNotFound)
-                throw new MissingFieldException(type.FullName, fieldName);
+            if (field == null && throwNotFound) throw new MissingFieldException(type.FullName, fieldName);
 
             return field;
         }
@@ -54,13 +49,11 @@ namespace FullscreenEditor
         /// <summary>Find a property of a type by its name.</summary>
         public static PropertyInfo FindProperty(this Type type, string propertyName, bool throwNotFound = true)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException("type");
 
             var prop = type.GetProperty(propertyName, FULL_BINDING);
 
-            if (prop == null && throwNotFound)
-                throw new MissingMemberException(type.FullName, propertyName);
+            if (prop == null && throwNotFound) throw new MissingMemberException(type.FullName, propertyName);
 
             return prop;
         }
@@ -68,8 +61,7 @@ namespace FullscreenEditor
         /// <summary>Find a method of a type by its name.</summary>
         public static MethodInfo FindMethod(this Type type, string methodName, Type[] args = null, bool throwNotFound = true)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException("type");
 
             MethodInfo method;
 
@@ -100,8 +92,7 @@ namespace FullscreenEditor
                 }
             }
 
-            if (method == null && throwNotFound)
-                throw new MissingMethodException(type.FullName, methodName);
+            if (method == null && throwNotFound) throw new MissingMethodException(type.FullName, methodName);
 
             return method;
         }

@@ -24,10 +24,8 @@ namespace FullscreenEditor
                 var view = new ViewPyramid(window).View;
 
                 // fallback when above doesn't work
-                if (view.HasMethod("EnableVSync"))
-                    view.InvokeMethod("EnableVSync", vsyncEnabled);
-                else
-                    Logger.Debug(string.Format("View {0} does not support vsync", view.GetType()));
+                if (view.HasMethod("EnableVSync")) view.InvokeMethod("EnableVSync", vsyncEnabled);
+                else Logger.Debug(string.Format("View {0} does not support vsync", view.GetType()));
             }
         }
     }

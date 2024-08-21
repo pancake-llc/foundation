@@ -15,8 +15,7 @@ namespace FullscreenEditor
 
             FullscreenPreferences.UseGlobalToolbarHiding.OnValueSaved += v =>
             {
-                if (!v)
-                    FullscreenUtility.SetToolbarHeight(defaultToolbarHeight);
+                if (!v) FullscreenUtility.SetToolbarHeight(defaultToolbarHeight);
             };
 
             FullscreenPreferences.ToolbarVisible.OnValueSaved += v => UpdateGlobalToolbarStatus();

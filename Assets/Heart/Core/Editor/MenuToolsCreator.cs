@@ -30,8 +30,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/DOTween Adapter", validate = false)]
         private static void ToggleDotweenAdapter()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER");
             toggle = !toggle;
             if (toggle)
             {
@@ -50,8 +49,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/DOTween Adapter", validate = true)]
         private static bool ValidateToggleDotweenAdapter()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER");
             Menu.SetChecked("Tools/Pancake/DOTween Adapter", toggle);
             return true;
         }
@@ -94,8 +92,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/BakingSheet/Runtime Csv Converter", validate = false)]
         private static void ToggleBakingSheetRuntimeCsv()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_CSVCONVERTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_CSVCONVERTER");
             toggle = !toggle;
             if (toggle)
             {
@@ -114,8 +111,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/BakingSheet/Runtime Csv Converter", validate = true)]
         private static bool ValidateToggleBakingSheetRuntimeCsv()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_CSVCONVERTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_CSVCONVERTER");
             Menu.SetChecked("Tools/Pancake/BakingSheet/Runtime Csv Converter", toggle);
             return true;
         }
@@ -123,8 +119,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/BakingSheet/Runtime Google Converter", validate = false)]
         private static void ToggleBakingSheetRuntimeGoogle()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_GOOGLECONVERTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_GOOGLECONVERTER");
             toggle = !toggle;
             if (toggle)
             {
@@ -143,8 +138,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/BakingSheet/Runtime Google Converter", validate = true)]
         private static bool ValidateToggleBakingSheetRuntimeGoogle()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_GOOGLECONVERTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_GOOGLECONVERTER");
             Menu.SetChecked("Tools/Pancake/BakingSheet/Runtime Google Converter", toggle);
             return true;
         }

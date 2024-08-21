@@ -26,8 +26,7 @@ namespace FullscreenEditor
 
         public Patcher(MethodBase method, MethodInfo replacement)
         {
-            if (!IsSupported())
-                throw new PlatformNotSupportedException("Not supported on non x86_x64 processors");
+            if (!IsSupported()) throw new PlatformNotSupportedException("Not supported on non x86_x64 processors");
 
             this.method = method;
             this.replacement = replacement;
@@ -71,8 +70,7 @@ namespace FullscreenEditor
         {
             try
             {
-                if (IsPatched())
-                    Revert();
+                if (IsPatched()) Revert();
                 method.Invoke(obj, parameters);
             }
             finally

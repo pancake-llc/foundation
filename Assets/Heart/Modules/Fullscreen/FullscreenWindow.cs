@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using ContainerWindow = UnityEngine.ScriptableObject;
-using HostView = UnityEngine.ScriptableObject;
 using View = UnityEngine.ScriptableObject;
 
 namespace FullscreenEditor
@@ -17,7 +16,7 @@ namespace FullscreenEditor
 
         public RectOffset ClipOffset
         {
-            get { return m_rectOffset; }
+            get => m_rectOffset;
             set
             {
                 if (m_dst.View)
@@ -30,14 +29,13 @@ namespace FullscreenEditor
 
         internal bool CreatedByFullscreenOnPlay { get { return m_createdByFullscreenOnPlay; } set { m_createdByFullscreenOnPlay = value; } }
 
-        public bool HasToolbarOffset { get { return ToolbarOffset != null; } }
+        public bool HasToolbarOffset => ToolbarOffset != null;
 
         public virtual RectOffset ToolbarOffset
         {
             get
             {
-                if (m_toolbarOffset == null)
-                    m_toolbarOffset = new RectOffset(0, 0, (int) FullscreenUtility.GetToolbarHeight(), 0);
+                if (m_toolbarOffset == null) m_toolbarOffset = new RectOffset(0, 0, (int) FullscreenUtility.GetToolbarHeight(), 0);
                 return m_toolbarOffset;
             }
         }
@@ -71,10 +69,8 @@ namespace FullscreenEditor
             a.InvokeMethod("MakeParentsSettingsMatchMe");
             b.InvokeMethod("MakeParentsSettingsMatchMe");
 
-            if (selectedPaneA != a)
-                parentA.SetPropertyValue("actualView", selectedPaneA);
-            if (selectedPaneB != b)
-                parentB.SetPropertyValue("actualView", selectedPaneB);
+            if (selectedPaneA != a) parentA.SetPropertyValue("actualView", selectedPaneA);
+            if (selectedPaneB != b) parentB.SetPropertyValue("actualView", selectedPaneB);
 
             SetFreezeContainer(containerA, false);
             SetFreezeContainer(containerB, false);
@@ -92,11 +88,9 @@ namespace FullscreenEditor
 
         public void SetToolbarStatus(bool toolbarVisible)
         {
-            if (!HasToolbarOffset)
-                return;
+            if (!HasToolbarOffset) return;
 
-            if (FullscreenPreferences.UseGlobalToolbarHiding)
-                return;
+            if (FullscreenPreferences.UseGlobalToolbarHiding) return;
 
             ClipOffset = toolbarVisible ? new RectOffset() : ToolbarOffset;
         }
@@ -105,10 +99,8 @@ namespace FullscreenEditor
         {
             var window = ActualViewPyramid.Window;
 
-            if (window)
-                window.Focus();
-            else
-                base.Focus();
+            if (window) window.Focus();
+            else base.Focus();
         }
 
         public override bool IsFocused() { return EditorWindow.focusedWindow && EditorWindow.focusedWindow == ActualViewPyramid.Window; }
@@ -119,8 +111,7 @@ namespace FullscreenEditor
 
             Focus();
 
-            if (m_src.Window)
-                m_dst.Window.titleContent = m_src.Window.titleContent; // Copy the title of the window to the placeholder
+            if (m_src.Window) m_dst.Window.titleContent = m_src.Window.titleContent; // Copy the title of the window to the placeholder
 
             SetToolbarStatus(FullscreenPreferences.ToolbarVisible); // Hide/show the toolbar
             // macOS doesn't like fast things, so we'll wait a bit and do it again
@@ -132,8 +123,8 @@ namespace FullscreenEditor
             After.Milliseconds(50d,
                 () =>
                 {
-                    if (!notificationWindow) // Might have been closed
-                        return;
+                    // Might have been closed
+                    if (!notificationWindow) return;
 
                     var menuItemPath = string.Empty;
                     if (notificationWindow.IsOfType(Types.GameView))
@@ -144,10 +135,8 @@ namespace FullscreenEditor
                             ? Shortcut.MOSAIC_PATH
                             : Shortcut.GAME_VIEW_PATH;
                     }
-                    else if (notificationWindow is SceneView)
-                        menuItemPath = Shortcut.SCENE_VIEW_PATH;
-                    else
-                        menuItemPath = Shortcut.CURRENT_VIEW_PATH;
+                    else if (notificationWindow is SceneView) menuItemPath = Shortcut.SCENE_VIEW_PATH;
+                    else menuItemPath = Shortcut.CURRENT_VIEW_PATH;
 
                     FullscreenUtility.ShowFullscreenExitNotification(notificationWindow, menuItemPath);
                 });
@@ -169,11 +158,9 @@ namespace FullscreenEditor
 
         internal void OpenWindow(Rect rect, Type type, EditorWindow window = null, bool disposableWindow = false)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException("type");
 
-            if (!type.IsOfType(typeof(EditorWindow)))
-                throw new ArgumentException("Type must be inherited from UnityEditor.EditorWindow", "type");
+            if (!type.IsOfType(typeof(EditorWindow))) throw new ArgumentException("Type must be inherited from UnityEditor.EditorWindow", "type");
 
             if (window is PlaceholderWindow)
             {
@@ -198,16 +185,14 @@ namespace FullscreenEditor
 
             BeforeOpening();
 
-            if (window)
-                m_src = new ViewPyramid(window);
+            if (window) m_src = new ViewPyramid(window);
 
-            var childWindow =
-                window ? (EditorWindow) CreateInstance<PlaceholderWindow>() : (EditorWindow) CreateInstance(type); // Instantiate a new window for this fullscreen
+            var childWindow = window ? (EditorWindow) CreateInstance<PlaceholderWindow>() : (EditorWindow) CreateInstance(type); // Instantiate a new window for this fullscreen
 
             m_dst = CreateFullscreenViewPyramid(rect, childWindow);
 
-            if (window) // We can't swap the src window if we didn't create a placeholder window
-                SwapWindows(m_src.Window, m_dst.Window);
+            // We can't swap the src window if we didn't create a placeholder window
+            if (window) SwapWindows(m_src.Window, m_dst.Window);
 
             Rect = rect;
 
@@ -222,13 +207,11 @@ namespace FullscreenEditor
 
         internal bool IsPlaceholderVisible()
         {
-            if (!(m_dst.Window is PlaceholderWindow))
-                return false;
+            if (!(m_dst.Window is PlaceholderWindow)) return false;
 
             var pyramid = new ViewPyramid(m_dst.Window);
 
-            if (!pyramid.View || !pyramid.View.IsOfType(Types.HostView))
-                return false;
+            if (!pyramid.View || !pyramid.View.IsOfType(Types.HostView)) return false;
 
             var actualView = pyramid.View.GetPropertyValue<View>("actualView");
 
@@ -239,13 +222,11 @@ namespace FullscreenEditor
         {
             var shouldRefocus = IsFocused() && IsPlaceholderVisible();
 
-            if (m_src.Window && m_dst.Window)
-                SwapWindows(m_src.Window, m_dst.Window); // Swap back the source window
+            if (m_src.Window && m_dst.Window) SwapWindows(m_src.Window, m_dst.Window); // Swap back the source window
 
             base.Close();
 
-            if (shouldRefocus && m_src.Window)
-                m_src.Window.Focus();
+            if (shouldRefocus && m_src.Window) m_src.Window.Focus();
         }
     }
 }

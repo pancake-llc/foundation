@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
-using HostView = UnityEngine.ScriptableObject;
 using View = UnityEngine.ScriptableObject;
 using ContainerWindow = UnityEngine.ScriptableObject;
 
@@ -19,8 +15,7 @@ namespace FullscreenEditor
         {
             get
             {
-                if (!m_window && m_windowInstanceID != 0)
-                    m_window = (EditorWindow) EditorUtility.InstanceIDToObject(m_windowInstanceID);
+                if (!m_window && m_windowInstanceID != 0) m_window = (EditorWindow) EditorUtility.InstanceIDToObject(m_windowInstanceID);
                 return m_window;
             }
             set
@@ -35,8 +30,7 @@ namespace FullscreenEditor
         {
             get
             {
-                if (!m_view && m_viewInstanceID != 0)
-                    m_view = (View) EditorUtility.InstanceIDToObject(m_viewInstanceID);
+                if (!m_view && m_viewInstanceID != 0) m_view = (View) EditorUtility.InstanceIDToObject(m_viewInstanceID);
                 return m_view;
             }
             set
@@ -52,8 +46,7 @@ namespace FullscreenEditor
         {
             get
             {
-                if (!m_container && m_containerInstanceID != 0)
-                    m_container = (ContainerWindow) EditorUtility.InstanceIDToObject(m_containerInstanceID);
+                if (!m_container && m_containerInstanceID != 0) m_container = (ContainerWindow) EditorUtility.InstanceIDToObject(m_containerInstanceID);
                 return m_container;
             }
             set
@@ -104,8 +97,7 @@ namespace FullscreenEditor
                 throw new ArgumentException("Param must be of type EditorWindow, View or ContainerWindow", "viewOrWindow");
             }
 
-            if (!m_window && m_view && m_view.IsOfType(Types.HostView))
-                m_window = m_view.GetPropertyValue<EditorWindow>("actualView");
+            if (!m_window && m_view && m_view.IsOfType(Types.HostView)) m_window = m_view.GetPropertyValue<EditorWindow>("actualView");
 
             m_windowInstanceID = m_window ? m_window.GetInstanceID() : 0;
             m_viewInstanceID = m_view ? m_view.GetInstanceID() : 0;

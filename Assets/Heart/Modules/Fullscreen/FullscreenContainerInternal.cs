@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
-using HostView = UnityEngine.ScriptableObject;
-using View = UnityEngine.ScriptableObject;
 using ContainerWindow = UnityEngine.ScriptableObject;
 
 namespace FullscreenEditor

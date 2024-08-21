@@ -5,6 +5,7 @@ using FullscreenEditor.Linux;
 using FullscreenEditor.Windows;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace FullscreenEditor
 {
@@ -109,7 +110,7 @@ namespace FullscreenEditor
 
                 if (candidate)
                 {
-                    candidate = EditorWindow.Instantiate(candidate);
+                    candidate = Object.Instantiate(candidate);
                     candidate.Show();
                 }
 

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
-using HostView = UnityEngine.ScriptableObject;
 using View = UnityEngine.ScriptableObject;
-using ContainerWindow = UnityEngine.ScriptableObject;
 
 namespace FullscreenEditor
 {
@@ -18,28 +13,27 @@ namespace FullscreenEditor
 
         public Action didPresent = () => Logger.Debug("'Did Present' called");
 
-        private static int CurrentIndex { get { return EditorPrefs.GetInt("FullscreenIdx", 0); } set { EditorPrefs.SetInt("FullscreenIdx", value); } }
+        private static int CurrentIndex { get => EditorPrefs.GetInt("FullscreenIdx", 0); set => EditorPrefs.SetInt("FullscreenIdx", value); }
 
         /// <summary>The true view pyramid of this fullscreen container.</summary>
-        public ViewPyramid ActualViewPyramid { get { return new ViewPyramid(m_dst.Container); } }
+        public ViewPyramid ActualViewPyramid => new(m_dst.Container);
 
         /// <summary>The view that is currently fullscreened.</summary>
-        public View FullscreenedView { get { return ActualViewPyramid.View; } }
+        public View FullscreenedView => ActualViewPyramid.View;
 
         /// <summary>Position and size of the WindowContainer created for this fullscreen.</summary>
         public Rect Rect
         {
-            get { return m_dst.Container ? m_dst.Container.GetPropertyValue<Rect>("position") : new Rect(); }
+            get => m_dst.Container ? m_dst.Container.GetPropertyValue<Rect>("position") : new Rect();
             set
             {
                 if (m_dst.Container)
                 {
                     m_dst.Container.InvokeMethod("SetMinMaxSizes", value.size, value.size);
                     m_dst.Container.SetPropertyValue("position", value);
-                    Logger.Debug("Set {0} rect to {1}", this.name, value);
+                    Logger.Debug("Set {0} rect to {1}", name, value);
                 }
-                else
-                    Logger.Debug("No container on {0}, rect will not be set", this.name);
+                else Logger.Debug("No container on {0}, rect will not be set", name);
             }
         }
 
@@ -99,8 +93,7 @@ namespace FullscreenEditor
         {
             FullscreenCallbacks.beforeFullscreenClose(this);
 
-            if (!m_dst.Window && m_dst.Container)
-                Logger.Error("Placeholder window has been closed, Fullscreen Editor won't be able to restore window position");
+            if (!m_dst.Window && m_dst.Container) Logger.Error("Placeholder window has been closed, Fullscreen Editor won't be able to restore window position");
 
             if (m_dst.Container) // Container may have been destroyed by Alt+F4
                 m_dst.Container.InvokeMethod("Close"); // Closes the container, all its views and the windows

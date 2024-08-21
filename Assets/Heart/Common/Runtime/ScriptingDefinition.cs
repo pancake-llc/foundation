@@ -39,12 +39,18 @@ namespace Pancake.Common
             return workingBuildTargetGroups;
         }
 
-        public static bool IsSymbolDefined(string symbol, BuildTargetGroup platform)
+        private static bool IsSymbolDefined(string symbol, BuildTargetGroup platform)
         {
             string currentSymbol = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform));
             var symbols = new List<string>(currentSymbol.Split(';'));
 
             return symbols.Contains(symbol);
+        }
+
+        public static bool IsSymbolDefined(string symbol)
+        {
+            var platform = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+            return IsSymbolDefined(symbol, platform);
         }
 
         /// <summary>

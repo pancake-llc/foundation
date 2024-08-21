@@ -22,8 +22,7 @@ namespace FullscreenEditor
         {
             get
             {
-                if (!FullscreenUtility.IsWindows)
-                    return -1;
+                if (!FullscreenUtility.IsWindows) return -1;
                 const int SM_CMONITORS = 80;
                 return User32.GetSystemMetrics(SM_CMONITORS);
             }
@@ -48,18 +47,15 @@ namespace FullscreenEditor
                 var rect = new Rect();
                 var shouldUse = CustomRectCallback(mode, out rect);
 
-                if (shouldUse)
-                    return rect;
+                if (shouldUse) return rect;
             }
 
             switch (mode)
             {
-                case RectSourceMode.MainDisplay:
-                    return GetMainDisplayRect();
+                case RectSourceMode.MainDisplay: return GetMainDisplayRect();
 
                 case RectSourceMode.WindowDisplay:
-                    if (targetWindow == null || !FullscreenUtility.IsWindows)
-                        return GetMainDisplayRect();
+                    if (targetWindow == null || !FullscreenUtility.IsWindows) return GetMainDisplayRect();
 
                     var views = new ViewPyramid(targetWindow);
                     var rect = views.Container.GetPropertyValue<Rect>("position");
@@ -69,28 +65,17 @@ namespace FullscreenEditor
                 case RectSourceMode.AtMousePosition:
                     return FullscreenUtility.IsWindows ? GetDisplayBoundsAtPoint(FullscreenUtility.MousePosition) : GetWorkAreaRect(true);
 
-                case RectSourceMode.Span:
-                    return FullscreenUtility.IsWindows ? GetVirtualScreenBounds() : GetWorkAreaRect(true);
+                case RectSourceMode.Span: return FullscreenUtility.IsWindows ? GetVirtualScreenBounds() : GetWorkAreaRect(true);
 
-                case RectSourceMode.Custom:
-                    return GetCustomUserRect();
-
-                case RectSourceMode.Display1:
-                    return GetMonitorRect(0);
-                case RectSourceMode.Display2:
-                    return GetMonitorRect(1);
-                case RectSourceMode.Display3:
-                    return GetMonitorRect(2);
-                case RectSourceMode.Display4:
-                    return GetMonitorRect(3);
-                case RectSourceMode.Display5:
-                    return GetMonitorRect(4);
-                case RectSourceMode.Display6:
-                    return GetMonitorRect(5);
-                case RectSourceMode.Display7:
-                    return GetMonitorRect(6);
-                case RectSourceMode.Display8:
-                    return GetMonitorRect(7);
+                case RectSourceMode.Custom: return GetCustomUserRect();
+                case RectSourceMode.Display1: return GetMonitorRect(0);
+                case RectSourceMode.Display2: return GetMonitorRect(1);
+                case RectSourceMode.Display3: return GetMonitorRect(2);
+                case RectSourceMode.Display4: return GetMonitorRect(3);
+                case RectSourceMode.Display5: return GetMonitorRect(4);
+                case RectSourceMode.Display6: return GetMonitorRect(5);
+                case RectSourceMode.Display7: return GetMonitorRect(6);
+                case RectSourceMode.Display8: return GetMonitorRect(7);
 
                 default:
                     Logger.Warning("Invalid fullscreen mode, please fix this by changing the placement source mode in preferences.");
@@ -165,8 +150,7 @@ namespace FullscreenEditor
         /// <summary>Full virtual screen bounds, spanning across all monitors. (Windows only)</summary>
         public static Rect GetVirtualScreenBounds()
         {
-            if (!FullscreenUtility.IsWindows)
-                throw new NotImplementedException();
+            if (!FullscreenUtility.IsWindows) throw new NotImplementedException();
 
             const int SM_XVIRTUALSCREEN = 76;
             const int SM_YVIRTUALSCREEN = 77;

@@ -28,8 +28,7 @@ namespace FullscreenEditor.Linux
 
         private static string Run(string format, params object[] args)
         {
-            if (!FullscreenUtility.IsLinux)
-                throw new PlatformNotSupportedException("wmctrl is only available on Linux based platforms");
+            if (!FullscreenUtility.IsLinux) throw new PlatformNotSupportedException("wmctrl is only available on Linux based platforms");
 
             if (FullscreenPreferences.DoNotUseWmctrl.Value)
             {
@@ -46,8 +45,7 @@ namespace FullscreenEditor.Linux
         /// <param name="window">The window to changed. If null the active window will be fullscreened.</param>
         public static void SetNativeFullscreen(bool fullscreen, EditorWindow window)
         {
-            if (window)
-                window.Focus();
+            if (window) window.Focus();
 
             Run("-r ':ACTIVE:' -b {0},fullscreen", fullscreen ? "add" : "remove");
         }
@@ -57,8 +55,7 @@ namespace FullscreenEditor.Linux
         /// <param name="view">The view to changed. If null the active view will be fullscreened.</param>
         public static void SetNativeFullscreen(bool fullscreen, ScriptableObject view)
         {
-            if (view)
-                FullscreenUtility.FocusView(view);
+            if (view) FullscreenUtility.FocusView(view);
 
             Run("-r ':ACTIVE:' -b {0},fullscreen", fullscreen ? "add" : "remove");
         }
@@ -67,8 +64,7 @@ namespace FullscreenEditor.Linux
         /// <param name="window">The window to be toggled fullscreen.</param>
         public static void ToggleNativeFullscreen(EditorWindow window)
         {
-            if (window)
-                window.Focus();
+            if (window) window.Focus();
 
             Run("-r ':ACTIVE:' -b toggle,fullscreen");
         }
@@ -77,8 +73,7 @@ namespace FullscreenEditor.Linux
         /// <param name="view">The view to be toggled fullscreen.</param>
         public static void ToggleNativeFullscreen(ScriptableObject view)
         {
-            if (view)
-                FullscreenUtility.FocusView(view);
+            if (view) FullscreenUtility.FocusView(view);
 
             Run("-r ':ACTIVE:' -b toggle,fullscreen");
         }

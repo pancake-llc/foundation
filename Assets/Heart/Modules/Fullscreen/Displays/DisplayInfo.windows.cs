@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace FullscreenEditor
 {
-    [System.Serializable]
+    [Serializable]
     public class DisplayInfo
     {
         public bool PrimaryDisplay;
@@ -34,7 +34,7 @@ namespace FullscreenEditor
         {
             get
             {
-                var firstDisplayInfo = DisplayInfo.GetDisplay(0);
+                var firstDisplayInfo = GetDisplay(0);
                 var monitorArea = MonitorArea;
 
                 var origin = monitorArea.min;

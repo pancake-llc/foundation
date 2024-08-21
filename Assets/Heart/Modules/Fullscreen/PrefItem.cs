@@ -27,7 +27,7 @@ namespace FullscreenEditor
         /// <summary>The value saved by this instance.</summary>
         public T Value
         {
-            get { return savedValue; }
+            get => savedValue;
             set
             {
                 if (!savedValue.Equals(value))

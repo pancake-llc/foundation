@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FullscreenEditor.Windows
 {
-    [System.Serializable]
+    [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     internal struct NativeRect
     {
@@ -36,12 +36,12 @@ namespace FullscreenEditor.Windows
 
         public void Init()
         {
-            this.size = 40 + 1 * CCHDEVICENAME;
-            this.DeviceName = string.Empty;
+            size = 40 + 1 * CCHDEVICENAME;
+            DeviceName = string.Empty;
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     internal struct DevMode
     {
@@ -102,7 +102,7 @@ namespace FullscreenEditor.Windows
         Disconnect = 0x2000000
     }
 
-    [System.Serializable]
+    [Serializable]
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     internal struct DisplayDevice
     {

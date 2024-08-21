@@ -36,12 +36,9 @@ namespace FullscreenEditor
         {
             get
             {
-                if (m_containerForcefullyClosed)
-                    return null;
-                if (!m_fullscreenContainer)
-                    m_fullscreenContainer = FullscreenUtility.GetRef<FullscreenContainer>(name);
-                if (!m_fullscreenContainer)
-                    m_containerForcefullyClosed = true;
+                if (m_containerForcefullyClosed) return null;
+                if (!m_fullscreenContainer) m_fullscreenContainer = FullscreenUtility.GetRef<FullscreenContainer>(name);
+                if (!m_fullscreenContainer) m_containerForcefullyClosed = true;
 
                 return m_fullscreenContainer;
             }
@@ -137,11 +134,9 @@ namespace FullscreenEditor
 
                     if (FullscreenContainer && FullscreenContainer.ActualViewPyramid.Container)
                     {
-                        if (GUILayout.Button("Restore View", Styles.buttonStyle))
-                            FullscreenContainer.Close();
+                        if (GUILayout.Button("Restore View", Styles.buttonStyle)) FullscreenContainer.Close();
                     }
-                    else if (GUILayout.Button("Close Placeholder", Styles.buttonStyle))
-                        Close();
+                    else if (GUILayout.Button("Close Placeholder", Styles.buttonStyle)) Close();
 
                     GUILayout.FlexibleSpace();
                 }

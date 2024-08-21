@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Pancake.Common;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace FullscreenEditor
         private static readonly GUIContent resetSettingsContent = new("Use Defaults", "Reset all settings to default ones");
         private static readonly GUIContent versionContent = new(string.Format("Version: {0} ({1:d})", pluginVersion, pluginDate));
 
-        private static readonly string[] mosaicDropDownOptions = new[]
+        private static readonly string[] mosaicDropDownOptions =
         {
             "nothing", "virtual display 1", "virtual display 2", "virtual display 3", "virtual display 4", "virtual display 5", "virtual display 6",
             "virtual display 7", "virtual display 8",
@@ -226,10 +227,8 @@ namespace FullscreenEditor
 
                     var customRect = CustomRect.Value;
 
-                    if (customRect.width < 300f)
-                        customRect.width = 300f;
-                    if (customRect.height < 300f)
-                        customRect.height = 300f;
+                    if (customRect.width < 300f) customRect.width = 300f;
+                    if (customRect.height < 300f) customRect.height = 300f;
 
                     CustomRect.Value = customRect;
 
@@ -240,20 +239,19 @@ namespace FullscreenEditor
             DisableNotifications.DoGUI();
             KeepFullscreenBelow.DoGUI();
 
-            if (Patcher.IsSupported())
-                DisableSceneViewRendering.DoGUI();
+            if (Patcher.IsSupported()) DisableSceneViewRendering.DoGUI();
 
             UseGlobalToolbarHiding.DoGUI();
             RestoreCursorLockAndHideState.DoGUI();
 
             if (FullscreenUtility.IsLinux)
             {
-                using (new EditorGUI.DisabledGroupScope(!FullscreenEditor.Linux.wmctrl.IsInstalled))
+                using (new EditorGUI.DisabledGroupScope(!Linux.wmctrl.IsInstalled))
                 {
                     DoNotUseWmctrl.DoGUI();
                 }
 
-                if (!FullscreenEditor.Linux.wmctrl.IsInstalled)
+                if (!Linux.wmctrl.IsInstalled)
                 {
                     EditorGUILayout.HelpBox("'wmctrl' not found. Try installing it with 'sudo apt-get install wmctrl'.", MessageType.Warning);
                 }
@@ -284,8 +282,7 @@ namespace FullscreenEditor
                     mosaicMapping[i] = val;
                 }
 
-                if (GUI.changed)
-                    MosaicMapping.SaveValue();
+                if (GUI.changed) MosaicMapping.SaveValue();
                 EditorGUI.indentLevel--;
             }
         }
@@ -294,21 +291,21 @@ namespace FullscreenEditor
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button(resetSettingsContent, GUILayout.Width(120f)))
-                    onLoadDefaults();
+                if (GUILayout.Button(resetSettingsContent, GUILayout.Width(120f))) onLoadDefaults();
 
                 using (new EditorGUI.DisabledGroupScope(EditorApplication.isCompiling))
                 {
                     GUI.changed = false;
-                    var enable = GUILayout.Toggle(Integration.IsDirectiveDefined("FULLSCREEN_DEBUG"), "Debug", "Button");
+
+                    bool enable = GUILayout.Toggle(ScriptingDefinition.IsSymbolDefined("FULLSCREEN_DEBUG"), "Debug", "Button");
                     if (GUI.changed)
                     {
-                        Integration.SetDirectiveDefined("FULLSCREEN_DEBUG", enable);
+                        if (enable) ScriptingDefinition.AddDefineSymbolOnAllPlatforms("FULLSCREEN_DEBUG");
+                        else ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("FULLSCREEN_DEBUG");
                     }
                 }
 
-                if (GUILayout.Button("Copy debug data", GUILayout.Width(120f)))
-                    CopyDisplayDebugInfo();
+                if (GUILayout.Button("Copy debug data", GUILayout.Width(120f))) CopyDisplayDebugInfo();
 
                 GUILayout.FlexibleSpace();
                 EditorGUILayout.LabelField(versionContent, GUILayout.Width(170f));

@@ -12,8 +12,7 @@ namespace FullscreenEditor
             {
                 var window = fs.ActualViewPyramid.Window;
 
-                if (window && window.HasProperty("lowResolutionForAspectRatios"))
-                    window.SetPropertyValue("lowResolutionForAspectRatios", false);
+                if (window && window.HasProperty("lowResolutionForAspectRatios")) window.SetPropertyValue("lowResolutionForAspectRatios", false);
             };
         }
     }

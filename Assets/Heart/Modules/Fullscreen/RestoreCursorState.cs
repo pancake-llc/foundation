@@ -12,7 +12,7 @@ namespace FullscreenEditor
             var cursorVisible = Cursor.visible;
 
             // this is where the magic happens
-            Action<FullscreenContainer> magic = (fs) =>
+            Action<FullscreenContainer> magic = fs =>
             {
                 if (!FullscreenPreferences.RestoreCursorLockAndHideState) return;
 
@@ -34,7 +34,7 @@ namespace FullscreenEditor
                     });
             };
 
-            Action<FullscreenContainer> storeCursorVisible = (fs) => { cursorVisible = Cursor.visible; };
+            Action<FullscreenContainer> storeCursorVisible = (_) => { cursorVisible = Cursor.visible; };
 
             FullscreenCallbacks.afterFullscreenOpen += magic;
             FullscreenCallbacks.afterFullscreenClose += magic;

@@ -1,10 +1,8 @@
 using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
-[assembly: InternalsVisibleToAttribute("FullscreenTests")]
 
 namespace FullscreenEditor
 {
@@ -30,13 +28,11 @@ namespace FullscreenEditor
         /// <param name="ignoreUnknownState">Do not return fullscreen containers that don't have a valid ContainerWindow.</param>
         public static FullscreenContainer[] GetAllFullscreen(bool cached = true, bool ignoreUnknownState = true)
         {
-            if (cached && cachedFullscreen != null && cachedFullscreenAll != null)
-                return ignoreUnknownState ? cachedFullscreen : cachedFullscreenAll;
+            if (cached && cachedFullscreen != null && cachedFullscreenAll != null) return ignoreUnknownState ? cachedFullscreen : cachedFullscreenAll;
 
             cachedFullscreenAll = Resources.FindObjectsOfTypeAll<FullscreenContainer>();
 
-            if (!ignoreUnknownState)
-                return cachedFullscreenAll;
+            if (!ignoreUnknownState) return cachedFullscreenAll;
 
             cachedFullscreen = cachedFullscreenAll.Where(fs => fs.m_dst.Container != null).ToArray();
 
@@ -53,12 +49,11 @@ namespace FullscreenEditor
         /// <param name="rootView">Compare by the root view, otherwise compare by the container.</param>
         public static FullscreenContainer GetFullscreenFromView(ScriptableObject viewOrWindow, bool rootView = true)
         {
-            if (!viewOrWindow)
-                return null;
+            if (!viewOrWindow) return null;
 
             var pyramid = new ViewPyramid(viewOrWindow);
 
-            return Fullscreen.GetAllFullscreen()
+            return GetAllFullscreen()
                 .FirstOrDefault(fullscreen => rootView ? fullscreen.ActualViewPyramid.View == pyramid.View : fullscreen.ActualViewPyramid.Container == pyramid.Container);
         }
 
@@ -88,8 +83,7 @@ namespace FullscreenEditor
         /// <returns>Returns the newly created <see cref="FullscreenView"/>.</returns>
         public static FullscreenView MakeFullscreen(ScriptableObject view)
         {
-            if (!view)
-                throw new ArgumentNullException("view");
+            if (!view) throw new ArgumentNullException("view");
 
             view.EnsureOfType(Types.View);
 
@@ -126,8 +120,7 @@ namespace FullscreenEditor
 
             newFullscreen.didPresent += () =>
             {
-                if (oldFullscreen)
-                    oldFullscreen.Close();
+                if (oldFullscreen) oldFullscreen.Close();
             };
         }
 
@@ -150,8 +143,7 @@ namespace FullscreenEditor
 
             newFullscreen.didPresent += () =>
             {
-                if (oldFullscreen)
-                    oldFullscreen.Close();
+                if (oldFullscreen) oldFullscreen.Close();
             };
         }
     }
