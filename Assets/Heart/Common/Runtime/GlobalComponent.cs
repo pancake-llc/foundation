@@ -80,7 +80,7 @@ namespace Pancake.Common
 
         #region coroutine
 
-        private readonly Dictionary<int, UnityEngine.Coroutine> _runningCoroutines = new();
+        private readonly Dictionary<int, Coroutine> _runningCoroutines = new();
         private int _currentRoutineId;
         internal bool ThrowException { get; set; } = true;
 

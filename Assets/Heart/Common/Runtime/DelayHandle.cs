@@ -16,13 +16,13 @@ namespace Pancake.Common
         public bool IsLooped { get; set; }
 
         /// <summary>
-        /// Whether or not the timer completed running. This is false if the timer was cancelled.
+        /// Whether the timer completed running. This is false if the timer was cancelled.
         /// </summary>
         public bool IsCompleted { get; private set; }
 
         /// <summary>
         /// Whether the timer uses real-time or game-time. Real time is unaffected by changes to the timescale
-        /// of the game(e.g. pausing, slow-mo), while game time is affected.
+        /// of the game(e.g. pausing, slow motion), while game time is affected.
         /// </summary>
         public bool UsesRealTime { get; private set; }
 
@@ -32,12 +32,12 @@ namespace Pancake.Common
         public bool IsPaused => _timeElapsedBeforePause.HasValue;
 
         /// <summary>
-        /// Whether or not the timer was cancelled.
+        /// Whether the timer was cancelled.
         /// </summary>
         public bool IsCancelled => _timeElapsedBeforeCancel.HasValue;
 
         /// <summary>
-        /// Get whether or not the timer has finished running for any reason.
+        /// Get whether the timer has finished running for any reason.
         /// </summary>
         public bool IsDone => IsCompleted || IsCancelled || IsOwnerDestroyed;
 
