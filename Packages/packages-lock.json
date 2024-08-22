@@ -172,11 +172,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.serialization": {
-      "version": "3.1.1",
+      "version": "3.1.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.collections": "2.1.4",
+        "com.unity.collections": "2.4.2",
         "com.unity.burst": "1.7.2"
       },
       "url": "https://packages.unity.com"
