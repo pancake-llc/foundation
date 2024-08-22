@@ -128,8 +128,8 @@ namespace Pancake.Common
         /// <param name="onUpdate">A function to call each tick of the DelayHandle. Takes the number of seconds elapsed since
         /// the start of the current cycle.</param>
         /// <param name="isLooped">Whether the DelayHandle should restart after executing.</param>
-        /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow-mo or pausing) or
-        /// game-time(affected by time scale changes).</param>
+        /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow motion or pausing) or
+        /// game-time(affected by timescale changes).</param>
         /// <returns></returns>
         public static DelayHandle Delay(float duration, Action onComplete, Action<float> onUpdate = null, bool isLooped = false, bool useRealTime = false)
         {
@@ -145,15 +145,15 @@ namespace Pancake.Common
 
 
         /// <summary>
-        /// Safe Delay call when it had target, progress delay will be cancel when target was destroyed
+        /// Safe Delay call when it had target, progress delay will be canceled when target was destroyed
         /// </summary>
         /// <param name="duration">The duration to wait before the DelayHandle fires.</param>
         /// <param name="onComplete">The action to run when the DelayHandle elapses.</param>
         /// <param name="onUpdate">A function to call each tick of the DelayHandle. Takes the number of seconds elapsed since
         /// the start of the current cycle.</param>
         /// <param name="isLooped">Whether the DelayHandle should restart after executing.</param>
-        /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow-mo or pausing) or
-        /// game-time(affected by time scale changes).</param>
+        /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow motion or pausing) or
+        /// game-time(affected by timescale changes).</param>
         /// <param name="target">The target (behaviour) to attach this DelayHandle to.</param>
         public static DelayHandle Delay(
             MonoBehaviour target,
