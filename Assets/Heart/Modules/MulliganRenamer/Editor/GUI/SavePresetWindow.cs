@@ -44,10 +44,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Set the value for the name to edit.
         /// </summary>
         /// <param name="name">Name to edit</param>
-        public void SetName(string name)
-        {
-            this.enteredName = name;
-        }
+        public void SetName(string name) { this.enteredName = name; }
 
         /// <summary>
         /// Set the existing presets to check against
@@ -59,10 +56,7 @@ namespace RedBlueGames.MulliganRenamer
             this.existingPresetNames.AddRange(existingPresetNames);
         }
 
-        private static bool IsNameValid(string name)
-        {
-            return !string.IsNullOrEmpty(name);
-        }
+        private static bool IsNameValid(string name) { return !string.IsNullOrEmpty(name); }
 
         private void OnEnable()
         {
@@ -79,8 +73,7 @@ namespace RedBlueGames.MulliganRenamer
 
             // Detect the enter key. Note this must come before the Text Field is shown.
             Event currentEvent = Event.current;
-            bool hitEnter = currentEvent.type == EventType.KeyDown &&
-                (currentEvent.keyCode == KeyCode.Return || currentEvent.keyCode == KeyCode.KeypadEnter);
+            bool hitEnter = currentEvent.type == EventType.KeyDown && (currentEvent.keyCode == KeyCode.Return || currentEvent.keyCode == KeyCode.KeypadEnter);
 
             var presetFieldName = "SavePresetField";
             GUI.SetNextControlName(presetFieldName);
@@ -98,15 +91,12 @@ namespace RedBlueGames.MulliganRenamer
                 var saveAndClose = false;
                 if (this.existingPresetNames.Contains(this.enteredName))
                 {
-                    var popupMessage = string.Format(
-                        LocalizationManager.Instance.GetTranslation("errorPresetNameAlreadyExists"),
-                        this.enteredName
-                    );
+                    var popupMessage = string.Format(LocalizationManager.Instance.GetTranslation("errorPresetNameAlreadyExists"), this.enteredName);
 
                     saveAndClose = EditorUtility.DisplayDialog(LocalizationManager.Instance.GetTranslation("warning"),
-                                                                popupMessage,
-                                                                LocalizationManager.Instance.GetTranslation("replace"),
-                                                                LocalizationManager.Instance.GetTranslation("no"));
+                        popupMessage,
+                        LocalizationManager.Instance.GetTranslation("replace"),
+                        LocalizationManager.Instance.GetTranslation("no"));
                 }
                 else
                 {

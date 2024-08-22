@@ -2,19 +2,18 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Pancake.Apex;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pancake.Localization
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleTextCompositeComponent : LocaleComponentGenericBase
     {
         [SerializeField] private string seperate = ", ";
-        [SerializeField, Array] private LocaleText[] variables;
-        [SerializeField, Array] private string[] formatArgs = Array.Empty<string>();
+        [SerializeField] private LocaleText[] variables;
+        [SerializeField] private string[] formatArgs = Array.Empty<string>();
 
         public string[] FormatArgs
         {

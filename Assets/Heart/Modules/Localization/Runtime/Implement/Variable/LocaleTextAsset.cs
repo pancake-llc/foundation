@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.Localization
 {
     [CreateAssetMenu(menuName = "Pancake/Localization/TextAsset", fileName = "textasset_localizevalue", order = 5)]
-    [EditorIcon("scriptable_yellow_textasset")]
+    [EditorIcon("so_yellow_textasset")]
     public class LocaleTextAsset : LocaleVariable<TextAsset>
     {
         [Serializable]
@@ -14,7 +14,7 @@ namespace Pancake.Localization
         };
 
         [SerializeField] private TextAssetLocaleItem[] items = new TextAssetLocaleItem[1];
-        
+
         // ReSharper disable once CoVariantArrayConversion
         public override LocaleItemBase[] LocaleItems => items;
     }

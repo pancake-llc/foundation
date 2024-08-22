@@ -39,15 +39,9 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Initializes a new instance of the <see cref="RedBlueGames.MulliganRenamer.BulkRenamer"/> class.
         /// </summary>
-        public BulkRenamer()
-        {
-            this.Initialize();
-        }
+        public BulkRenamer() { this.Initialize(); }
 
-        ~BulkRenamer()
-        {
-            AssetPostprocessorEvents.AssetsReimported.RemoveListener(this.HandleAssetsReimported);
-        }
+        ~BulkRenamer() { AssetPostprocessorEvents.AssetsReimported.RemoveListener(this.HandleAssetsReimported); }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedBlueGames.MulliganRenamer.BulkRenamer"/> class.
@@ -81,7 +75,7 @@ namespace RedBlueGames.MulliganRenamer
                 var gameObjectsToRenameAsGameObjects = new List<GameObject>();
                 foreach (var gameObjectToRename in gameObjectsToRename)
                 {
-                    gameObjectsToRenameAsGameObjects.Add((GameObject)gameObjectToRename.NamedObject);
+                    gameObjectsToRenameAsGameObjects.Add((GameObject) gameObjectToRename.NamedObject);
                 }
 
                 Undo.RecordObjects(gameObjectsToRenameAsGameObjects.ToArray(), LocalizationManager.Instance.GetTranslation("bulkRename"));
@@ -116,7 +110,7 @@ namespace RedBlueGames.MulliganRenamer
             foreach (var gameObjectToRename in gameObjectsToRename)
             {
                 UpdateProgressBar(progressBarStep++, totalNumSteps);
-                RenameGameObject((GameObject)gameObjectToRename.NamedObject, gameObjectToRename.NewName);
+                RenameGameObject((GameObject) gameObjectToRename.NamedObject, gameObjectToRename.NewName);
             }
 
             foreach (var deferredRename in deferredRenames)
@@ -138,7 +132,7 @@ namespace RedBlueGames.MulliganRenamer
             foreach (var spriteToRename in spritesToRename)
             {
                 UpdateProgressBar(progressBarStep++, totalNumSteps);
-                MarkSpriteForRename((Sprite)spriteToRename.NamedObject, spriteToRename.NewName, ref spritesheetRenamers);
+                MarkSpriteForRename((Sprite) spriteToRename.NamedObject, spriteToRename.NewName, ref spritesheetRenamers);
             }
 
             // Rename the sprites in the spritesheets.
@@ -157,10 +151,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Sets the rename operations to use when renaming objects.
         /// </summary>
         /// <param name="renameOperationSequence">Rename operation sequence.</param>
-        public void SetRenameOperations(RenameOperationSequence<IRenameOperation> renameOperationSequence)
-        {
-            this.operationSequence = renameOperationSequence;
-        }
+        public void SetRenameOperations(RenameOperationSequence<IRenameOperation> renameOperationSequence) { this.operationSequence = renameOperationSequence; }
 
         /// <summary>
         /// Renames the specified Objects according to a supplied RenameOperationSequence.
@@ -208,9 +199,7 @@ namespace RedBlueGames.MulliganRenamer
             var previews = new RenamePreview[objectsToRename.Count];
             for (int i = 0; i < objectsToRename.Count; ++i)
             {
-                var singlePreview = new RenamePreview(
-                                        objectsToRename[i],
-                                        this.operationSequence.GetRenamePreview(objectsToRename[i].name, i));
+                var singlePreview = new RenamePreview(objectsToRename[i], this.operationSequence.GetRenamePreview(objectsToRename[i].name, i));
                 previews[i] = singlePreview;
             }
 
@@ -236,16 +225,13 @@ namespace RedBlueGames.MulliganRenamer
             assetCache.LoadAssetsInAssetDirectory(assetDirectory);
         }
 
-        private static bool RenamedAssetWillShareNameWithAnotherAsset(
-            ObjectNameDelta assetToRename,
-            List<ObjectNameDelta> otherRenames)
+        private static bool RenamedAssetWillShareNameWithAnotherAsset(ObjectNameDelta assetToRename, List<ObjectNameDelta> otherRenames)
         {
             var originalAssetPath = AssetDatabase.GetAssetPath(assetToRename.NamedObject);
-            var futurePathToAsset = string.Concat(
-                                        System.IO.Path.GetDirectoryName(originalAssetPath),
-                                        System.IO.Path.DirectorySeparatorChar,
-                                        assetToRename.NewName,
-                                        System.IO.Path.GetExtension(originalAssetPath));
+            var futurePathToAsset = string.Concat(System.IO.Path.GetDirectoryName(originalAssetPath),
+                System.IO.Path.DirectorySeparatorChar,
+                assetToRename.NewName,
+                System.IO.Path.GetExtension(originalAssetPath));
 
             foreach (var otherRename in otherRenames)
             {
@@ -269,7 +255,7 @@ namespace RedBlueGames.MulliganRenamer
         private static void UpdateProgressBar(int currentStep, int totalNumSteps)
         {
             var infoString = string.Format(LocalizationManager.Instance.GetTranslation("renamingObjectXofY"), currentStep++, totalNumSteps);
-            EditorUtility.DisplayProgressBar(LocalizationManager.Instance.GetTranslation("renaming")+ "...", infoString, currentStep / (float)totalNumSteps);
+            EditorUtility.DisplayProgressBar(LocalizationManager.Instance.GetTranslation("renaming") + "...", infoString, currentStep / (float) totalNumSteps);
         }
 
         private static void SplitObjectsIntoCategories(
@@ -318,10 +304,7 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        private static void RenameGameObject(GameObject gameObject, string newName)
-        {
-            gameObject.name = newName;
-        }
+        private static void RenameGameObject(GameObject gameObject, string newName) { gameObject.name = newName; }
 
         private static void RenameAsset(UnityEngine.Object asset, string newName)
         {
@@ -330,11 +313,7 @@ namespace RedBlueGames.MulliganRenamer
 
             if (asset.name != newName)
             {
-                var message = string.Format(
-                                  LocalizationManager.Instance.GetTranslation("errorAssetNotBulkRenamed"),
-                                  asset.name,
-                                  pathToAsset,
-                                  newName);
+                var message = string.Format(LocalizationManager.Instance.GetTranslation("errorAssetNotBulkRenamed"), asset.name, pathToAsset, newName);
                 throw new System.OperationCanceledException(message);
             }
         }
@@ -345,9 +324,6 @@ namespace RedBlueGames.MulliganRenamer
             AssetPostprocessorEvents.AssetsReimported.AddListener(this.HandleAssetsReimported);
         }
 
-        private void HandleAssetsReimported()
-        {
-            this.assetCache.Clear();
-        }
+        private void HandleAssetsReimported() { this.assetCache.Clear(); }
     }
 }

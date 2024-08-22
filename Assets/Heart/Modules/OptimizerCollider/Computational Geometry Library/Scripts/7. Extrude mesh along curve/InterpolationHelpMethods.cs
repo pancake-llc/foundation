@@ -21,7 +21,7 @@ namespace Pancake.ComputationalGeometry
 
             //Loop between 0 and tStop in steps. If tStop is 1 we loop through the entire curve
             //1 step is minimum, so if steps is 5 then the line will be cut in 5 sections
-            float stepSize = tEnd / (float)steps;
+            float stepSize = tEnd / (float) steps;
 
             float t = 0f;
 
@@ -39,8 +39,7 @@ namespace Pancake.ComputationalGeometry
 
             return interpolatedPositions;
         }
-    
-    
+
 
         //
         // Calculate length of curve
@@ -68,19 +67,18 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Get the length by using Simpson's Rule (not related to the television show)
         //https://www.youtube.com/watch?v=J_a4PXI_nLY
         //The basic idea is that we cut the curve into sections and each section is approximated by a polynom 
         public static float GetLength_SimpsonsRule(_Curve curve, float tStart, float tEnd)
         {
             //Divide the curve into sections
-            
+
             //How many sections?
             int n = 10;
 
             //The width of each section
-            float delta = (tEnd - tStart) / (float)n;
+            float delta = (tEnd - tStart) / (float) n;
 
 
             //The main loop to calculate the length
@@ -118,7 +116,6 @@ namespace Pancake.ComputationalGeometry
 
             return length;
         }
-    
 
 
         //
@@ -143,7 +140,7 @@ namespace Pancake.ComputationalGeometry
             //If this start value is not working you can use the Bisection Method to find a start value
             //https://en.wikipedia.org/wiki/Bisection_method
             float tGood = d / totalLength;
-            
+
             //Need an error so we know when to stop the iteration
             float error = 0.001f;
 
@@ -195,10 +192,8 @@ namespace Pancake.ComputationalGeometry
             }
 
 
-            
             return tGood;
         }
-
 
 
         //Alternative 2
@@ -219,7 +214,6 @@ namespace Pancake.ComputationalGeometry
             {
                 throw new System.Exception("Cant interpolate to split bezier into equal steps");
             }
-
 
 
             //Step 2. Iterate through the table, to find at what index we reach the desired distance
@@ -252,9 +246,9 @@ namespace Pancake.ComputationalGeometry
 
             //Step 3. Interpolate to get the t-value
             //Each distance also has a t-value we used to generate that distance
-            
+
             //Each t in the list is increasing each step by: 
-            float stepSize = 1f / (float)(accumulatedDistances.Count - 1);
+            float stepSize = 1f / (float) (accumulatedDistances.Count - 1);
 
             //With this step size we can calculate the t-value of the index
             float tValueL = indexLeft * stepSize;
@@ -267,10 +261,8 @@ namespace Pancake.ComputationalGeometry
             float tGood = _Interpolation.Lerp(tValueL, tValueR, percentage);
 
 
-
             return tGood;
         }
-
 
 
         //
@@ -297,7 +289,7 @@ namespace Pancake.ComputationalGeometry
             if (accumulatedDistances == null || accumulatedDistances.Count == 0)
             {
                 Debug.Log("Cant interpolate to find exact percentage along curve");
-                
+
                 return 0f;
             }
 
@@ -311,8 +303,8 @@ namespace Pancake.ComputationalGeometry
             //Convert the t-value to an array position
             //t-value can be seen as percentage, so we get percentage along the list of values
             //If we have 5 values in the list, we have 4 buckets, so if t is 0.65, we get 0.65*4 = 2.6
-            float arrayPosBetween = tBad * (float)(accumulatedDistances.Count - 1);
-            
+            float arrayPosBetween = tBad * (float) (accumulatedDistances.Count - 1);
+
             //Round up and down to get the actual array positions
             int arrayPosL = Mathf.FloorToInt(arrayPosBetween); //2 if we follow the example above 
             int arrayPosR = Mathf.FloorToInt(arrayPosBetween + 1f); //2.6 + 1 = 3.6 -> 3 
@@ -341,11 +333,9 @@ namespace Pancake.ComputationalGeometry
 
             //Debug.Log("t-bad: " + tBad + " t-actual: " + tActual);
 
-            
 
             return tActual;
         }
-
 
 
         //
@@ -375,7 +365,6 @@ namespace Pancake.ComputationalGeometry
 
             return accumulatedDistances;
         }
-
 
 
         //

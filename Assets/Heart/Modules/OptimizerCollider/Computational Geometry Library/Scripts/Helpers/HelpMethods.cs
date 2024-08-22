@@ -33,6 +33,6 @@ namespace Pancake.ComputationalGeometry
             triangles = new HashSet<Triangle2>(trianglesList);
 
             return triangles;
-        }       
+        }
     }
 }

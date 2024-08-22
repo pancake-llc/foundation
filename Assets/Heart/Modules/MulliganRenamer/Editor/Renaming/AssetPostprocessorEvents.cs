@@ -35,9 +35,6 @@ namespace RedBlueGames.MulliganRenamer
         /// </summary>
         public static UnityEngine.Events.UnityEvent AssetsReimported;
 
-        static AssetPostprocessorEvents()
-        {
-            AssetsReimported = new UnityEngine.Events.UnityEvent();
-        }
+        static AssetPostprocessorEvents() { AssetsReimported = new UnityEngine.Events.UnityEvent(); }
     }
 }

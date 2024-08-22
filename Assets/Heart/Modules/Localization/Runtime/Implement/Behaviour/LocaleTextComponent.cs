@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
-using Pancake.Apex;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pancake.Localization
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleTextComponent : LocaleComponentGeneric<LocaleText, string>
     {
-        [SerializeField, Array] private string[] formatArgs = Array.Empty<string>();
+        [SerializeField] private string[] formatArgs = Array.Empty<string>();
 
         public string[] FormatArgs
         {

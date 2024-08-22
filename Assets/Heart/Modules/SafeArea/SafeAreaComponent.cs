@@ -1,11 +1,10 @@
 using System;
-using Pancake.Apex;
+using Pancake.Common;
 using UnityEngine;
 
 namespace Pancake.SafeArea
 {
-    [EditorIcon("scriptable_area")]
-    [HideMonoScript]
+    [EditorIcon("so_blue_area")]
     public sealed class SafeAreaComponent : SafeAreaBase
     {
         [Flags]

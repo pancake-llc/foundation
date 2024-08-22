@@ -51,19 +51,13 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Constructs a pending asynchronous operation.
         /// </summary>
-        public AsyncOp()
-        {
-            this.Status = AsyncStatus.Pending;
-        }
+        public AsyncOp() { this.Status = AsyncStatus.Pending; }
 
         /// <summary>
         /// Constructs the asynchronous operations. Status can be set directly if the
         /// operation is synchronous on a certain platform.
         /// </summary>
-        public AsyncOp(AsyncStatus status)
-        {
-            this.Status = status;
-        }
+        public AsyncOp(AsyncStatus status) { this.Status = status; }
 
         /// <summary>
         /// The current status of the operation.
@@ -76,15 +70,9 @@ namespace RedBlueGames.MulliganRenamer
                 return (++this.pendingDelayCounter < 250) ? AsyncStatus.Pending : this.status;
             }
 #else
-            get
-            {
-                return this.status;
-            }
+            get { return this.status; }
 #endif
-            set
-            {
-                this.status = value;
-            }
+            set { this.status = value; }
         }
 
         public string FailureCode { get; set; }
@@ -117,9 +105,15 @@ namespace RedBlueGames.MulliganRenamer
     /// <typeparam name="T">The type of result information to provide.</typeparam>
     public class AsyncOp<T> : AsyncOp
     {
-        public AsyncOp() : base() { }
+        public AsyncOp()
+            : base()
+        {
+        }
 
-        public AsyncOp(AsyncStatus status) : base(status) { }
+        public AsyncOp(AsyncStatus status)
+            : base(status)
+        {
+        }
 
         public T ResultData { get; set; }
     }

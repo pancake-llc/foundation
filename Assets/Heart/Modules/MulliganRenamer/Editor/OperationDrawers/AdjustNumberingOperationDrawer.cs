@@ -34,57 +34,33 @@ namespace RedBlueGames.MulliganRenamer
         /// <value>The display path.</value>
         public override string MenuDisplayPath
         {
-            get
-            {
-                return LocalizationManager.Instance.GetTranslation("modify") + "/" + LocalizationManager.Instance.GetTranslation("adjustNumbers");
-            }
+            get { return LocalizationManager.Instance.GetTranslation("modify") + "/" + LocalizationManager.Instance.GetTranslation("adjustNumbers"); }
         }
 
         /// <summary>
         /// Gets the heading label for the Rename Operation.
         /// </summary>
         /// <value>The heading label.</value>
-        public override string HeadingLabel
-        {
-            get
-            {
-                return LocalizationManager.Instance.GetTranslation("adjustNumbers");
-            }
-        }
+        public override string HeadingLabel { get { return LocalizationManager.Instance.GetTranslation("adjustNumbers"); } }
 
         /// <summary>
         /// Gets the color to use for highlighting the operation.
         /// </summary>
         /// <value>The color of the highlight.</value>
-        public override Color32 HighlightColor
-        {
-            get
-            {
-                return this.ModifyColor;
-            }
-        }
+        public override Color32 HighlightColor { get { return this.ModifyColor; } }
 
         /// <summary>
         /// Gets the name of the control to focus when this operation is focused
         /// </summary>
         /// <value>The name of the control to focus.</value>
-        public override string ControlToFocus
-        {
-            get
-            {
-                return LocalizationManager.Instance.GetTranslation("offset");
-            }
-        }
+        public override string ControlToFocus { get { return LocalizationManager.Instance.GetTranslation("offset"); } }
 
         /// <summary>
         /// Gets the preferred height for the contents of the operation.
         /// This allows inherited operations to specify their height.
         /// </summary>
         /// <returns>The preferred height for contents.</returns>
-        protected override float GetPreferredHeightForContents()
-        {
-            return this.CalculateGUIHeightForLines(1);
-        }
+        protected override float GetPreferredHeightForContents() { return this.CalculateGUIHeightForLines(1); }
 
         /// <summary>
         /// Draws the contents of the Rename Op.
@@ -93,8 +69,7 @@ namespace RedBlueGames.MulliganRenamer
         protected override void DrawContents(Rect operationRect, int controlPrefix)
         {
             GUI.SetNextControlName(GUIControlNameUtility.CreatePrefixedName(controlPrefix, LocalizationManager.Instance.GetTranslation("offset")));
-            this.RenameOperation.Offset = EditorGUI.IntField(
-                operationRect.GetSplitVertical(1, 1, LineSpacing),
+            this.RenameOperation.Offset = EditorGUI.IntField(operationRect.GetSplitVertical(1, 1, LineSpacing),
                 LocalizationManager.Instance.GetTranslation("offset"),
                 this.RenameOperation.Offset);
         }

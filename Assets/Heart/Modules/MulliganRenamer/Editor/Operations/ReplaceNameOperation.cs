@@ -35,45 +35,24 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Initializes a new instance of the <see cref="ReplaceNameOperation"/> class.
         /// </summary>
-        public ReplaceNameOperation()
-        {
-            this.NewName = string.Empty;
-        }
+        public ReplaceNameOperation() { this.NewName = string.Empty; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReplaceNameOperation"/> class.
         /// This is a clone constructor, copying the values from one to another.
         /// </summary>
         /// <param name="operationToCopy">Operation to copy.</param>
-        public ReplaceNameOperation(ReplaceNameOperation operationToCopy)
-        {
-            this.NewName = operationToCopy.NewName;
-        }
+        public ReplaceNameOperation(ReplaceNameOperation operationToCopy) { this.NewName = operationToCopy.NewName; }
 
-        [SerializeField]
-        private string newName;
+        [SerializeField] private string newName;
 
         /// <summary>
         /// Gets or sets the new name.
         /// </summary>
         /// <value>The new name.</value>
-        public string NewName
-        {
-            get
-            {
-                return this.newName;
-            }
+        public string NewName { get { return this.newName; } set { this.newName = value; } }
 
-            set
-            {
-                this.newName = value;
-            }
-        }
-
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Clone this instance.
@@ -112,10 +91,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets the hash code for the operation
         /// </summary>
         /// <returns>A unique hash code from the values</returns>
-        public override int GetHashCode()
-        {
-            return this.NewName.GetHashCode();
-        }
+        public override int GetHashCode() { return this.NewName.GetHashCode(); }
 
         /// <summary>
         /// Returns whether or not this rename operation is equal to another and returns the result.

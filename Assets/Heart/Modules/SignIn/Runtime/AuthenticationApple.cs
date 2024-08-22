@@ -6,18 +6,13 @@ using AppleAuth.Native;
 using AppleAuth.Enums;
 using AppleAuth.Interfaces;
 #endif
-using Pancake.Scriptable;
 
-namespace Pancake.AppleSignIn
+namespace Pancake.SignIn
 {
     using UnityEngine;
 
     public class AuthenticationApple : MonoBehaviour
     {
-        [SerializeField] private StringVariable serverCode;
-        [SerializeField] private StringVariable userId;
-        [SerializeField] private BoolVariable status;
-        [SerializeField] private ScriptableEventNoParam loginEvent;
 #if UNITY_IOS && PANCAKE_APPLE_SIGNIN
         private IAppleAuthManager _appleAuthManager;
 #endif
@@ -25,16 +20,16 @@ namespace Pancake.AppleSignIn
 #if UNITY_IOS && PANCAKE_APPLE_SIGNIN
         private void Start()
         {
-            serverCode.Value = "";
+            SignInEvent.ServerCode = "";
             if (AppleAuthManager.IsCurrentPlatformSupported)
             {
                 var deserializer = new PayloadDeserializer();
                 _appleAuthManager = new AppleAuthManager(deserializer);
-                loginEvent.OnRaised += OnAppleLogin;
+                SignInEvent.LoginEvent += OnAppleLogin;
             }
         }
-
-        private async void OnAppleLogin() { (serverCode.Value, userId.Value, status.Value) = await LoginApple(); }
+        
+        private async void OnAppleLogin() { (SignInEvent.ServerCode, SignInEvent.UserId, SignInEvent.status) = await LoginApple(); }
 
         private void Update() { _appleAuthManager?.Update(); }
 

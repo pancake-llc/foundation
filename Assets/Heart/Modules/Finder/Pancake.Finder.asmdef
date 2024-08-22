@@ -1,0 +1,26 @@
+{
+    "name": "Pancake.Finder",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d8912e81233de99449df74c45fe416da",
+        "GUID:2bb2982fd552689428d4c3ae8bb26fb7",
+        "GUID:69448af7b92c7f342b298e06a37122aa"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.addressables",
+            "expression": "1.0.0",
+            "define": "PANCAKE_ADDRESSABLE"
+        }
+    ],
+    "noEngineReferences": false
+}

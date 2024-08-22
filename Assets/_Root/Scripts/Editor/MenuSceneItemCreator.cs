@@ -1,11 +1,10 @@
-#if UNITY_EDITOR
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-namespace PancakeEditor
+namespace PancakeEditor.Game
 {
-    public static class MenuSceneItemCreator
+    internal static class MenuSceneItemCreator
     {
         [MenuItem("Tools/Open Scene/Launcher #2", priority = 500), UsedImplicitly]
         private static void OpenLauncherScene()
@@ -32,4 +31,3 @@ namespace PancakeEditor
         }
     }
 }
-#endif

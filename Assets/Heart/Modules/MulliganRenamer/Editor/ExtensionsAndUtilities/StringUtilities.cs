@@ -50,9 +50,6 @@ namespace RedBlueGames.MulliganRenamer
         }
 
         const string HTML_TAG_PATTERN = "<.*?>";
-        public static string StripHTML(string inputString, string replaceWith = "")
-        {
-            return Regex.Replace(inputString, HTML_TAG_PATTERN, replaceWith);
-        }
+        public static string StripHTML(string inputString, string replaceWith = "") { return Regex.Replace(inputString, HTML_TAG_PATTERN, replaceWith); }
     }
 }

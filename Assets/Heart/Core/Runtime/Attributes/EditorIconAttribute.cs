@@ -8,7 +8,7 @@ namespace Pancake
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     [Conditional("UNITY_EDITOR")]
-    public class EditorIconAttribute : System.Attribute
+    public class EditorIconAttribute : Attribute
     {
         public string Name { get; set; }
 

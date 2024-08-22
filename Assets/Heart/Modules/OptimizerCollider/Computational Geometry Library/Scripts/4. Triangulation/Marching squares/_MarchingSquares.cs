@@ -42,7 +42,6 @@ namespace Pancake.ComputationalGeometry
             }
 
 
-
             //Create the data grid to make it easier to generate the mesh
             //Each square has 4 corners, which are either solid or empty, 
             //which is what the Marching Squares needs to generate a mesh at this square
@@ -82,12 +81,11 @@ namespace Pancake.ComputationalGeometry
 
             squareGrid.vertices = new List<MyVector2>(vertices);
 
-            squareGrid.contourEdges = new List<Edge2>(contourEdges); 
+            squareGrid.contourEdges = new List<Edge2>(contourEdges);
 
 
             return squareGrid;
         }
-
 
 
         //Triangulate a single square with Marching Squares
@@ -147,13 +145,23 @@ namespace Pancake.ComputationalGeometry
                     break;
                 case 5:
                     //BL and TR are active
-                    MeshFromPoints(s.R, s.B, s.BL, s.L, s.T, s.TR);
+                    MeshFromPoints(s.R,
+                        s.B,
+                        s.BL,
+                        s.L,
+                        s.T,
+                        s.TR);
 
                     contourEdges.Add(new Edge2(s.B.pos, s.R.pos));
                     contourEdges.Add(new Edge2(s.L.pos, s.T.pos));
                     break;
                 case 10:
-                    MeshFromPoints(s.R, s.BR, s.B, s.L, s.TL, s.T);
+                    MeshFromPoints(s.R,
+                        s.BR,
+                        s.B,
+                        s.L,
+                        s.TL,
+                        s.T);
 
                     contourEdges.Add(new Edge2(s.B.pos, s.L.pos));
                     contourEdges.Add(new Edge2(s.T.pos, s.R.pos));
@@ -161,22 +169,38 @@ namespace Pancake.ComputationalGeometry
 
                 //3 corners are active
                 case 7:
-                    MeshFromPoints(s.T, s.TR, s.BR, s.BL, s.L);
+                    MeshFromPoints(s.T,
+                        s.TR,
+                        s.BR,
+                        s.BL,
+                        s.L);
 
                     contourEdges.Add(new Edge2(s.T.pos, s.L.pos));
                     break;
                 case 11:
-                    MeshFromPoints(s.R, s.BR, s.BL, s.TL, s.T);
+                    MeshFromPoints(s.R,
+                        s.BR,
+                        s.BL,
+                        s.TL,
+                        s.T);
 
                     contourEdges.Add(new Edge2(s.R.pos, s.T.pos));
                     break;
                 case 13:
-                    MeshFromPoints(s.R, s.B, s.BL, s.TL, s.TR);
+                    MeshFromPoints(s.R,
+                        s.B,
+                        s.BL,
+                        s.TL,
+                        s.TR);
 
                     contourEdges.Add(new Edge2(s.B.pos, s.R.pos));
                     break;
                 case 14:
-                    MeshFromPoints(s.TR, s.BR, s.B, s.L, s.TL);
+                    MeshFromPoints(s.TR,
+                        s.BR,
+                        s.B,
+                        s.L,
+                        s.TL);
 
                     contourEdges.Add(new Edge2(s.B.pos, s.L.pos));
                     break;
@@ -188,7 +212,6 @@ namespace Pancake.ComputationalGeometry
                     break;
             }
         }
-
 
 
         //Triangulate unknown number of points
@@ -204,20 +227,22 @@ namespace Pancake.ComputationalGeometry
             {
                 CreateTriangle(points[0], points[1], points[2]);
             }
+
             if (points.Length >= 4)
             {
                 CreateTriangle(points[0], points[2], points[3]);
             }
+
             if (points.Length >= 5)
             {
                 CreateTriangle(points[0], points[3], points[4]);
             }
+
             if (points.Length >= 6)
             {
                 CreateTriangle(points[0], points[4], points[5]);
             }
         }
-
 
 
         //Each node has a vertexIndex which we can use to avoid duplicates
@@ -238,7 +263,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Create a triangle based on three nodes
         private static void CreateTriangle(Node a, Node b, Node c)
         {
@@ -246,7 +270,6 @@ namespace Pancake.ComputationalGeometry
             triangles.Add(b.vertexIndex);
             triangles.Add(c.vertexIndex);
         }
-
 
 
         //Smooth the points that are between the corners of a square, to get a smoother mesh
@@ -263,7 +286,6 @@ namespace Pancake.ComputationalGeometry
             square.L.pos = L_inter;
             square.T.pos = T_inter;
         }
-
 
 
         private static MyVector2 GetLerpedMidpoint(MyVector2 v1, float weight1, MyVector2 v2, float weight2)

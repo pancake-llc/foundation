@@ -5,78 +5,68 @@ namespace Pancake.Monetization
 {
     public static class AdStatic
     {
-        /// <summary>
-        /// prevent show app open ad, it will become true when interstitial or rewarded was showed
-        /// </summary>
-        internal static bool isShowingAd;
-        internal static EAdNetwork currentNetworkShared;
-        internal static Action waitAppOpenDisplayedAction;
-        internal static Action waitAppOpenClosedAction;
-
-        public static bool IsRemoveAd { get => Data.Load($"{Application.identifier}_removeads", false); set => Data.Save($"{Application.identifier}_removeads", value); }
-
         /**
          * For Applovin :  Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
          * Admob still work correctly
          */
-        public static AdUnitVariable OnDisplayed(this AdUnitVariable unit, Action onDisplayed)
+        public static AdUnit OnDisplayed(this AdUnit unit, Action onDisplayed)
         {
             unit.displayedCallback = onDisplayed;
             return unit;
         }
 
-        public static AdUnitVariable OnClosed(this AdUnitVariable unit, Action onClosed)
+        public static AdUnit OnClosed(this AdUnit unit, Action onClosed)
         {
             unit.closedCallback = onClosed;
             return unit;
         }
 
-        public static AdUnitVariable OnLoaded(this AdUnitVariable unit, Action onLoaded)
+        public static AdUnit OnLoaded(this AdUnit unit, Action onLoaded)
         {
             unit.loadedCallback = onLoaded;
             return unit;
         }
 
-        public static AdUnitVariable OnFailedToLoad(this AdUnitVariable unit, Action onFailedToLoad)
+        public static AdUnit OnFailedToLoad(this AdUnit unit, Action onFailedToLoad)
         {
             unit.failedToLoadCallback = onFailedToLoad;
             return unit;
         }
 
-        public static AdUnitVariable OnFailedToDisplay(this AdUnitVariable unit, Action onFailedToDisplay)
+        public static AdUnit OnFailedToDisplay(this AdUnit unit, Action onFailedToDisplay)
         {
             unit.failedToDisplayCallback = onFailedToDisplay;
             return unit;
         }
 
         /// <summary>
-        /// Not affect for banner and app open ad
+        /// Not affect to banner and app open ad
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="onCompleted"></param>
         /// <returns></returns>
-        public static AdUnitVariable OnCompleted(this AdUnitVariable unit, Action onCompleted)
+        public static AdUnit OnCompleted(this AdUnit unit, Action onCompleted)
         {
             if (!Application.isMobilePlatform) onCompleted?.Invoke();
 
             switch (unit)
             {
-                case AdmobInterVariable inter:
+                case AdmobInter inter:
                     inter.completedCallback = onCompleted;
                     return unit;
-                case AdmobRewardVariable reward:
+                case AdmobReward reward:
                     reward.completedCallback = onCompleted;
                     return unit;
-                case AdmobRewardInterVariable rewardInter:
+                case AdmobRewardInter rewardInter:
                     rewardInter.completedCallback = onCompleted;
                     return unit;
-                case ApplovinInterVariable applovinInter:
+                case ApplovinInter applovinInter:
                     applovinInter.completedCallback = onCompleted;
                     return unit;
-                case ApplovinRewardVariable applovinReward:
+                case ApplovinReward applovinReward:
                     applovinReward.completedCallback = onCompleted;
                     return unit;
-                case ApplovinRewardInterVariable applovinRewardInter:
+                case ApplovinRewardInter applovinRewardInter:
                     applovinRewardInter.completedCallback = onCompleted;
                     return unit;
             }
@@ -85,25 +75,25 @@ namespace Pancake.Monetization
         }
 
         /// <summary>
-        /// Only affect for rewarded and rewarded interstitial
+        /// Only affect to rewarded and rewarded interstitial
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="onSkipped"></param>
         /// <returns></returns>
-        public static AdUnitVariable OnSkipped(this AdUnitVariable unit, Action onSkipped)
+        public static AdUnit OnSkipped(this AdUnit unit, Action onSkipped)
         {
             switch (unit)
             {
-                case AdmobRewardVariable reward:
+                case AdmobReward reward:
                     reward.skippedCallback = onSkipped;
                     return unit;
-                case AdmobRewardInterVariable rewardInter:
+                case AdmobRewardInter rewardInter:
                     rewardInter.skippedCallback = onSkipped;
                     return unit;
-                case ApplovinRewardVariable applovinReward:
+                case ApplovinReward applovinReward:
                     applovinReward.skippedCallback = onSkipped;
                     return unit;
-                case ApplovinRewardInterVariable applovinRewardInter:
+                case ApplovinRewardInter applovinRewardInter:
                     applovinRewardInter.skippedCallback = onSkipped;
                     return unit;
             }

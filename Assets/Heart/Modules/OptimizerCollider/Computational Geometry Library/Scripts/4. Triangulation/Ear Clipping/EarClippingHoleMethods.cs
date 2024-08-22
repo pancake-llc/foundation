@@ -61,7 +61,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Merge a single hole with the hull
         //Basic idea is to find a vertex in the hole that can also see a vertex in the hull
         //Connect these vertices with two edges, and the hole is now a part of the hull with an invisible seam
@@ -86,7 +85,11 @@ namespace Pancake.ComputationalGeometry
 
             MyVector2 visibleVertex;
 
-            FindVisibleVertexOnHUll(hull, hole, line_hole_to_outside, out closestEdge, out visibleVertex);
+            FindVisibleVertexOnHUll(hull,
+                hole,
+                line_hole_to_outside,
+                out closestEdge,
+                out visibleVertex);
 
             //This means we couldn't find a closest edge
             if (closestEdge == -1)
@@ -143,9 +146,13 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Find a vertex on the hull that should be visible from the hole
-        private static void FindVisibleVertexOnHUll(EarClippingPolygon hull, EarClippingPolygon hole, Edge2 line_hole_to_outside, out int closestEdge, out MyVector2 visibleVertex)
+        private static void FindVisibleVertexOnHUll(
+            EarClippingPolygon hull,
+            EarClippingPolygon hole,
+            Edge2 line_hole_to_outside,
+            out int closestEdge,
+            out MyVector2 visibleVertex)
         {
             //The first and second point on the hull is defined as edge 0, and so on...
             closestEdge = -1;
@@ -239,7 +246,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //The hull may still intersect with the edge between the point on the hole and the "visible" point on the hull, 
         //so the point on the hull might not be visible, so we should try to find a better point
         private static void FindActualVisibleVertexOnHull(EarClippingPolygon hull, EarClippingPolygon hole, MyVector2 intersectionVertex, ref MyVector2 visibleVertex)
@@ -314,7 +320,6 @@ namespace Pancake.ComputationalGeometry
             //TestAlgorithmsHelpMethods.DebugDrawCircle(visibleVertex.ToVector3(1f), 0.3f, Color.red);
             //TestAlgorithmsHelpMethods.DebugDrawCircle(hole.maxX_Vert.ToVector3(1f), 0.3f, Color.red);
         }
-
 
 
         //Find reflect vertices (that also have a higher x pos than the hole)

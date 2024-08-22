@@ -68,7 +68,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Its common that we want to display this box for debugging, so return a list with edges that form the box
         public List<Edge3> GetEdges()
         {
@@ -78,12 +77,10 @@ namespace Pancake.ComputationalGeometry
                 new Edge3(topFL, topBL),
                 new Edge3(topBL, topBR),
                 new Edge3(topBR, topFR),
-
                 new Edge3(bottomFR, bottomFL),
                 new Edge3(bottomFL, bottomBL),
                 new Edge3(bottomBL, bottomBR),
                 new Edge3(bottomBR, bottomFR),
-
                 new Edge3(topFR, bottomFR),
                 new Edge3(topFL, bottomFL),
                 new Edge3(topBL, bottomBL),
@@ -92,7 +89,6 @@ namespace Pancake.ComputationalGeometry
 
             return edges;
         }
-
 
 
         //Get all corners of the box
@@ -104,7 +100,6 @@ namespace Pancake.ComputationalGeometry
                 topFL,
                 topBR,
                 topBL,
-
                 bottomFR,
                 bottomFL,
                 bottomBR,

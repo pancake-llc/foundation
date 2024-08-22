@@ -29,58 +29,31 @@ namespace RedBlueGames.MulliganRenamer
 
     public class RemoveCharactersOperationDrawer : RenameOperationDrawer<RemoveCharactersOperation>
     {
-        public RemoveCharactersOperationDrawer()
-        {
-            this.Initialize();
-        }
+        public RemoveCharactersOperationDrawer() { this.Initialize(); }
 
         /// <summary>
         /// Gets the path that's displayed when this rename op is used in the Add Op menu.
         /// </summary>
         /// <value>The display path.</value>
-        public override string MenuDisplayPath
-        {
-            get
-            {
-                return GetOperationPath("delete", "removeCharacters");
-            }
-        }
+        public override string MenuDisplayPath { get { return GetOperationPath("delete", "removeCharacters"); } }
 
         /// <summary> 
         /// Gets the heading label for the Rename Operation.
         /// </summary>
         /// <value>The heading label.</value>
-        public override string HeadingLabel
-        {
-            get
-            {
-                return LocalizationManager.Instance.GetTranslation("removeCharacters");
-            }
-        }
+        public override string HeadingLabel { get { return LocalizationManager.Instance.GetTranslation("removeCharacters"); } }
 
         /// <summary>
         /// Gets the color to use for highlighting the operation.
         /// </summary>
         /// <value>The color of the highlight.</value>
-        public override Color32 HighlightColor
-        {
-            get
-            {
-                return this.DeleteColor;
-            }
-        }
+        public override Color32 HighlightColor { get { return this.DeleteColor; } }
 
         /// <summary>
         /// Gets the name of the control to focus when this operation is focused
         /// </summary>
         /// <value>The name of the control to focus.</value>
-        public override string ControlToFocus
-        {
-            get
-            {
-                return LocalizationManager.Instance.GetTranslation("preset");
-            }
-        }
+        public override string ControlToFocus { get { return LocalizationManager.Instance.GetTranslation("preset"); } }
 
         private List<CharacterPresetGUI> GUIPresets { get; set; }
 
@@ -152,8 +125,7 @@ namespace RedBlueGames.MulliganRenamer
                 numSplits = 3;
             }
 
-            var presetsContent = new GUIContent(
-                LocalizationManager.Instance.GetTranslation("preset"),
+            var presetsContent = new GUIContent(LocalizationManager.Instance.GetTranslation("preset"),
                 LocalizationManager.Instance.GetTranslation("selectPresetOrSpecifyCharacters"));
             var names = new List<GUIContent>(this.GUIPresets.Count);
             foreach (var preset in this.GUIPresets)
@@ -162,8 +134,7 @@ namespace RedBlueGames.MulliganRenamer
             }
 
             GUI.SetNextControlName(GUIControlNameUtility.CreatePrefixedName(controlPrefix, presetsContent.text));
-            var selectedPresetIndex = EditorGUI.Popup(
-                operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing),
+            var selectedPresetIndex = EditorGUI.Popup(operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing),
                 presetsContent,
                 originalPresetIndex,
                 names.ToArray());
@@ -184,6 +155,7 @@ namespace RedBlueGames.MulliganRenamer
                 {
                     this.RenameOperation.SetOptions(workingOptions);
                 }
+
                 return;
             }
 
@@ -194,28 +166,21 @@ namespace RedBlueGames.MulliganRenamer
                 var readonlyLabelContent = new GUIContent(selectedPreset.ReadOnlyLabel);
                 var labelStyle = new GUIStyle(EditorStyles.label);
                 labelStyle.alignment = TextAnchor.MiddleRight;
-                EditorGUI.LabelField(
-                    operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing),
-                    readonlyLabelContent,
-                    labelStyle);
+                EditorGUI.LabelField(operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing), readonlyLabelContent, labelStyle);
                 EditorGUI.EndDisabledGroup();
             }
             else
             {
-                var charactersFieldContent = new GUIContent(
-                    LocalizationManager.Instance.GetTranslation("charactersToRemove"),
+                var charactersFieldContent = new GUIContent(LocalizationManager.Instance.GetTranslation("charactersToRemove"),
                     LocalizationManager.Instance.GetTranslation("allCharactersThatWillBeRemoved"));
                 GUI.SetNextControlName(GUIControlNameUtility.CreatePrefixedName(controlPrefix, charactersFieldContent.text));
-                workingOptions.CharactersToRemove = EditorGUI.TextField(
-                    operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing),
+                workingOptions.CharactersToRemove = EditorGUI.TextField(operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing),
                     charactersFieldContent,
                     this.RenameOperation.CharactersToRemove);
 
-                var caseSensitiveToggleContent = new GUIContent(
-                    LocalizationManager.Instance.GetTranslation("caseSensitive"),
+                var caseSensitiveToggleContent = new GUIContent(LocalizationManager.Instance.GetTranslation("caseSensitive"),
                     LocalizationManager.Instance.GetTranslation("flagTheSearchToMatchCase"));
-                workingOptions.IsCaseSensitive = EditorGUI.Toggle(
-                    operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing),
+                workingOptions.IsCaseSensitive = EditorGUI.Toggle(operationRect.GetSplitVertical(++currentSplit, numSplits, LineSpacing),
                     caseSensitiveToggleContent,
                     this.RenameOperation.IsCaseSensitive);
             }
@@ -264,13 +229,7 @@ namespace RedBlueGames.MulliganRenamer
                 ReadOnlyLabel = string.Empty
             };
 
-            this.GUIPresets = new List<CharacterPresetGUI>
-            {
-                symbolsPreset,
-                numbersPreset,
-                whitespacePreset,
-                customPreset
-            };
+            this.GUIPresets = new List<CharacterPresetGUI> {symbolsPreset, numbersPreset, whitespacePreset, customPreset};
         }
 
         private class CharacterPresetGUI

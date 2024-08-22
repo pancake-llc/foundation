@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Pancake.ExLibEditor.Windows;
+using PancakeEditor.Common;
 using Pancake.Localization;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.LocalizationEditor
+namespace PancakeEditor.Localization
 {
     public static class LocaleEditorUtil
     {
@@ -38,7 +38,7 @@ namespace Pancake.LocalizationEditor
             int newValueIndex = currentValueIndex;
             if (GUI.Button(position, languages[currentValueIndex].Name, EditorStyles.popup))
             {
-                var searchWindow = ExSearchWindow.Create("Choose Language");
+                var searchWindow = SearchWindow.Create("Choose Language");
 
                 foreach (var lang in languages)
                 {
@@ -78,7 +78,7 @@ namespace Pancake.LocalizationEditor
 
             if (GUI.Button(position, languages[currentValueIndex].Name, EditorStyles.popup))
             {
-                var searchWindow = ExSearchWindow.Create("Choose Language");
+                var searchWindow = SearchWindow.Create("Choose Language");
                 foreach (var lang in languages)
                 {
                     var cache = lang;
@@ -94,7 +94,7 @@ namespace Pancake.LocalizationEditor
                             }
                         });
                 }
-            
+
                 searchWindow.Open(position);
             }
 
@@ -153,17 +153,15 @@ namespace Pancake.LocalizationEditor
         public static void Import()
         {
             string path = EditorUtility.OpenFilePanel("Import CSV file", "", "csv");
-            if (string.IsNullOrEmpty(path))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(path)) return;
 
             try
             {
                 using (var stream = File.OpenRead(path))
+                using (var reader = new StreamReader(stream))
                 {
                     var serialization = new CsvSerialization();
-                    serialization.Deserialize(stream);
+                    serialization.Deserialize(reader);
                 }
 
                 Debug.Log("CSV file has been imported.");
@@ -181,17 +179,15 @@ namespace Pancake.LocalizationEditor
         {
             string fileName = Application.productName + "-" + DateTime.Now.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             string path = EditorUtility.SaveFilePanel("Export CSV file", "", fileName, "csv");
-            if (string.IsNullOrEmpty(path))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(path)) return;
 
             try
             {
                 using (var stream = File.OpenWrite(path))
+                using (var writer = new StreamWriter(stream))
                 {
                     var serialization = new CsvSerialization();
-                    serialization.Serialize(stream);
+                    serialization.Serialize(writer);
                 }
 
                 Debug.Log("CSV file has been exported to " + path);

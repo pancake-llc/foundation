@@ -10,11 +10,14 @@ namespace PancakeEditor
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (property == null) return;
             EditorGUI.BeginProperty(position, label, property);
             EditorGUI.BeginDisabledGroup(true);
             if (property.propertyType == SerializedPropertyType.String)
             {
-                if (string.IsNullOrEmpty(property.stringValue)) Recreate(property);
+                if (!EditorApplication.isCompiling)
+                    if (string.IsNullOrEmpty(property.stringValue))
+                        Recreate(property);
                 EditorGUI.PropertyField(position, property, label);
             }
             else
@@ -25,7 +28,7 @@ namespace PancakeEditor
             EditorGUI.EndDisabledGroup();
             EditorGUI.EndProperty();
 
-            var e = Event.current;
+            var e = UnityEngine.Event.current;
             if (e.type == EventType.MouseDown && e.button == 1 && position.Contains(e.mousePosition))
             {
                 var context = new GenericMenu();
@@ -50,6 +53,12 @@ namespace PancakeEditor
             if (property.propertyType != SerializedPropertyType.String) return;
             property.stringValue = Guid.NewGuid().ToString("N")[..15]; // slower than Guid.NewGuid().ToString() but shorter
             property.serializedObject.ApplyModifiedProperties();
+            EditorApplication.delayCall += DelayCall;
+        }
+
+        private void DelayCall()
+        {
+            EditorApplication.delayCall -= DelayCall;
             AssetDatabase.SaveAssets();
         }
 

@@ -1,9 +1,7 @@
 #if PANCAKE_IAP
 using System.Collections.Generic;
-using Pancake.Apex;
 using UnityEngine;
 using System;
-
 using UnityEngine.Purchasing;
 
 
@@ -11,15 +9,15 @@ using UnityEngine.Purchasing;
 namespace Pancake.IAP
 {
     [Serializable]
-    public class IAPData
+    internal class IAPData
     {
         public string id;
         public ProductType productType;
     }
 
-    [HideMonoScript]
-    [EditorIcon("scriptable_iap")]
-    public class IAPSettings : ScriptableObject
+
+    [EditorIcon("so_blue_setting")]
+    public class IAPSettings : ScriptableSettings<IAPSettings>
     {
         [SerializeField] private List<IAPData> skusData = new();
         [SerializeField] private List<IAPDataVariable> products = new();
@@ -27,7 +25,7 @@ namespace Pancake.IAP
         [SerializeField, TextArea] private string googlePlayStoreKey;
 #endif
 
-        public List<IAPDataVariable> Products => products;
+        public static List<IAPDataVariable> Products => Instance.products;
     }
 }
 #endif

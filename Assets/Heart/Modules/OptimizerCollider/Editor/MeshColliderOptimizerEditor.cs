@@ -18,8 +18,10 @@ namespace Pancake.OptimizerColliderEditor
 
             EditorGUILayout.LabelField("Optimize Collider", EditorStyles.boldLabel);
 
-            _meshOptimizer.meshProperties.connectingMode = (HalfEdgeData3.ConnectOppositeEdges) EditorGUILayout.EnumPopup("Connecting Mode", _meshOptimizer.meshProperties.connectingMode);
-            _meshOptimizer.meshProperties.optimizationFactor = Mathf.Max(0f, EditorGUILayout.FloatField("Optimization Factor", _meshOptimizer.meshProperties.optimizationFactor));
+            _meshOptimizer.meshProperties.connectingMode =
+                (HalfEdgeData3.ConnectOppositeEdges) EditorGUILayout.EnumPopup("Connecting Mode", _meshOptimizer.meshProperties.connectingMode);
+            _meshOptimizer.meshProperties.optimizationFactor =
+                Mathf.Max(0f, EditorGUILayout.FloatField("Optimization Factor", _meshOptimizer.meshProperties.optimizationFactor));
             _meshOptimizer.meshProperties.meshStyle = (MyMesh.MeshStyle) EditorGUILayout.EnumPopup("Mesh Style", _meshOptimizer.meshProperties.meshStyle);
 
             GUILayout.BeginHorizontal();

@@ -68,7 +68,7 @@ namespace Pancake.ComputationalGeometry
                 HashSet<HalfEdge3> borderEdges = null;
 
                 FindVisibleTrianglesAndBorderEdgesFromPoint(p, convexHull, out visibleTriangles, out borderEdges);
-                
+
 
                 //Remove all visible triangles
                 foreach (HalfEdgeFace3 triangle in visibleTriangles)
@@ -83,9 +83,9 @@ namespace Pancake.ComputationalGeometry
 
                 //Save all ned edges so we can connect them with an opposite edge
                 //To make it faster you can use the ideas in the Valve paper to get a sorted list of newEdges
-                HashSet<HalfEdge3> newEdges = new HashSet<HalfEdge3>(); 
+                HashSet<HalfEdge3> newEdges = new HashSet<HalfEdge3>();
 
-                foreach(HalfEdge3 borderEdge in borderEdges)
+                foreach (HalfEdge3 borderEdge in borderEdges)
                 {
                     //Each edge is point TO a vertex
                     MyVector3 p1 = borderEdge.prevEdge.v.position;
@@ -126,7 +126,7 @@ namespace Pancake.ComputationalGeometry
                     HalfEdge3 e1 = newTriangle.edge;
                     //HalfEdge3 e2 = newTriangle.edge.nextEdge;
                     HalfEdge3 e3 = newTriangle.edge.nextEdge.nextEdge;
-                    
+
                     newEdges.Add(e1);
                     //newEdges.Add(e2);
                     newEdges.Add(e3);
@@ -183,16 +183,19 @@ namespace Pancake.ComputationalGeometry
             {
                 convexHull = MeshSimplification_QEM.Simplify(convexHull, maxEdgesToContract: int.MaxValue, maxError: 0.0001f, normalizeTriangles: true);
             }
-                
-            
+
+
             return convexHull;
         }
 
 
-
         //Find all visible triangles from a point
         //Also find edges on the border between invisible and visible triangles
-        public static void FindVisibleTrianglesAndBorderEdgesFromPoint(MyVector3 p, HalfEdgeData3 convexHull, out HashSet<HalfEdgeFace3> visibleTriangles, out HashSet<HalfEdge3> borderEdges)
+        public static void FindVisibleTrianglesAndBorderEdgesFromPoint(
+            MyVector3 p,
+            HalfEdgeData3 convexHull,
+            out HashSet<HalfEdgeFace3> visibleTriangles,
+            out HashSet<HalfEdge3> borderEdges)
         {
             //Flood-fill from the visible triangle to find all other visible triangles
             //When you cross an edge from a visible triangle to an invisible triangle, 
@@ -300,7 +303,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Find a visible triangle from a point
         private static HalfEdgeFace3 FindVisibleTriangleFromPoint(MyVector3 p, HashSet<HalfEdgeFace3> triangles)
         {
@@ -324,7 +326,6 @@ namespace Pancake.ComputationalGeometry
 
             return visibleTriangle;
         }
-
 
 
         //Initialize by making 2 triangles by using three points, so its a flat triangle with a face on each side
@@ -456,7 +457,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-       
         //Given points and a plane, find the point furthest away from the plane
         private static MyVector3 FindPointFurthestAwayFromPlane(HashSet<MyVector3> points, Plane3 plane)
         {
@@ -493,7 +493,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //From a list of points, find the two points that are furthest away from each other
         private static Edge3 FindEdgeFurthestApart(HashSet<MyVector3> pointsHashSet)
         {
@@ -511,11 +510,12 @@ namespace Pancake.ComputationalGeometry
             for (int i = 1; i < points.Count; i++)
             {
                 MyVector3 p = points[i];
-            
+
                 if (p.x > maxX.x)
                 {
                     maxX = p;
                 }
+
                 if (p.x < minX.x)
                 {
                     minX = p;
@@ -525,6 +525,7 @@ namespace Pancake.ComputationalGeometry
                 {
                     maxY = p;
                 }
+
                 if (p.y < minY.y)
                 {
                     minY = p;
@@ -534,6 +535,7 @@ namespace Pancake.ComputationalGeometry
                 {
                     maxZ = p;
                 }
+
                 if (p.z < minZ.z)
                 {
                     minZ = p;
@@ -596,7 +598,6 @@ namespace Pancake.ComputationalGeometry
 
             return eFurthestApart;
         }
-
 
 
         //Given an edge and a list of points, find the point furthest away from the edge

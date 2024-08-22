@@ -17,7 +17,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Shapes
         //

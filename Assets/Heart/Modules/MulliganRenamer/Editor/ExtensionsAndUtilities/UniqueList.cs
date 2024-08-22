@@ -45,16 +45,12 @@ namespace RedBlueGames.MulliganRenamer
 
         public T this[int index]
         {
-            get
-            {
-                return this.objects[index];
-            }
+            get { return this.objects[index]; }
             set
             {
                 if (this.cachedObjects.Contains(value))
                 {
-                    var exceptionMessage = string.Format(
-                        "Tried to add a repeat of an item to UniqueList. Item: {0}", value);
+                    var exceptionMessage = string.Format("Tried to add a repeat of an item to UniqueList. Item: {0}", value);
                     throw new InvalidOperationException(exceptionMessage);
                 }
 
@@ -70,28 +66,15 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        public int Count
-        {
-            get
-            {
-                return this.objects.Count;
-            }
-        }
+        public int Count { get { return this.objects.Count; } }
 
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly { get { return false; } }
 
         public void Add(T item)
         {
             if (this.cachedObjects.Contains(item))
             {
-                var exceptionMessage = string.Format(
-                    "Tried to add a repeat of an item to UniqueList. Item: {0}", item);
+                var exceptionMessage = string.Format("Tried to add a repeat of an item to UniqueList. Item: {0}", item);
                 throw new System.InvalidOperationException(exceptionMessage);
             }
 
@@ -105,32 +88,19 @@ namespace RedBlueGames.MulliganRenamer
             this.cachedObjects.Clear();
         }
 
-        public bool Contains(T item)
-        {
-            return this.cachedObjects.Contains(item);
-        }
+        public bool Contains(T item) { return this.cachedObjects.Contains(item); }
 
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            this.objects.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(T[] array, int arrayIndex) { this.objects.CopyTo(array, arrayIndex); }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return this.objects.GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() { return this.objects.GetEnumerator(); }
 
-        public int IndexOf(T item)
-        {
-            return this.objects.IndexOf(item);
-        }
+        public int IndexOf(T item) { return this.objects.IndexOf(item); }
 
         public void Insert(int index, T item)
         {
             if (this.cachedObjects.Contains(item))
             {
-                var exceptionMessage = string.Format(
-                    "Tried to insert a repeat of an item to UniqueList. Item: {0}", item);
+                var exceptionMessage = string.Format("Tried to insert a repeat of an item to UniqueList. Item: {0}", item);
                 throw new System.InvalidOperationException(exceptionMessage);
             }
 
@@ -152,10 +122,7 @@ namespace RedBlueGames.MulliganRenamer
             this.objects.RemoveAt(index);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.objects.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() { return this.objects.GetEnumerator(); }
 
         public void RemoveNullObjects()
         {

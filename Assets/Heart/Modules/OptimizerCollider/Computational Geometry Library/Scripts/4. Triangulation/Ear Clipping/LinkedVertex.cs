@@ -11,9 +11,6 @@ namespace Pancake.ComputationalGeometry
         public LinkedVertex prevLinkedVertex;
         public LinkedVertex nextLinkedVertex;
 
-        public LinkedVertex(MyVector2 pos)
-        {
-            this.pos = pos;
-        }
+        public LinkedVertex(MyVector2 pos) { this.pos = pos; }
     }
 }

@@ -1,11 +1,8 @@
-using System;
 using TMPro;
 
 namespace Pancake.Localization
 {
-    using UnityEngine;
-
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleTMPFontComponent : LocaleComponentGeneric<LocaleTMPFont, TMP_FontAsset>
     {
         private void Reset()
@@ -14,5 +11,4 @@ namespace Pancake.Localization
             TrySetComponentAndPropertyIfNotSet<TextMeshPro>("font");
         }
     }
-
 }

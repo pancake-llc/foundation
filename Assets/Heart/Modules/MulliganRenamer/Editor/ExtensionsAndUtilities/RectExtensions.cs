@@ -95,15 +95,15 @@ namespace RedBlueGames.MulliganRenamer
         {
             if (weights == null || weights.Length <= 0)
             {
-                var message = "Tried to Split Rect using illegal weights. " +
-                    "At least one weight must be provided";
+                var message = "Tried to Split Rect using illegal weights. " + "At least one weight must be provided";
                 throw new System.ArgumentException(message, "weights");
             }
 
             if (division <= 0 || division > weights.Length)
             {
                 var message = string.Format("Tried to Split Rect using illegal division. " +
-                                            "Division should be the desired split specified starting with 1. Divison: {0}", division);
+                                            "Division should be the desired split specified starting with 1. Divison: {0}",
+                    division);
                 throw new System.ArgumentException(message, "division");
             }
 
@@ -152,15 +152,15 @@ namespace RedBlueGames.MulliganRenamer
         {
             if (weights == null || weights.Length <= 0)
             {
-                var message = "Tried to Split Rect using illegal weights. " +
-                    "At least one weight must be provided";
+                var message = "Tried to Split Rect using illegal weights. " + "At least one weight must be provided";
                 throw new System.ArgumentException(message, "weights");
             }
 
             if (division <= 0 || division > weights.Length)
             {
                 var message = string.Format("Tried to Split Rect using illegal division. " +
-                                            "Division should be the desired split specified starting with 1. Divison: {0}", division);
+                                            "Division should be the desired split specified starting with 1. Divison: {0}",
+                    division);
                 throw new System.ArgumentException(message, "division");
             }
 

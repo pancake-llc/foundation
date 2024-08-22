@@ -10,8 +10,7 @@ namespace Pancake.AssetLoader
 {
     public sealed class AddressableAssetLoader : IAssetLoader
     {
-        private readonly Dictionary<int, AsyncOperationHandle> _controlIdToHandles =
-            new Dictionary<int, AsyncOperationHandle>();
+        private readonly Dictionary<int, AsyncOperationHandle> _controlIdToHandles = new();
 
         private int _nextControlId;
 
@@ -22,13 +21,11 @@ namespace Pancake.AssetLoader
             var controlId = _nextControlId++;
             _controlIdToHandles.Add(controlId, addressableHandle);
             var handle = new AssetLoadHandle<T>(controlId);
-            var setter = (IAssetLoadHandleSetter<T>)handle;
+            var setter = (IAssetLoadHandleSetter<T>) handle;
             setter.SetPercentCompleteFunc(() => addressableHandle.PercentComplete);
             setter.SetTask(Task.FromResult(addressableHandle.Result));
             setter.SetResult(addressableHandle.Result);
-            var status = addressableHandle.Status == AsyncOperationStatus.Succeeded
-                ? AssetLoadStatus.Success
-                : AssetLoadStatus.Failed;
+            var status = addressableHandle.Status == AsyncOperationStatus.Succeeded ? AssetLoadStatus.Success : AssetLoadStatus.Failed;
             setter.SetStatus(status);
             setter.SetOperationException(addressableHandle.OperationException);
             return handle;
@@ -40,14 +37,12 @@ namespace Pancake.AssetLoader
             var controlId = _nextControlId++;
             _controlIdToHandles.Add(controlId, addressableHandle);
             var handle = new AssetLoadHandle<T>(controlId);
-            var setter = (IAssetLoadHandleSetter<T>)handle;
+            var setter = (IAssetLoadHandleSetter<T>) handle;
             var tcs = new TaskCompletionSource<T>();
             addressableHandle.Completed += x =>
             {
                 setter.SetResult(x.Result);
-                var status = x.Status == AsyncOperationStatus.Succeeded
-                    ? AssetLoadStatus.Success
-                    : AssetLoadStatus.Failed;
+                var status = x.Status == AsyncOperationStatus.Succeeded ? AssetLoadStatus.Success : AssetLoadStatus.Failed;
                 setter.SetStatus(status);
                 setter.SetOperationException(addressableHandle.OperationException);
                 tcs.SetResult(x.Result);
@@ -62,8 +57,7 @@ namespace Pancake.AssetLoader
         {
             if (!_controlIdToHandles.ContainsKey(handle.ControlId))
             {
-                throw new InvalidOperationException(
-                    $"There is no asset that has been requested for release (ControlId: {handle.ControlId}).");
+                throw new InvalidOperationException($"There is no asset that has been requested for release (ControlId: {handle.ControlId}).");
             }
 
             var addressableHandle = _controlIdToHandles[handle.ControlId];

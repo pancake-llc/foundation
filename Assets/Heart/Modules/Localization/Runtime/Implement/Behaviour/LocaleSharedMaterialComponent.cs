@@ -4,7 +4,7 @@ namespace Pancake.Localization
 {
     using UnityEngine;
 
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleSharedMaterialComponent : LocaleComponentGeneric<LocaleMaterial, Material>
     {
         private void Reset()
@@ -13,5 +13,4 @@ namespace Pancake.Localization
             TrySetComponentAndPropertyIfNotSet<TMP_Text>("fontSharedMaterial");
         }
     }
-
 }

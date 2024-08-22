@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Pancake.Apex;
+using Alchemy.Inspector;
+using Pancake.Common;
 using Pancake.Linq;
-using Pancake.Scriptable;
-using Pancake.Threading.Tasks;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 using UnityEngine;
 #if PANCAKE_ADDRESSABLE
 using UnityEngine.AddressableAssets;
@@ -11,31 +14,39 @@ using UnityEngine.AddressableAssets;
 
 namespace Pancake.LevelSystem
 {
-    [HideMonoScript]
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LevelCoordinator : GameComponent
     {
-        [SerializeField] private string id = "normal";
-        [SerializeField] private IntVariable currentLevelIndex;
-        [SerializeField] private ScriptableEventLoadLevel eventLoadLevel;
-        [SerializeField] private ScriptableEventGetLevelCached eventGetNextLevelLoaded;
-        [SerializeField] private ScriptableEventGetLevelCached eventGetPreviousLevelLoaded;
+        [SerializeField] private StringConstant type;
         [SerializeField] private ELoopType loopType = ELoopType.Shuffle;
-        [HorizontalLine(Space = 10)] [SerializeField, Array] private LevelSetting[] levelSettings;
-
-        [SerializeField, ReadOnly] private LevelComponent previousLevelLoaded;
-        [SerializeField, ReadOnly] private LevelComponent nextLevelLoaded;
-
-
+        [HorizontalLine] [SerializeField] private LevelSetting[] levelSettings;
+        [ReadOnly] [SerializeField] private LevelComponent previousLevelLoaded;
+        [ReadOnly] [SerializeField] private LevelComponent nextLevelLoaded;
         private bool _isReplay;
         private int _segmentLength;
         private int _totalLevel;
-        private readonly List<string> _typeMappingOfSegment = new List<string>();
+        private readonly List<string> _typeMappingOfSegment = new();
+        private static readonly Dictionary<string, LevelDimension> Dimensions = new();
 
-        private int NgNumber { get => Data.Load($"level_{id}_ng_number", 1); set => Data.Save($"level_{id}_ng_number", value); }
+        private int NgNumber { get => Data.Load($"level_{type.Value}_ng_number", 1); set => Data.Save($"level_{type.Value}_ng_number", value); }
+        public static int GetCurrentLevelIndex(string type) => Data.Load($"current_level_{type}_index", 0);
+
+        public static void SetCurrentLevelIndex(string type, int value)
+        {
+            Data.Save($"current_level_{type}_index", value);
+            Dimensions[type].ChangeLevelIndex(value);
+        }
+
+        public static void IncreaseLevelIndex(string type, int amount)
+        {
+            int value = GetCurrentLevelIndex(type) + amount;
+            SetCurrentLevelIndex(type, value);
+        }
 
         private void Awake()
         {
+            // todo: change flow to avoid data not load before use
+            Dimensions[type.Value] = new LevelDimension();
             _segmentLength = 0;
             _totalLevel = 0;
             _typeMappingOfSegment.Clear();
@@ -51,29 +62,45 @@ namespace Pancake.LevelSystem
                 }
             }
 
-            CheckCacheLevel(currentLevelIndex.Value);
-#if PANCAKE_ADDRESSABLE
-            eventLoadLevel.OnRaised += LoadLevel;
-            eventGetNextLevelLoaded.OnRaised += GetNextLevel;
-            eventGetPreviousLevelLoaded.OnRaised += GetPreviousLevel;
+            CheckCacheLevel(GetCurrentLevelIndex(type.Value));
+        }
+
+        private void OnEnable()
+        {
+#if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
+            var dimesion = Dimensions[type.Value];
+            dimesion.LoadLevelEvent += OnLoadLevel;
+            dimesion.GetNextLevelLoadedEvent += OnGetNextLevel;
+            dimesion.GetPreviousLevelLoadedEvent += OnGetPreviousLevel;
 #endif
         }
 
-#if PANCAKE_ADDRESSABLE
-        private async UniTask<LevelComponent> LoadLevel(int currentLevelIndex)
+        private void OnDisable()
+        {
+#if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
+            var dimesion = Dimensions[type.Value];
+            dimesion.LoadLevelEvent -= OnLoadLevel;
+            dimesion.GetNextLevelLoadedEvent -= OnGetNextLevel;
+            dimesion.GetPreviousLevelLoadedEvent -= OnGetPreviousLevel;
+            Dimensions.Remove(type.Value);
+#endif
+        }
+
+#if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
+        private async UniTask<LevelComponent> OnLoadLevel(int currentLevelIndex)
         {
             int indexInSegment = currentLevelIndex % _segmentLength;
             int indexSegment = currentLevelIndex / _segmentLength;
-            string type = TypeOfIndex(indexInSegment);
-            int countOfType = CountOfTypeInSegment(type);
+            string t = TypeOfIndex(indexInSegment);
+            int countOfType = CountOfTypeInSegment(t);
             int countOfTypeBeforeIndex = CountOfTypeBeforeIndexInSegment(indexInSegment);
 
             int index = IndexInLevelContainer(indexSegment, countOfType, countOfTypeBeforeIndex);
-            var setting = levelSettings.Filter(level => level.LevelType.Value == type).First();
+            var setting = levelSettings.Filter(level => level.LevelType.Value == t).First();
 
             if (currentLevelIndex > _totalLevel - 1)
             {
-                index = index % levelSettings.Filter(level => level.LevelType.Value == type).First().TotalLevel;
+                index = index % levelSettings.Filter(level => level.LevelType.Value == t).First().TotalLevel;
 
                 if (loopType == ELoopType.Shuffle)
                 {
@@ -101,10 +128,10 @@ namespace Pancake.LevelSystem
             nextLevelLoaded.Init(index + 1, currentLevelIndex); // write into prefab
             return nextLevelLoaded;
         }
-        
-        private LevelComponent GetNextLevel() => nextLevelLoaded;
-        
-        private LevelComponent GetPreviousLevel() => previousLevelLoaded;
+
+        private LevelComponent OnGetNextLevel() => nextLevelLoaded;
+
+        private LevelComponent OnGetPreviousLevel() => previousLevelLoaded;
 #endif
 
         private void CheckCacheLevel(int currentLevelIndex)
@@ -114,7 +141,7 @@ namespace Pancake.LevelSystem
                 foreach (var levelSetting in levelSettings)
                 {
                     // try load cached data if exist
-                    levelSetting.CacheLevels = Data.Load<List<int>>($"level_{id}_{levelSetting.LevelType}_cache");
+                    levelSetting.CacheLevels = Data.Load<List<int>>($"level_{type}_{levelSetting.LevelType}_cache");
                 }
 
                 return;
@@ -140,7 +167,7 @@ namespace Pancake.LevelSystem
 
             tempList.Shuffle();
             levelSetting.CacheLevels = tempList;
-            Data.Save($"level_{id}_{levelSetting.LevelType}_cache", levelSetting.CacheLevels);
+            Data.Save($"level_{type}_{levelSetting.LevelType}_cache", levelSetting.CacheLevels);
         }
 
         private int CountOfTypeBeforeIndexInSegment(int segmentIndex)
@@ -168,5 +195,15 @@ namespace Pancake.LevelSystem
         }
 
         private int IndexInLevelContainer(int indexSegment, int countOfType, int countOfTypeBeforeIndex) { return countOfType * indexSegment + countOfTypeBeforeIndex; }
+
+        public static void RegisterLevelIndexChanged(string id, Action<int> action) { Dimensions[id].ChangeLevelIndexEvent += action; }
+
+        public static void UnRegisterLevelIndexChanged(string id, Action<int> action)
+        {
+            if (Dimensions.TryGetValue(id, out var dimension)) dimension.ChangeLevelIndexEvent -= action;
+        }
+        public static UniTask<LevelComponent> LoadLevel(string id, int index) { return Dimensions[id].LoadLevel(index); }
+        public static LevelComponent GetNextLevelLoaded(string id) { return Dimensions[id].GetNextlevelLoaded(); }
+        public static LevelComponent GetPreviousLevelLoaded(string id) { return Dimensions[id].GetPreviousLevelLoaded(); }
     }
 }

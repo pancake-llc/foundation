@@ -30,7 +30,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Normalize stuff
         //
@@ -71,7 +70,6 @@ namespace Pancake.ComputationalGeometry
 
             return normalizedPoints;
         }
-
 
 
         //
@@ -165,7 +163,6 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     public class Normalizer3
     {
         private float dMax;
@@ -189,7 +186,6 @@ namespace Pancake.ComputationalGeometry
 
             return dMax;
         }
-
 
 
         //
@@ -274,7 +270,6 @@ namespace Pancake.ComputationalGeometry
 
             return data;
         }
-
 
 
         //
@@ -395,6 +390,5 @@ namespace Pancake.ComputationalGeometry
 
             return unNormalizedData;
         }
-        
     }
 }

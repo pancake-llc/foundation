@@ -91,7 +91,7 @@ namespace Pancake.Editor
             {
                 var value = 1f;
                 var total = 0f;
-                
+
                 SerializedProperty element;
                 for (var i = 0; i < _data.arraySize; i++)
                 {

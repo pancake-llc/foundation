@@ -108,7 +108,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Split triangle edge
         //
@@ -117,7 +116,6 @@ namespace Pancake.ComputationalGeometry
         //{
 
         //}
-
 
 
         //
@@ -152,7 +150,7 @@ namespace Pancake.ComputationalGeometry
 
                 MyVector2 eGoingTo = e.v.position;
                 MyVector2 eGoingFrom = e.prevEdge.v.position;
-            
+
                 foreach (HalfEdge2 eOpposite in newEdges)
                 {
                     if (e == eOpposite || eOpposite.oppositeEdge != null)
@@ -177,7 +175,6 @@ namespace Pancake.ComputationalGeometry
             //Delete the old triangle
             DeleteTriangleFace(f, data, false);
         }
-
 
 
         //Create a new triangle face when splitting triangle face
@@ -210,7 +207,7 @@ namespace Pancake.ComputationalGeometry
             {
                 e_old.oppositeEdge.oppositeEdge = e_1;
             }
-            
+
             //The other new edges will find the opposite in a loop when we have created all new edges
             newEdges.Add(e_2);
             newEdges.Add(e_3);
@@ -248,7 +245,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Delete a triangle
         //
@@ -269,10 +265,12 @@ namespace Pancake.ComputationalGeometry
                 {
                     t_e1.oppositeEdge.oppositeEdge = null;
                 }
+
                 if (t_e2.oppositeEdge != null)
                 {
                     t_e2.oppositeEdge.oppositeEdge = null;
                 }
+
                 if (t_e3.oppositeEdge != null)
                 {
                     t_e3.oppositeEdge.oppositeEdge = null;

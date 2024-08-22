@@ -15,13 +15,12 @@ namespace Pancake.ComputationalGeometry
     public static class JarvisMarchAlgorithm2D
     {
         public static List<MyVector2> GenerateConvexHull(List<MyVector2> points)
-        {   
+        {
             List<MyVector2> pointsOnConvexHull = new List<MyVector2>();
 
 
             //Step 0. Normalize the data to range [0, 1] or everything will break at larger sizes :(
             //Make sure the data is already normalized!!!
-
 
 
             //Step 1. Find the vertex with the smallest x coordinate
@@ -44,7 +43,6 @@ namespace Pancake.ComputationalGeometry
 
             //But we can't remove it from the list of all points because we need it to stop the algorithm
             //points.Remove(startPos);
-
 
 
             //Step 2. Loop to find the other points on the hull
@@ -80,7 +78,7 @@ namespace Pancake.ComputationalGeometry
                 for (int i = 0; i < points.Count; i++)
                 {
                     MyVector2 testPoint = points[i];
-                
+
                     //Dont test the point we picked randomly
                     //Or the point we are coming from which might happen when we move from the first point on the hull
                     if (testPoint.Equals(nextPoint) || testPoint.Equals(previousPoint))
@@ -111,7 +109,6 @@ namespace Pancake.ComputationalGeometry
                     }
                     //To the left = worse point so do nothing
                 }
-
 
 
                 //Sort this list, so we can add the colinear points in correct order
@@ -154,10 +151,8 @@ namespace Pancake.ComputationalGeometry
             }
 
 
-
             //Dont forget to unnormalize the points!
 
-            
 
             return pointsOnConvexHull;
         }

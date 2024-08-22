@@ -1,0 +1,738 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c43369b29aa5747adf045d244080af, type: 3}
+  m_Name: country_icon_asset
+  m_EditorClassIdentifier: 
+  countries:
+  - code: 0
+    icon: {fileID: 156995346, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Andorra
+  - code: 1
+    icon: {fileID: 2117935585, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: United Arab Emirates
+  - code: 2
+    icon: {fileID: 1593187940, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Afghanistan
+  - code: 3
+    icon: {fileID: -630002759, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Antigua and Barbuda
+  - code: 4
+    icon: {fileID: 547138067, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Anguilla
+  - code: 5
+    icon: {fileID: 2128271312, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Albania
+  - code: 6
+    icon: {fileID: 2108609252, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Armenia
+  - code: 7
+    icon: {fileID: 782734855, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Angola
+  - code: 8
+    icon: {fileID: -541381598, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Antarctica
+  - code: 9
+    icon: {fileID: -1439700040, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Argentina
+  - code: 10
+    icon: {fileID: 927608046, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: American Samoa
+  - code: 11
+    icon: {fileID: -1378721822, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Austria
+  - code: 12
+    icon: {fileID: -400871415, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Australia
+  - code: 13
+    icon: {fileID: 755691529, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Aruba
+  - code: 14
+    icon: {fileID: 145297706, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Aland Islands
+  - code: 15
+    icon: {fileID: 1980373681, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Azerbaijan
+  - code: 16
+    icon: {fileID: -1979254294, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Bosnia and Herzegovina
+  - code: 17
+    icon: {fileID: 1185782935, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Barbados
+  - code: 18
+    icon: {fileID: 474455220, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Bangladesh
+  - code: 19
+    icon: {fileID: 1027752042, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Belgium
+  - code: 20
+    icon: {fileID: 1462210873, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Burkina Faso
+  - code: 21
+    icon: {fileID: 1139416881, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Bulgaria
+  - code: 22
+    icon: {fileID: 744091658, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Bahrain
+  - code: 23
+    icon: {fileID: 1366350061, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Burundi
+  - code: 24
+    icon: {fileID: -95235539, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Benin
+  - code: 25
+    icon: {fileID: -817058916, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: "Saint Barth\xE9lemy"
+  - code: 26
+    icon: {fileID: -956813431, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Bermuda
+  - code: 27
+    icon: {fileID: 501602814, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Brunei
+  - code: 28
+    icon: {fileID: -37260179, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Bolivia
+  - code: 29
+    icon: {fileID: 3315735, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Caribbean Netherlands
+  - code: 30
+    icon: {fileID: -1819092664, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Brazil
+  - code: 31
+    icon: {fileID: -182224779, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: The Bahamas
+  - code: 32
+    icon: {fileID: -1025605657, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Bhutan
+  - code: 33
+    icon: {fileID: 1894940660, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Botswana
+  - code: 34
+    icon: {fileID: 912333593, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Belarus
+  - code: 35
+    icon: {fileID: 1695573472, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Belize
+  - code: 36
+    icon: {fileID: 1290292446, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Canada
+  - code: 37
+    icon: {fileID: -101544233, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Democratic Republic of the Congo
+  - code: 38
+    icon: {fileID: -1168209623, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Central African Republic
+  - code: 39
+    icon: {fileID: -812625279, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Republic of the Congo
+  - code: 40
+    icon: {fileID: -1455899896, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Switzerland
+  - code: 41
+    icon: {fileID: -1775581524, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: "C\xF4te d'Ivoire"
+  - code: 42
+    icon: {fileID: 84146735, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Cook Islands
+  - code: 43
+    icon: {fileID: -301693153, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Chile
+  - code: 44
+    icon: {fileID: 494910229, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Cameroon
+  - code: 45
+    icon: {fileID: -1638252177, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: China
+  - code: 46
+    icon: {fileID: -1560064729, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Colombia
+  - code: 47
+    icon: {fileID: -1455085252, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Costa Rica
+  - code: 48
+    icon: {fileID: 2071355890, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Cuba
+  - code: 49
+    icon: {fileID: -1410391719, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Cape Verde
+  - code: 50
+    icon: {fileID: 1623218531, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Curacao
+  - code: 51
+    icon: {fileID: -1503819305, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Christmas Island
+  - code: 52
+    icon: {fileID: 435735684, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Cyprus
+  - code: 53
+    icon: {fileID: -1667796214, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Czechia
+  - code: 54
+    icon: {fileID: 955873996, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Germany
+  - code: 55
+    icon: {fileID: 478719957, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Djibouti
+  - code: 56
+    icon: {fileID: 1413322887, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Denmark
+  - code: 57
+    icon: {fileID: -122672614, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Dominica
+  - code: 58
+    icon: {fileID: -2057271926, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Dominican Republic
+  - code: 59
+    icon: {fileID: -354017996, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Algeria
+  - code: 60
+    icon: {fileID: 1550018211, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Ecuador
+  - code: 61
+    icon: {fileID: 1948196710, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Estonia
+  - code: 62
+    icon: {fileID: 640127288, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Egypt
+  - code: 63
+    icon: {fileID: 1512859955, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Western Sahara
+  - code: 64
+    icon: {fileID: -2138269214, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Eritrea
+  - code: 65
+    icon: {fileID: 1720719573, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Spain
+  - code: 66
+    icon: {fileID: -981137833, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Ethiopia
+  - code: 67
+    icon: {fileID: -1036101648, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Finland
+  - code: 68
+    icon: {fileID: -2068336072, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Fiji
+  - code: 69
+    icon: {fileID: 1519107360, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Falkland Islands
+  - code: 70
+    icon: {fileID: 500556964, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Federated States of Micronesia
+  - code: 71
+    icon: {fileID: -297018942, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Faroe Islands
+  - code: 72
+    icon: {fileID: -924070035, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: France
+  - code: 73
+    icon: {fileID: -513633483, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Georgia
+  - code: 74
+    icon: {fileID: 1482445889, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: United Kingdom
+  - code: 75
+    icon: {fileID: -1916671846, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Grenada
+  - code: 76
+    icon: {fileID: 591561050, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Georgia
+  - code: 77
+    icon: {fileID: 1264203651, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: French Guiana
+  - code: 78
+    icon: {fileID: 1760957375, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Guernsey
+  - code: 79
+    icon: {fileID: -2013484015, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Ghana
+  - code: 80
+    icon: {fileID: 391479508, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Gibraltar
+  - code: 81
+    icon: {fileID: -155212791, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Greenland
+  - code: 82
+    icon: {fileID: 1722737662, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: The Gambia
+  - code: 83
+    icon: {fileID: -1539475703, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Guinea
+  - code: 84
+    icon: {fileID: -88969541, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Guadeloupe
+  - code: 85
+    icon: {fileID: 953962250, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Equatorial Guinea
+  - code: 86
+    icon: {fileID: -992373019, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Greece
+  - code: 87
+    icon: {fileID: -1617009604, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Guatemala
+  - code: 88
+    icon: {fileID: -1269689635, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Guam
+  - code: 89
+    icon: {fileID: 37661129, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Guinea-Bissau
+  - code: 90
+    icon: {fileID: -785456512, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Guyana
+  - code: 91
+    icon: {fileID: 1005684617, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Hong Kong
+  - code: 92
+    icon: {fileID: -2078144860, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Honduras
+  - code: 93
+    icon: {fileID: -1579497655, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Croatia
+  - code: 94
+    icon: {fileID: -1867786007, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Haiti
+  - code: 95
+    icon: {fileID: -1732276584, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Hungary
+  - code: 96
+    icon: {fileID: -224985651, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Indonesia
+  - code: 97
+    icon: {fileID: 2102853058, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Ireland
+  - code: 98
+    icon: {fileID: -595241527, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Israel
+  - code: 99
+    icon: {fileID: -815542635, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Isle of Man
+  - code: 100
+    icon: {fileID: -684032197, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: India
+  - code: 101
+    icon: {fileID: 729359556, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: British Indian Ocean Territory
+  - code: 102
+    icon: {fileID: -188430169, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Iraq
+  - code: 103
+    icon: {fileID: 1473004155, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Iran
+  - code: 104
+    icon: {fileID: -1106863498, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Iceland
+  - code: 105
+    icon: {fileID: 1639124153, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Italy
+  - code: 106
+    icon: {fileID: -585968663, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Jersey
+  - code: 107
+    icon: {fileID: 2081885918, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Jamaica
+  - code: 108
+    icon: {fileID: -1959244846, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Jordan
+  - code: 109
+    icon: {fileID: -285506905, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Japan
+  - code: 110
+    icon: {fileID: -1295974426, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Kenya
+  - code: 111
+    icon: {fileID: -180906498, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Kyrgyzstan
+  - code: 112
+    icon: {fileID: 1561511850, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Cambodia
+  - code: 113
+    icon: {fileID: 559469007, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Kiribati
+  - code: 114
+    icon: {fileID: 1331296302, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Comoros
+  - code: 115
+    icon: {fileID: 1537945195, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Saint Kitts and Nevis
+  - code: 116
+    icon: {fileID: 603431941, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: North Korea
+  - code: 117
+    icon: {fileID: 97908290, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: South Korea
+  - code: 118
+    icon: {fileID: -1068699157, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Kuwait
+  - code: 119
+    icon: {fileID: 846799032, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Cayman Islands
+  - code: 120
+    icon: {fileID: -513376622, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Kazakhstan
+  - code: 121
+    icon: {fileID: -1114374176, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Laos
+  - code: 122
+    icon: {fileID: -259594834, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Lebanon
+  - code: 123
+    icon: {fileID: 1326740708, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Saint Lucia
+  - code: 124
+    icon: {fileID: 1588350319, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Liechtenstein
+  - code: 125
+    icon: {fileID: 1813869396, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Sri Lanka
+  - code: 126
+    icon: {fileID: -500759445, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Liberia
+  - code: 127
+    icon: {fileID: 343497405, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Lesotho
+  - code: 128
+    icon: {fileID: -1796328738, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Lithuania
+  - code: 129
+    icon: {fileID: 202734374, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Luxembourg
+  - code: 130
+    icon: {fileID: 1993627197, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Latvia
+  - code: 131
+    icon: {fileID: 716130369, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Libya
+  - code: 132
+    icon: {fileID: -585268779, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Morocco
+  - code: 133
+    icon: {fileID: -323445478, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Monaco
+  - code: 134
+    icon: {fileID: -1323373102, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Moldova
+  - code: 135
+    icon: {fileID: -22015003, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Montenegro
+  - code: 136
+    icon: {fileID: -1818712880, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Saint Martin
+  - code: 137
+    icon: {fileID: -19132691, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Madagascar
+  - code: 138
+    icon: {fileID: 1975862589, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Marshall Islands
+  - code: 139
+    icon: {fileID: 510368613, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: North Macedonia
+  - code: 140
+    icon: {fileID: -1709513318, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Mali
+  - code: 141
+    icon: {fileID: 2037412431, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Myanmar
+  - code: 142
+    icon: {fileID: -1967720627, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Mongolia
+  - code: 143
+    icon: {fileID: 906550291, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Macao
+  - code: 144
+    icon: {fileID: 480453673, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Northern Mariana Islands
+  - code: 145
+    icon: {fileID: 1656576434, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Martinique
+  - code: 146
+    icon: {fileID: -695748934, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Mauritania
+  - code: 147
+    icon: {fileID: 1692612403, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Montserrat
+  - code: 148
+    icon: {fileID: -496500302, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Malta
+  - code: 149
+    icon: {fileID: 342551959, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Mauritius
+  - code: 150
+    icon: {fileID: 1831912901, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Maldives
+  - code: 151
+    icon: {fileID: 992430418, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Malawi
+  - code: 152
+    icon: {fileID: 1557590252, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Mexico
+  - code: 153
+    icon: {fileID: -292914985, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Malaysia
+  - code: 154
+    icon: {fileID: 1031318812, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Mozambique
+  - code: 155
+    icon: {fileID: -400331073, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Namibia
+  - code: 156
+    icon: {fileID: 67409333, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: New Caledonia
+  - code: 157
+    icon: {fileID: -937723282, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Niger
+  - code: 158
+    icon: {fileID: -1183962257, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Norfolk Island
+  - code: 159
+    icon: {fileID: -1554295205, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Nigeria
+  - code: 160
+    icon: {fileID: 986429583, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Nicaragua
+  - code: 161
+    icon: {fileID: -976797814, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Netherlands
+  - code: 162
+    icon: {fileID: -453785686, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Norway
+  - code: 163
+    icon: {fileID: 935125036, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Nepal
+  - code: 164
+    icon: {fileID: -1145460708, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Nauru
+  - code: 165
+    icon: {fileID: -551317888, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Niue
+  - code: 166
+    icon: {fileID: 2002836939, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: New Zealand
+  - code: 167
+    icon: {fileID: 1105453325, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Oman
+  - code: 168
+    icon: {fileID: -170141086, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Panama
+  - code: 169
+    icon: {fileID: 1016121860, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Peru
+  - code: 170
+    icon: {fileID: 1435462942, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: French Polynesia
+  - code: 171
+    icon: {fileID: -1856879668, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Papua New Guinea
+  - code: 172
+    icon: {fileID: 444717774, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Philippines
+  - code: 173
+    icon: {fileID: -816047248, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Pakistan
+  - code: 174
+    icon: {fileID: -1914231175, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Poland
+  - code: 175
+    icon: {fileID: -1502592001, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Saint Pierre and Miquelon
+  - code: 176
+    icon: {fileID: 1845645119, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Puerto Rico
+  - code: 177
+    icon: {fileID: 2115415842, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Palestine
+  - code: 178
+    icon: {fileID: -456031220, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Portugal
+  - code: 179
+    icon: {fileID: -1919336680, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Palau
+  - code: 180
+    icon: {fileID: -1769056538, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Paraguay
+  - code: 181
+    icon: {fileID: 2111691085, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Qatar
+  - code: 182
+    icon: {fileID: 1944717433, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Reunion
+  - code: 183
+    icon: {fileID: -1019503408, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Romania
+  - code: 184
+    icon: {fileID: -1057719852, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Serbia
+  - code: 185
+    icon: {fileID: 972735455, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Russia
+  - code: 186
+    icon: {fileID: 936522942, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Rwanda
+  - code: 187
+    icon: {fileID: -1856374411, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: South Africa
+  - code: 188
+    icon: {fileID: 1358649438, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Solomon Islands
+  - code: 189
+    icon: {fileID: 701154832, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Seychelles
+  - code: 190
+    icon: {fileID: -655832299, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Sudan
+  - code: 191
+    icon: {fileID: 1665570765, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Sweden
+  - code: 192
+    icon: {fileID: 722014334, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Singapore
+  - code: 193
+    icon: {fileID: -582583924, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Saint Helena
+  - code: 194
+    icon: {fileID: -507909602, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Slovenia
+  - code: 195
+    icon: {fileID: -2072641402, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Svalbard and Jan Mayen
+  - code: 196
+    icon: {fileID: -1471539568, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Slovakia
+  - code: 197
+    icon: {fileID: 1139231917, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Sierra Leone
+  - code: 198
+    icon: {fileID: -1299342663, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: San Marino
+  - code: 199
+    icon: {fileID: -603222876, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Senegal
+  - code: 200
+    icon: {fileID: -1415435743, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Somalia
+  - code: 201
+    icon: {fileID: -469494681, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Suriname
+  - code: 202
+    icon: {fileID: 933470261, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: South Sudan
+  - code: 203
+    icon: {fileID: 235133349, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Sao Tome and Principe
+  - code: 204
+    icon: {fileID: -1127781889, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: El Salvador
+  - code: 205
+    icon: {fileID: 1911319746, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Sint Maarten
+  - code: 206
+    icon: {fileID: 1392474754, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Syria
+  - code: 207
+    icon: {fileID: -1282755733, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Eswatini
+  - code: 208
+    icon: {fileID: -1970139970, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Turks and Caicos Islands
+  - code: 209
+    icon: {fileID: -1310084025, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Chad
+  - code: 210
+    icon: {fileID: 689411972, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Togo
+  - code: 211
+    icon: {fileID: -1031942959, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Thailand
+  - code: 212
+    icon: {fileID: -20707731, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Tajikistan
+  - code: 213
+    icon: {fileID: -23891969, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Tokelau
+  - code: 214
+    icon: {fileID: 716902631, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Timor-Leste
+  - code: 215
+    icon: {fileID: 1925218065, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Turkmenistan
+  - code: 216
+    icon: {fileID: -1987126382, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Tunisia
+  - code: 217
+    icon: {fileID: -100346841, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Tonga
+  - code: 218
+    icon: {fileID: -401879963, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Turkey
+  - code: 219
+    icon: {fileID: 1609385796, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Trinidad and Tobago
+  - code: 220
+    icon: {fileID: -203555741, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Tuvalu
+  - code: 221
+    icon: {fileID: 1865709375, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Taiwan
+  - code: 222
+    icon: {fileID: 45366878, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Tanzania
+  - code: 223
+    icon: {fileID: -1061093641, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Ukraine
+  - code: 224
+    icon: {fileID: -1928515206, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Uganda
+  - code: 225
+    icon: {fileID: -1221567822, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: United States
+  - code: 226
+    icon: {fileID: -1581691757, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Uruguay
+  - code: 227
+    icon: {fileID: -1530284199, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Uzbekistan
+  - code: 228
+    icon: {fileID: 63699640, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Saint Vincent and the Grenadines
+  - code: 229
+    icon: {fileID: 79103835, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Venezuela
+  - code: 230
+    icon: {fileID: -332600765, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: British Virgin Islands
+  - code: 231
+    icon: {fileID: -165575337, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: U.S. Virgin Islands
+  - code: 232
+    icon: {fileID: 1260918562, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Vietnam
+  - code: 233
+    icon: {fileID: -619971847, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Vanuatu
+  - code: 234
+    icon: {fileID: -1912481590, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Wallis and Futuna
+  - code: 235
+    icon: {fileID: -1221041720, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Samoa
+  - code: 236
+    icon: {fileID: -1570052241, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Kosovo
+  - code: 237
+    icon: {fileID: -514037150, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Yemen
+  - code: 238
+    icon: {fileID: -850901212, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Mayotte
+  - code: 239
+    icon: {fileID: 1503856823, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: South Africa
+  - code: 240
+    icon: {fileID: 873883225, guid: a7ec6b33fbc624c46a58e9795adc4706, type: 3}
+    name: Zambia

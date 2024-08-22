@@ -39,89 +39,44 @@ namespace RedBlueGames.MulliganRenamer
 
         private const int NumberOfSessionsBeforeReviewPrompt = 3;
 
-        [SerializeField]
-        private string lastUsedPresetName;
+        [SerializeField] private string lastUsedPresetName;
 
-        [SerializeField]
-        private string serializedPreviousSequence;
+        [SerializeField] private string serializedPreviousSequence;
 
-        [SerializeField]
-        private RenameOperationSequence<IRenameOperation> previousSequence;
+        [SerializeField] private RenameOperationSequence<IRenameOperation> previousSequence;
 
-        [SerializeField]
-        private List<RenameSequencePreset> savedPresets;
+        [SerializeField] private List<RenameSequencePreset> savedPresets;
 
-        [SerializeField]
-        private int numSessionsUsed;
+        [SerializeField] private int numSessionsUsed;
 
-        [SerializeField]
-        private bool hasClickedPrompt;
+        [SerializeField] private bool hasClickedPrompt;
 
-        [SerializeField]
-        private Color insertionTextColor;
+        [SerializeField] private Color insertionTextColor;
 
-        [SerializeField]
-        private Color deletionTextColor;
+        [SerializeField] private Color deletionTextColor;
 
-        [SerializeField]
-        private Color insertionBackgroundColor;
+        [SerializeField] private Color insertionBackgroundColor;
 
-        [SerializeField]
-        private Color deletionBackgroundColor;
+        [SerializeField] private Color deletionBackgroundColor;
 
-        [SerializeField]
-        private bool hasInitializedColors;
+        [SerializeField] private bool hasInitializedColors;
 
-        [SerializeField]
-        private string currentLanguageKey;
+        [SerializeField] private string currentLanguageKey;
 
         /// <summary>
         /// Gets or Sets the previously used Sequence of Rename Operations
         /// </summary>
-        public RenameOperationSequence<IRenameOperation> PreviousSequence
-        {
-            get
-            {
-                return this.previousSequence;
-            }
-
-            set
-            {
-                this.previousSequence = value;
-            }
-        }
+        public RenameOperationSequence<IRenameOperation> PreviousSequence { get { return this.previousSequence; } set { this.previousSequence = value; } }
 
         /// <summary>
         /// Gets or Sets a list of saved RenameSequencePresets
         /// </summary>
-        public List<RenameSequencePreset> SavedPresets
-        {
-            get
-            {
-                return this.savedPresets;
-            }
-
-            set
-            {
-                this.savedPresets = value;
-            }
-        }
+        public List<RenameSequencePreset> SavedPresets { get { return this.savedPresets; } set { this.savedPresets = value; } }
 
         /// <summary>
         /// Gets or sets the name of the most recently used preset
         /// </summary>
-        public string LastUsedPresetName
-        {
-            get
-            {
-                return this.lastUsedPresetName;
-            }
-
-            set
-            {
-                this.lastUsedPresetName = value;
-            }
-        }
+        public string LastUsedPresetName { get { return this.lastUsedPresetName; } set { this.lastUsedPresetName = value; } }
 
         /// <summary>
         /// Gets a list of all saved preset names
@@ -144,34 +99,12 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets or Sets a value indicating the number of times the user has used the rename tool.
         /// The intent is for a session to be every time the tool is opened.
         /// </summary>
-        public int NumSessionsUsed
-        {
-            get
-            {
-                return this.numSessionsUsed;
-            }
-
-            set
-            {
-                this.numSessionsUsed = value;
-            }
-        }
+        public int NumSessionsUsed { get { return this.numSessionsUsed; } set { this.numSessionsUsed = value; } }
 
         /// <summary>
         /// Gets a value indicating whether or not the preferences suggest the user should be prompted to leave a review
         /// </summary>
-        public bool HasConfirmedReviewPrompt
-        {
-            get
-            {
-                return this.hasClickedPrompt;
-            }
-
-            set
-            {
-                this.hasClickedPrompt = value;
-            }
-        }
+        public bool HasConfirmedReviewPrompt { get { return this.hasClickedPrompt; } set { this.hasClickedPrompt = value; } }
 
         /// <summary>
         /// Gets a value indicating whether or not the preferences suggest the user should be prompted to leave a review
@@ -185,76 +118,18 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        public Color InsertionTextColor
-        {
-            get
-            {
-                return this.insertionTextColor;
-            }
+        public Color InsertionTextColor { get { return this.insertionTextColor; } set { this.insertionTextColor = value; } }
+        public Color DeletionTextColor { get { return this.deletionTextColor; } set { this.deletionTextColor = value; } }
 
-            set
-            {
-                this.insertionTextColor = value;
-            }
-        }
-        public Color DeletionTextColor
-        {
-            get
-            {
-                return this.deletionTextColor;
-            }
+        public Color InsertionBackgroundColor { get { return this.insertionBackgroundColor; } set { this.insertionBackgroundColor = value; } }
+        public Color DeletionBackgroundColor { get { return this.deletionBackgroundColor; } set { this.deletionBackgroundColor = value; } }
 
-            set
-            {
-                this.deletionTextColor = value;
-            }
-        }
-
-        public Color InsertionBackgroundColor
-        {
-            get
-            {
-                return this.insertionBackgroundColor;
-            }
-
-            set
-            {
-                this.insertionBackgroundColor = value;
-            }
-        }
-        public Color DeletionBackgroundColor
-        {
-            get
-            {
-                return this.deletionBackgroundColor;
-            }
-
-            set
-            {
-                this.deletionBackgroundColor = value;
-            }
-        }
-
-        public string CurrentLanguageKey
-        {
-            get
-            {
-                return this.currentLanguageKey;
-            }
-
-            set
-            {
-                this.currentLanguageKey = value;
-            }
-        }
+        public string CurrentLanguageKey { get { return this.currentLanguageKey; } set { this.currentLanguageKey = value; } }
 
         /// <summary>
         /// Create a new Instance of MulliganUserPreferences
         /// </summary>
-        private MulliganUserPreferences()
-        {
-            this.ResetAllValuesToDefault();
-        }
+        private MulliganUserPreferences() { this.ResetAllValuesToDefault(); }
 
         /// <summary>
         /// Loads the user's previous preferences (User specific savedata), or creates a new default one
@@ -289,26 +164,17 @@ namespace RedBlueGames.MulliganRenamer
             return prefs;
         }
 
-        public void ResetToDefaults()
-        {
-            this.ResetAllValuesToDefault();
-        }
+        public void ResetToDefaults() { this.ResetAllValuesToDefault(); }
 
         /// <summary>
         /// Save the Preferences to EditorPrefs for loading at another time
         /// </summary>
-        public void SaveToEditorPrefs()
-        {
-            EditorPrefs.SetString(UserPreferencesPrefKey, JsonUtility.ToJson(this));
-        }
+        public void SaveToEditorPrefs() { EditorPrefs.SetString(UserPreferencesPrefKey, JsonUtility.ToJson(this)); }
 
         /// <summary>
         /// Debug function to fully delete the PrefKeys
         /// </summary>
-        public static void Debug_DeletePreferences()
-        {
-            EditorPrefs.DeleteKey(UserPreferencesPrefKey);
-        }
+        public static void Debug_DeletePreferences() { EditorPrefs.DeleteKey(UserPreferencesPrefKey); }
 
         /// <summary>
         /// Get a saved preset by name, or null if none exists
@@ -368,19 +234,12 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Unity's callback before serializing the object
         /// </summary>
-        public void OnBeforeSerialize()
-        {
-            this.serializedPreviousSequence = this.PreviousSequence.ToSerializableString();
-        }
+        public void OnBeforeSerialize() { this.serializedPreviousSequence = this.PreviousSequence.ToSerializableString(); }
 
         /// <summary>
         /// Unity's callback after deserializing the object
         /// </summary>
-        public void OnAfterDeserialize()
-        {
-            this.PreviousSequence = RenameOperationSequence<IRenameOperation>.FromString(
-                this.serializedPreviousSequence);
-        }
+        public void OnAfterDeserialize() { this.PreviousSequence = RenameOperationSequence<IRenameOperation>.FromString(this.serializedPreviousSequence); }
 
         public void ResetColorsToDefault(bool useProSkinValues = true)
         {
@@ -395,10 +254,8 @@ namespace RedBlueGames.MulliganRenamer
                 this.DeletionTextColor = new Color32(189, 47, 79, 255);
             }
 
-            this.InsertionBackgroundColor =
-                this.InsertionTextColor.CreateCopyWithNewAlpha(this.InsertionTextColor.a * 0.2f);
-            this.DeletionBackgroundColor =
-                this.DeletionTextColor.CreateCopyWithNewAlpha(this.DeletionTextColor.a * 0.2f);
+            this.InsertionBackgroundColor = this.InsertionTextColor.CreateCopyWithNewAlpha(this.InsertionTextColor.a * 0.2f);
+            this.DeletionBackgroundColor = this.DeletionTextColor.CreateCopyWithNewAlpha(this.DeletionTextColor.a * 0.2f);
         }
 
         private void ResetAllValuesToDefault()

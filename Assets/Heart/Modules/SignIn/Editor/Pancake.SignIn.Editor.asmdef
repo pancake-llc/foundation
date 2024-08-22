@@ -1,0 +1,26 @@
+{
+    "name": "Pancake.SignIn.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:837b3842fcf669f42838802a1f10305e",
+        "GUID:e2146bdc04d424169b039613a1b62bdf",
+        "GUID:09ef5922e2d77498aa246abd9073d05f"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.lupidan.apple-signin-unity",
+            "expression": "1.4.0",
+            "define": "PANCAKE_APPLE_SIGNIN"
+        }
+    ],
+    "noEngineReferences": false
+}

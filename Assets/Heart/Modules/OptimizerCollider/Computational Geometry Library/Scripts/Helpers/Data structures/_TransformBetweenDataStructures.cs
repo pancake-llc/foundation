@@ -93,7 +93,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Half-edge to triangle if we know the half-edge consists of triangles
         //
@@ -103,7 +102,7 @@ namespace Pancake.ComputationalGeometry
             {
                 return null;
             }
-        
+
             HashSet<Triangle2> triangles = new HashSet<Triangle2>();
 
             foreach (HalfEdgeFace2 face in data.faces)
@@ -119,7 +118,6 @@ namespace Pancake.ComputationalGeometry
 
             return triangles;
         }
-
 
 
         //
@@ -145,7 +143,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Triangle to Unity mesh
         //
@@ -158,7 +155,7 @@ namespace Pancake.ComputationalGeometry
             {
                 return null;
             }
-                    
+
 
             //Step 2. Create the list with unique vertices
             //A hashset will make it fast to check if a vertex already exists in the collection
@@ -174,10 +171,12 @@ namespace Pancake.ComputationalGeometry
                 {
                     uniqueVertices.Add(v1);
                 }
+
                 if (!uniqueVertices.Contains(v2))
                 {
                     uniqueVertices.Add(v2);
                 }
+
                 if (!uniqueVertices.Contains(v3))
                 {
                     uniqueVertices.Add(v3);
@@ -235,7 +234,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Version 2. Don't check for duplicate vertices, which can be good if we want a low-poly style mesh
         //Make sure the triangles have the correct orientation
         public static Mesh Triangle3ToMesh(HashSet<Triangle3> triangles)
@@ -283,7 +281,6 @@ namespace Pancake.ComputationalGeometry
 
             return mesh;
         }
-
 
 
         //

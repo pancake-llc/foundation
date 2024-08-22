@@ -2,8 +2,9 @@
     "name": "Pancake.SignIn",
     "rootNamespace": "",
     "references": [
+        "Alchemy",
+        "Pancake",
         "AppleAuth",
-        "Pancake.Scriptable",
         "Google.Play.Games"
     ],
     "includePlatforms": [],

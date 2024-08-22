@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.LevelSystemEditor
 {
-    [EditorIcon("scriptable_editor_setting")]
+    [EditorIcon("so_dark_setting")]
     [Serializable]
     public class LevelSystemEditorSetting : ScriptableSettings<LevelSystemEditorSetting>
     {

@@ -12,7 +12,7 @@ namespace Pancake.AssetLoader
     {
         private int _nextControlId;
 
-        public Dictionary<string, Object> PreloadedObjects { get; } = new Dictionary<string, Object>();
+        public Dictionary<string, Object> PreloadedObjects { get; } = new();
 
         public AssetLoadHandle<T> Load<T>(string key) where T : Object
         {

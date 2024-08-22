@@ -33,13 +33,7 @@ namespace RedBlueGames.MulliganRenamer
     {
         // Settings providers were added in 2018.3. No support for older versions for now.
 #if MULLIGAN_INCLUDE_PREFS
-        public static string Path
-        {
-            get
-            {
-                return "Red Blue Games/Mulligan Renamer";
-            }
-        }
+        public static string Path { get { return "Red Blue Games/Mulligan Renamer"; } }
 
 
         private static MulliganUserPreferences ActivePreferences;
@@ -65,7 +59,7 @@ namespace RedBlueGames.MulliganRenamer
                 guiHandler = DrawPreferences,
 
                 // Populate the search keywords to enable smart search filtering and label highlighting:
-                keywords = new HashSet<string>(new[] { "Diff", "Color" })
+                keywords = new HashSet<string>(new[] {"Diff", "Color"})
             };
 
             return provider;

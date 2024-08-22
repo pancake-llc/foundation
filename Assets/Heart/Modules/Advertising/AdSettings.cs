@@ -1,13 +1,10 @@
 using System.Collections.Generic;
-using Pancake.Apex;
 using UnityEngine;
-
 
 namespace Pancake.Monetization
 {
-    [HideMonoScript]
-    [EditorIcon("scriptable_ad")]
-    public class AdSettings : ScriptableObject
+    [EditorIcon("so_blue_setting")]
+    public class AdSettings : ScriptableSettings<AdSettings>
     {
         [Range(5, 100), SerializeField] private float adCheckingInterval = 8f;
         [Range(5, 100), SerializeField] private float adLoadingInterval = 15f;
@@ -18,41 +15,37 @@ namespace Pancake.Monetization
         [Header("[admob]")] [SerializeField] private bool admobEnableTestMode;
 
         [SerializeField] private List<string> admobDevicesTest;
-        [SerializeField] private AdmobBannerVariable admobBanner;
-        [SerializeField] private AdmobInterVariable admobInter;
-        [SerializeField] private AdmobRewardVariable admobReward;
-        [SerializeField] private AdmobRewardInterVariable admobRewardInter;
+        [SerializeField] private AdmobBanner admobBanner = new();
+        [SerializeField] private AdmobInter admobInter = new();
+        [SerializeField] private AdmobReward admobReward = new();
+        [SerializeField] private AdmobRewardInter admobRewardInter = new();
+        [SerializeField] private AdmobAppOpen admobAppOpen = new();
 
-        [SerializeField] private AdmobAppOpenVariable admobAppOpen;
+        public static List<string> AdmobDevicesTest => Instance.admobDevicesTest;
+        public static bool AdmobEnableTestMode => Instance.admobEnableTestMode;
+        public static AdUnit AdmobBanner => Instance.admobBanner;
+        public static AdUnit AdmobInter => Instance.admobInter;
+        public static AdUnit AdmobReward => Instance.admobReward;
+        public static AdUnit AdmobRewardInter => Instance.admobRewardInter;
+        public static AdUnit AdmobAppOpen => Instance.admobAppOpen;
 
-        public List<string> AdmobDevicesTest => admobDevicesTest;
-        public bool AdmobEnableTestMode => admobEnableTestMode;
-        public AdUnitVariable AdmobBanner => admobBanner;
-        public AdUnitVariable AdmobInter => admobInter;
-        public AdUnitVariable AdmobReward => admobReward;
-        public AdUnitVariable AdmobRewardInter => admobRewardInter;
-        public AdUnitVariable AdmobAppOpen => admobAppOpen;
-
-        [Header("[applovin]")] [SerializeField, TextArea] private string sdkKey;
-
-        [SerializeField] private ApplovinBannerVariable applovinBanner;
-        [SerializeField] private ApplovinInterVariable applovinInter;
-        [SerializeField] private ApplovinRewardVariable applovinReward;
-        [SerializeField] private ApplovinRewardInterVariable applovinRewardInter;
-        [SerializeField] private ApplovinAppOpenVariable applovinAppOpen;
+        [Header("[applovin]")] [SerializeField] private ApplovinBanner applovinBanner = new();
+        [SerializeField] private ApplovinInter applovinInter = new();
+        [SerializeField] private ApplovinReward applovinReward = new();
+        [SerializeField] private ApplovinRewardInter applovinRewardInter = new();
+        [SerializeField] private ApplovinAppOpen applovinAppOpen = new();
         [SerializeField] private bool applovinEnableAgeRestrictedUser;
 
-        public string SDKKey => sdkKey;
-        public AdUnitVariable ApplovinBanner => applovinBanner;
-        public AdUnitVariable ApplovinInter => applovinInter;
-        public AdUnitVariable ApplovinReward => applovinReward;
-        public AdUnitVariable ApplovinRewardInter => applovinRewardInter;
-        public AdUnitVariable ApplovinAppOpen => applovinAppOpen;
-        public bool ApplovinEnableAgeRestrictedUser => applovinEnableAgeRestrictedUser;
-        public float AdCheckingInterval => adCheckingInterval;
-        public float AdLoadingInterval => adLoadingInterval;
-        public EAdNetwork CurrentNetwork { get => currentNetwork; set => currentNetwork = value; }
-        public bool Gdpr => gdpr;
-        public bool GdprTestMode => gdprTestMode;
+        public static AdUnit ApplovinBanner => Instance.applovinBanner;
+        public static AdUnit ApplovinInter => Instance.applovinInter;
+        public static AdUnit ApplovinReward => Instance.applovinReward;
+        public static AdUnit ApplovinRewardInter => Instance.applovinRewardInter;
+        public static AdUnit ApplovinAppOpen => Instance.applovinAppOpen;
+        public static bool ApplovinEnableAgeRestrictedUser => Instance.applovinEnableAgeRestrictedUser;
+        public static float AdCheckingInterval => Instance.adCheckingInterval;
+        public static float AdLoadingInterval => Instance.adLoadingInterval;
+        public static EAdNetwork CurrentNetwork { get => Instance.currentNetwork; set => Instance.currentNetwork = value; }
+        public static bool Gdpr => Instance.gdpr;
+        public static bool GdprTestMode => Instance.gdprTestMode;
     }
 }

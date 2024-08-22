@@ -61,8 +61,7 @@ namespace RedBlueGames.MulliganRenamer
 
         private void OnEnable()
         {
-            this.reorderableList = new ReorderableList(
-                new List<RenameSequencePreset>(),
+            this.reorderableList = new ReorderableList(new List<RenameSequencePreset>(),
                 typeof(RenameSequencePreset),
                 true,
                 false,
@@ -74,14 +73,11 @@ namespace RedBlueGames.MulliganRenamer
             this.reorderableList.onReorderCallback = this.HandleReordered;
         }
 
-        private void DrawHeader(Rect rect)
-        {
-            GUI.Label(rect, LocalizationManager.Instance.GetTranslation("savedPresets"), EditorStyles.label);
-        }
+        private void DrawHeader(Rect rect) { GUI.Label(rect, LocalizationManager.Instance.GetTranslation("savedPresets"), EditorStyles.label); }
 
         private void DrawElement(Rect rect, int index, bool isActive, bool isFocused)
         {
-            var preset = (RenameSequencePreset)this.reorderableList.list[index];
+            var preset = (RenameSequencePreset) this.reorderableList.list[index];
 
             var previousNameRect = new Rect(rect);
             previousNameRect.width = rect.width * 0.25f;
@@ -129,11 +125,8 @@ namespace RedBlueGames.MulliganRenamer
                 var windowRect = this.position;
                 windowRect.x = 0;
                 windowRect.y = 0;
-                var contentsHeight =
-                    (this.reorderableList.elementHeight * this.reorderableList.count) +
-                    this.reorderableList.headerHeight +
-                    this.reorderableList.footerHeight +
-                    padding * 2;
+                var contentsHeight = (this.reorderableList.elementHeight * this.reorderableList.count) + this.reorderableList.headerHeight +
+                                     this.reorderableList.footerHeight + padding * 2;
                 var contentsRect = new Rect(windowRect);
                 contentsRect.height = contentsHeight;
                 this.scrollPosition = GUI.BeginScrollView(windowRect, this.scrollPosition, contentsRect);
@@ -146,9 +139,7 @@ namespace RedBlueGames.MulliganRenamer
                 GUILayout.FlexibleSpace();
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Space(50.0f);
-                EditorGUILayout.LabelField(
-                    LocalizationManager.Instance.GetTranslation("errorNoSavedPresets"),
-                    EditorStyles.wordWrappedLabel);
+                EditorGUILayout.LabelField(LocalizationManager.Instance.GetTranslation("errorNoSavedPresets"), EditorStyles.wordWrappedLabel);
                 GUILayout.Space(50.0f);
                 EditorGUILayout.EndHorizontal();
                 GUILayout.FlexibleSpace();
@@ -159,14 +150,12 @@ namespace RedBlueGames.MulliganRenamer
         {
             var indexToRemove = list.index;
             var elementToDelete = this.presetsToDraw[indexToRemove];
-            var popupMessage = string.Format(
-                LocalizationManager.Instance.GetTranslation("areYouSureDelete"), elementToDelete.Name
-            );
+            var popupMessage = string.Format(LocalizationManager.Instance.GetTranslation("areYouSureDelete"), elementToDelete.Name);
 
             if (EditorUtility.DisplayDialog(LocalizationManager.Instance.GetTranslation("warning"),
-                                            popupMessage,
-                                            LocalizationManager.Instance.GetTranslation("deletePreset"),
-                                            LocalizationManager.Instance.GetTranslation("no")))
+                    popupMessage,
+                    LocalizationManager.Instance.GetTranslation("deletePreset"),
+                    LocalizationManager.Instance.GetTranslation("no")))
             {
                 this.presetsToDraw.RemoveAt(indexToRemove);
                 this.reorderableList.index = 0;
@@ -174,10 +163,7 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        private void HandleReordered(UnityEditorInternal.ReorderableList list)
-        {
-            this.InvokePresetsChanged();
-        }
+        private void HandleReordered(UnityEditorInternal.ReorderableList list) { this.InvokePresetsChanged(); }
 
         private void InvokePresetsChanged()
         {

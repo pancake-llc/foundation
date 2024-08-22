@@ -1,25 +1,6 @@
 namespace Pancake
 {
-    /// <summary>
-    /// TimeMode
-    /// </summary>
-    public enum TimeMode
-    {
-        Normal = 0,
-        Unscaled = 1,
-    }
-
-    /// <summary>
-    /// UpdateMode
-    /// </summary>
-    public enum UpdateMode
-    {
-        Update = 0,
-        FixedUpdate = 1,
-        LateUpdate = 2,
-    }
-
-    public enum ResetType
+    public enum EResetType
     {
         /// <summary>
         /// Each scene loaded by LoadSceneMode.Single
@@ -27,16 +8,16 @@ namespace Pancake
         SceneLoaded = 0,
 
         /// <summary>
-        /// Each scene loaded by LoadSceneMode.Additive.</br>
+        /// Each scene loaded by LoadSceneMode.Additive.<br/>
         /// Use this option for compatibility with the use of LoadSceneMode.Additive instead of LoadSingle Scene introduced in foundation,
-        /// to keep the variable's value reset behavior similar to SceneLoaded. </br>
-        /// If you are not using a flow load scene like in foundation or you are not sure how to reset the value when the load scene is adaptive, do not use this option.
+        /// to keep the variable's value reset behavior similar to SceneLoaded. <br/>
+        /// If you are not using a flow load scene like in foundation, or you are not sure how to reset the value when the load scene is adaptive, do not use this option.
         /// </summary>
         AdditiveSceneLoaded = 2,
         ApplicationStarts = 1,
     }
 
-    public enum StartupMode
+    public enum EStartupMode
     {
         Manual,
         Awake,
@@ -44,7 +25,7 @@ namespace Pancake
         OnEnabled
     }
 
-    public enum TargetFrameRate
+    public enum ETargetFrameRate
     {
         ByDevice = -1,
         Frame60 = 60,
@@ -59,11 +40,28 @@ namespace Pancake
     }
 
     [System.Flags]
-    public enum GameLoopType
+    public enum EGameLoopType
     {
         None = 0,
         Update = 1 << 0,
         FixedUpdate = 1 << 1,
         LateUpdate = 1 << 2,
+    }
+
+    public enum EAlignment
+    {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        Center
+    }
+
+    public enum EFourDirection
+    {
+        Left,
+        Right,
+        Top,
+        Down,
     }
 }

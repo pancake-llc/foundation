@@ -35,10 +35,7 @@ namespace Pancake.ComputationalGeometry
 
         public List<VoronoiEdge2> edges = new List<VoronoiEdge2>();
 
-        public VoronoiCell2(MyVector2 sitePos)
-        {
-            this.sitePos = sitePos;
-        }
+        public VoronoiCell2(MyVector2 sitePos) { this.sitePos = sitePos; }
     }
 
 
@@ -73,9 +70,6 @@ namespace Pancake.ComputationalGeometry
 
         public List<VoronoiEdge3> edges = new List<VoronoiEdge3>();
 
-        public VoronoiCell3(MyVector3 sitePos)
-        {
-            this.sitePos = sitePos;
-        }
+        public VoronoiCell3(MyVector3 sitePos) { this.sitePos = sitePos; }
     }
 }

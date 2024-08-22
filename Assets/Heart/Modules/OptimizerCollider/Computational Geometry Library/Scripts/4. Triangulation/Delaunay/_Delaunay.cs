@@ -30,7 +30,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Constrained Delaunay
         //
@@ -43,13 +42,21 @@ namespace Pancake.ComputationalGeometry
         // Constraints:
         // - hull: remove all triangles outside of the hull, should be ordered counter-clock-wise
         // - holes: remove all triangles within the holes, should be ordered clock-wise 
-        public static HalfEdgeData2 ConstrainedBySloan(HashSet<MyVector2> points, List<MyVector2> hull, HashSet<List<MyVector2>> holes, bool shouldRemoveTriangles, HalfEdgeData2 triangleData)
+        public static HalfEdgeData2 ConstrainedBySloan(
+            HashSet<MyVector2> points,
+            List<MyVector2> hull,
+            HashSet<List<MyVector2>> holes,
+            bool shouldRemoveTriangles,
+            HalfEdgeData2 triangleData)
         {
-            ConstrainedDelaunaySloan.GenerateTriangulation(points, hull, holes, shouldRemoveTriangles, triangleData);
+            ConstrainedDelaunaySloan.GenerateTriangulation(points,
+                hull,
+                holes,
+                shouldRemoveTriangles,
+                triangleData);
 
             return triangleData;
         }
-
 
 
         //

@@ -10,10 +10,7 @@ namespace Pancake.ComputationalGeometry
         public List<MyVector2> vertices;
 
 
-        public Polygon2(List<MyVector2> vertices)
-        {
-            this.vertices = vertices;
-        }
+        public Polygon2(List<MyVector2> vertices) { this.vertices = vertices; }
     }
 
 
@@ -23,9 +20,6 @@ namespace Pancake.ComputationalGeometry
         public List<MyVector3> vertices;
 
 
-        public Polygon3(List<MyVector3> vertices)
-        {
-            this.vertices = vertices;
-        }
+        public Polygon3(List<MyVector3> vertices) { this.vertices = vertices; }
     }
 }

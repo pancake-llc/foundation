@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
 using Pancake.IAP;
 using UnityEditor;
 using UnityEditorInternal;
@@ -14,7 +14,7 @@ using UnityEngine.Purchasing;
 namespace Pancake.IAPEditor
 {
     [CustomEditor(typeof(IAPSettings))]
-    public class IAPSettingsDrawer : Editor
+    public class IAPSettingsDrawer : UnityEditor.Editor
     {
         private SerializedProperty _skusDataProperty;
         private SerializedProperty _productsProperty;
@@ -30,7 +30,7 @@ namespace Pancake.IAPEditor
             EditorGUI.indentLevel++;
             if (index > _skusDataProperty.arraySize - 1) return;
             var element = _skusDataProperty.GetArrayElementAtIndex(index);
-            if (GUI.Button(new Rect(rect.x + rect.width - 20, rect.y, 20, EditorGUIUtility.singleLineHeight), "X"))
+            if (GUI.Button(new Rect(rect.x + rect.width - 20, rect.y, 20, EditorGUIUtility.singleLineHeight), Uniform.IconContent("Toolbar Minus", "Remove")))
             {
                 _reorderableList.serializedProperty.DeleteArrayElementAtIndex(index);
                 serializedObject.ApplyModifiedProperties();
@@ -39,7 +39,6 @@ namespace Pancake.IAPEditor
 
             EditorGUI.PropertyField(rect, element, new GUIContent(element.FindPropertyRelative("id").stringValue.Split('.').Last().ToCamelCase()), true);
             EditorGUI.indentLevel--;
-
         }
 
         public override void OnInspectorGUI()
@@ -55,9 +54,9 @@ namespace Pancake.IAPEditor
                 true,
                 false) {drawElementCallback = DrawElementCallback, drawHeaderCallback = DrawHeaderCallback};
             _reorderableList.elementHeightCallback += ElementHeightCallback;
-            GUI.backgroundColor = Uniform.FieryRose;
+            GUI.backgroundColor = Uniform.SunsetOrange;
             EditorGUILayout.HelpBox(
-                "\nProduct id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time\n",
+                "\nProduct id should look like : com.appname.itemid\n Ex: com.pancake.removeads\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time\n",
                 MessageType.Info);
             GUI.backgroundColor = Color.white;
 
@@ -72,7 +71,7 @@ namespace Pancake.IAPEditor
             {
                 const string p = "Assets/_Root/Storages/Generated/IAP";
                 if (!Directory.Exists(p)) Directory.CreateDirectory(p);
-                (target as IAPSettings)?.Products.Clear();
+                IAPSettings.Products.Clear();
                 for (int i = 0; i < _skusDataProperty.arraySize; i++)
                 {
                     var iapData = _skusDataProperty.GetArrayElementAtIndex(i);
@@ -81,7 +80,7 @@ namespace Pancake.IAPEditor
                     string itemName = id.Split('.').Last();
                     AssetDatabase.DeleteAsset($"{p}/scriptable_iap_{itemName.ToLower()}.asset"); // delete previous product same name
                     var scriptable = CreateInstance<IAPDataVariable>();
-                    (target as IAPSettings)?.Products.Add(scriptable);
+                    IAPSettings.Products.Add(scriptable);
                     scriptable.id = id;
                     scriptable.productType = productType;
                     AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
@@ -112,8 +111,8 @@ namespace Pancake.IAPEditor
                     googleError: ref appleError,
                     googlePlayPublicKey: _googlePlayStoreKeyProperty.stringValue);
 
-                string pathAsmdef = ProjectDatabase.GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdef.txt");
-                string pathAsmdefMeta = ProjectDatabase.GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdefMeta.txt");
+                string pathAsmdef = ProjectDatabase.GetPathInCurrentEnvironent("Editor/Templates/PurchasingGeneratedAsmdef.txt");
+                string pathAsmdefMeta = ProjectDatabase.GetPathInCurrentEnvironent("Editor/Templates/PurchasingGeneratedAsmdefMeta.txt");
                 var asmdef = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdef, typeof(TextAsset));
                 var meta = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdefMeta, typeof(TextAsset));
 

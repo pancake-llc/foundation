@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using Pancake.Common;
 
 namespace Pancake.MobileInput
 {
     [RequireComponent(typeof(Camera))]
-    [EditorIcon("script_game_state")]
+    [EditorIcon("icon_input")]
     public class TouchCamera : CacheGameComponent<TouchCamera>
     {
-        #region inspector
+        #region Field
 
         [SerializeField] private Camera cam;
-        
+
         [SerializeField]
         [Tooltip(
             "You need to define whether your camera is a side-view camera (which is the default when using the 2D mode of unity) or if you chose a top-down looking camera. This parameter tells the system whether to scroll in XY direction, or in XZ direction.")]
@@ -42,12 +43,12 @@ namespace Pancake.MobileInput
         [SerializeField]
         [Tooltip(
             "These values define the scrolling borders for the camera. The camera will not scroll further than defined here. When a top-down camera is used, these 2 values are applied to the X/Z position.")]
-        private Vector2 boundaryMin = new Vector2(-1000, -1000);
+        private Vector2 boundaryMin = new(-1000, -1000);
 
         [SerializeField]
         [Tooltip(
             "These values define the scrolling borders for the camera. The camera will not scroll further than defined here. When a top-down camera is used, these 2 values are applied to the X/Z position.")]
-        private Vector2 boundaryMax = new Vector2(1000, 1000);
+        private Vector2 boundaryMax = new(1000, 1000);
 
         [Header("Advanced")]
         [SerializeField]
@@ -65,8 +66,7 @@ namespace Pancake.MobileInput
         private float autoScrollDamp = 300;
 
         [SerializeField] [Tooltip("This curve allows to modulate the auto scroll damp value over time.")]
-        private AnimationCurve autoScrollDampCurve =
-            new AnimationCurve(new Keyframe(0, 1, 0, 0), new Keyframe(0.7f, 0.9f, -0.5f, -0.5f), new Keyframe(1, 0.01f, -0.85f, -0.85f));
+        private AnimationCurve autoScrollDampCurve = new(new Keyframe(0, 1, 0, 0), new Keyframe(0.7f, 0.9f, -0.5f, -0.5f), new Keyframe(1, 0.01f, -0.85f, -0.85f));
 
         [SerializeField]
         [Tooltip(
@@ -113,7 +113,7 @@ namespace Pancake.MobileInput
         [Header("Keyboard & Mouse Input")]
         [Tooltip("Here you can define all platforms that should support keyboard and mouse input for controlling the camera.")]
         [SerializeField]
-        private List<RuntimePlatform> keyboardAndMousePlatforms = new List<RuntimePlatform>()
+        private List<RuntimePlatform> keyboardAndMousePlatforms = new()
         {
             RuntimePlatform.WindowsEditor,
             RuntimePlatform.WindowsPlayer,
@@ -127,7 +127,7 @@ namespace Pancake.MobileInput
         [SerializeField] private bool controlTweakablesEnabled;
 
         [SerializeField] [Tooltip("When any of these modifiers is pressed the arrow keys can be used for rotating the camera.")]
-        private List<KeyCode> keyboardControlsModifiers = new List<KeyCode>() {KeyCode.LeftAlt, KeyCode.RightAlt, KeyCode.LeftControl, KeyCode.RightControl};
+        private List<KeyCode> keyboardControlsModifiers = new() {KeyCode.LeftAlt, KeyCode.RightAlt, KeyCode.LeftControl, KeyCode.RightControl};
 
         [SerializeField] private float mouseRotationFactor = 0.01f;
         [SerializeField] private float mouseTiltFactor = 0.005f;
@@ -143,17 +143,6 @@ namespace Pancake.MobileInput
         private float keyboardRepeatDelay = 0.5f;
 
         #endregion
-
-        [SerializeField] private InputEventStartDrag onStartDrag;
-        [SerializeField] private InputEventUpdateDrag onUpdateDrag;
-        [SerializeField] private InputEventStopDrag onStopDrag;
-        [SerializeField] private InputEventFingerDown onFingerDown;
-        [SerializeField] private InputEventFingerUp onFingerUp;
-        [SerializeField] private InputEventClick onClick;
-        [SerializeField] private InputEventStartPinch onStartPinch;
-        [SerializeField] private InputEventUpdateExtendPinch onUpdateExtendPinch;
-        [SerializeField] private InputEventStopPinch onStopPinch;
-
 
         public CameraPlaneAxes CameraAxes { get => cameraAxes; set => cameraAxes = value; }
         public Camera Cam => cam;
@@ -273,10 +262,7 @@ namespace Pancake.MobileInput
         {
             get
             {
-                if (cam.orthographic)
-                {
-                    return cam.orthographicSize;
-                }
+                if (cam.orthographic) return cam.orthographicSize;
 
                 if (IsTranslationZoom)
                 {
@@ -288,10 +274,7 @@ namespace Pancake.MobileInput
             }
             set
             {
-                if (cam.orthographic)
-                {
-                    cam.orthographicSize = value;
-                }
+                if (cam.orthographic) cam.orthographicSize = value;
                 else
                 {
                     if (IsTranslationZoom)
@@ -299,10 +282,7 @@ namespace Pancake.MobileInput
                         var camCenterIntersection = GetIntersectionPoint(GetCamCenterRay());
                         CachedTransform.position = camCenterIntersection - CachedTransform.forward * value;
                     }
-                    else
-                    {
-                        cam.fieldOfView = value;
-                    }
+                    else cam.fieldOfView = value;
                 }
 
                 ComputeCamBoundaries();
@@ -352,10 +332,7 @@ namespace Pancake.MobileInput
         {
             get
             {
-                if (is2dOverdragMarginEnabled)
-                {
-                    return camOverdragMargin2d;
-                }
+                if (is2dOverdragMarginEnabled) return camOverdragMargin2d;
 
                 return Vector2.one * camOverdragMargin;
             }
@@ -368,17 +345,14 @@ namespace Pancake.MobileInput
 
         private bool _isDraggingSceneObject;
 
-        private Plane _refPlaneXY = new Plane(new Vector3(0, 0, -1), 0);
-        private Plane _refPlaneXZ = new Plane(new Vector3(0, 1, 0), 0);
+        private Plane _refPlaneXY = new(new Vector3(0, 0, -1), 0);
+        private Plane _refPlaneXZ = new(new Vector3(0, 1, 0), 0);
 
         public Plane RefPlane
         {
             get
             {
-                if (CameraAxes == CameraPlaneAxes.XZTopDown)
-                {
-                    return _refPlaneXZ;
-                }
+                if (CameraAxes == CameraPlaneAxes.XZTopDown) return _refPlaneXZ;
 
                 return _refPlaneXY;
             }
@@ -440,10 +414,7 @@ namespace Pancake.MobileInput
             DragCameraMoveVector = new List<Vector3>();
             _refPlaneXY = new Plane(new Vector3(0, 0, -1), groundLevelOffset);
             _refPlaneXZ = new Plane(new Vector3(0, 1, 0), -groundLevelOffset);
-            if (EnableZoomTilt)
-            {
-                ResetZoomTilt();
-            }
+            if (EnableZoomTilt) ResetZoomTilt();
 
             ComputeCamBoundaries();
 
@@ -455,23 +426,20 @@ namespace Pancake.MobileInput
 
             //Errors for certain incorrect settings.
             string cameraAxesError = CheckCameraAxesErrors();
-            if (string.IsNullOrEmpty(cameraAxesError) == false)
-            {
-                Debug.LogError(cameraAxesError);
-            }
+            if (string.IsNullOrEmpty(cameraAxesError) == false) Debug.LogError(cameraAxesError);
         }
 
         public void Start()
         {
-            onClick.OnRaised += OnClick;
-            onStartDrag.OnRaised += InputOnDragStart;
-            onUpdateDrag.OnRaised += InputOnDragUpdate;
-            onStopDrag.OnRaised += InputOnDragStop;
-            onFingerDown.OnRaised += InputOnFingerDown;
-            onFingerUp.OnRaised += InputOnFingerUp;
-            onStartPinch.OnRaised += InputOnPinchStart;
-            onUpdateExtendPinch.OnRaised += InputOnPinchUpdate;
-            onStopPinch.OnRaised += InputOnPinchStop;
+            TouchInput.OnClick += OnClick;
+            TouchInput.OnStartDrag += InputOnDragStart;
+            TouchInput.OnUpdateDrag += InputOnDragUpdate;
+            TouchInput.OnStopDrag += InputOnDragStop;
+            TouchInput.OnFingerDown += InputOnFingerDown;
+            TouchInput.OnFingerUp += InputOnFingerUp;
+            TouchInput.OnStartPinch += InputOnPinchStart;
+            TouchInput.OnUpdateExtendPinch += InputOnPinchUpdate;
+            TouchInput.OnStopPinch += InputOnPinchStop;
             _isStarted = true;
             StartCoroutine(InitCamBoundariesDelayed());
         }
@@ -480,15 +448,15 @@ namespace Pancake.MobileInput
         {
             if (_isStarted)
             {
-                onClick.OnRaised -= OnClick;
-                onStartDrag.OnRaised -= InputOnDragStart;
-                onUpdateDrag.OnRaised -= InputOnDragUpdate;
-                onStopDrag.OnRaised -= InputOnDragStop;
-                onFingerDown.OnRaised -= InputOnFingerDown;
-                onFingerUp.OnRaised -= InputOnFingerUp;
-                onStartPinch.OnRaised -= InputOnPinchStart;
-                onUpdateExtendPinch.OnRaised -= InputOnPinchUpdate;
-                onStopPinch.OnRaised -= InputOnPinchStop;
+                TouchInput.OnClick -= OnClick;
+                TouchInput.OnStartDrag -= InputOnDragStart;
+                TouchInput.OnUpdateDrag -= InputOnDragUpdate;
+                TouchInput.OnStopDrag -= InputOnDragStop;
+                TouchInput.OnFingerDown -= InputOnFingerDown;
+                TouchInput.OnFingerUp -= InputOnFingerUp;
+                TouchInput.OnStartPinch -= InputOnPinchStart;
+                TouchInput.OnUpdateExtendPinch -= InputOnPinchUpdate;
+                TouchInput.OnStopPinch -= InputOnPinchStop;
             }
         }
 
@@ -585,12 +553,12 @@ namespace Pancake.MobileInput
         }
 
         /// <summary>
-        /// Returns whether or not the camera is at the defined boundary.
+        /// Returns whether the camera is at the defined boundary.
         /// </summary>
         public bool GetIsBoundaryPosition(Vector3 testPosition) { return GetIsBoundaryPosition(testPosition, Vector2.zero); }
 
         /// <summary>
-        /// Returns whether or not the camera is at the defined boundary.
+        /// Returns whether the camera is at the defined boundary.
         /// </summary>
         public bool GetIsBoundaryPosition(Vector3 testPosition, Vector2 margin)
         {
@@ -891,6 +859,7 @@ namespace Pancake.MobileInput
         /// <summary>
         /// Returns the rotation of the camera.
         /// </summary>
+        // ReSharper disable once UnusedMember.Local
         private float GetRotationDeg()
         {
             return CameraAxes == CameraPlaneAxes.XY2DSideScroll ? CachedTransform.rotation.eulerAngles.z : CachedTransform.rotation.eulerAngles.y;
@@ -953,7 +922,7 @@ namespace Pancake.MobileInput
                 var overdragSpringVector = ComputeOverdragSpringBackVector(camPos, CamOverdragMargin2d, ref _cameraScrollVelocity);
                 if (overdragSpringVector.magnitude > float.Epsilon)
                 {
-                    camPos += Time.unscaledDeltaTime * overdragSpringVector * dragBackSpringFactor;
+                    camPos += overdragSpringVector * (Time.unscaledDeltaTime * dragBackSpringFactor);
                 }
             }
 
@@ -1031,7 +1000,7 @@ namespace Pancake.MobileInput
             }
             else
             {
-                float camRotation = GetRotationDeg();
+                //float camRotation = GetRotationDeg();
 
                 var camProjectedCenter =
                     GetIntersection2d(new Ray(CachedTransform.position,
@@ -1109,7 +1078,7 @@ namespace Pancake.MobileInput
                 float dampFactor = Mathf.Clamp01(timeSinceDragStop * dampFactorTimeMultiplier);
                 float camScrollVel = _cameraScrollVelocity.magnitude;
                 float camScrollVelRelative = camScrollVel / autoScrollVelocityMax;
-                var camVelDamp = dampFactor * _cameraScrollVelocity.normalized * autoScrollDamp * Time.unscaledDeltaTime;
+                var camVelDamp = _cameraScrollVelocity.normalized * (dampFactor * autoScrollDamp * Time.unscaledDeltaTime);
                 camVelDamp *= EvaluateAutoScrollDampCurve(Mathf.Clamp01(1.0f - camScrollVelRelative));
                 if (camVelDamp.sqrMagnitude >= _cameraScrollVelocity.sqrMagnitude) _cameraScrollVelocity = Vector3.zero;
                 else _cameraScrollVelocity -= camVelDamp;
@@ -1207,22 +1176,9 @@ namespace Pancake.MobileInput
                     }
                     else
                     {
-                        float editorZoomFactor = 15;
-                        if (cam.orthographic)
-                        {
-                            editorZoomFactor = 15;
-                        }
-                        else
-                        {
-                            if (IsTranslationZoom)
-                            {
-                                editorZoomFactor = 30;
-                            }
-                            else
-                            {
-                                editorZoomFactor = 100;
-                            }
-                        }
+                        float editorZoomFactor;
+                        if (cam.orthographic) editorZoomFactor = 15;
+                        else editorZoomFactor = IsTranslationZoom ? 30 : 100;
 
                         float zoomAmount = mouseScrollDelta * editorZoomFactor;
                         float camSizeDiff = DoEditorCameraZoom(zoomAmount);
@@ -1237,7 +1193,7 @@ namespace Pancake.MobileInput
                 {
                     if (Input.GetKeyDown((KeyCode) ((int) KeyCode.Alpha1 + i)))
                     {
-                        StartCoroutine(ZoomToTargetValueCoroutine(Mathf.Lerp(CamZoomMin, CamZoomMax, (float) i / 2.0f)));
+                        StartCoroutine(ZoomToTargetValueCoroutine(Mathf.Lerp(CamZoomMin, CamZoomMax, i / 2.0f)));
                     }
                 }
             }

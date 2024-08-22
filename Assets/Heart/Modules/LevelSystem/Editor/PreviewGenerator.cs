@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -88,7 +88,7 @@ namespace Pancake.LevelSystemEditor
             if (!CanCreatePreview(obj))
             {
                 onCapturedCallback?.Invoke(null);
-                return EditorResources.ScriptableFactory;
+                return EditorResources.IconGameObject;
             }
 
             var cachedPosition = obj.transform.position;

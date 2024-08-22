@@ -1,4 +1,4 @@
-/* THIS CLASS IS AUTO-GENERATED! DO NOT MODIFY!  */ 
+/* THIS CLASS IS AUTO-GENERATED! DO NOT MODIFY!  */
 /* MIT License
 
 Copyright (c) 2016 Edward Rowe, RedBlueGames

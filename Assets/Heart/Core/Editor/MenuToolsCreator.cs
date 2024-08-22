@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
-using Pancake;
-using Pancake.ExLib;
+using Pancake.Common;
+using PancakeEditor.Finder;
 using RedBlueGames.MulliganRenamer;
 using UnityEditor;
 using UnityEngine;
@@ -30,8 +30,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/DOTween Adapter", validate = false)]
         private static void ToggleDotweenAdapter()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER");
             toggle = !toggle;
             if (toggle)
             {
@@ -50,8 +49,7 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/DOTween Adapter", validate = true)]
         private static bool ValidateToggleDotweenAdapter()
         {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER");
             Menu.SetChecked("Tools/Pancake/DOTween Adapter", toggle);
             return true;
         }
@@ -91,6 +89,60 @@ namespace PancakeEditor
         [MenuItem("Tools/Pancake/Mulligan Renamer", false)]
         private static void MulliganRenamer() { EditorWindow.GetWindow<MulliganRenamerWindow>(false, "Mulligan Renamer", true); }
 
+        [MenuItem("Tools/Pancake/BakingSheet/Runtime Csv Converter", validate = false)]
+        private static void ToggleBakingSheetRuntimeCsv()
+        {
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_CSVCONVERTER");
+            toggle = !toggle;
+            if (toggle)
+            {
+                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("BAKINGSHEET_RUNTIME_CSVCONVERTER");
+            }
+            else
+            {
+                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("BAKINGSHEET_RUNTIME_CSVCONVERTER");
+            }
+
+            AssetDatabase.Refresh();
+            string text = toggle ? " <color=#f75369>Enabled" : "<color=#FF2828>Disabled";
+            Debug.Log($"[BakingSheet] Runtime Csv Converter {text}</color>");
+        }
+
+        [MenuItem("Tools/Pancake/BakingSheet/Runtime Csv Converter", validate = true)]
+        private static bool ValidateToggleBakingSheetRuntimeCsv()
+        {
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_CSVCONVERTER");
+            Menu.SetChecked("Tools/Pancake/BakingSheet/Runtime Csv Converter", toggle);
+            return true;
+        }
+
+        [MenuItem("Tools/Pancake/BakingSheet/Runtime Google Converter", validate = false)]
+        private static void ToggleBakingSheetRuntimeGoogle()
+        {
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_GOOGLECONVERTER");
+            toggle = !toggle;
+            if (toggle)
+            {
+                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("BAKINGSHEET_RUNTIME_GOOGLECONVERTER");
+            }
+            else
+            {
+                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("BAKINGSHEET_RUNTIME_GOOGLECONVERTER");
+            }
+
+            AssetDatabase.Refresh();
+            string text = toggle ? " <color=#f75369>Enabled" : "<color=#FF2828>Disabled";
+            Debug.Log($"[BakingSheet] Runtime Google Converter {text}</color>");
+        }
+
+        [MenuItem("Tools/Pancake/BakingSheet/Runtime Google Converter", validate = true)]
+        private static bool ValidateToggleBakingSheetRuntimeGoogle()
+        {
+            bool toggle = ScriptingDefinition.IsSymbolDefined("BAKINGSHEET_RUNTIME_GOOGLECONVERTER");
+            Menu.SetChecked("Tools/Pancake/BakingSheet/Runtime Google Converter", toggle);
+            return true;
+        }
+
         #endregion
 
         #region 2
@@ -126,7 +178,7 @@ namespace PancakeEditor
         private static void ClearPersistentDataPath()
         {
             if (EditorUtility.DisplayDialog("Clear Persistent Data Path",
-                    "Are you sure you wish to clear the persistent data path?\n This action cannot be reversed.",
+                    "Are you sure you wish to clear the persistent data path?\nThis action cannot be reversed.",
                     "Clear",
                     "Cancel"))
             {

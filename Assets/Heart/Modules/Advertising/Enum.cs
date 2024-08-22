@@ -10,6 +10,13 @@ namespace Pancake.Monetization
         BottomRight = 5,
     }
 
+    public enum EBannerCollapsiblePosition
+    {
+        None = 0,
+        Top = 2,
+        Bottom = 1
+    }
+
     public enum EBannerSize
     {
         Banner = 0, // 320x50

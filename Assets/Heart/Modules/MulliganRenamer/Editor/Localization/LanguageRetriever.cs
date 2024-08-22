@@ -39,10 +39,7 @@ namespace RedBlueGames.MulliganRenamer
 
         public bool IsDoneUpdating { get; private set; }
 
-        public LanguageRetriever()
-        {
-            this.IsDoneUpdating = true;
-        }
+        public LanguageRetriever() { this.IsDoneUpdating = true; }
 
         public void UpdateLanguages(bool useStagingLink = false)
         {
@@ -51,8 +48,7 @@ namespace RedBlueGames.MulliganRenamer
 
         private IEnumerator UpdateLanguagesAsync(bool useStagingLink = false)
         {
-            EditorUtility.DisplayProgressBar(
-                LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitle"),
+            EditorUtility.DisplayProgressBar(LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitle"),
                 LocalizationManager.Instance.GetTranslation("languageUpdateProgressMessage1"),
                 0.0f);
             this.IsDoneUpdating = false;
@@ -84,13 +80,9 @@ namespace RedBlueGames.MulliganRenamer
                     string filename = System.IO.Path.GetFileName(uri.LocalPath);
 
                     // Add one because we finished downloading Bookmarks.
-                    var percentComplete = (i + 1) / (float)(bookmarks.LanguageUrls.Count + 1);
-                    EditorUtility.DisplayProgressBar(
-                        LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitle"),
-                        string.Format(
-                            LocalizationManager.Instance.GetTranslation(
-                                "languageUpdateDownloadingLanguages"),
-                                filename),
+                    var percentComplete = (i + 1) / (float) (bookmarks.LanguageUrls.Count + 1);
+                    EditorUtility.DisplayProgressBar(LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitle"),
+                        string.Format(LocalizationManager.Instance.GetTranslation("languageUpdateDownloadingLanguages"), filename),
                         percentComplete);
 
                     var languageRetriever = new JSONRetrieverWeb<Language>(url);
@@ -110,15 +102,13 @@ namespace RedBlueGames.MulliganRenamer
                 }
             }
 
-            EditorUtility.DisplayProgressBar(
-                LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitle"),
+            EditorUtility.DisplayProgressBar(LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitle"),
                 LocalizationManager.Instance.GetTranslation("languageUpdateSavingChanges"),
                 1.0f);
             EditorUtility.ClearProgressBar();
 
             var reports = LocalizationManager.Instance.AddOrUpdateLanguages(languages);
-            EditorUtility.DisplayDialog(
-                LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitleSuccess"),
+            EditorUtility.DisplayDialog(LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitleSuccess"),
                 BuildDisplayStringForReport(reports),
                 LocalizationManager.Instance.GetTranslation("ok"));
         }
@@ -127,8 +117,7 @@ namespace RedBlueGames.MulliganRenamer
         {
             var message = BuildDisplayStringForAsyncOp(op);
             EditorUtility.ClearProgressBar();
-            EditorUtility.DisplayDialog(
-                LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitleFail"),
+            EditorUtility.DisplayDialog(LocalizationManager.Instance.GetTranslation("languageUpdateProgressTitleFail"),
                 message,
                 LocalizationManager.Instance.GetTranslation("ok"));
         }
@@ -142,10 +131,7 @@ namespace RedBlueGames.MulliganRenamer
             }
             else if (op.Status == AsyncStatus.Failed)
             {
-                message = string.Format(
-                    LocalizationManager.Instance.GetTranslation("languageUpdateFail"),
-                    op.FailureCode,
-                    op.FailureMessage);
+                message = string.Format(LocalizationManager.Instance.GetTranslation("languageUpdateFail"), op.FailureCode, op.FailureMessage);
             }
             else
             {
@@ -169,12 +155,10 @@ namespace RedBlueGames.MulliganRenamer
                         updatedStringBuilder.AppendLine();
                     }
 
-                    updatedStringBuilder.AppendFormat(
-                        string.Format(
-                            LocalizationManager.Instance.GetTranslation("languageUpdated"),
-                            report.Language.Name,
-                            report.PreviousVersion,
-                            report.NewVersion));
+                    updatedStringBuilder.AppendFormat(string.Format(LocalizationManager.Instance.GetTranslation("languageUpdated"),
+                        report.Language.Name,
+                        report.PreviousVersion,
+                        report.NewVersion));
                 }
                 else if (report.Result == LocalizationManager.LanguageUpdateReport.UpdateResult.Added)
                 {
@@ -183,10 +167,7 @@ namespace RedBlueGames.MulliganRenamer
                         addedLanguageStringBuilder.AppendLine();
                     }
 
-                    addedLanguageStringBuilder.AppendFormat(
-                        string.Format(
-                            LocalizationManager.Instance.GetTranslation("languageAdded"),
-                            report.Language.Name));
+                    addedLanguageStringBuilder.AppendFormat(string.Format(LocalizationManager.Instance.GetTranslation("languageAdded"), report.Language.Name));
                 }
                 else
                 {
@@ -195,10 +176,7 @@ namespace RedBlueGames.MulliganRenamer
                         unchangedStringBuilder.AppendLine();
                     }
 
-                    unchangedStringBuilder.AppendFormat(
-                        string.Format(
-                            LocalizationManager.Instance.GetTranslation("languageUnchanged"),
-                            report.Language.Name));
+                    unchangedStringBuilder.AppendFormat(string.Format(LocalizationManager.Instance.GetTranslation("languageUnchanged"), report.Language.Name));
                 }
             }
 
@@ -231,9 +209,6 @@ namespace RedBlueGames.MulliganRenamer
             return message.ToString();
         }
 
-        private void HandleUpdateComplete()
-        {
-            this.IsDoneUpdating = true;
-        }
+        private void HandleUpdateComplete() { this.IsDoneUpdating = true; }
     }
 }

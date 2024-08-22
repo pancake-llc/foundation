@@ -7,7 +7,12 @@ namespace Pancake.ComputationalGeometry
     //From the report "An algorithm for generating constrained delaunay triangulations" by Sloan
     public static class ConstrainedDelaunaySloan
     {
-        public static HalfEdgeData2 GenerateTriangulation(HashSet<MyVector2> points, List<MyVector2> hull, HashSet<List<MyVector2>> holes, bool shouldRemoveTriangles, HalfEdgeData2 triangleData)
+        public static HalfEdgeData2 GenerateTriangulation(
+            HashSet<MyVector2> points,
+            List<MyVector2> hull,
+            HashSet<List<MyVector2>> holes,
+            bool shouldRemoveTriangles,
+            HalfEdgeData2 triangleData)
         {
             //Start by generating a delaunay triangulation with all points, including the constraints
             HashSet<MyVector2> allPoints = new HashSet<MyVector2>();
@@ -35,10 +40,10 @@ namespace Pancake.ComputationalGeometry
 
             //Generate the Delaunay triangulation with some algorithm
             //timer.Start();
-            
+
             //triangleData = _Delaunay.FlippingEdges(allPoints);
             triangleData = _Delaunay.PointByPoint(allPoints, triangleData);
-            
+
             //timer.Stop();
 
             //Delaunay takes 0.003 seconds for the house so is not the bottle neck
@@ -62,13 +67,16 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Add the constraints to the delaunay triangulation
         //
 
         //timer is for debugging
-        private static HalfEdgeData2 AddConstraints(HalfEdgeData2 triangleData, List<MyVector2> constraints, bool shouldRemoveTriangles, System.Diagnostics.Stopwatch timer = null)
+        private static HalfEdgeData2 AddConstraints(
+            HalfEdgeData2 triangleData,
+            List<MyVector2> constraints,
+            bool shouldRemoveTriangles,
+            System.Diagnostics.Stopwatch timer = null)
         {
             //Validate the data
             if (constraints == null)
@@ -83,7 +91,7 @@ namespace Pancake.ComputationalGeometry
             //The mesh has holes because we remove triangles while adding constraints one-by-one
             //so maybe better to remove triangles after we added all constraints...
             HashSet<HalfEdge2> edges = triangleData.edges;
-         
+
 
             //The steps numbering is from the report
             //Step 1. Loop over each constrained edge. For each of these edges, do steps 2-4 
@@ -134,7 +142,6 @@ namespace Pancake.ComputationalGeometry
 
             return triangleData;
         }
-
 
 
         //
@@ -205,7 +212,6 @@ namespace Pancake.ComputationalGeometry
 
             return newEdges;
         }
-
 
 
         //
@@ -280,7 +286,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Remove all triangles that are inside the constraint
         //
@@ -311,11 +316,10 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Find which triangles are within a constraint
         //
-       
+
         public static HashSet<HalfEdgeFace2> FindTrianglesWithinConstraint(HalfEdgeData2 triangleData, List<MyVector2> constraints)
         {
             HashSet<HalfEdgeFace2> trianglesToDelete = new HashSet<HalfEdgeFace2>();
@@ -335,10 +339,10 @@ namespace Pancake.ComputationalGeometry
             {
                 if (!trianglesToCheck.Contains(e.face))
                 {
-                    trianglesToCheck.Enqueue(e.face);                    
+                    trianglesToCheck.Enqueue(e.face);
                 }
             }
-            
+
 
             //Step 2. Find the rest of the triangles within the constraint by using a flood-fill algorithm
             int safety = 0;
@@ -409,7 +413,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Find a triangle which has an edge going from p1 to p2
         //private static HalfEdgeFace2 FindTriangleWithEdge(MyVector2 p1, MyVector2 p2, HalfEdgeData2 triangleData)
         //{
@@ -429,7 +432,6 @@ namespace Pancake.ComputationalGeometry
 
         //    return null;
         //}
-
 
 
         //Find all half-edges that are constraint
@@ -485,7 +487,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Find edges that intersect with a constraint
         //
@@ -530,7 +531,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Method 2. Triangulation walk
         //This assumes there are no holes in the mesh
         //And that we have a super-triangle around the triangulation
@@ -556,14 +556,11 @@ namespace Pancake.ComputationalGeometry
             }
 
 
-            
             //Step2. Walk around p1 until we find a triangle with an edge that intersects with the edge p1-p2
-           
+
 
             //Step3. March from one triangle to the next in the general direction of p2
-           
         }
-
 
 
         //
@@ -585,7 +582,6 @@ namespace Pancake.ComputationalGeometry
 
             return false;
         }
-
 
 
         //Is an edge (between p1 and p2) in a list with edges
@@ -612,7 +608,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Is an edge between p1 and p2 a constraint?
         //private static bool IsEdgeAConstraint(MyVector2 p1, MyVector2 p2, List<MyVector2> constraints)
         //{
@@ -629,7 +624,6 @@ namespace Pancake.ComputationalGeometry
 
         //    return false;
         //}
-
 
 
         //Is an edge crossing another edge? 

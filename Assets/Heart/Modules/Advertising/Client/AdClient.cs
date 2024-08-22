@@ -1,14 +1,8 @@
-using Pancake.Apex;
-
 namespace Pancake.Monetization
 {
-    [HideMonoScript]
     public abstract class AdClient
     {
-        protected AdSettings adSettings;
         protected bool statusAppOpenFirstIgnore;
-
-        public void SetupSetting(AdSettings adSettings) { this.adSettings = adSettings; }
 
         public abstract void Init();
         public abstract void LoadBanner();

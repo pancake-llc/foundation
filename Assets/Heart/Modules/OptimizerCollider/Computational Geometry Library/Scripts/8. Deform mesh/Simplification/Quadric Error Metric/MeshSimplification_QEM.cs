@@ -18,7 +18,6 @@ namespace Pancake.ComputationalGeometry
         //- Some times when we contract an edge we end up with invalid triangles, such as triangles with area 0. Are all these automatically removed if we weigh each error with triangle area? Or do we need to check that the triangulation is valid after contracting an edge?
 
 
-
         /// <summary>
         /// Merge edges to simplify a mesh
         /// Based on reports by Garland and Heckbert, "Surface simplification using quadric error metrics"
@@ -32,7 +31,12 @@ namespace Pancake.ComputationalGeometry
         /// <returns>The simplified mesh</returns>
         /// If you set edgesToContract to max value, then it will continue until it cant merge any more edges or the maxError is reached
         /// If you set maxError to max value, then it will continue to merge edges until it cant merge or max edgesToContract is reached 
-        public static HalfEdgeData3 Simplify(HalfEdgeData3 halfEdgeMeshData, int maxEdgesToContract, float maxError, bool normalizeTriangles = false, Normalizer3 normalizer = null)
+        public static HalfEdgeData3 Simplify(
+            HalfEdgeData3 halfEdgeMeshData,
+            int maxEdgesToContract,
+            float maxError,
+            bool normalizeTriangles = false,
+            Normalizer3 normalizer = null)
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
 
@@ -77,14 +81,12 @@ namespace Pancake.ComputationalGeometry
 
             //timer.Stop();
 
-         
-           
+
             //
             // Select all valid pairs that can be contracted
             //
 
             List<HalfEdge3> validPairs = new List<HalfEdge3>(halfEdgeMeshData.edges);
-
 
 
             //
@@ -97,7 +99,7 @@ namespace Pancake.ComputationalGeometry
             Dictionary<HalfEdge3, QEM_Edge> halfEdge_QEM_Lookup = new Dictionary<HalfEdge3, QEM_Edge>();
 
             foreach (HalfEdge3 halfEdge in validPairs)
-            {            
+            {
                 MyVector3 p1 = halfEdge.prevEdge.v.position;
                 MyVector3 p2 = halfEdge.v.position;
 
@@ -110,7 +112,6 @@ namespace Pancake.ComputationalGeometry
 
                 halfEdge_QEM_Lookup.Add(halfEdge, QEM_edge);
             }
-
 
 
             //
@@ -126,7 +127,6 @@ namespace Pancake.ComputationalGeometry
             }
 
 
-
             //
             // Start contracting edges
             //
@@ -139,7 +139,7 @@ namespace Pancake.ComputationalGeometry
                 if (halfEdgeMeshData.faces.Count <= 4)
                 {
                     Debug.Log($"Cant contract more than {i} edges");
-                
+
                     break;
                 }
 
@@ -159,7 +159,7 @@ namespace Pancake.ComputationalGeometry
                 {
                     //This edge wasn't contracted so don't add it to iteration
                     i -= 1;
-                
+
                     continue;
                 }
 
@@ -187,7 +187,6 @@ namespace Pancake.ComputationalGeometry
                 //timer.Stop();
 
 
-
                 //
                 // Remove all QEM_edges that belonged to the faces we contracted
                 //
@@ -200,7 +199,7 @@ namespace Pancake.ComputationalGeometry
                 //This edge doesnt exist anymore, so remove it from the lookup
                 halfEdge_QEM_Lookup.Remove(edgeToContract);
 
-                //Remove the two edges that were a part of the triangle of the edge we contracted               
+                //Remove the two edges that were a part of the triangle of the edge we contracted
                 RemoveHalfEdgeFromQEMEdges(edgeToContract.nextEdge, QEM_edges, halfEdge_QEM_Lookup);
                 RemoveHalfEdgeFromQEMEdges(edgeToContract.nextEdge.nextEdge, QEM_edges, halfEdge_QEM_Lookup);
 
@@ -223,7 +222,6 @@ namespace Pancake.ComputationalGeometry
                 //timer.Stop();
 
 
-
                 //
                 // Update all QEM_edges that is now connected with the new contracted vertex because their errors have changed
                 //
@@ -239,7 +237,7 @@ namespace Pancake.ComputationalGeometry
                 //Those edges are the same edges that points to the new vertex and goes from the new vertex
                 //timer.Start();
                 foreach (HalfEdge3 edgeToV in edgesPointingToNewVertex)
-                {                
+                {
                     //The edge going from the new vertex is the next edge of the edge going to the vertex
                     HalfEdge3 edgeFromV = edgeToV.nextEdge;
 
@@ -289,7 +287,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Calculate the Q matrix for a vertex if we know all edges pointing to the vertex
         public static Matrix4x4 CalculateQMatrix(HashSet<HalfEdge3> edgesPointingToVertex, bool normalizeTriangles)
         {
@@ -331,12 +328,10 @@ namespace Pancake.ComputationalGeometry
                 float d = -(a * p1.x + b * p1.y + c * p1.z);
 
                 //This built-in matrix is initialized by giving it columns
-                Matrix4x4 Kp = new Matrix4x4(
-                    new Vector4(a * a, a * b, a * c, a * d),
+                Matrix4x4 Kp = new Matrix4x4(new Vector4(a * a, a * b, a * c, a * d),
                     new Vector4(a * b, b * b, b * c, b * d),
                     new Vector4(a * c, b * c, c * c, c * d),
-                    new Vector4(a * d, b * d, c * d, d * d)
-                    );
+                    new Vector4(a * d, b * d, c * d, d * d));
 
                 //You can multiply this Kp with the area of the triangle to get a weighted-Kp which may improve the result
                 //This is only needed if the triangles have very different size

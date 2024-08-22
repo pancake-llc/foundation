@@ -19,7 +19,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Position
         //
@@ -70,7 +69,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Derivative
         //
@@ -94,21 +92,13 @@ namespace Pancake.ComputationalGeometry
             return derivativeVec;
         }
 
-        public override MyVector3 GetSecondDerivativeVec(float t)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override MyVector3 GetSecondDerivativeVec(float t) { throw new System.NotImplementedException(); }
 
 
         //
         // Tangent
         //
 
-        public override MyVector3 GetTangent(float t)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        
+        public override MyVector3 GetTangent(float t) { throw new System.NotImplementedException(); }
     }
 }

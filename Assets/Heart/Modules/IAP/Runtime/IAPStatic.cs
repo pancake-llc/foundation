@@ -1,6 +1,5 @@
 #if PANCAKE_IAP
 using System;
-using Pancake.Scriptable;
 
 namespace Pancake.IAP
 {
@@ -34,21 +33,13 @@ namespace Pancake.IAP
         /// wrapper 
         /// </summary>
         /// <param name="product"></param>
-        /// <param name="event">event purchase</param>
-        public static void Purchase(this IAPDataVariable product, ScriptableEventIAPProduct @event) { @event.Raise(product); }
+        public static void Purchase(this IAPDataVariable product) { IAPManager.Purchase(product); }
 
         /// <summary>
         /// wrapper
         /// </summary>
         /// <param name="product"></param>
-        /// <param name="event">event check is product purchased</param>
-        public static bool IsPurchased(this IAPDataVariable product, ScriptableEventIAPFuncProduct @event) { return @event.Raise(product); }
-
-        /// <summary>
-        /// restore purchase wrapper
-        /// </summary>
-        /// <param name="event"></param>
-        public static void RestorePurchase(this ScriptableEventIAPNoParam @event) { @event.Raise(); }
+        public static bool IsPurchased(this IAPDataVariable product) { return IAPManager.IsPurchased(product); }
     }
 }
 #endif

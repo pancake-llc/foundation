@@ -1,14 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Pancake.Apex;
-using Pancake.Scriptable;
+using Alchemy.Inspector;
+using Pancake.Common;
+using Sisus.Init;
 using UnityEngine.Events;
 
 namespace Pancake.MobileInput
 {
-    [EditorIcon("script_manager")]
+    [EditorIcon("icon_manager")]
     [RequireComponent(typeof(TouchCamera))]
-    public class PickingController : MonoBehaviour
+    public class PickingController : MonoBehaviour<TouchInput>
     {
         public enum SelectionAction
         {
@@ -16,7 +17,7 @@ namespace Pancake.MobileInput
             Deselect,
         }
 
-        #region inspector
+        #region Field
 
         [SerializeField] [Tooltip("When set to true, the position of dragged items snaps to discrete units.")]
         private bool snapToGrid = true;
@@ -45,73 +46,44 @@ namespace Pancake.MobileInput
         [Space] [SerializeField] private bool advanceMode;
 #endif
 
-        [SerializeField, ShowIf("advanceMode")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip(
             "When setting this to false, pickables will not become deselected when the user clicks somewhere on the screen, except when he clicks on another pickable.")]
         private bool deselectPreviousColliderOnClick = true;
 
-        [SerializeField, ShowIf("advanceMode")]
+        [SerializeField, ShowIf("advanceMode"), Indent]
         [Tooltip("When setting this to false, the OnPickableTransformSelect event will only be sent once when clicking on the same pickable repeatedly.")]
         private bool repeatEventSelectedOnClick = true;
 
-        [SerializeField, ShowIf("advanceMode")] [Tooltip("May have fired the OnPickableTransformMoveStarted too early, when it hasn't actually been moved.")]
+        [SerializeField, ShowIf("advanceMode"), Indent] [Tooltip("May have fired the OnPickableTransformMoveStarted too early, when it hasn't actually been moved.")]
         private bool useLegacyTransformMoved;
 
-        [Space]
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
-        [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected.")]
+        [Space] [SerializeField, FoldoutGroup("Pickable Callback")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected.")]
         private TransformUnityEvent onTransformSelectedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Callback")]
         [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected through a long tap.")]
         private PickableSelectedUnityEvent onTransformSelectedExtendedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is deselected.")]
+        [SerializeField, FoldoutGroup("Pickable Callback")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is deselected.")]
         private TransformUnityEvent onTransformDeselectedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
-        [Tooltip("Here you can set up callbacks to be invoked when the moving of a pickable transform is started.")]
+        [SerializeField, FoldoutGroup("Pickable Callback")] [Tooltip("Here you can set up callbacks to be invoked when the moving of a pickable transform is started.")]
         private TransformUnityEvent onTransformMoveStartedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
-        [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is moved to a new position.")]
+        [SerializeField, FoldoutGroup("Pickable Callback")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is moved to a new position.")]
         private TransformUnityEvent onTransformMovedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Callback")]
         [Tooltip(
             "Here you can set up callbacks to be invoked when the moving of a pickable transform is ended. The event requires 2 parameters. The first is the start position of the drag. The second is the dragged transform. The start position can be used to reset the transform in case the drag has ended on an invalid position.")]
         private Vector3TransformUnityEvent onTransformMoveEndedCallback;
-
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
-        private ScriptableEventTransform transformSelectedEvent;
-
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
-        private InputEventPickableSelected transformSelectedExtendedEvent;
-
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
-        private ScriptableEventTransform transformDeselectedEvent;
-
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
-        private ScriptableEventTransform transformMoveStartedEvent;
-
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
-        private ScriptableEventTransform transformMovedEvent;
-
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
-        private ScriptableEventVector3Transform transformMoveEndedEvent;
-
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private BoolVariable longTapStartsDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventStartDrag onStartDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventUpdateDrag onUpdateDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventStopDrag onStopDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventFingerDown onFingerDown;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventFingerUp onFingerUp;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventClick onClick;
 
         #endregion
 
 
         private TouchCamera _touchCam;
+        private TouchInput _touchInput;
 
         private Component SelectedCollider => SelectedColliders.Count == 0 ? null : SelectedColliders[^1];
 
@@ -157,14 +129,13 @@ namespace Pancake.MobileInput
             set
             {
                 isMultiSelectionEnabled = value;
-                if (value == false)
-                {
-                    DeselectAll();
-                }
+                if (value == false) DeselectAll();
             }
         }
 
-        private Dictionary<Component, Vector3> _selectionPositionOffsets = new Dictionary<Component, Vector3>();
+        private Dictionary<Component, Vector3> _selectionPositionOffsets = new();
+
+        protected override void Init(TouchInput argument) { _touchInput = argument; }
 
         public void Awake()
         {
@@ -175,22 +146,22 @@ namespace Pancake.MobileInput
 
         public void Start()
         {
-            onClick.OnRaised += OnClick;
-            onFingerDown.OnRaised += InputOnFingerDown;
-            onFingerUp.OnRaised += InputOnFingerUp;
-            onStartDrag.OnRaised += InputOnDragStart;
-            onUpdateDrag.OnRaised += InputOnDragUpdate;
-            onStopDrag.OnRaised += InputOnDragStop;
+            TouchInput.OnClick += OnClick;
+            TouchInput.OnFingerDown += InputOnFingerDown;
+            TouchInput.OnFingerUp += InputOnFingerUp;
+            TouchInput.OnStartDrag += InputOnDragStart;
+            TouchInput.OnUpdateDrag += InputOnDragUpdate;
+            TouchInput.OnStopDrag += InputOnDragStop;
         }
 
         public void OnDestroy()
         {
-            onClick.OnRaised -= OnClick;
-            onFingerDown.OnRaised -= InputOnFingerDown;
-            onFingerUp.OnRaised -= InputOnFingerUp;
-            onStartDrag.OnRaised -= InputOnDragStart;
-            onUpdateDrag.OnRaised -= InputOnDragUpdate;
-            onStopDrag.OnRaised -= InputOnDragStop;
+            TouchInput.OnClick -= OnClick;
+            TouchInput.OnFingerDown -= InputOnFingerDown;
+            TouchInput.OnFingerUp -= InputOnFingerUp;
+            TouchInput.OnStartDrag -= InputOnDragStart;
+            TouchInput.OnUpdateDrag -= InputOnDragUpdate;
+            TouchInput.OnStopDrag -= InputOnDragStop;
         }
 
         public void LateUpdate()
@@ -371,16 +342,16 @@ namespace Pancake.MobileInput
             SelectColliderInternal(newCollider, isDoubleClick, isLongTap);
         }
 
-        private void RequestDragPickable(Vector3 fingerDownPos)
+        private void RequestDragPickable(Vector3 fingerDownPosition)
         {
-            var pickedCollider = GetClosestColliderAtScreenPoint(fingerDownPos, out var intersectionPoint);
+            var pickedCollider = GetClosestColliderAtScreenPoint(fingerDownPosition, out var intersectionPoint);
             if (pickedCollider != null && SelectedColliders.Contains(pickedCollider))
             {
-                RequestDragPickable(pickedCollider, fingerDownPos, intersectionPoint);
+                RequestDragPickable(pickedCollider, fingerDownPosition, intersectionPoint);
             }
         }
 
-        private void RequestDragPickable(Component colliderComponent, Vector2 fingerDownPos, Vector3 intersectionPoint)
+        private void RequestDragPickable(Component colliderComponent, Vector2 fingerDownPosition, Vector3 intersectionPoint)
         {
             if (requireLongTapForMove && _isSelectedViaLongTap == false) return;
 
@@ -420,21 +391,21 @@ namespace Pancake.MobileInput
                     }
 
                     _draggedTransformOffset = groundPosCenter - intersectionPoint;
-                    _itemInitialDragOffsetWorld = ComputeDragPosition(fingerDownPos, SnapToGrid) - CurrentlyDraggedTransform.position;
+                    _itemInitialDragOffsetWorld = ComputeDragPosition(fingerDownPosition, SnapToGrid) - CurrentlyDraggedTransform.position;
                 }
             }
         }
 
-        private void InputOnFingerDown(Vector3 fingerDownPos)
+        private void InputOnFingerDown(Vector3 fingerDownPosition)
         {
-            if (requireLongTapForMove == false || _isSelectedViaLongTap) RequestDragPickable(fingerDownPos);
+            if (requireLongTapForMove == false || _isSelectedViaLongTap) RequestDragPickable(fingerDownPosition);
         }
 
         private void InputOnFingerUp() { EndPickableTransformMove(); }
 
-        private Vector3 ComputeDragPosition(Vector3 dragPosCurrent, bool clampToGrid)
+        private Vector3 ComputeDragPosition(Vector3 dragPositionCurrent, bool clampToGrid)
         {
-            Ray dragRay = _touchCam.Cam.ScreenPointToRay(dragPosCurrent);
+            Ray dragRay = _touchCam.Cam.ScreenPointToRay(dragPositionCurrent);
 
             dragRay.origin += _draggedTransformOffset;
             bool hitSuccess = _touchCam.RaycastGround(dragRay, out var dragPosWorld);
@@ -457,7 +428,7 @@ namespace Pancake.MobileInput
 
         private void InputOnDragStart(Vector3 clickPosition, bool isLongTap)
         {
-            if (isLongTap && longTapStartsDrag.Value)
+            if (isLongTap && _touchInput.LongTapStartsDrag)
             {
                 var newCollider = GetClosestColliderAtScreenPoint(clickPosition, out _);
                 if (newCollider != null)
@@ -480,7 +451,7 @@ namespace Pancake.MobileInput
             }
         }
 
-        private void InputOnDragUpdate(Vector3 dragPosStart, Vector3 dragPosCurrent, Vector3 correctionOffset, Vector3 delta)
+        private void InputOnDragUpdate(Vector3 dragPositionStart, Vector3 dragPositionCurrent, Vector3 correctionOffset, Vector3 delta)
         {
             if (CurrentlyDraggedTransform != null)
             {
@@ -488,7 +459,7 @@ namespace Pancake.MobileInput
 
                 //Accomodate for custom movements by user code that happen while an item is being dragged. E.g. this allows users to lift items slightly during a drag.
                 _draggedItemCustomOffset += CurrentlyDraggedTransform.position - _currentlyDraggedTransformPosition;
-                Vector3 dragPosWorld = ComputeDragPosition(dragPosCurrent, SnapToGrid);
+                Vector3 dragPosWorld = ComputeDragPosition(dragPositionCurrent, SnapToGrid);
                 CurrentlyDraggedTransform.position = dragPosWorld - _itemInitialDragOffsetWorld;
 
                 if (SelectedColliders.Count > 1)
@@ -523,7 +494,6 @@ namespace Pancake.MobileInput
                     if (_invokeMoveStartedOnDrag && useLegacyTransformMoved == false) InvokePickableMoveStart();
 
                     InvokeTransformActionSafe(onTransformMovedCallback, CurrentlyDraggedTransform);
-                    InvokeTransformActionSafe(transformMovedEvent, CurrentlyDraggedTransform);
                 }
 
                 _currentlyDraggedTransformPosition = CurrentlyDraggedTransform.position;
@@ -533,14 +503,13 @@ namespace Pancake.MobileInput
         private void InvokePickableMoveStart()
         {
             InvokeTransformActionSafe(onTransformMoveStartedCallback, CurrentlyDraggedTransform);
-            InvokeTransformActionSafe(transformMoveStartedEvent, CurrentlyDraggedTransform);
             _invokeMoveStartedOnDrag = false;
             _invokeMoveEndedOnDrag = true;
         }
 
         private float ComputeDistance2d(float x0, float y0, float x1, float y1) { return Mathf.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)); }
 
-        private void InputOnDragStop(Vector3 dragStopPos, Vector3 dragFinalMomentum) { EndPickableTransformMove(); }
+        private void InputOnDragStop(Vector3 dragStopPosition, Vector3 dragFinalMomentum) { EndPickableTransformMove(); }
 
         private void EndPickableTransformMove()
         {
@@ -549,7 +518,6 @@ namespace Pancake.MobileInput
                 if (_invokeMoveEndedOnDrag)
                 {
                     onTransformMoveEndedCallback?.Invoke(_currentDragStartPos, CurrentlyDraggedTransform);
-                    if (transformMoveEndedEvent != null) transformMoveEndedEvent.Raise(_currentDragStartPos, CurrentlyDraggedTransform);
                 }
             }
 
@@ -605,11 +573,9 @@ namespace Pancake.MobileInput
             {
                 case SelectionAction.Select:
                     InvokeTransformActionSafe(onTransformSelectedCallback, touchPickable.PickableTransform);
-                    InvokeTransformActionSafe(transformSelectedEvent, touchPickable.PickableTransform);
                     break;
                 case SelectionAction.Deselect:
                     InvokeTransformActionSafe(onTransformDeselectedCallback, touchPickable.PickableTransform);
-                    InvokeTransformActionSafe(transformDeselectedEvent, touchPickable.PickableTransform);
                     break;
             }
         }
@@ -621,15 +587,9 @@ namespace Pancake.MobileInput
 
             var pickableSelected = new PickableSelected() {Selected = touchPickable.PickableTransform, IsDoubleClick = isDoubleClick, IsLongTap = isLongTap};
             InvokeGenericActionSafe(onTransformSelectedExtendedCallback, pickableSelected);
-            if (transformSelectedExtendedEvent != null) transformSelectedExtendedEvent.Raise(pickableSelected);
         }
 
         private void InvokeTransformActionSafe(TransformUnityEvent @event, Transform t) { @event?.Invoke(t); }
-
-        private void InvokeTransformActionSafe(ScriptableEventTransform @event, Transform t)
-        {
-            if (@event != null) @event.Raise(t);
-        }
 
         private void InvokeGenericActionSafe<T1, T2>(T1 eventAction, T2 eventArgs) where T1 : UnityEvent<T2> { eventAction?.Invoke(eventArgs); }
 

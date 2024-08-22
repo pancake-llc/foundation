@@ -33,20 +33,15 @@ namespace RedBlueGames.MulliganRenamer
     [System.Serializable]
     public class EnumerateOperation : IRenameOperation
     {
-        [SerializeField]
-        private int startingCount;
+        [SerializeField] private int startingCount;
 
-        [SerializeField]
-        private string countFormat;
+        [SerializeField] private string countFormat;
 
-        [SerializeField]
-        private int increment;
+        [SerializeField] private int increment;
 
-        [SerializeField]
-        private bool prepend;
+        [SerializeField] private bool prepend;
 
-        [SerializeField]
-        private CountFormatPreset formatPreset;
+        [SerializeField] private CountFormatPreset formatPreset;
 
         public enum CountFormatPreset
         {
@@ -59,10 +54,7 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumerateOperation"/> class.
         /// </summary>
-        public EnumerateOperation()
-        {
-            this.Initialize();
-        }
+        public EnumerateOperation() { this.Initialize(); }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumerateOperation"/> class.
@@ -85,18 +77,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets or sets the starting count.
         /// </summary>
         /// <value>The starting count.</value>
-        public int StartingCount
-        {
-            get
-            {
-                return this.startingCount;
-            }
-
-            set
-            {
-                this.startingCount = value;
-            }
-        }
+        public int StartingCount { get { return this.startingCount; } set { this.startingCount = value; } }
 
         /// <summary>
         /// Gets or sets the format for the count, appended to the end of the string.
@@ -128,42 +109,14 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Gets or sets the increment to use when counting.
         /// </summary>
-        public int Increment
-        {
-            get
-            {
-                return this.increment;
-            }
-
-            set
-            {
-                this.increment = value;
-            }
-        }
+        public int Increment { get { return this.increment; } set { this.increment = value; } }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not to add the count to the front of the string
         /// </summary>
-        public bool Prepend
-        {
-            get
-            {
-                return this.prepend;
-            }
+        public bool Prepend { get { return this.prepend; } set { this.prepend = value; } }
 
-            set
-            {
-                this.prepend = value;
-            }
-        }
-
-        public CountFormatPreset FormatPreset
-        {
-            get
-            {
-                return this.formatPreset;
-            }
-        }
+        public CountFormatPreset FormatPreset { get { return this.formatPreset; } }
 
         /// <summary>
         /// Gets a value indicating whether the count string format specified is parsable.
@@ -188,10 +141,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Checks if this RenameOperation has errors in its configuration.
         /// </summary>
         /// <returns><c>true</c>, if operation has errors, <c>false</c> otherwise.</returns>
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Clone this instance.
@@ -254,10 +204,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Sets a format preset to use when counting.
         /// </summary>
         /// <param name="preset">Preset format to use when counting.</param>
-        public void SetCountFormatPreset(CountFormatPreset preset)
-        {
-            this.formatPreset = preset;
-        }
+        public void SetCountFormatPreset(CountFormatPreset preset) { this.formatPreset = preset; }
 
         /// <summary>
         /// Gets the hash code for the operation

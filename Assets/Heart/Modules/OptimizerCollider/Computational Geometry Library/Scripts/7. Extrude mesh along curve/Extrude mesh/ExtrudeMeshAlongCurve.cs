@@ -107,6 +107,5 @@ namespace Pancake.ComputationalGeometry
 
             return mesh;
         }
-
     }
 }

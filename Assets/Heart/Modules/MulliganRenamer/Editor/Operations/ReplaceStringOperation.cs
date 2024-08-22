@@ -49,91 +49,40 @@ namespace RedBlueGames.MulliganRenamer
         /// This is a clone constructor, copying the values from one to another.
         /// </summary>
         /// <param name="operationToCopy">Operation to copy.</param>
-        public ReplaceStringOperation(ReplaceStringOperation operationToCopy)
-        {
-            this.CopyFrom(operationToCopy);
-        }
+        public ReplaceStringOperation(ReplaceStringOperation operationToCopy) { this.CopyFrom(operationToCopy); }
 
-        [SerializeField]
-        private bool userRegex;
+        [SerializeField] private bool userRegex;
 
-        [SerializeField]
-        private string searchString;
+        [SerializeField] private string searchString;
 
-        [SerializeField]
-        private bool searchIsCaseSensitive;
+        [SerializeField] private bool searchIsCaseSensitive;
 
-        [SerializeField]
-        private string replacementString;
+        [SerializeField] private string replacementString;
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="ReplaceStringOperation"/>
         /// uses a regex expression for input.
         /// </summary>
         /// <value><c>true</c> if input is a regular expression; otherwise, <c>false</c>.</value>
-        public bool UseRegex
-        {
-            get
-            {
-                return this.userRegex;
-            }
-
-            set
-            {
-                this.userRegex = value;
-            }
-        }
+        public bool UseRegex { get { return this.userRegex; } set { this.userRegex = value; } }
 
         /// <summary>
         /// Gets or sets the search string that will be replaced.
         /// </summary>
         /// <value>The search string.</value>
-        public string SearchString
-        {
-            get
-            {
-                return this.searchString;
-            }
-
-            set
-            {
-                this.searchString = value;
-            }
-        }
+        public string SearchString { get { return this.searchString; } set { this.searchString = value; } }
 
         /// <summary>
         /// Gets or sets a value indicating whether the search is case sensitive.
         /// </summary>
         /// <value><c>true</c> if search is case sensitive; otherwise, <c>false</c>.</value>
-        public bool SearchIsCaseSensitive
-        {
-            get
-            {
-                return this.searchIsCaseSensitive;
-            }
-
-            set
-            {
-                this.searchIsCaseSensitive = value;
-            }
-        }
+        public bool SearchIsCaseSensitive { get { return this.searchIsCaseSensitive; } set { this.searchIsCaseSensitive = value; } }
 
         /// <summary>
         /// Gets or sets the replacement string, which replaces instances of the search token.
         /// </summary>
         /// <value>The replacement string.</value>
-        public string ReplacementString
-        {
-            get
-            {
-                return this.replacementString;
-            }
-
-            set
-            {
-                this.replacementString = value;
-            }
-        }
+        public string ReplacementString { get { return this.replacementString; } set { this.replacementString = value; } }
 
         /// <summary>
         /// Gets a value indicating whether this instance has errors that prevent it from Renaming.
@@ -181,24 +130,12 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Gets a value indicating whether the search string specified is valid for regex parsing
         /// </summary>
-        public bool SearchStringIsValidRegex
-        {
-            get
-            {
-                return IsValidRegex(this.SearchString);
-            }
-        }
+        public bool SearchStringIsValidRegex { get { return IsValidRegex(this.SearchString); } }
 
         /// <summary>
         /// Gets a value indicating whether the replacement string specified is valid for regex parsing
         /// </summary>
-        public bool ReplacementStringIsValidRegex
-        {
-            get
-            {
-                return IsValidRegex(this.ReplacementString);
-            }
-        }
+        public bool ReplacementStringIsValidRegex { get { return IsValidRegex(this.ReplacementString); } }
 
         /// <summary>
         /// Clone this instance.
@@ -261,10 +198,7 @@ namespace RedBlueGames.MulliganRenamer
             return renameResult;
         }
 
-        private string ReplaceMatch(Match match)
-        {
-            return match.Result(this.ReplacementString);
-        }
+        private string ReplaceMatch(Match match) { return match.Result(this.ReplacementString); }
 
         /// <summary>
         /// Gets the hash code for the operation
@@ -317,10 +251,7 @@ namespace RedBlueGames.MulliganRenamer
             return true;
         }
 
-        private static float GetHeightForHelpBox()
-        {
-            return 34.0f;
-        }
+        private static float GetHeightForHelpBox() { return 34.0f; }
 
         private static bool IsValidRegex(string pattern)
         {

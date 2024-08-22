@@ -21,7 +21,6 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     //And edge between two vertices in 3d space
     public struct Edge3
     {

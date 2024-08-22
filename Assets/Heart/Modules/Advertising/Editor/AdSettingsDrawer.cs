@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Pancake.ExLib;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
 using Pancake.Monetization;
 using UnityEditor;
 using UnityEngine;
@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Pancake.MonetizationEditor
 {
     [CustomEditor(typeof(AdSettings), true)]
-    public class AdSettingsDrawer : Editor
+    public class AdSettingsDrawer : UnityEditor.Editor
     {
         private SerializedProperty _adCheckingIntervalProperty;
         private SerializedProperty _adLoadingIntervalProperty;
@@ -24,7 +24,6 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _admobRewardInterProperty;
         private SerializedProperty _admobAppOpenProperty;
 
-        private SerializedProperty _sdkKeyPropertyProperty;
         private SerializedProperty _applovinBannerProperty;
         private SerializedProperty _applovinInterProperty;
         private SerializedProperty _applovinRewardProperty;
@@ -48,7 +47,6 @@ namespace Pancake.MonetizationEditor
             _admobRewardInterProperty = serializedObject.FindProperty("admobRewardInter");
             _admobAppOpenProperty = serializedObject.FindProperty("admobAppOpen");
 
-            _sdkKeyPropertyProperty = serializedObject.FindProperty("sdkKey");
             _applovinBannerProperty = serializedObject.FindProperty("applovinBanner");
             _applovinInterProperty = serializedObject.FindProperty("applovinInter");
             _applovinRewardProperty = serializedObject.FindProperty("applovinReward");
@@ -80,7 +78,7 @@ namespace Pancake.MonetizationEditor
             }
 
             GUILayout.Space(4);
-            
+
             if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Admob)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -117,6 +115,9 @@ namespace Pancake.MonetizationEditor
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "unity-plugin-library.a"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "unity-plugin-library.a.meta"));
 
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "NativeTemplates"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "NativeTemplates.meta"));
+
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                 }
@@ -124,19 +125,89 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
+                var currentRect = EditorGUILayout.GetControlRect(false, 0);
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Import Mediation", GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob mediation");
-                    AssetDatabase.ImportPackage(
-                        ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/admob-mediation.unitypackage"),
-                        false);
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob-mediation.unitypackage"), false);
                 }
 
-                if (GUILayout.Button("Copy Admob Test AppId", GUILayout.Height(24)))
+                if (GUILayout.Button("Take Test Id", GUILayout.Height(24)))
                 {
-                    "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
-                    DebugEditor.Toast("[Admob] Copy AppId Test Id Success!");
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("App Id"),
+                        false,
+                        () =>
+                        {
+                            "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy AppId Test Id Success!");
+                        });
+
+                    menu.AddItem(new GUIContent("Banner Id"),
+                        false,
+                        () =>
+                        {
+#if UNITY_ANDROID
+                            "ca-app-pub-3940256099942544/6300978111".CopyToClipboard();
+#elif UNITY_IOS
+                            "ca-app-pub-3940256099942544/2934735716".CopyToClipboard();
+#endif
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Banner Test Unit Id Success!");
+                        });
+
+                    menu.AddItem(new GUIContent("Interstitial Id"),
+                        false,
+                        () =>
+                        {
+#if UNITY_ANDROID
+                            "ca-app-pub-3940256099942544/1033173712".CopyToClipboard();
+#elif UNITY_IOS
+                            "ca-app-pub-3940256099942544/4411468910".CopyToClipboard();
+#endif
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Interstitial Test Unit Id Success!");
+                        });
+
+                    menu.AddItem(new GUIContent("Rewarded Id"),
+                        false,
+                        () =>
+                        {
+#if UNITY_ANDROID
+                            "ca-app-pub-3940256099942544/5224354917".CopyToClipboard();
+#elif UNITY_IOS
+                    "ca-app-pub-3940256099942544/1712485313".CopyToClipboard();
+#endif
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Test Unit Id Success!");
+                        });
+
+
+                    menu.AddItem(new GUIContent("Rewarded Interstitial Id"),
+                        false,
+                        () =>
+                        {
+#if UNITY_ANDROID
+                            "ca-app-pub-3940256099942544/5354046379".CopyToClipboard();
+#elif UNITY_IOS
+                            "ca-app-pub-3940256099942544/6978759866".CopyToClipboard();
+#endif
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Interstitial Test Unit Id Success!");
+                        });
+
+                    menu.AddItem(new GUIContent("App Open Id"),
+                        false,
+                        () =>
+                        {
+#if UNITY_ANDROID
+                            "ca-app-pub-3940256099942544/9257395921".CopyToClipboard();
+#elif UNITY_IOS
+                            "ca-app-pub-3940256099942544/5575463023".CopyToClipboard();
+#endif
+                            DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy App Open Test Unit Id Success!");
+                        });
+
+                    var windowRect = EditorWindow.focusedWindow.position;
+                    float width = windowRect.width - 240;
+                    menu.DropDown(new Rect(currentRect.position + new Vector2(width / 2f, 8), Vector2.zero));
                 }
 
                 EditorGUILayout.EndHorizontal();
@@ -154,14 +225,15 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.HelpBox("Admob plugin not found", MessageType.Warning);
                 GUI.backgroundColor = Color.white;
 
+                EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
 
                 bool googleMobileAdsInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.dll");
-                var contentInstallLabel = "Install Admob SDK v8.7.0 (1)";
+                var contentInstallLabel = "Install Admob SDK v9.2.0 (1)";
                 if (googleMobileAdsInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Admob SDK v8.7.0 Installed (1)";
+                    contentInstallLabel = "Admob SDK v9.2.0 Installed (1)";
                 }
                 else
                 {
@@ -171,22 +243,20 @@ namespace Pancake.MonetizationEditor
                 if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/admob.unitypackage"),
-                        false);
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob.unitypackage"), false);
                 }
 
                 var previousColor = GUI.color;
                 if (googleMobileAdsInstalled) GUI.color = Uniform.Green;
 
                 GUI.enabled = googleMobileAdsInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 
                 if (GUILayout.Button("Add Admob Symbol (2)", GUILayout.Height(24)))
                 {
-                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB"))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
                         AssetDatabase.SaveAssets();
@@ -202,53 +272,53 @@ namespace Pancake.MonetizationEditor
             else if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Applovin)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            GUI.backgroundColor = Uniform.Green;
-            EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
-            GUI.backgroundColor = Color.white;
+                GUI.backgroundColor = Uniform.Green;
+                EditorGUILayout.HelpBox("Applovin plugin was imported. Please click Open AppLovin Integration and enter SDK key", MessageType.Info);
+                GUI.backgroundColor = Color.white;
 
-            EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.BeginHorizontal();
 
-            GUI.backgroundColor = Uniform.Green;
-            if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
-            {
-                EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
-            }
+                GUI.backgroundColor = Uniform.Green;
+                if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
+                {
+                    EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
+                }
 
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
-            {
-                var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group)) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                GUI.backgroundColor = Uniform.Red;
+                if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
+                {
+                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group)) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
 
-                FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
-                FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
 
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-            }
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                }
 
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-            
-            EditorGUILayout.PropertyField(_sdkKeyPropertyProperty);
-            EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
-            EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
-            EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
-            EditorGUILayout.PropertyField(_applovinRewardInterProperty, new GUIContent("Inter Rewarded"));
-            EditorGUILayout.PropertyField(_applovinAppOpenProperty, new GUIContent("App Open"));
-            EditorGUILayout.PropertyField(_applovinEnableAgeRestrictedUserProperty, new GUIContent("Age Restricted"));
+                GUI.backgroundColor = Color.white;
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.PropertyField(_applovinEnableAgeRestrictedUserProperty, new GUIContent("Age Restricted"));
+                EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
+                EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
+                EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
+                EditorGUILayout.PropertyField(_applovinRewardInterProperty, new GUIContent("Inter Rewarded"));
+                EditorGUILayout.PropertyField(_applovinAppOpenProperty, new GUIContent("App Open"));
 #else
                 GUI.backgroundColor = Uniform.Orange;
                 EditorGUILayout.HelpBox("Applovin plugin not found", MessageType.Warning);
                 GUI.backgroundColor = Color.white;
 
+                EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
                 bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
-                var contentInstallLabel = "Install Applovin v6.2.1 (1)";
+                var contentInstallLabel = "Install Applovin v6.6.1 (1)";
                 if (applovinInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Applovin SDK v6.2.1 Installed (1)";
+                    contentInstallLabel = "Applovin SDK v6.6.1 Installed (1)";
                 }
                 else
                 {
@@ -258,21 +328,19 @@ namespace Pancake.MonetizationEditor
                 if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing <color=#FF77C6>applovin</color> sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/applovin.unitypackage"),
-                        false);
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/applovin.unitypackage"), false);
                 }
 
                 var previousColor = GUI.color;
                 if (applovinInstalled) GUI.color = Uniform.Green;
                 GUI.enabled = applovinInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 
                 if (GUILayout.Button("Add AppLovin Symbol (2)", GUILayout.Height(24)))
                 {
-                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN"))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
                         AssetDatabase.SaveAssets();

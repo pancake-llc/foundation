@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEditor.iOS.Xcode;
 #endif
 
-namespace MyNamespace
+namespace PancakeEditor.Localization
 {
     public static class PostBuildProcessor
     {

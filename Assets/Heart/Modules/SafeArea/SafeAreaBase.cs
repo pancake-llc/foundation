@@ -1,5 +1,5 @@
 ﻿using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -161,7 +161,7 @@ namespace Pancake.SafeArea
             };
         }
 
-        [Button, ButtonHeight(30), DisableIf(nameof(Application.isPlaying))]
+        [Button, DisableIf(nameof(Application.isPlaying))]
         private void ForceUpdateRect()
         {
             UpdateRect();

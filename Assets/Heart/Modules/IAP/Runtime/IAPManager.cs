@@ -1,79 +1,36 @@
 #if PANCAKE_IAP
 using System;
-using System.Collections.Generic;
-using Pancake.Apex;
-using Pancake.Scriptable;
-using Pancake.Threading.Tasks;
-using Unity.Services.Core;
-using Unity.Services.Core.Environments;
+using System.Collections;
+using Pancake.Common;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+using Pancake.Monetization;
+#endif
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 
 namespace Pancake.IAP
 {
-    [HideMonoScript]
+    [EditorIcon("icon_manager")]
     public class IAPManager : GameComponent, IDetailedStoreListener
     {
-        [SerializeField] private BoolVariable isServiceInitialized;
-        [SerializeField] private IAPSettings iapSettings;
-        [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
-        [SerializeField] private ScriptableEventIAPFuncProduct productOnwershipCheckEvent;
-        [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
-#if UNITY_IOS
-        [SerializeField] private ScriptableEventIAPNoParam restoreEvent;
-#endif
-
         private IStoreController _controller;
         private IExtensionProvider _extensions;
+        private static event Action<IAPDataVariable> PurchaseProductEvent;
+        private static event Func<IAPDataVariable, bool> CheckOwnProductEvent;
+        private static event Action RestoreProductEvent;
 
         public bool IsInitialized { get; set; }
 
-        protected void OnEnable()
+        #region Implement
+
+        public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
-            purchaseEvent.OnRaised += PurchaseProduct;
-            productOnwershipCheckEvent.OnRaised += IsPurchasedProduct;
-#if UNITY_IOS
-            restoreEvent.OnRaised += RestorePurchase;
-#endif
-        }
+            _controller = controller;
+            _extensions = extensions;
 
-        private bool IsPurchasedProduct(IAPDataVariable product)
-        {
-            if (_controller == null) return false;
-            return product.productType == ProductType.NonConsumable && _controller.products.WithID(product.id).hasReceipt;
-        }
-
-        private void PurchaseProduct(IAPDataVariable product)
-        {
-            // call when IAPDataVariable raise event
-            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(true);
-            PurchaseProductInternal(product);
-        }
-
-        protected void OnDisable()
-        {
-            purchaseEvent.OnRaised -= PurchaseProduct;
-            productOnwershipCheckEvent.OnRaised -= IsPurchasedProduct;
-#if UNITY_IOS
-            restoreEvent.OnRaised -= RestorePurchase;
-#endif
-        }
-
-        private void Start() { Init(); }
-
-        private async void Init()
-        {
-            if (IsInitialized) return;
-            
-            await UniTask.WaitUntil(() => isServiceInitialized.Value);
-
-            var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
-            RequestProductData(builder);
-            builder.Configure<IGooglePlayConfiguration>();
-
-            UnityPurchasing.Initialize(this, builder);
-            IsInitialized = true;
+            StartCoroutine(InitializeProducts());
         }
 
         public void OnInitializeFailed(InitializationFailureReason error)
@@ -96,31 +53,109 @@ namespace Pancake.IAP
 
         public void OnInitializeFailed(InitializationFailureReason error, string message) { OnInitializeFailed(error); }
 
+        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription) { InternalPurchaseFailed(product.definition.id); }
+
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { InternalPurchaseFailed(product.definition.id); }
+
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
-            bool validPurchase = true;
-#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
-            var validator =
- new UnityEngine.Purchasing.Security.CrossPlatformValidator(UnityEngine.Purchasing.Security.GooglePlayTangle.Data(), UnityEngine.Purchasing.Security.AppleTangle.Data(), Application.identifier);
+            bool validPurchase = IsValidReceipt(purchaseEvent.purchasedProduct.receipt, out _);
+            if (validPurchase) PurchaseVerified(purchaseEvent);
+            return PurchaseProcessingResult.Complete;
+        }
 
-            try
-            {
-                // On Google Play, result has a single product ID.
-                // On Apple stores, receipts contain multiple products.
-                var result = validator.Validate(purchaseEvent.purchasedProduct.receipt);
-                Debug.Log("Receipt is valid");
-            }
-            catch (UnityEngine.Purchasing.Security.IAPSecurityException)
-            {
-                Debug.Log("Invalid receipt, not unlocking content");
-                validPurchase = false;
-            }
+        #endregion
+
+        #region Unity Function
+
+        private void Start() { Init(); }
+
+        protected void OnEnable()
+        {
+            PurchaseProductEvent += PurchaseProduct;
+            CheckOwnProductEvent += IsPurchasedProduct;
+#if UNITY_IOS
+            RestoreProductEvent += RestorePurchase;
+#endif
+        }
+
+        protected void OnDisable()
+        {
+            PurchaseProductEvent -= PurchaseProduct;
+            CheckOwnProductEvent -= IsPurchasedProduct;
+#if UNITY_IOS
+            RestoreProductEvent -= RestorePurchase;
+#endif
+        }
+
+        #endregion
+
+        private bool IsPurchasedProduct(IAPDataVariable product)
+        {
+            if (_controller == null) return false;
+            return product.productType == ProductType.NonConsumable && _controller.products.WithID(product.id).hasReceipt;
+        }
+
+        private void PurchaseProduct(IAPDataVariable product)
+        {
+            Advertising.ChangePreventDisplayAppOpen(true);
+            PurchaseProductInternal(product);
+        }
+
+        private async void Init()
+        {
+            if (IsInitialized) return;
+
+#if PANCAKE_UNITASK
+            await UniTask.WaitUntil(() => Static.IsUnitySeriveReady);
 #endif
 
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (validPurchase) PurchaseVerified(purchaseEvent);
+            var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+            RequestProductData(builder);
+            builder.Configure<IGooglePlayConfiguration>().SetDeferredPurchaseListener(OnPurchaseDeferred);
 
-            return PurchaseProcessingResult.Complete;
+            UnityPurchasing.Initialize(this, builder);
+            IsInitialized = true;
+        }
+
+        private IEnumerator InitializeProducts()
+        {
+            yield return new WaitForSeconds(1f);
+            for (var i = 0; i < IAPSettings.Products.Count; i++)
+            {
+                var product = _controller.products.WithID(IAPSettings.Products[i].id);
+
+                if (IAPSettings.Products[i].productType == ProductType.Subscription)
+                {
+                    if (product is {hasReceipt: true} && IsValidReceipt(product.receipt, out _))
+                    {
+                        IAPSettings.Products[i].OnPurchaseSuccess?.Raise();
+                        var subscriptionManager = new SubscriptionManager(product, null);
+                        IAPSettings.Products[i].receipt = product.receipt;
+                        IAPSettings.Products[i].subscriptionInfo = subscriptionManager.getSubscriptionInfo();
+                    }
+                }
+
+                if (IAPSettings.Products[i].productType == ProductType.NonConsumable)
+                {
+                    if (product is {hasReceipt: true} && IsValidReceipt(product.receipt, out _)) IAPSettings.Products[i].OnPurchaseSuccess?.Raise();
+                }
+
+                if (product != null && product.availableToPurchase)
+                {
+                    IAPSettings.Products[i].localizedPrice = product.metadata.localizedPriceString;
+                    IAPSettings.Products[i].price = decimal.ToInt32(product.metadata.localizedPrice);
+                    IAPSettings.Products[i].isoCurrencyCode = product.metadata.isoCurrencyCode;
+                    IAPSettings.Products[i].localizedDescription = product.metadata.localizedDescription;
+                    IAPSettings.Products[i].localizedTitle = product.metadata.localizedTitle;
+                }
+            }
+        }
+
+        private void OnPurchaseDeferred(Product product)
+        {
+            Debug.Log("Deferred product " + product.definition.id);
+            // TODO Deferred purchasing successful events. Do not grant the item here. Instead, record the purchase and remind the user to complete the transaction in the Play Store.
         }
 
         private IAPDataVariable PurchaseProductInternal(IAPDataVariable product)
@@ -133,12 +168,10 @@ namespace Pancake.IAP
             return product;
         }
 
-        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { InternalPurchaseFailed(product.definition.id); }
-
         private void InternalPurchaseFailed(string id)
         {
-            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(false);
-            foreach (var p in iapSettings.Products)
+            Advertising.ChangePreventDisplayAppOpen(false);
+            foreach (var p in IAPSettings.Products)
             {
                 if (!p.id.Equals(id)) continue;
                 p.OnPurchaseFailed.Raise();
@@ -148,13 +181,13 @@ namespace Pancake.IAP
 
         private void PurchaseVerified(PurchaseEventArgs e)
         {
-            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(false);
+            Advertising.ChangePreventDisplayAppOpen(false);
             InternalPurchaseDone(e.purchasedProduct.definition.id);
         }
 
         private void InternalPurchaseDone(string id)
         {
-            foreach (var product in iapSettings.Products)
+            foreach (var product in IAPSettings.Products)
             {
                 if (!product.id.Equals(id)) continue;
                 product.OnPurchaseSuccess.Raise();
@@ -162,25 +195,9 @@ namespace Pancake.IAP
             }
         }
 
-        public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
-        {
-            // Purchasing has succeeded initializing. Collect our Purchasing references.
-            // Overall Purchasing system, configured with products for this application.
-            _controller = controller;
-            _extensions = extensions;
-#if UNITY_ANDROID && !UNITY_EDITOR
-            foreach (var product in _controller.products.all)
-            {
-                if (product != null && !string.IsNullOrEmpty(product.transactionID)) _controller.ConfirmPendingPurchase(product);
-            }
-#endif
-        }
-
-        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription) { InternalPurchaseFailed(product.definition.id); }
-
         private void RequestProductData(ConfigurationBuilder builder)
         {
-            foreach (var p in iapSettings.Products)
+            foreach (var p in IAPSettings.Products)
             {
                 builder.AddProduct(p.id, p.productType);
             }
@@ -212,6 +229,38 @@ namespace Pancake.IAP
             }
         }
 #endif
+
+        internal static void Purchase(IAPDataVariable product) { PurchaseProductEvent?.Invoke(product); }
+
+        internal static bool IsPurchased(IAPDataVariable product) { return CheckOwnProductEvent != null && CheckOwnProductEvent.Invoke(product); }
+
+        public static void Restore() { RestoreProductEvent?.Invoke(); }
+
+        private bool IsValidReceipt(string receipt, out UnityEngine.Purchasing.Security.IAPSecurityException exception)
+        {
+            exception = null;
+            // ReSharper disable once ConvertToConstant.Local
+            var validPurchase = true;
+#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+            var validator = new UnityEngine.Purchasing.Security.CrossPlatformValidator(UnityEngine.Purchasing.Security.GooglePlayTangle.Data(),
+                UnityEngine.Purchasing.Security.AppleTangle.Data(),
+                Application.identifier);
+
+            try
+            {
+                validator.Validate(receipt);
+            }
+            catch (UnityEngine.Purchasing.Security.IAPSecurityException e)
+            {
+                exception = e;
+                validPurchase = false;
+                throw;
+            }
+
+#endif
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            return validPurchase;
+        }
     }
 }
 #endif

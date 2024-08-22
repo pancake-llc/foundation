@@ -32,59 +32,32 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets the path that's displayed when this rename op is used in the Add Op menu.
         /// </summary>
         /// <value>The display path.</value>
-        public override string MenuDisplayPath
-        {
-            get
-            {
-                return GetOperationPath("modify", "toCamelCase");
-            }
-        }
+        public override string MenuDisplayPath { get { return GetOperationPath("modify", "toCamelCase"); } }
 
         /// <summary>
         /// Gets the heading label for the Rename Operation.
         /// </summary>
         /// <value>The heading label.</value>
-        public override string HeadingLabel
-        {
-            get
-            {
-                return LocalizationManager.Instance.GetTranslation("toCamelCase");
-            }
-        }
+        public override string HeadingLabel { get { return LocalizationManager.Instance.GetTranslation("toCamelCase"); } }
 
         /// <summary>
         /// Gets the color to use for highlighting the operation.
         /// </summary>
         /// <value>The color of the highlight.</value>
-        public override Color32 HighlightColor
-        {
-            get
-            {
-                return this.ModifyColor;
-            }
-        }
+        public override Color32 HighlightColor { get { return this.ModifyColor; } }
 
         /// <summary>
         /// Gets the name of the control to focus when this operation is focused
         /// </summary>
         /// <value>The name of the control to focus.</value>
-        public override string ControlToFocus
-        {
-            get
-            {
-                return "Pascal";
-            }
-        }
+        public override string ControlToFocus { get { return "Pascal"; } }
 
         /// <summary>
         /// Gets the preferred height for the contents of the operation.
         /// This allows inherited operations to specify their height.
         /// </summary>
         /// <returns>The preferred height for contents.</returns>
-        protected override float GetPreferredHeightForContents()
-        {
-            return this.CalculateGUIHeightForLines(2);
-        }
+        protected override float GetPreferredHeightForContents() { return this.CalculateGUIHeightForLines(2); }
 
         /// <summary>
         /// Draws the contents of the Rename Op.
@@ -94,26 +67,16 @@ namespace RedBlueGames.MulliganRenamer
         {
             var singleLineRect = operationRect.GetSplitVertical(1, 2, LineSpacing);
 
-            var pascalLabel = new GUIContent(
-                LocalizationManager.Instance.GetTranslation("usePascalCasing"),
+            var pascalLabel = new GUIContent(LocalizationManager.Instance.GetTranslation("usePascalCasing"),
                 LocalizationManager.Instance.GetTranslation("flagToCapitalizeTheFirstLetterOfname"));
             GUI.SetNextControlName(GUIControlNameUtility.CreatePrefixedName(controlPrefix, "Pascal"));
-            this.RenameOperation.UsePascal = EditorGUI.Toggle(
-                singleLineRect,
-                pascalLabel,
-                this.RenameOperation.UsePascal
-            );
+            this.RenameOperation.UsePascal = EditorGUI.Toggle(singleLineRect, pascalLabel, this.RenameOperation.UsePascal);
 
             var delimitersRect = operationRect.GetSplitVertical(2, 2, LineSpacing);
-            var delimitersLabel = new GUIContent(
-                LocalizationManager.Instance.GetTranslation("delimiterCharacters"),
+            var delimitersLabel = new GUIContent(LocalizationManager.Instance.GetTranslation("delimiterCharacters"),
                 LocalizationManager.Instance.GetTranslation("caseSensitiveCharactersIndicateStart"));
             GUI.SetNextControlName(GUIControlNameUtility.CreatePrefixedName(controlPrefix, LocalizationManager.Instance.GetTranslation("delimiters")));
-            this.RenameOperation.DelimiterCharacters = EditorGUI.TextField(
-                delimitersRect,
-                delimitersLabel,
-                this.RenameOperation.DelimiterCharacters
-            );
+            this.RenameOperation.DelimiterCharacters = EditorGUI.TextField(delimitersRect, delimitersLabel, this.RenameOperation.DelimiterCharacters);
         }
     }
 }

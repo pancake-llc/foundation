@@ -1,81 +1,110 @@
+﻿using Alchemy.Editor;
 using Pancake;
-using Pancake.ApexEditor;
-using Pancake.ExLibEditor;
 using Pancake.Linq;
 using Pancake.UI;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace PancakeEditor
 {
-    [ViewTarget(typeof(SheetPickupAttribute))]
-    public class SheetPickupDrawer : FieldView, ITypeValidationCallback
+    [CustomAttributeDrawer(typeof(SheetPickupAttribute))]
+    public class SheetPickupDrawer : AlchemyAttributeDrawer
     {
-        private const string NAME_CLASS_INHERIT = "Pancake.UI.Sheet";
-
-        public override void OnGUI(Rect position, SerializedField element, GUIContent label)
+        public override void OnCreateElement()
         {
-            position = EditorGUI.PrefixLabel(position, label);
+            // Create a container for the horizontal layout
+            var container = new VisualElement {style = {flexDirection = FlexDirection.Row, alignItems = Align.Center, marginBottom = 2}};
 
-            var buttonLabel = "Select type...";
+            var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name.ToCamelCase())) {style = {marginLeft = 3, marginRight = 0, flexGrow = 1}};
 
-            if (!string.IsNullOrEmpty(element.GetString()))
+            var button = new Button
+            {
+                text = "Select type...",
+                style =
+                {
+                    flexGrow = 1,
+                    marginLeft = 0,
+                    flexShrink = 0,
+                    marginRight = -3,
+                    backgroundColor = Uniform.Error,
+                    color = Color.white
+                }
+            };
+
+            if (!string.IsNullOrEmpty(SerializedProperty.stringValue))
             {
                 var type = GetTypeByFullName();
                 if (type != null)
                 {
-                    var result = type.GetAllSubClass<Sheet>();
+                    var result = type.GetAllSubClass<Popup>();
                     foreach (var t in result)
                     {
-                        if (t.Name == element.GetString())
+                        if (t.Name == SerializedProperty.stringValue)
                         {
-                            buttonLabel = element.GetString();
+                            button.text = SerializedProperty.stringValue;
+                            button.style.backgroundColor = new Color(0.93f, 0.78f, 0.22f, 0.31f);
                             break;
                         }
 
-                        buttonLabel = "Failed load...";
+                        button.text = "Failed load...";
+                        button.style.backgroundColor = Uniform.Error;
                     }
                 }
             }
 
-            if (GUI.Button(position, buttonLabel, EditorStyles.popup))
+            button.clicked += () =>
             {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("None (-1)"), false, () => SetAndApplyProperty(element, string.Empty));
-
+                menu.AddItem(new GUIContent("None (-1)"),
+                    false,
+                    () =>
+                    {
+                        SetAndApplyProperty(SerializedProperty, string.Empty);
+                        button.text = "Select type...";
+                        button.style.backgroundColor = Uniform.Error;
+                    });
                 var type = GetTypeByFullName();
                 if (type != null)
                 {
-                    var result = type.GetAllSubClass<Sheet>().Filter(t => !t.Name.Equals("Sheet`1"));
+                    var result = type.GetAllSubClass<Popup>().Filter(t => !t.Name.Equals("Sheet`1"));
                     for (var i = 0; i < result.Count; i++)
                     {
                         if (i == 0) menu.AddSeparator("");
                         int cachei = i;
-                        menu.AddItem(new GUIContent($"{result[i].Name} ({i})"), false, () => SetAndApplyProperty(element, result[cachei].Name));
+                        menu.AddItem(new GUIContent($"{result[cachei].Name} ({cachei})"),
+                            false,
+                            () =>
+                            {
+                                SetAndApplyProperty(SerializedProperty, result[cachei].Name);
+                                button.text = result[cachei].Name;
+                                button.style.backgroundColor = new Color(0.93f, 0.78f, 0.22f, 0.31f);
+                            });
                     }
                 }
 
-                menu.DropDown(position);
-            }
+                menu.DropDown(new Rect(button.worldBound.position, Vector2.zero));
+            };
+
+
+            container.Add(label);
+            container.Add(button);
+
+            TargetElement.Clear();
+            TargetElement.Add(container);
         }
 
-        /// <summary>
-        /// Return true if this property valid the using with this attribute.
-        /// If return false, this property attribute will be ignored.
-        /// </summary>
-        /// <param name="property">Reference of serialized property.</param>
-        public bool IsValidProperty(SerializedProperty property) { return property.propertyType == SerializedPropertyType.String; }
-        
         private static System.Type GetTypeByFullName()
         {
-            TypeExtensions.TryFindTypeByFullName(NAME_CLASS_INHERIT, out var type);
+            TypeExtensions.TryFindTypeByFullName("Pancake.UI.Sheet", out var type);
             return type;
         }
 
-        private static void SetAndApplyProperty(SerializedField element, string value)
+        private void SetAndApplyProperty(SerializedProperty property, string value)
         {
-            element.SetString(value);
-            element.GetSerializedObject().ApplyModifiedProperties();
+            property.stringValue = value;
+            property.serializedObject.ApplyModifiedProperties();
         }
     }
 }

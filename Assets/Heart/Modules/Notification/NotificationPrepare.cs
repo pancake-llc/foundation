@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Pancake.Apex;
+using Pancake.Common;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Pancake.Notification
 {
-    [HideMonoScript]
-    [EditorIcon("script_noti")]
+    [EditorIcon("icon_notification")]
     public class NotificationPrepare : GameComponent
     {
 #if UNITY_ANDROID
-        [Array, SerializeField] private ScriptableNotificationVariable[] notificationVariables;
+        [SerializeField] private ScriptableNotification[] notificationVariables;
 
         private void Start()
         {

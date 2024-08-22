@@ -71,13 +71,7 @@ namespace RedBlueGames.MulliganRenamer
 
         private bool IsShowingThanksForReview { get; set; }
 
-        private int NumRenameOperations
-        {
-            get
-            {
-                return this.RenameOperationsToApplyWithBindings.Count;
-            }
-        }
+        private int NumRenameOperations { get { return this.RenameOperationsToApplyWithBindings.Count; } }
 
         private IRenameOperation OperationToForceFocus { get; set; }
 
@@ -130,31 +124,15 @@ namespace RedBlueGames.MulliganRenamer
 
         private bool IsPreviewStepModePreference
         {
-            get
-            {
-                return EditorPrefs.GetBool(PreviewModePrefixKey, true);
-            }
-
-            set
-            {
-                EditorPrefs.SetBool(PreviewModePrefixKey, value);
-            }
+            get { return EditorPrefs.GetBool(PreviewModePrefixKey, true); }
+            set { EditorPrefs.SetBool(PreviewModePrefixKey, value); }
         }
 
         private List<UnityEngine.Object> ValidSelectedObjects { get; set; }
 
-        private bool NeedsReview
-        {
-            get
-            {
-                return this.ActivePreferences.NeedsReview || this.IsShowingThanksForReview;
-            }
-        }
+        private bool NeedsReview { get { return this.ActivePreferences.NeedsReview || this.IsShowingThanksForReview; } }
 
-        private static MulliganRenamerWindow ShowWindow()
-        {
-            return EditorWindow.GetWindow<MulliganRenamerWindow>(false, "Mulligan Renamer", true);
-        }
+        private static MulliganRenamerWindow ShowWindow() { return EditorWindow.GetWindow<MulliganRenamerWindow>(false, "Mulligan Renamer", true); }
 
         public static void ShowWindowWithSelectedObjects()
         {
@@ -229,11 +207,7 @@ namespace RedBlueGames.MulliganRenamer
         /// <param name="menu"></param>
         public void AddItemsToMenu(GenericMenu menu)
         {
-            menu.AddItem(
-                new GUIContent(
-                    LocalizationManager.Instance.GetTranslation("preferences")),
-                    false,
-                    () => this.ShowPreferencesWindowForCurrentUnityVersion());
+            menu.AddItem(new GUIContent(LocalizationManager.Instance.GetTranslation("preferences")), false, () => this.ShowPreferencesWindowForCurrentUnityVersion());
         }
 
         private void OnEnable()
@@ -279,10 +253,7 @@ namespace RedBlueGames.MulliganRenamer
             this.BulkRenamePreview = this.BulkRenamer.GetBulkRenamePreview(this.ObjectsToRename.ToList());
         }
 
-        private void CacheValidSelectedObjects()
-        {
-            this.ValidSelectedObjects = Selection.objects.Where((obj) => ObjectIsValidForRename(obj)).ToList();
-        }
+        private void CacheValidSelectedObjects() { this.ValidSelectedObjects = Selection.objects.Where((obj) => ObjectIsValidForRename(obj)).ToList(); }
 
         private void InitializePreviewPanel()
         {
@@ -301,20 +272,11 @@ namespace RedBlueGames.MulliganRenamer
             this.ScrollPreviewPanelToBottom();
         }
 
-        private void HandleRemoveAllObjectsClicked()
-        {
-            this.ObjectsToRename.Clear();
-        }
+        private void HandleRemoveAllObjectsClicked() { this.ObjectsToRename.Clear(); }
 
-        private void HandleAddSelectedObjectsClicked()
-        {
-            this.LoadSelectedObjects();
-        }
+        private void HandleAddSelectedObjectsClicked() { this.LoadSelectedObjects(); }
 
-        private void HandleObjectRemoved(int index)
-        {
-            this.ObjectsToRename.RemoveAt(index);
-        }
+        private void HandleObjectRemoved(int index) { this.ObjectsToRename.RemoveAt(index); }
 
         private void HandleLanguageChanged()
         {
@@ -352,38 +314,27 @@ namespace RedBlueGames.MulliganRenamer
         {
             // This binds Operations to their respective Drawers
             this.RenameOperationDrawerBindingPrototypes = new List<RenameOperationDrawerBinding>();
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new ReplaceStringOperation(), new ReplaceStringOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new ReplaceStringOperation(), new ReplaceStringOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new ReplaceNameOperation(), new ReplaceNameOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new ReplaceNameOperation(), new ReplaceNameOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new AddStringOperation(), new AddStringOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new AddStringOperation(), new AddStringOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new EnumerateOperation(), new EnumerateOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new EnumerateOperation(), new EnumerateOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new CountByLetterOperation(), new CountByLetterOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new CountByLetterOperation(), new CountByLetterOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new AddStringSequenceOperation(), new AddStringSequenceOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new AddStringSequenceOperation(), new AddStringSequenceOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new ChangeCaseOperation(), new ChangeCaseOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new ChangeCaseOperation(), new ChangeCaseOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new ToCamelCaseOperation(), new ToCamelCaseOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new ToCamelCaseOperation(), new ToCamelCaseOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new AdjustNumberingOperation(), new AdjustNumberingOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new AdjustNumberingOperation(), new AdjustNumberingOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new TrimCharactersOperation(), new TrimCharactersOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new TrimCharactersOperation(), new TrimCharactersOperationDrawer()));
 
-            this.RenameOperationDrawerBindingPrototypes.Add(
-                new RenameOperationDrawerBinding(new RemoveCharactersOperation(), new RemoveCharactersOperationDrawer()));
+            this.RenameOperationDrawerBindingPrototypes.Add(new RenameOperationDrawerBinding(new RemoveCharactersOperation(), new RemoveCharactersOperationDrawer()));
         }
 
         private void InitializeGUIContents()
@@ -422,71 +373,37 @@ namespace RedBlueGames.MulliganRenamer
             // Breadcrumbs take up more than a single line so we add a bit more
             var toolbarRect = new Rect(0.0f, 0.0f, this.position.width, EditorGUIUtility.singleLineHeight + 3.0f);
             this.DrawToolbar(toolbarRect);
-
-            var reviewPromptHeight = 0.0f;
-            if (this.NeedsReview)
-            {
-                // Responsiveness: Expand height as the window shrinks to better fit the text
-                if (this.position.width > 800.0f)
-                {
-                    reviewPromptHeight = 38.0f;
-                }
-                else
-                {
-                    reviewPromptHeight = 48.0f;
-                }
-            }
+            
             var reviewPromptPaddingY = 16.0f;
-            var footerHeight = 60.0f + reviewPromptHeight + reviewPromptPaddingY;
-            var operationPanelRect = new Rect(
-                0.0f,
-                0.0f,
-                OperationPanelWidth,
-                this.position.height - toolbarRect.height - footerHeight);
+            var footerHeight = 60.0f + reviewPromptPaddingY;
+            var operationPanelRect = new Rect(0.0f, 0.0f, OperationPanelWidth, this.position.height - toolbarRect.height - footerHeight);
             this.DrawOperationsPanel(operationPanelRect);
 
             var previewPanelPadding = new RectOffset(1, 1, -1, 0);
-            var previewPanelRect = new Rect(
-                operationPanelRect.width + previewPanelPadding.left,
+            var previewPanelRect = new Rect(operationPanelRect.width + previewPanelPadding.left,
                 toolbarRect.height + previewPanelPadding.top,
                 this.position.width - operationPanelRect.width - previewPanelPadding.left - previewPanelPadding.right,
                 this.position.height - toolbarRect.height - footerHeight - previewPanelPadding.top - previewPanelPadding.bottom);
 
             this.DrawPreviewPanel(previewPanelRect, this.BulkRenamePreview);
 
-            var rectForReviewWidth = this.position.width * 0.98f;
-            var rectForReviewPrompt = new Rect(
-                (this.position.width - rectForReviewWidth) * 0.5f,
-                previewPanelRect.y + previewPanelRect.height + reviewPromptPaddingY,
-                rectForReviewWidth,
-                reviewPromptHeight);
-
-            if (this.NeedsReview)
-            {
-                this.DrawReviewPrompt(rectForReviewPrompt);
-            }
-
-            var disableRenameButton =
-                this.RenameOperatationsHaveErrors() ||
-                this.ObjectsToRename.Count == 0;
+            var disableRenameButton = this.RenameOperatationsHaveErrors() || this.ObjectsToRename.Count == 0;
             EditorGUI.BeginDisabledGroup(disableRenameButton);
             var renameButtonPadding = new Vector4(30.0f, 16.0f, 30.0f, 16.0f);
             var renameButtonSize = new Vector2(this.position.width - renameButtonPadding.x - renameButtonPadding.z, 24.0f);
-            var renameButtonRect = new Rect(
-                renameButtonPadding.x,
-                rectForReviewPrompt.y + rectForReviewPrompt.height + renameButtonPadding.y,
+            var renameButtonRect = new Rect(renameButtonPadding.x,
+                previewPanelRect.y + previewPanelRect.height + renameButtonPadding.y,
                 renameButtonSize.x,
                 renameButtonSize.y);
 
             if (GUI.Button(renameButtonRect, LocalizationManager.Instance.GetTranslation("rename")))
             {
-                var popupMessage = string.Concat(
-                    LocalizationManager.Instance.GetTranslation("renameWarningNotRenamed"));
+                var popupMessage = string.Concat(LocalizationManager.Instance.GetTranslation("renameWarningNotRenamed"));
                 var renamesHaveNoWarnings = !BulkRenamePreview.HasWarnings;
                 if (renamesHaveNoWarnings || EditorUtility.DisplayDialog(LocalizationManager.Instance.GetTranslation("warning"),
-                                                                            popupMessage,
-                                                                            LocalizationManager.Instance.GetTranslation("rename"),
-                                                                            LocalizationManager.Instance.GetTranslation("cancel")))
+                        popupMessage,
+                        LocalizationManager.Instance.GetTranslation("rename"),
+                        LocalizationManager.Instance.GetTranslation("cancel")))
                 {
                     var undoGroupBeforeRename = Undo.GetCurrentGroup();
                     try
@@ -501,9 +418,7 @@ namespace RedBlueGames.MulliganRenamer
                     }
                     catch (System.OperationCanceledException e)
                     {
-                        var errorMessage = string.Concat(
-                            LocalizationManager.Instance.GetTranslation("failToRenameMulligan"),
-                            e.Message);
+                        var errorMessage = string.Concat(LocalizationManager.Instance.GetTranslation("failToRenameMulligan"), e.Message);
                         if (EditorUtility.DisplayDialog(LocalizationManager.Instance.GetTranslation("error"), errorMessage, "Ok"))
                         {
                             Undo.RevertAllDownToGroup(undoGroupBeforeRename);
@@ -521,11 +436,7 @@ namespace RedBlueGames.MulliganRenamer
 
             EditorGUI.EndDisabledGroup();
 
-            var copyrightRect = new Rect(
-                0.0f,
-                renameButtonRect.y + renameButtonRect.height + 2.0f,
-                this.position.width,
-                EditorGUIUtility.singleLineHeight);
+            var copyrightRect = new Rect(0.0f, renameButtonRect.y + renameButtonRect.height + 16.0f, this.position.width, EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(copyrightRect, this.guiContents.CopyrightLabel, this.guiStyles.CopyrightLabel);
 
             this.FocusForcedFocusControl();
@@ -538,8 +449,7 @@ namespace RedBlueGames.MulliganRenamer
 
             // The breadcrumb style spills to the left some so we need to claim extra space for it
             const float BreadcrumbLeftOffset = 7.0f;
-            var breadcrumbRect = new Rect(
-                new Vector2(BreadcrumbLeftOffset + OperationPanelWidth, toolbarRect.y),
+            var breadcrumbRect = new Rect(new Vector2(BreadcrumbLeftOffset + OperationPanelWidth, toolbarRect.y),
                 new Vector2(toolbarRect.width - OperationPanelWidth - BreadcrumbLeftOffset, toolbarRect.height));
 
             this.DrawBreadcrumbs(this.IsShowingPreviewSteps, breadcrumbRect);
@@ -595,8 +505,10 @@ namespace RedBlueGames.MulliganRenamer
                 }
                 else
                 {
-                    var breadcrumbeOptions =
-                        new PreviewBreadcrumbOptions() { Heading = LocalizationManager.Instance.GetTranslation("result"), HighlightColor = Color.clear, Enabled = true, UseLeftStyle = true };
+                    var breadcrumbeOptions = new PreviewBreadcrumbOptions()
+                    {
+                        Heading = LocalizationManager.Instance.GetTranslation("result"), HighlightColor = Color.clear, Enabled = true, UseLeftStyle = true
+                    };
                     var breadcrumbSize = breadcrumbeOptions.SizeForContent;
                     breadcrumbSize.y = rect.height;
                     DrawPreviewBreadcrumb(new Rect(rect.position, breadcrumbSize), breadcrumbeOptions);
@@ -634,10 +546,7 @@ namespace RedBlueGames.MulliganRenamer
                 scrollContentsRect.width -= 15.0f;
             }
 
-            this.renameOperationsPanelScrollPosition = GUI.BeginScrollView(
-                scrollAreaRect,
-                this.renameOperationsPanelScrollPosition,
-                scrollContentsRect);
+            this.renameOperationsPanelScrollPosition = GUI.BeginScrollView(scrollAreaRect, this.renameOperationsPanelScrollPosition, scrollContentsRect);
 
             this.DrawRenameOperations(scrollContentsRect);
 
@@ -703,11 +612,13 @@ namespace RedBlueGames.MulliganRenamer
                 {
                     var content = new GUIContent(savedPresetNames[i]);
                     int copyI = i;
-                    menu.AddItem(content, false, () =>
-                    {
-                        var preset = this.ActivePreferences.SavedPresets[copyI];
-                        this.LoadPreset(preset);
-                    });
+                    menu.AddItem(content,
+                        false,
+                        () =>
+                        {
+                            var preset = this.ActivePreferences.SavedPresets[copyI];
+                            this.LoadPreset(preset);
+                        });
                 }
 
                 menu.AddSeparator(string.Empty);
@@ -715,15 +626,14 @@ namespace RedBlueGames.MulliganRenamer
                 menu.AddItem(new GUIContent(LocalizationManager.Instance.GetTranslation("managePresets")), false, () => this.ShowManagePresetsWindow());
                 if (useDebugPresets)
                 {
-                    menu.AddItem(new GUIContent("DEBUG - Delete UserPrefs"), false, () =>
-                    {
-                        this.ActivePreferences.ResetToDefaults();
-                        this.SaveUserPreferences();
-                    });
-                    menu.AddItem(new GUIContent("DEBUG - Reload Languages"), false, () =>
-                    {
-                        LocalizationManager.Instance.Initialize();
-                    });
+                    menu.AddItem(new GUIContent("DEBUG - Delete UserPrefs"),
+                        false,
+                        () =>
+                        {
+                            this.ActivePreferences.ResetToDefaults();
+                            this.SaveUserPreferences();
+                        });
+                    menu.AddItem(new GUIContent("DEBUG - Reload Languages"), false, () => { LocalizationManager.Instance.Initialize(); });
                 }
 
                 menu.ShowAsContext();
@@ -765,56 +675,56 @@ namespace RedBlueGames.MulliganRenamer
                 switch (buttonClickEvent)
                 {
                     case RenameOperationSortingButtonEvent.MoveUp:
-                        {
-                            this.RenameOperationsToApplyWithBindings.MoveElementFromIndexToIndex(i, i - 1);
-                            saveOpsToPreferences = true;
+                    {
+                        this.RenameOperationsToApplyWithBindings.MoveElementFromIndexToIndex(i, i - 1);
+                        saveOpsToPreferences = true;
 
-                            // Move focus with the RenameOp. This techincally changes their focus within the 
-                            // rename op, but it's better than focus getting swapped to whatever op replaces this one.
-                            operationToFocus = focusedOpBeforeButtonPresses;
-                            break;
-                        }
+                        // Move focus with the RenameOp. This techincally changes their focus within the 
+                        // rename op, but it's better than focus getting swapped to whatever op replaces this one.
+                        operationToFocus = focusedOpBeforeButtonPresses;
+                        break;
+                    }
 
                     case RenameOperationSortingButtonEvent.MoveDown:
-                        {
-                            this.RenameOperationsToApplyWithBindings.MoveElementFromIndexToIndex(i, i + 1);
-                            saveOpsToPreferences = true;
-                            operationToFocus = focusedOpBeforeButtonPresses;
-                            break;
-                        }
+                    {
+                        this.RenameOperationsToApplyWithBindings.MoveElementFromIndexToIndex(i, i + 1);
+                        saveOpsToPreferences = true;
+                        operationToFocus = focusedOpBeforeButtonPresses;
+                        break;
+                    }
 
                     case RenameOperationSortingButtonEvent.Delete:
+                    {
+                        var removingFocusedOperation = focusedOpBeforeButtonPresses == currentElement.Operation;
+
+                        this.RenameOperationsToApplyWithBindings.RemoveAt(i);
+                        saveOpsToPreferences = true;
+
+                        if (removingFocusedOperation && this.NumRenameOperations > 0)
                         {
-                            var removingFocusedOperation = focusedOpBeforeButtonPresses == currentElement.Operation;
-
-                            this.RenameOperationsToApplyWithBindings.RemoveAt(i);
-                            saveOpsToPreferences = true;
-
-                            if (removingFocusedOperation && this.NumRenameOperations > 0)
-                            {
-                                // Focus the RenameOp that took this one's place, if there is one. 
-                                var indexToFocus = Mathf.Min(this.NumRenameOperations - 1, i);
-                                operationToFocus = this.RenameOperationsToApplyWithBindings[indexToFocus].Operation;
-                            }
-                            else
-                            {
-                                operationToFocus = focusedOpBeforeButtonPresses;
-                            }
-
-                            break;
+                            // Focus the RenameOp that took this one's place, if there is one. 
+                            var indexToFocus = Mathf.Min(this.NumRenameOperations - 1, i);
+                            operationToFocus = this.RenameOperationsToApplyWithBindings[indexToFocus].Operation;
                         }
+                        else
+                        {
+                            operationToFocus = focusedOpBeforeButtonPresses;
+                        }
+
+                        break;
+                    }
 
                     case RenameOperationSortingButtonEvent.None:
-                        {
-                            // Do nothing
-                            break;
-                        }
+                    {
+                        // Do nothing
+                        break;
+                    }
 
                     default:
-                        {
-                            Debug.LogError(string.Format(LocalizationManager.Instance.GetTranslation("errorUnrecognizedListButton"), buttonClickEvent));
-                            return;
-                        }
+                    {
+                        Debug.LogError(string.Format(LocalizationManager.Instance.GetTranslation("errorUnrecognizedListButton"), buttonClickEvent));
+                        return;
+                    }
                 }
 
                 if (operationToFocus != null)
@@ -844,7 +754,7 @@ namespace RedBlueGames.MulliganRenamer
         {
             // Reconstruct the operation and drawer so we are working with new instances
             var renameOp = prototypeBinding.Operation.Clone();
-            var drawer = (IRenameOperationDrawer)System.Activator.CreateInstance(prototypeBinding.Drawer.GetType());
+            var drawer = (IRenameOperationDrawer) System.Activator.CreateInstance(prototypeBinding.Drawer.GetType());
             drawer.SetModel(renameOp);
 
             var binding = new RenameOperationDrawerBinding(renameOp, drawer);
@@ -893,76 +803,6 @@ namespace RedBlueGames.MulliganRenamer
             this.previewPanel.DeletionTextColor = this.ActivePreferences.DeletionTextColor;
             this.previewPanel.DeletionBackgroundColor = this.ActivePreferences.DeletionBackgroundColor;
             this.previewPanelScrollPosition = this.previewPanel.Draw(previewPanelRect, this.previewPanelScrollPosition, bulkRenamePreview);
-        }
-
-        private void DrawReviewPrompt(Rect rect)
-        {
-            var reviewPrompt = string.Empty;
-            Color color = Color.blue;
-            if (ActivePreferences.HasConfirmedReviewPrompt)
-            {
-                color = new AddStringOperationDrawer().HighlightColor;
-                if (RBPackageSettings.IsGitHubRelease)
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForSupport"));
-                }
-                else
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForReview"));
-                }
-            }
-            else
-            {
-                color = new ReplaceNameOperationDrawer().HighlightColor;
-
-                if (RBPackageSettings.IsGitHubRelease)
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForUsing"));
-                }
-                else
-                {
-                    reviewPrompt = string.Format("<color=FFFFFFF>{0}</color>", LocalizationManager.Instance.GetTranslation("thankYouForPurchasing"));
-                }
-            }
-
-            DrawReviewBanner(rect, color, reviewPrompt, !ActivePreferences.HasConfirmedReviewPrompt);
-        }
-
-        private void DrawReviewBanner(Rect rect, Color color, string prompt, bool showButton)
-        {
-            var oldColor = GUI.color;
-            GUI.color = color;
-            GUI.DrawTexture(rect, Texture2D.whiteTexture);
-            GUI.color = oldColor;
-
-            var reviewStyle = new GUIStyle(EditorStyles.largeLabel);
-            reviewStyle.fontStyle = FontStyle.Bold;
-            reviewStyle.alignment = TextAnchor.MiddleCenter;
-            reviewStyle.wordWrap = true;
-            reviewStyle.richText = true;
-
-            var buttonRect = new Rect(rect);
-            buttonRect.width = showButton ? 140.0f : 0.0f;
-            buttonRect.height = 16.0f;
-            var buttonPaddingLR = 10.0f;
-
-            buttonRect.x = rect.width - (buttonRect.width + buttonPaddingLR);
-            buttonRect.y += (rect.height * 0.5f) - (buttonRect.height * 0.5f);
-
-            var labelRect = new Rect(rect);
-            var labelPaddingL = 10.0f;
-            labelRect.x += labelPaddingL;
-            labelRect.width = (buttonRect.x - rect.x) - (buttonPaddingLR + labelPaddingL);
-
-            GUI.Label(labelRect, prompt, reviewStyle);
-            if (showButton && GUI.Button(buttonRect, LocalizationManager.Instance.GetTranslation("openAssetStore")))
-            {
-                this.ActivePreferences.HasConfirmedReviewPrompt = true;
-                Application.OpenURL("https://assetstore.unity.com/packages/slug/99843");
-
-                // Set a flag to continue to show the banner for this session
-                this.IsShowingThanksForReview = true;
-            }
         }
 
         private void ShowSavePresetWindow()
@@ -1112,11 +952,7 @@ namespace RedBlueGames.MulliganRenamer
         private RenameSequencePreset CreatePresetFromCurrentSequence(string presetName)
         {
             var operationSequence = this.GetCurrentRenameOperationSequence();
-            var preset = new RenameSequencePreset()
-            {
-                Name = presetName,
-                OperationSequence = operationSequence
-            };
+            var preset = new RenameSequencePreset() {Name = presetName, OperationSequence = operationSequence};
 
             return preset;
         }
@@ -1133,10 +969,7 @@ namespace RedBlueGames.MulliganRenamer
             return operationSequence;
         }
 
-        private void FocusRenameOperationDeferred(IRenameOperation renameOperation)
-        {
-            this.OperationToForceFocus = renameOperation;
-        }
+        private void FocusRenameOperationDeferred(IRenameOperation renameOperation) { this.OperationToForceFocus = renameOperation; }
 
         private void FocusForcedFocusControl()
         {
@@ -1201,18 +1034,15 @@ namespace RedBlueGames.MulliganRenamer
                 }
                 else
                 {
-                    gameObjects.Add((GameObject)obj);
+                    gameObjects.Add((GameObject) obj);
                 }
             }
 
             // When clicking and dragging from the scene, GameObjects are properly sorted according to the hierarchy.
             // But when selected and adding them, they are not. So we need to resort them here.
-            gameObjects.Sort((x, y) => ((GameObject)x).GetHierarchySorting().CompareTo(((GameObject)y).GetHierarchySorting()));
+            gameObjects.Sort((x, y) => ((GameObject) x).GetHierarchySorting().CompareTo(((GameObject) y).GetHierarchySorting()));
 
-            assets.Sort((x, y) =>
-            {
-                return EditorUtility.NaturalCompare(x.name, y.name);
-            });
+            assets.Sort((x, y) => { return EditorUtility.NaturalCompare(x.name, y.name); });
 
             this.ObjectsToRename.AddRange(assets);
             this.ObjectsToRename.AddRange(gameObjects);
@@ -1221,10 +1051,7 @@ namespace RedBlueGames.MulliganRenamer
             this.NumPreviouslyRenamedObjects = 0;
         }
 
-        private bool ObjectIsValidForRename(UnityEngine.Object obj)
-        {
-            return ObjectIsRenamable(obj) && !this.ObjectsToRename.Contains(obj);
-        }
+        private bool ObjectIsValidForRename(UnityEngine.Object obj) { return ObjectIsRenamable(obj) && !this.ObjectsToRename.Contains(obj); }
 
         private bool RenameOperatationsHaveErrors()
         {
@@ -1239,15 +1066,9 @@ namespace RedBlueGames.MulliganRenamer
             return false;
         }
 
-        private void ScrollPreviewPanelToBottom()
-        {
-            this.previewPanelScrollPosition = new Vector2(0.0f, 100000);
-        }
+        private void ScrollPreviewPanelToBottom() { this.previewPanelScrollPosition = new Vector2(0.0f, 100000); }
 
-        private void ScrollRenameOperationsToBottom()
-        {
-            this.renameOperationsPanelScrollPosition = new Vector2(0.0f, 100000);
-        }
+        private void ScrollRenameOperationsToBottom() { this.renameOperationsPanelScrollPosition = new Vector2(0.0f, 100000); }
 
         private struct PreviewBreadcrumbOptions
         {
@@ -1259,13 +1080,7 @@ namespace RedBlueGames.MulliganRenamer
 
             public bool Enabled { get; set; }
 
-            public string StyleName
-            {
-                get
-                {
-                    return this.UseLeftStyle ? "GUIEditor.BreadcrumbLeft" : "GUIEditor.BreadcrumbMid";
-                }
-            }
+            public string StyleName { get { return this.UseLeftStyle ? "GUIEditor.BreadcrumbLeft" : "GUIEditor.BreadcrumbMid"; } }
 
             public Vector2 SizeForContent
             {

@@ -1,10 +1,8 @@
-﻿using Pancake.Apex;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake.SafeArea
 {
-    [EditorIcon("script_manager")]
-    [HideMonoScript]
+    [EditorIcon("icon_manager")]
     public class RuntimeSafeAreaUpdater : CacheGameComponent<ISafeAreaUpdatable>
     {
         private Rect _safeArea;

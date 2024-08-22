@@ -1,27 +1,29 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pancake.Apex;
+using Alchemy.Serialization;
+using Pancake.Monetization;
 #if PANCAKE_REMOTE_CONFIG
 using Firebase;
 using Firebase.Extensions;
 using Firebase.RemoteConfig;
 #endif
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Tracking
 {
-    public class RemoteConfig : GameComponent
+    [AlchemySerialize]
+    public partial class RemoteConfig : MonoBehaviour
     {
-        [SerializeField, Label("Status")] private BoolVariable remoteConfigIsFetchCompleted;
-        [SerializeField] private RemoteConfigData remoteData;
-        [SerializeField] private StringVariable remoteConfigCurrentAdNetwork;
-        [SerializeField] private ScriptableEventString changeNetworkEvent;
+        [AlchemySerializeField, NonSerialized] private Dictionary<StringConstant, string> remoteData = new();
+        [SerializeField] private StringConstant currentAdNetwork;
+
+        public static bool IsFetchCompleted { get; set; }
 
 #if PANCAKE_REMOTE_CONFIG
         private void Start()
         {
-            remoteConfigIsFetchCompleted.Value = false;
+            IsFetchCompleted = false;
             FirebaseApp.CheckDependenciesAsync()
                 .ContinueWith(task =>
                 {
@@ -37,8 +39,8 @@ namespace Pancake.Tracking
         /// <summary>
         /// Start a fetch request.
         /// FetchAsync only fetches new data if the current data is older than the provided
-        /// timespan.  Otherwise it assumes the data is "recent enough", and does nothing.
-        /// By default the timespan is 12 hours, and for production apps, this is a good
+        /// timespan.  Otherwise, it assumes the data is "recent enough", and does nothing.
+        /// By default, the timespan is 12 hours, and for production apps, this is a good
         /// number. For this example though, it's set to a timespan of zero, so that
         /// changes in the console will always show up immediately.
         /// </summary>
@@ -61,8 +63,7 @@ namespace Pancake.Tracking
             var info = remoteConfig.Info;
             if (info.LastFetchStatus != LastFetchStatus.Success)
             {
-                Debug.LogError(
-                    $"{nameof(FetchComplete)} was unsuccessful\n{nameof(info.LastFetchStatus)}: {info.LastFetchStatus}");
+                Debug.LogError($"{nameof(FetchComplete)} was unsuccessful\n{nameof(info.LastFetchStatus)}: {info.LastFetchStatus}");
                 return;
             }
 
@@ -70,26 +71,27 @@ namespace Pancake.Tracking
             remoteConfig.ActivateAsync()
                 .ContinueWithOnMainThread(task =>
                 {
-                    foreach (string key in remoteData.Keys)
+                    foreach (var key in remoteData.Keys)
                     {
-                        if (!string.IsNullOrEmpty(key))
+                        if (!string.IsNullOrEmpty(key.Value))
                         {
-                            ConfigValue configValue = FirebaseRemoteConfig.DefaultInstance.GetValue(key);
+                            ConfigValue configValue = FirebaseRemoteConfig.DefaultInstance.GetValue(key.Value);
                             if (configValue.Source == ValueSource.RemoteValue)
                             {
-                                remoteData[key].Value = configValue.StringValue;
+                                remoteData[key] = configValue.StringValue;
                             }
                         }
                     }
 
-                    if (remoteConfigCurrentAdNetwork != null && remoteConfigCurrentAdNetwork.Value != string.Empty)
+                    if (currentAdNetwork != null && currentAdNetwork.Value != string.Empty)
                     {
-                        if (changeNetworkEvent != null) changeNetworkEvent.Raise(remoteConfigCurrentAdNetwork.Value);
+                        Advertising.ChangeNetwork(remoteData[currentAdNetwork]);
                     }
 
-                    remoteConfigIsFetchCompleted.Value = true;
+                    IsFetchCompleted = true;
                 });
         }
+
 #endif
     }
 }

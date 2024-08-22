@@ -6,12 +6,12 @@ namespace Pancake.ComputationalGeometry
 {
     //Interpolation between values with different algorithms
     public static class _Interpolation
-    {  
+    {
         //Linear interpolation - if t is constant then the step between each value is constant
         public static float Lerp(float a, float b, float t)
         {
             t = Mathf.Clamp01(t);
-        
+
             //Same as Mathf.Lerp(a, b, t);
             float interpolatedValue = (1f - t) * a + t * b;
 
@@ -116,7 +116,6 @@ namespace Pancake.ComputationalGeometry
 
             return interpolatedValue;
         }
-
 
 
         //Exponential interpolation between 2 values

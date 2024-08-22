@@ -2,12 +2,11 @@
     "name": "Pancake.Spine",
     "rootNamespace": "",
     "references": [
+        "GUID:88be65f96b86746888c927a5c8ff3534",
         "GUID:72d1fea872bd7a449bf3818f2b0a6708",
         "GUID:68765d262e2128e4ab49c983f3411946",
         "GUID:adac8d59ad7e8504f82d387cded797a7",
-        "GUID:341d04dbc3e6ced4f903de04a0918a48",
-        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
-        "GUID:663c42ebcf40ab347b24d56f39e89dc6"
+        "GUID:2bb2982fd552689428d4c3ae8bb26fb7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

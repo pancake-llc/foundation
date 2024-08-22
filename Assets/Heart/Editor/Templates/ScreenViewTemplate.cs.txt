@@ -1,0 +1,12 @@
+using Cysharp.Threading.Tasks;
+
+namespace Pancake.UI
+{
+    public sealed class #TYPE#View : View
+    {
+    	protected override UniTask Initialize()
+    	{
+        	return UniTask.CompletedTask;
+    	}
+    }
+}

@@ -1,5 +1,5 @@
+using System;
 using System.Threading.Tasks;
-using Pancake.Scriptable;
 #if UNITY_ANDROID && PANCAKE_GPGS
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -10,24 +10,23 @@ namespace Pancake.SignIn
 {
     public class AuthenticationGooglePlayGames : MonoBehaviour
     {
-        [SerializeField] private StringVariable serverCode;
-        [SerializeField] private BoolVariable status;
-        [SerializeField] private ScriptableEventNoParam loginEvent;
-        [SerializeField] private ScriptableEventNoParam getNewServerCode;
-
 #if UNITY_ANDROID && PANCAKE_GPGS
         private void Start()
         {
-            serverCode.Value = "";
+            SignInEvent.ServerCode = "";
             PlayGamesPlatform.Activate();
-            loginEvent.OnRaised += OnGooglePlayGameLogin;
-            getNewServerCode.OnRaised += OnGetNewServerCode;
+        }
+
+        private void OnEnable()
+        {
+            SignInEvent.LoginEvent += OnGooglePlayGameLogin;
+            SignInEvent.GetNewServerCodeEvent += OnGetNewServerCode;
         }
 
         private async void OnGetNewServerCode()
         {
             if (!PlayGamesPlatform.Instance.IsAuthenticated()) return;
-            (serverCode.Value, status.Value) = await GetNewServerCode();
+            (SignInEvent.ServerCode, SignInEvent.status) = await GetNewServerCode();
         }
 
         private Task<(string, bool)> GetNewServerCode()
@@ -39,11 +38,11 @@ namespace Pancake.SignIn
 
         private void OnDisable()
         {
-            loginEvent.OnRaised -= OnGooglePlayGameLogin;
-            getNewServerCode.OnRaised -= OnGetNewServerCode;
+            SignInEvent.LoginEvent -= OnGooglePlayGameLogin;
+            SignInEvent.GetNewServerCodeEvent -= OnGetNewServerCode;
         }
 
-        private async void OnGooglePlayGameLogin() { (serverCode.Value, status.Value) = await LoginGooglePlayGames(); }
+        private async void OnGooglePlayGameLogin() { (SignInEvent.ServerCode, SignInEvent.status) = await LoginGooglePlayGames(); }
 
         private Task<(string, bool)> LoginGooglePlayGames()
         {

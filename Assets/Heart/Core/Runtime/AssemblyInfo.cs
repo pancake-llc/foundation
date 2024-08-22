@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+
 [assembly: System.Reflection.AssemblyCompany("Pancake-llc")]
 [assembly: System.Reflection.AssemblyTitle("Foundation")]
 [assembly: System.Reflection.AssemblyVersion("2.1.15")]

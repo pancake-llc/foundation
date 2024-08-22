@@ -2,7 +2,7 @@
 
 namespace Pancake.Localization
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleAudioClipComponent : LocaleComponentGeneric<LocaleAudioClip, AudioClip>
     {
     }

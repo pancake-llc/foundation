@@ -4,7 +4,7 @@ namespace Pancake.Localization
 {
     using UnityEngine;
 
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleMaterialComponent : LocaleComponentGeneric<LocaleMaterial, Material>
     {
         private void Reset()

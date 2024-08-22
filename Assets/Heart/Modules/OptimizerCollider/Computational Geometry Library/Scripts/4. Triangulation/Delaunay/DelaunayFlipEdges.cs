@@ -24,7 +24,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Flip edges until we get a delaunay triangulation
         private static void FlipEdges(HalfEdgeData2 triangleData)
         {
@@ -75,7 +74,6 @@ namespace Pancake.ComputationalGeometry
 
                         HalfEdgeHelpMethods.FlipTriangleEdge(thisEdge);
                     }
-
                 }
 
                 //We have searched through all edges and havent found an edge to flip, so we have a Delaunay triangulation!

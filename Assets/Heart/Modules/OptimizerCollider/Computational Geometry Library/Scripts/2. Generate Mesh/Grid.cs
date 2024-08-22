@@ -17,7 +17,7 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
             if (cells <= 0)
             {
                 Debug.Log("The grid needs at least one cell");
-            
+
                 return null;
             }
 
@@ -30,12 +30,11 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
             }
 
 
-
             //The number of vertices in one row is always cells + 1
             int verticesInOneRow = cells + 1;
 
             //The width of one cell
-            float cellWidth = width / (float)cells;
+            float cellWidth = width / (float) cells;
 
             //What's the half width of the grid?
             float halfWidth = width * 0.5f;
@@ -115,7 +114,6 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
 
             return triangles;
         }
-
 
 
         //Convert from 2d array to 1d array

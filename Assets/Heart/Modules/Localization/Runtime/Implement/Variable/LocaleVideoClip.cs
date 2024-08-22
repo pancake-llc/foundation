@@ -1,12 +1,11 @@
 using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Video;
 
 namespace Pancake.Localization
 {
     [CreateAssetMenu(menuName = "Pancake/Localization/VideoClip", fileName = "videoclip_localizevalue", order = 8)]
-    [EditorIcon("scriptable_yellow_videoclip")]
+    [EditorIcon("so_yellow_videoclip")]
     public class LocaleVideoClip : LocaleVariable<VideoClip>
     {
         [Serializable]
@@ -15,7 +14,7 @@ namespace Pancake.Localization
         };
 
         [SerializeField] private VideoClipLocaleItem[] items = new VideoClipLocaleItem[1];
-        
+
         // ReSharper disable once CoVariantArrayConversion
         public override LocaleItemBase[] LocaleItems => items;
     }

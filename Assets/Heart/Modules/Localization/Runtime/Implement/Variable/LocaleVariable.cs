@@ -13,7 +13,7 @@ namespace Pancake.Localization
         public LocaleItem<T>[] TypedLocaleItems => (LocaleItem<T>[]) LocaleItems;
 
         /// <summary>
-        /// Gets localized asset value regarding to <see cref="Locale.CurrentLanguage"/> if available.
+        /// Gets localized asset value regarding <see cref="Locale.CurrentLanguage"/> if available.
         /// Gets first value of the asset if application is not playing.
         /// </summary>
         /// <seealso cref="Application.isPlaying"/>
@@ -39,7 +39,7 @@ namespace Pancake.Localization
                     }
                 }
 #endif
-                
+
                 return isValueSet ? value : FirstValue;
             }
         }
@@ -64,7 +64,7 @@ namespace Pancake.Localization
         /// <summary>
         /// Gets localized value if exist regarding to given language.
         /// </summary>
-        /// <returns>True if exist; otherwise False</returns>
+        /// <returns>True if existed; otherwise False</returns>
         public bool TryGetLocaleValue(Language language, out T value)
         {
             int index = Array.FindIndex(TypedLocaleItems, x => x.Language == language);

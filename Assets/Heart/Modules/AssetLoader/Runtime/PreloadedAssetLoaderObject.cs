@@ -6,12 +6,12 @@ using Object = UnityEngine.Object;
 namespace Pancake.AssetLoader
 {
     [CreateAssetMenu(fileName = "PreloadedAssetLoader", menuName = "Pancake/Asset Loader/Preloaded Asset Loader")]
-    [EditorIcon("scriptable_interface")]
+    [EditorIcon("so_blue_loader")]
     public sealed class PreloadedAssetLoaderObject : AssetLoaderObject, IAssetLoader
     {
-        [SerializeField] private List<KeyAssetPair> preloadedObjects = new List<KeyAssetPair>();
+        [SerializeField] private List<KeyAssetPair> preloadedObjects = new();
 
-        private readonly PreloadedAssetLoader _loader = new PreloadedAssetLoader();
+        private readonly PreloadedAssetLoader _loader = new();
 
         public List<KeyAssetPair> PreloadedObjects => preloadedObjects;
 

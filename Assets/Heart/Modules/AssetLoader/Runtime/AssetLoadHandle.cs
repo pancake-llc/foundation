@@ -8,10 +8,7 @@ namespace Pancake.AssetLoader
     {
         protected Func<float> percentCompleteFunc;
 
-        protected AssetLoadHandle(int controlId)
-        {
-            ControlId = controlId;
-        }
+        protected AssetLoadHandle(int controlId) { ControlId = controlId; }
 
         public int ControlId { get; }
 
@@ -26,7 +23,8 @@ namespace Pancake.AssetLoader
 
     public sealed class AssetLoadHandle<T> : AssetLoadHandle, IAssetLoadHandleSetter<T> where T : Object
     {
-        public AssetLoadHandle(int controlId) : base(controlId)
+        public AssetLoadHandle(int controlId)
+            : base(controlId)
         {
         }
 
@@ -34,29 +32,14 @@ namespace Pancake.AssetLoader
 
         public Task<T> Task { get; private set; }
 
-        void IAssetLoadHandleSetter<T>.SetStatus(AssetLoadStatus status)
-        {
-            Status = status;
-        }
+        void IAssetLoadHandleSetter<T>.SetStatus(AssetLoadStatus status) { Status = status; }
 
-        void IAssetLoadHandleSetter<T>.SetResult(T result)
-        {
-            Result = result;
-        }
+        void IAssetLoadHandleSetter<T>.SetResult(T result) { Result = result; }
 
-        void IAssetLoadHandleSetter<T>.SetPercentCompleteFunc(Func<float> percentComplete)
-        {
-            percentCompleteFunc = percentComplete;
-        }
+        void IAssetLoadHandleSetter<T>.SetPercentCompleteFunc(Func<float> percentComplete) { percentCompleteFunc = percentComplete; }
 
-        void IAssetLoadHandleSetter<T>.SetTask(Task<T> task)
-        {
-            Task = task;
-        }
+        void IAssetLoadHandleSetter<T>.SetTask(Task<T> task) { Task = task; }
 
-        void IAssetLoadHandleSetter<T>.SetOperationException(Exception ex)
-        {
-            OperationException = ex;
-        }
+        void IAssetLoadHandleSetter<T>.SetOperationException(Exception ex) { OperationException = ex; }
     }
 }

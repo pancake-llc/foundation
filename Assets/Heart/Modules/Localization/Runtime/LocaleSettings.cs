@@ -4,18 +4,22 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
-    [EditorIcon("scriptable_setting")]
+    [EditorIcon("so_blue_setting")]
     public sealed class LocaleSettings : ScriptableSettings<LocaleSettings>
     {
-        [SerializeField] private List<Language> availableLanguages = new List<Language>(1) {Language.English};
+        [SerializeField] private List<Language> availableLanguages = new(1) {Language.English};
         [SerializeField] private bool detectDeviceLanguage;
         [SerializeField] private string importLocation = "Assets";
-        [SerializeField] private string googleCredential;
+        [SerializeField] private string googleTranslateApiKey;
+        [SerializeField] private string spreadsheetKey;
+        [SerializeField, TextArea] private string serviceAccountCredential;
 
         public static bool DetectDeviceLanguage => Instance.detectDeviceLanguage;
         public static string ImportLocation => Instance.importLocation;
         public static List<Language> AvailableLanguages => Instance.availableLanguages;
-        public static string GoogleCredential => Instance.googleCredential;
+        public static string GoogleTranslateApiKey => Instance.googleTranslateApiKey;
+        public static string SpreadsheetKey => Instance.spreadsheetKey;
+        public static string ServiceAccountCredential => Instance.serviceAccountCredential;
 
         public static List<Language> AllLanguages
         {

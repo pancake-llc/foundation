@@ -42,25 +42,18 @@ namespace RedBlueGames.MulliganRenamer
             var labelText = string.Empty;
             if (!resultLabelStyle.HideDiff)
             {
-                ApplyBackgroundColorToDiff(
-                    rect,
+                ApplyBackgroundColorToDiff(rect,
                     style,
                     renameResult,
                     resultLabelStyle.OperationToShow,
                     resultLabelStyle.DiffBackgroundColor);
             }
 
-            labelText = showBefore ? renameResult.GetOriginalColored(resultLabelStyle.DiffTextColor) :
-                renameResult.GetResultColored(resultLabelStyle.DiffTextColor);
+            labelText = showBefore ? renameResult.GetOriginalColored(resultLabelStyle.DiffTextColor) : renameResult.GetResultColored(resultLabelStyle.DiffTextColor);
             EditorGUI.LabelField(rect, labelText, style);
         }
 
-        private static void ApplyBackgroundColorToDiff(
-            Rect rect,
-            GUIStyle style,
-            RenameResult renameContent,
-            DiffOperation operationToColor,
-            Color backgroundColor)
+        private static void ApplyBackgroundColorToDiff(Rect rect, GUIStyle style, RenameResult renameContent, DiffOperation operationToColor, Color backgroundColor)
         {
             if (string.IsNullOrEmpty(renameContent.Original))
             {
@@ -99,11 +92,7 @@ namespace RedBlueGames.MulliganRenamer
                             ? blockRect.width
                             : Mathf.Max(0f, (rect.x + rect.width) - (blockRect.x));
 
-                        var textureRect = new Rect(
-                            blockRect.x,
-                            blockRect.y,
-                            textureWidth,
-                            blockRect.height);
+                        var textureRect = new Rect(blockRect.x, blockRect.y, textureWidth, blockRect.height);
 
                         var textColorTransparent = backgroundColor;
 

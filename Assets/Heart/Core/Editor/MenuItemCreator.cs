@@ -1,4 +1,4 @@
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
 using Pancake.UI;
 using TMPro;
 using UnityEditor;
@@ -39,7 +39,7 @@ namespace PancakeEditor
             SetupUIButton(t);
             Selection.activeTransform = t;
         }
-        
+
         [MenuItem("GameObject/Pancake/UIButton - Text Only", false, 1000)]
         private static void CreateUIButtonTextOnly()
         {

@@ -3,12 +3,9 @@ using UnityEngine.UI;
 
 namespace Pancake.Localization
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleSpriteComponent : LocaleComponentGeneric<LocaleSprite, Sprite>
     {
-        private void Reset()
-        {
-            TrySetComponentAndPropertyIfNotSet<Image>("sprite");
-        }
+        private void Reset() { TrySetComponentAndPropertyIfNotSet<Image>("sprite"); }
     }
 }

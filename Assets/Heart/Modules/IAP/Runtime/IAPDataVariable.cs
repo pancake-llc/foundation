@@ -1,19 +1,25 @@
 #if PANCAKE_IAP
 using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
 namespace Pancake.IAP
 {
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     [CreateAssetMenu(fileName = "variable_IAPData.asset", menuName = "Pancake/IAP/Scriptable IAPData")]
     [Serializable]
-    [HideMonoScript]
     public class IAPDataVariable : ScriptableObject
     {
         [ReadOnly] public string id;
         [ReadOnly] public ProductType productType;
+        [ReadOnly] public int price;
+        [ReadOnly] public string localizedPrice;
+        [ReadOnly] public string isoCurrencyCode;
+        [ReadOnly] public string localizedDescription;
+        [ReadOnly] public string localizedTitle;
+        [HideInInspector] public string receipt;
+        internal SubscriptionInfo subscriptionInfo;
 
         [Space] [SerializeField] private IAPPurchaseSuccess onPurchaseSuccess;
         [SerializeField] private IAPPurchaseFailed onPurchaseFailed;
@@ -21,8 +27,8 @@ namespace Pancake.IAP
         internal IAPPurchaseSuccess OnPurchaseSuccess => onPurchaseSuccess;
         internal IAPPurchaseFailed OnPurchaseFailed => onPurchaseFailed;
 
-        [NonSerialized] public Action purchaseSuccessCallback;
-        [NonSerialized] public Action purchaseFailedCallback;
+        [NonSerialized] internal Action purchaseSuccessCallback;
+        [NonSerialized] internal Action purchaseFailedCallback;
     }
 }
 #endif

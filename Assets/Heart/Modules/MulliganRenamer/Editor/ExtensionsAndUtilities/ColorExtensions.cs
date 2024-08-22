@@ -38,11 +38,7 @@ namespace RedBlueGames.MulliganRenamer
         /// <returns>Resulting color</returns>
         public static Color CreateCopyWithNewAlpha(this Color color, float alpha)
         {
-            var alphaModified = new Color(
-                color.r,
-                color.g,
-                color.b,
-                alpha);
+            var alphaModified = new Color(color.r, color.g, color.b, alpha);
             return alphaModified;
         }
     }

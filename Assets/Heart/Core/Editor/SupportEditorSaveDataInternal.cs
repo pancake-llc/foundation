@@ -1,4 +1,4 @@
-using Pancake;
+using Pancake.Common;
 using UnityEditor;
 
 namespace PancakeEditor

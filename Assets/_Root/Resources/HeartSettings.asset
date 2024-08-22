@@ -15,17 +15,9 @@ MonoBehaviour:
   debugView: 1
   enablePrivacyFirstOpen: 0
   enableMultipleTouch: 0
-  requireInternet: 1
+  requireInternet: 0
   targetFrameRate: 60
-  privacyUrl: https://pancakellc.com/privacy
+  termOfServiceUrl: 
+  privacyUrl: 
   privacyTitle: 
-  privacyMessage: 'To use <game name>
-
-
-    You must agree to our Privacy Policy.
-
-    We
-    put a lot of love into this app and we hope you enjoy it!
-
-    Please press "Continue"
-    to agree and start using our game.'
+  privacyMessage: 

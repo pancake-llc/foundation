@@ -1,24 +1,19 @@
 #if PANCAKE_SPINE
 using System;
 using System.Collections;
-using Pancake.Apex;
-using Pancake.Scriptable;
+using Pancake.Common;
 using Spine.Unity;
 using UnityEngine;
 
 namespace Pancake.Spine
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class TrackChainSpineGraphic : GameComponent
     {
         [SerializeField] private SkeletonGraphic skeleton;
         [SerializeField] private bool loopLastestTrack;
         [SerializeField] private StartupMode startupMode = StartupMode.OnEnabled;
-
-        [SerializeField, ShowIf(nameof(startupMode), StartupMode.Manual), Label("   Play Event")]
-        private ScriptableEventNoParam playAnimationEvent;
-
-        [SerializeField, Array] private TrackData[] datas;
+        [SerializeField] private TrackData[] datas;
 
         private AsyncProcessHandle _handle;
 
@@ -35,28 +30,11 @@ namespace Pancake.Spine
         protected void OnEnable()
         {
             if (startupMode == StartupMode.OnEnabled) Play();
-            if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised += Play;
         }
 
-        protected void OnDisable()
-        {
-            if (_handle is {IsTerminated: false})
-            {
-                // avoid case app be destroy soon than other component
-                try
-                {
-                    App.StopCoroutine(_handle);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
+        protected void OnDisable() { App.StopAndClean(ref _handle); }
 
-            if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised -= Play;
-        }
-
-        private void Play() { _handle = App.StartCoroutine(IePlay()); }
+        public void Play() { _handle = App.StartCoroutine(IePlay()); }
 
         private IEnumerator IePlay()
         {

@@ -10,7 +10,9 @@ namespace Pancake.ComputationalGeometry
     {
         //Start and end point
         public MyVector3 posA;
+
         public MyVector3 posB;
+
         //Handles connected to the start and end points
         public MyVector3 handleA;
         public MyVector3 handleB;
@@ -25,14 +27,17 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Position
         //
 
         public override MyVector3 GetPosition(float t)
         {
-            MyVector3 interpolatedValue = GetPosition(posA, posB, handleA, handleB, t);
+            MyVector3 interpolatedValue = GetPosition(posA,
+                posB,
+                handleA,
+                handleB,
+                t);
 
             return interpolatedValue;
         }
@@ -64,14 +69,17 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Derivative
         //
 
         public override float GetDerivative(float t)
         {
-            MyVector3 derivativeVec = GetDerivativeVec(posA, posB, handleA, handleB, t);
+            MyVector3 derivativeVec = GetDerivativeVec(posA,
+                posB,
+                handleA,
+                handleB,
+                t);
 
             float derivative = MyVector3.Magnitude(derivativeVec);
 
@@ -127,9 +135,12 @@ namespace Pancake.ComputationalGeometry
 
         public override MyVector3 GetSecondDerivativeVec(float t)
         {
-            return GetSecondDerivativeVec(posA, posB, handleA, handleB, t);
+            return GetSecondDerivativeVec(posA,
+                posB,
+                handleA,
+                handleB,
+                t);
         }
-
 
 
         //
@@ -139,14 +150,22 @@ namespace Pancake.ComputationalGeometry
         public static MyVector3 GetTangent(MyVector3 posA, MyVector3 posB, MyVector3 handleA, MyVector3 handleB, float t)
         {
             //The tangent is also the derivative vector
-            MyVector3 tangent = MyVector3.Normalize(GetDerivativeVec(posA, posB, handleA, handleB, t));
+            MyVector3 tangent = MyVector3.Normalize(GetDerivativeVec(posA,
+                posB,
+                handleA,
+                handleB,
+                t));
 
             return tangent;
         }
 
         public override MyVector3 GetTangent(float t)
         {
-            MyVector3 tangent = GetTangent(posA, posB, handleA, handleB, t);
+            MyVector3 tangent = GetTangent(posA,
+                posB,
+                handleA,
+                handleB,
+                t);
 
             return tangent;
         }

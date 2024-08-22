@@ -8,7 +8,7 @@ namespace Pancake.ComputationalGeometry
     public class InterpolationTransform
     {
         public MyVector3 position;
-        
+
         public MyQuaternion orientation;
 
         public InterpolationTransform(MyVector3 position, MyQuaternion orientation)
@@ -16,7 +16,6 @@ namespace Pancake.ComputationalGeometry
             this.position = position;
             this.orientation = orientation;
         }
-
 
 
         //
@@ -34,7 +33,6 @@ namespace Pancake.ComputationalGeometry
         //https://pomax.github.io/bezierinfo/#pointvectors3d
         //Game Programming Gems 2: The Parallel Transport Frame (p. 215)
         //Unite 2015 - A coder's guide to spline-based procedural geometry https://www.youtube.com/watch?v=o9RK6O2kOKo
-
 
 
         //
@@ -94,13 +92,11 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Alternative 1.5. Similar to Alternative 1, but we know the up vector at both the start and end position
         //
-        
-        public static InterpolationTransform GetTransform_InterpolateBetweenUpVectors(
-            _Curve curve, float t, MyVector3 upRefStart, MyVector3 upRefEnd)
+
+        public static InterpolationTransform GetTransform_InterpolateBetweenUpVectors(_Curve curve, float t, MyVector3 upRefStart, MyVector3 upRefEnd)
         {
             //Position on the curve at point t
             MyVector3 pos = curve.GetPosition(t);
@@ -119,8 +115,7 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-        public static List<InterpolationTransform> GetTransforms_InterpolateBetweenUpVectors(
-            _Curve curve, List<float> tValues, MyVector3 upRefStart, MyVector3 upRefEnd)
+        public static List<InterpolationTransform> GetTransforms_InterpolateBetweenUpVectors(_Curve curve, List<float> tValues, MyVector3 upRefStart, MyVector3 upRefEnd)
         {
             List<InterpolationTransform> transforms = new List<InterpolationTransform>();
 
@@ -133,7 +128,6 @@ namespace Pancake.ComputationalGeometry
 
             return transforms;
         }
-
 
 
         //
@@ -195,7 +189,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Alternative 3. Rotation Minimising Frame (also known as "Parallel Transport Frame" or "Bishop Frame")
         //
@@ -227,8 +220,8 @@ namespace Pancake.ComputationalGeometry
 
             //The source has right x tangent, but then every second normal is flipped
             MyVector3 normal = MyVector3.Cross(tangent, right);
-            
-            MyQuaternion orientation = new MyQuaternion(tangent, normal); 
+
+            MyQuaternion orientation = new MyQuaternion(tangent, normal);
             */
 
 
@@ -260,7 +253,7 @@ namespace Pancake.ComputationalGeometry
         //Not defined for a single point, you always need a previous transform 
         //public static InterpolationTransform InterpolationTransform GetTransform_RotationMinimisingFrame()
         //{
-            
+
         //}
 
 
@@ -302,8 +295,7 @@ namespace Pancake.ComputationalGeometry
             }
 
             return transforms;
-        }        
-
+        }
 
 
         //
@@ -311,9 +303,8 @@ namespace Pancake.ComputationalGeometry
         //
 
         public MyVector3 Forward => orientation.Forward;
-        public MyVector3 Right   => orientation.Right;
-        public MyVector3 Up      => orientation.Up;
-
+        public MyVector3 Right => orientation.Right;
+        public MyVector3 Up => orientation.Up;
 
 
         //

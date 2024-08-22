@@ -28,12 +28,11 @@ namespace Pancake.ComputationalGeometry
             // - Caps. Triangle where one angle is close to 180 degrees. Are difficult to remove. If the vertex is connected to three triangles, we can maybe just remove the vertex and build one big triangle. This can be said to be a flat terahedron?
 
             // - Needles. Triangle where the longest edge is much longer than the shortest one. Same as saying that the smallest angle is close to 0 degrees? Can often be removed by collapsing the shortest edge
-            
+
 
             // - Flat tetrahedrons. Find a vertex and if this vertex is surrounded by three triangles, and if all the vertex is roughly on the same plane as one of big triangle, then remove the vertex and replace it with one big triangle
-           
 
-            
+
             bool foundNeedle = false;
 
             bool foundFlatTetrahedron = false;
@@ -64,13 +63,11 @@ namespace Pancake.ComputationalGeometry
 
                     break;
                 }
-            }
-            while (foundNeedle || foundFlatTetrahedron);
+            } while (foundNeedle || foundFlatTetrahedron);
 
 
             Debug.Log($"Removed {needleCounter} needles and {flatTetrahedronCounter} flat tetrahedrons");
         }
-
 
 
         //Needles. Triangle where the longest edge is much longer than the shortest one.
@@ -133,7 +130,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Remove flat tetrahedrons (a vertex in a triangle)
         private static bool RemoveFlatTetrahedrons(HalfEdgeData3 meshData, Normalizer3 normalizer = null)
         {
@@ -170,7 +166,12 @@ namespace Pancake.ComputationalGeometry
                         Vector3 p2 = normalizer.UnNormalize(v2.position).ToVector3();
                         Vector3 p3 = normalizer.UnNormalize(v3.position).ToVector3();
 
-                        TestAlgorithmsHelpMethods.DebugDrawTriangle(p1, p2, p3, normal.ToVector3(), Color.blue, Color.red);
+                        TestAlgorithmsHelpMethods.DebugDrawTriangle(p1,
+                            p2,
+                            p3,
+                            normal.ToVector3(),
+                            Color.blue,
+                            Color.red);
 
                         foundFlatTetrahedron = true;
 

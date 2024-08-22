@@ -1,4 +1,5 @@
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
 using Pancake.MobileInput;
 using UnityEditor;
 using UnityEngine;
@@ -64,16 +65,6 @@ namespace Pancake.MobileInputEditor
         private SerializedProperty _pinchTiltModeThresholdProperty;
         private SerializedProperty _pinchTiltSpeedProperty;
 
-        private SerializedProperty _onStartDragProperty;
-        private SerializedProperty _onUpdateDragProperty;
-        private SerializedProperty _onStopDragProperty;
-        private SerializedProperty _onFingerDownProperty;
-        private SerializedProperty _onFingerUpProperty;
-        private SerializedProperty _onClickProperty;
-        private SerializedProperty _onStartPinchProperty;
-        private SerializedProperty _onUpdateExtendPinchProperty;
-        private SerializedProperty _onStopPinchProperty;
-
         private void OnEnable()
         {
             _cameraAxesProperty = serializedObject.FindProperty("cameraAxes");
@@ -129,23 +120,13 @@ namespace Pancake.MobileInputEditor
             _pinchModeDetectionMoveTresholdProperty = serializedObject.FindProperty("pinchModeDetectionMoveTreshold");
             _pinchTiltModeThresholdProperty = serializedObject.FindProperty("pinchTiltModeThreshold");
             _pinchTiltSpeedProperty = serializedObject.FindProperty("pinchTiltSpeed");
-
-            _onStartDragProperty = serializedObject.FindProperty("onStartDrag");
-            _onUpdateDragProperty = serializedObject.FindProperty("onUpdateDrag");
-            _onStopDragProperty = serializedObject.FindProperty("onStopDrag");
-            _onFingerDownProperty = serializedObject.FindProperty("onFingerDown");
-            _onFingerUpProperty = serializedObject.FindProperty("onFingerUp");
-            _onClickProperty = serializedObject.FindProperty("onClick");
-            _onStartPinchProperty = serializedObject.FindProperty("onStartPinch");
-            _onUpdateExtendPinchProperty = serializedObject.FindProperty("onUpdateExtendPinch");
-            _onStopPinchProperty = serializedObject.FindProperty("onStopPinch");
         }
 
         public void OnSceneGUI()
         {
             var mobileTouchCamera = (TouchCamera) target;
 
-            if (Event.current.rawType == EventType.MouseUp) CheckSwapBoundary(mobileTouchCamera);
+            if (UnityEngine.Event.current.rawType == EventType.MouseUp) CheckSwapBoundary(mobileTouchCamera);
 
             var boundaryMin = mobileTouchCamera.BoundaryMin;
             var boundaryMax = mobileTouchCamera.BoundaryMax;
@@ -285,14 +266,14 @@ namespace Pancake.MobileInputEditor
             bool isBoundaryYValid = boundaryMax.y >= boundaryMin.y;
             bool isBoundaryXValid = boundaryMax.x >= boundaryMin.x;
 
-            if (!isBoundaryYValid) GUI.color = Uniform.FieryRose;
+            if (!isBoundaryYValid) GUI.color = Uniform.SunsetOrange;
             boundaryMax.y = EditorGUILayout.FloatField(boundaryMax.y, GUILayout.Width(70));
             GUI.color = Color.white;
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
-            if (!isBoundaryXValid) GUI.color = Uniform.FieryRose;
+            if (!isBoundaryXValid) GUI.color = Uniform.SunsetOrange;
             Draw2FloatFields("Left/Right", ref boundaryMin.x, ref boundaryMax.x);
             GUI.color = Color.white;
 
@@ -301,7 +282,7 @@ namespace Pancake.MobileInputEditor
             GUILayout.Label("Bottom", GUILayout.Width(SIZE_LABEL));
             GUILayout.FlexibleSpace();
             GUILayout.FlexibleSpace();
-            if (!isBoundaryYValid) GUI.color = Uniform.FieryRose;
+            if (!isBoundaryYValid) GUI.color = Uniform.SunsetOrange;
             boundaryMin.y = EditorGUILayout.FloatField(boundaryMin.y, GUILayout.Width(70));
             GUI.color = Color.white;
             GUILayout.FlexibleSpace();
@@ -427,6 +408,7 @@ namespace Pancake.MobileInputEditor
             EditorGUILayout.PropertyField(_advanceModeProperty, true);
             if (_advanceModeProperty.boolValue)
             {
+                EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(_zoomBackSpringFactorProperty, true);
                 EditorGUILayout.PropertyField(_dragBackSpringFactorProperty, true);
                 EditorGUILayout.PropertyField(_autoScrollVelocityMaxProperty, true);
@@ -447,11 +429,11 @@ namespace Pancake.MobileInputEditor
                 EditorGUILayout.PropertyField(_is2dOverdragMarginEnabledProperty, true);
 
                 if (_is2dOverdragMarginEnabledProperty.boolValue) EditorGUILayout.PropertyField(_camOverdragMargin2dProperty, true);
+                EditorGUI.indentLevel--;
             }
 
             Uniform.DrawGroupFoldout("touch_camera_callback", "Callback", DrawCallback);
-            Uniform.DrawGroupFoldout("touch_camera_touch_input_ref", "TouchInput Reference", DrawInputSetting);
-            
+
 
             if (GUI.changed)
             {
@@ -471,19 +453,7 @@ namespace Pancake.MobileInputEditor
             EditorGUILayout.PropertyField(_onPickItem2DDoubleClickProperty, true);
         }
 
-        private void DrawInputSetting()
-        {
-            EditorGUILayout.PropertyField(_onStartDragProperty, true);
-            EditorGUILayout.PropertyField(_onUpdateDragProperty, true);
-            EditorGUILayout.PropertyField(_onStopDragProperty, true);
-            EditorGUILayout.PropertyField(_onFingerDownProperty, true);
-            EditorGUILayout.PropertyField(_onFingerUpProperty, true);
-            EditorGUILayout.PropertyField(_onClickProperty, true);
-            EditorGUILayout.PropertyField(_onStartPinchProperty, true);
-            EditorGUILayout.PropertyField(_onUpdateExtendPinchProperty, true);
-            EditorGUILayout.PropertyField(_onStopPinchProperty, true);
-        }
-        
+
         private void OnScrollDampModeChanged(AutoScrollDampMode dampMode)
         {
             var serializedScrollDamp = serializedObject.FindProperty("autoScrollDamp");

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.ExTag
@@ -63,7 +62,7 @@ namespace Pancake.ExTag
         /// <returns>`true` if any of the tags exist, otherwise `false`.</returns>
         public static bool HasAnyTag(this GameObject go, List<StringConstant> stringConstants)
         {
-            // basically same method as above, the code is mostly copy and pasted because its not preferable to convert
+            // basically same method as above, the code is mostly copy and pasted because it's not preferable to convert
             // stringconstants to strings and calling the other method, because of memory allocation
             var tags = Tag.GetTagsForGameObject(go);
             if (tags == null) return false;
@@ -75,7 +74,7 @@ namespace Pancake.ExTag
 
             return false;
         }
-        
+
         /// <summary>
         /// Remove
         /// </summary>
@@ -84,8 +83,8 @@ namespace Pancake.ExTag
         public static void RemoveTag(this GameObject go, string tag)
         {
             var tags = Tag.GetTagsForGameObject(go);
-            if (tags == null) return; 
-            
+            if (tags == null) return;
+
             tags.RemoveTag(tag);
         }
 
@@ -96,8 +95,8 @@ namespace Pancake.ExTag
         /// <param name="tag"></param>
         public static void AddTag(this GameObject go, StringConstant tag)
         {
-            var tags = Tag.GetTagsForGameObject(go); 
-            if (tags == null) return; 
+            var tags = Tag.GetTagsForGameObject(go);
+            if (tags == null) return;
             tags.AddTag(tag);
         }
     }

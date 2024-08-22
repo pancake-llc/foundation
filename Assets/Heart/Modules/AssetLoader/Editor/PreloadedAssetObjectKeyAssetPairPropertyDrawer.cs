@@ -8,7 +8,7 @@ namespace Pancake.AssetLoaderEditor
     [CustomPropertyDrawer(typeof(PreloadedAssetLoaderObject.KeyAssetPair))]
     internal sealed class PreloadedAssetObjectKeyAssetPairPropertyDrawer : PropertyDrawer
     {
-        private readonly Dictionary<string, PropertyData> _dataList = new Dictionary<string, PropertyData>();
+        private readonly Dictionary<string, PropertyData> _dataList = new();
         private PropertyData _property;
 
         private void Init(SerializedProperty property)

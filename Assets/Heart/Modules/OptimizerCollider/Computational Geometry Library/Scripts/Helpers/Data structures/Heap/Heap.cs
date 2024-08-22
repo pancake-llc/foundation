@@ -19,11 +19,8 @@ namespace Pancake.ComputationalGeometry
 
 
         //The heap is using the array, so we need to define how many items we can possibly have in the array
-        public Heap(int maxHeapSize)
-        {
-            this.items = new T[maxHeapSize];
-        }
-        
+        public Heap(int maxHeapSize) { this.items = new T[maxHeapSize]; }
+
 
         //Add a new item to the heap
         public void Add(T item)
@@ -59,17 +56,11 @@ namespace Pancake.ComputationalGeometry
 
         //Is an item in the heap?
         //Make sure the item has a heapIndex!
-        public bool Contains(T item)
-        {
-            return Equals(items[item.HeapIndex], item);
-        }
+        public bool Contains(T item) { return Equals(items[item.HeapIndex], item); }
 
 
         //How many items do we have in the heap?
-        public int Count
-        {
-            get { return currentItemCount; }
-        }
+        public int Count { get { return currentItemCount; } }
 
 
         public void UpdateItem(T item)

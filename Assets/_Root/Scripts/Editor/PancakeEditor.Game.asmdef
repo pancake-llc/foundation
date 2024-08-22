@@ -1,0 +1,16 @@
+{
+    "name": "PancakeEditor.Game",
+    "rootNamespace": "",
+    "references": ["GUID:b6617254337639047b6bef8c49bfe848"],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

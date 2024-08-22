@@ -23,16 +23,12 @@ SOFTWARE.
 
 namespace RedBlueGames.MulliganRenamer
 {
-
     using UnityEditor;
 
     public static class MulliganRightClickItems
     {
         [MenuItem("GameObject/Rename in Bulk", false, 49)]
         [MenuItem("Assets/Rename in Bulk")]
-        private static void OpenMulliganWindow()
-        {
-            RedBlueGames.MulliganRenamer.MulliganRenamerWindow.ShowWindowWithSelectedObjects();
-        }
+        private static void OpenMulliganWindow() { RedBlueGames.MulliganRenamer.MulliganRenamerWindow.ShowWindowWithSelectedObjects(); }
     }
 }
