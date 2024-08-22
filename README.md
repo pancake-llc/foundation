@@ -30,12 +30,12 @@
 
 You can choose one of the following ways
 
-1, Using button `Use this template` to create new project using this template and now you can do anything with this
+1, Using button `Use this template` to create new project using this template, and now you can do anything with this
 
 2, for only install heart as package module ----> add directly in `manifest.json` in folder `Packages/manifest.json`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#2.7.0",
+"com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#3.0.0",
 ```
 
 
@@ -57,9 +57,10 @@ You can choose one of the following ways
 │   ├── Sprites
 │   ├── Storages
 ├── Heart
+│   ├── Common
 │   ├── Core
+│   ├── Editor
 │   ├── Modules
-│   ├── Resources
 └── ...
 ```
 
