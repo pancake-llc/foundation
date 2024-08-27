@@ -2,7 +2,7 @@
   "name": "com.pancake.heart",
   "displayName": "Heart",
   "description": "The heart of the world tree, use for make game in Unity3D",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "unity": "6000.0",
   "category": "core",
   "author": {
