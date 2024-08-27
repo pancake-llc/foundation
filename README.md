@@ -67,6 +67,15 @@ You can choose one of the following ways
 **DO not put anything into folder Heart, any new asset should be place under folder _Root**
 
 
+# Pillar
+
+```mermaid
+graph TD;
+    DI-->Core;
+    EventSystem-->Core;
+    MVP-->Core;
+```
+
 # Usages
 
 - [See Wiki](https://github.com/pancake-llc/foundation/wiki)
