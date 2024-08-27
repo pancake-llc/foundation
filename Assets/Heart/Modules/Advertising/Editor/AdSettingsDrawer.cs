@@ -97,8 +97,7 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Uniform.Red;
                 if (GUILayout.Button("Uninstall Admob SDK", GUILayout.Height(24)))
                 {
-                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group)) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
+                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB")) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
 
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GoogleMobileAds"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GoogleMobileAds.meta"));
@@ -287,8 +286,7 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Uniform.Red;
                 if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
                 {
-                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group)) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN")) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
 
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
