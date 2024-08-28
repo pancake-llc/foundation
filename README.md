@@ -71,9 +71,9 @@ You can choose one of the following ways
 
 ```mermaid
 graph TD;
-    DI-->Core;
-    EventSystem-->Core;
-    MVP-->Core;
+    Core-->DI;
+    Core-->EventSystem;
+    Core-->MVP;
 ```
 
 # Usages
