@@ -11,7 +11,7 @@ namespace Pancake.StatModifier
         public bool MarkedForRemoval { get; internal set; }
         private readonly CountdownTimer _timer;
 
-        public StatModifier(StringConstant statType, IModifier modifier, float duration)
+        public StatModifier(StringConstant statType, IModifier modifier, float duration = 0f)
         {
             StatType = statType;
             Modifier = modifier;

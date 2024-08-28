@@ -14,6 +14,6 @@ namespace Pancake.StatModifier
 
     public interface IStatModifierFactory
     {
-        StatModifier Create(EModifierType modifierType, StringConstant statType, float value, float duration);
+        StatModifier Create(EModifierType modifierType, StringConstant statType, float value, float duration = 0);
     }
 }
