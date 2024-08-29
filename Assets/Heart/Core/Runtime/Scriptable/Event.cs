@@ -10,9 +10,10 @@ namespace Pancake
     /// that are listening for the event are invoked.
     /// </para>
     /// </summary>
+    [EditorIcon("so_blue_event")]
     public abstract class Event : ScriptableObject, IEvent, IEventTrigger
     {
-        protected const string CREATE_ASSET_MENU = "Pancake/Scriptable/Events";
+        protected const string CREATE_ASSET_MENU = "Pancake/Scriptable/Events/";
 
         private event UnityAction Listeners;
 

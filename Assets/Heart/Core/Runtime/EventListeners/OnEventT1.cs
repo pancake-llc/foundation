@@ -8,6 +8,7 @@ namespace Pancake
     /// Base class for components that invoke an <see cref="UnityEvent"/> in reaction
     /// to an <typeparamref name="TEvent"/> occurring.
     /// </summary>
+    [EditorIcon("icon_event_listener")]
     public abstract class OnEvent<TEvent, TArgument> : MonoBehaviour<TEvent> where TEvent : IEvent<TArgument>
     {
         [SerializeField] private UnityEvent<TArgument> reaction = new();

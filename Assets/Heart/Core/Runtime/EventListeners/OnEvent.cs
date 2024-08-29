@@ -10,6 +10,7 @@ namespace Pancake
     /// to an <typeparamref name="TEvent"/> occurring.
     /// </summary>
     [RequireDerived]
+    [EditorIcon("icon_event_listener")]
     public abstract class OnEvent<TEvent> : MonoBehaviour<TEvent> where TEvent : IEvent
     {
         [SerializeField] private UnityEvent reaction = new();
