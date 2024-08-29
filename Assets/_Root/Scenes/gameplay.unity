@@ -520,6 +520,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 089f7a6fa45df1d4bbb8d2aafe9bfafe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgm:
+    name: bgm_gameplay
+    id: 47712f4850ef4c4
 --- !u!1 &1597094442
 GameObject:
   m_ObjectHideFlags: 0
