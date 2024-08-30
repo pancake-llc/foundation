@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfcf649e8bc34e64ea9d6fec5ac213ef, type: 3}
-  m_Name: player_killed_event
+  m_Script: {fileID: 11500000, guid: 52865418db214a5dabca2c6d5f296b61, type: 3}
+  m_Name: player_stat
   m_EditorClassIdentifier: 
-  debugTrigger: 0
+  damage: 10
+  moveSpeed: 8

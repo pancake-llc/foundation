@@ -5,7 +5,6 @@ namespace Pancake.Game.Interfaces
     /// </summary>
     public interface IPlayerStat
     {
-        float Damage { get; set; }
         float MoveSpeed { get; }
     }
 }
