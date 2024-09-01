@@ -20,8 +20,6 @@ namespace Pancake.Game
             _moveInputChangedEvent.Trigger(input);
         }
 
-        public event UnityAction<Vector2> OnMoveInputChanged { add => _moveInputChangedEvent.AddListener(value); remove => _moveInputChangedEvent.RemoveListener(value); }
-
         protected override void Init(IJoystick joystick, MoveInputChangedEvent moveInputChangedEvent)
         {
             _joystick = joystick;
