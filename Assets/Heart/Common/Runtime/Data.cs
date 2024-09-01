@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Unity.Serialization.Binary;
 using UnityEngine;
 
 namespace Pancake.Common
@@ -14,6 +15,7 @@ namespace Pancake.Common
         private static bool isInitialized;
         private static int profile;
         private static Dictionary<string, byte[]> datas = new();
+        private static IBinaryAdapter[] adapters;
         private const int INIT_SIZE = 64;
 
         public static event Action OnSaveEvent;
@@ -31,11 +33,10 @@ namespace Pancake.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static byte[] Serialize<T>(T data) { return Common.Serialize.ToBinary(data); }
-
+        private static byte[] Serialize<T>(T data) { return Common.Serialize.ToBinary(data, adapters); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T Deserialize<T>(byte[] bytes) { return Common.Serialize.FromBinary<T>(bytes); }
+        private static T Deserialize<T>(byte[] bytes) { return Common.Serialize.FromBinary<T>(bytes, adapters); }
 
         private static void OnApplicationFocus(bool focus)
         {
@@ -196,6 +197,9 @@ namespace Pancake.Common
         /// <param name="bytes"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Restore(byte[] bytes) { datas = Common.Serialize.FromBinary<Dictionary<string, byte[]>>(bytes); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetAdapters(params IBinaryAdapter[] adapters) => Data.adapters = adapters;
 
         #endregion
     }
