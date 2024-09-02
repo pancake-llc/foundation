@@ -16,10 +16,6 @@ namespace PancakeEditor.ComponentHeader
             {
                 case ButtonType.Remove:
                     return EditorResources.IconRemoveComponent(Uniform.Theme);
-                case ButtonType.MoveUp:
-                    return EditorResources.IconMoveUp(Uniform.Theme);
-                case ButtonType.MoveDown:
-                    return EditorResources.IconMoveDown(Uniform.Theme);
                 case ButtonType.PasteComponentValue:
                     return EditorResources.IconPasteComponentValues(Uniform.Theme);
                 case ButtonType.CopyComponent:
@@ -36,19 +32,32 @@ namespace PancakeEditor.ComponentHeader
             var container = new VisualElement {pickingMode = PickingMode.Ignore, style = {flexDirection = FlexDirection.RowReverse, height = 22,}};
 
             var imageCreator = new ImageCreator(headerElementName, onRefresh);
-            var removeComponentImage = imageCreator.CreateButton(ButtonType.Remove, DestroyComponent);
-            var moveUpElement = imageCreator.CreateButton(ButtonType.MoveUp, x => ComponentUtility.MoveComponentUp(x));
-            var moveDownElement = imageCreator.CreateButton(ButtonType.MoveDown, x => ComponentUtility.MoveComponentDown(x));
-            var copyComponentElement = imageCreator.CreateButton(ButtonType.CopyComponent, CopyComponent);
-            var pasteComponentValuesElement = imageCreator.CreateButton(ButtonType.PasteComponentValue, PasteComponentValues);
-            var loadComponentElement = imageCreator.CreateButton(ButtonType.LoadComponent, LoadComponent);
 
-            container.Add(removeComponentImage);
-            container.Add(moveUpElement);
-            container.Add(moveDownElement);
-            container.Add(pasteComponentValuesElement);
-            container.Add(copyComponentElement);
-            container.Add(loadComponentElement);
+
+            var hasILoadComponent = false;
+            var hasBeenRenamed = false;
+            foreach (var gameObject in Selection.gameObjects)
+            {
+                var component = gameObject.GetComponent(GetComponentName(headerElementName));
+                if (component == null) hasBeenRenamed = true;
+                else if (component is ILoadComponent) hasILoadComponent = true;
+            }
+
+            if (!hasBeenRenamed)
+            {
+                var removeComponentImage = imageCreator.CreateButton(ButtonType.Remove, DestroyComponent);
+                var copyComponentElement = imageCreator.CreateButton(ButtonType.CopyComponent, CopyComponent);
+                var pasteComponentValuesElement = imageCreator.CreateButton(ButtonType.PasteComponentValue, PasteComponentValues);
+                container.Add(removeComponentImage);
+                container.Add(pasteComponentValuesElement);
+                container.Add(copyComponentElement);
+            }
+
+            if (hasILoadComponent)
+            {
+                var loadComponentElement = imageCreator.CreateButton(ButtonType.LoadComponent, LoadComponent);
+                container.Add(loadComponentElement);
+            }
 
             return container;
         }
@@ -67,28 +76,22 @@ namespace PancakeEditor.ComponentHeader
 
         private static void LoadComponent(Component component)
         {
-            if (component is ILoadComponent)
+            var type = component.GetType();
+            var map = type.GetInterfaceMap(typeof(ILoadComponent));
+
+            for (var i = 0; i < map.InterfaceMethods.Length; i++)
             {
-                var type = component.GetType();
-                // Get the interface map for the ILoadComponent interface
-                var map = type.GetInterfaceMap(typeof(ILoadComponent));
-
-                // Find the corresponding method in the map
-                for (var i = 0; i < map.InterfaceMethods.Length; i++)
+                if (map.InterfaceMethods[i].Name == "OnLoadComponents")
                 {
-                    if (map.InterfaceMethods[i].Name == "OnLoadComponents")
-                    {
-                        var methodInfo = map.TargetMethods[i];
-                        methodInfo.Invoke(component, null);
-                        TooltipWindow.Show("Component Loaded!");
-                        EditorUtility.SetDirty(component);
-                        return;
-                    }
+                    var methodInfo = map.TargetMethods[i];
+                    methodInfo.Invoke(component, null);
+                    TooltipWindow.Show("Component Loaded!");
+                    EditorUtility.SetDirty(component);
+                    return;
                 }
-
-                Debug.Log("Method not found");
             }
-            else TooltipWindow.Show("Nothing happens, Need inherit from interface ILoadComponent!");
+
+            Debug.Log("Method not found");
         }
 
         private static void CopyComponent(Component component)
@@ -120,18 +123,9 @@ namespace PancakeEditor.ComponentHeader
             {
                 var button = new Button(() =>
                 {
-                    string componentName = _headerElementName switch
-                    {
-                        "TextMeshPro - TextHeader" => "TextMeshPro",
-                        "TextMeshPro - Text (UI)Header" => "TextMeshProUGUI",
-
-                        _ => _headerElementName.Remove(_headerElementName.Length - 6, 6).Replace(" ", "").Replace("(Script)", "")
-                    };
-
                     foreach (var gameObject in Selection.gameObjects)
                     {
-                        var component = gameObject.GetComponent(componentName);
-
+                        var component = gameObject.GetComponent(GetComponentName(_headerElementName));
                         action(component);
                     }
 
@@ -164,6 +158,16 @@ namespace PancakeEditor.ComponentHeader
 
                 return button;
             }
+        }
+
+        private static string GetComponentName(string headerElementName)
+        {
+            return headerElementName switch
+            {
+                "TextMeshPro - TextHeader" => "TextMeshPro",
+                "TextMeshPro - Text (UI)Header" => "TextMeshProUGUI",
+                _ => headerElementName.Remove(headerElementName.Length - 6, 6).Replace(" ", "").Replace("(Script)", "")
+            };
         }
     }
 }

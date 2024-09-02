@@ -156,26 +156,6 @@ namespace PancakeEditor.Common
             return tex;
         }
 
-        public static Texture2D IconMoveDown(string theme)
-        {
-            TextureCached.TryGetValue($"{nameof(IconMoveDown)}{theme}", out var tex);
-
-            if (tex != null) return tex;
-            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_arrow_down.png" : "icon_arrow_down_dark.png", RELATIVE_PATH);
-            TextureCached[$"{nameof(IconMoveDown)}{theme}"] = tex;
-            return tex;
-        }
-
-        public static Texture2D IconMoveUp(string theme)
-        {
-            TextureCached.TryGetValue($"{nameof(IconMoveUp)}{theme}", out var tex);
-
-            if (tex != null) return tex;
-            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_arrow_up.png" : "icon_arrow_up_dark.png", RELATIVE_PATH);
-            TextureCached[$"{nameof(IconMoveUp)}{theme}"] = tex;
-            return tex;
-        }
-
         public static Texture2D IconPasteComponentValues(string theme)
         {
             TextureCached.TryGetValue($"{nameof(IconPasteComponentValues)}{theme}", out var tex);
