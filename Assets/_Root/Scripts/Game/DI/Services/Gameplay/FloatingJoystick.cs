@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 
 namespace Pancake.Game
 {
-    [Service(typeof(IJoystick), FindFromScene = true)]
-    [Service(typeof(FloatingJoystick), FindFromScene = true)]
+    [Service(typeof(IJoystick), LazyInit = true, FindFromScene = true)]
+    [Service(typeof(FloatingJoystick),LazyInit = true, FindFromScene = true)]
     public class FloatingJoystick : Joystick
     {
         private bool _pointedDown;
