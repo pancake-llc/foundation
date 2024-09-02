@@ -14,7 +14,7 @@ namespace Pancake.Game
     [Service(typeof(IMoveInputChangedEvent), AddressableKey = "move_input_changed_event")]
     [Service(typeof(MoveInputChangedEvent), AddressableKey = "move_input_changed_event")]
     [EditorIcon("so_blue_event")]
-    [CreateAssetMenu(menuName = CREATE_ASSET_MENU + "MoveInputChangedEvent")]
+    [CreateAssetMenu(menuName = CREATE_ASSET_MENU + "Move Input Changed Event")]
     public sealed class MoveInputChangedEvent : Event<Vector2>, IMoveInputChangedEvent
     {
     }
