@@ -29,10 +29,10 @@ namespace PancakeEditor.Common
             }
         }
 
-        private string title = string.Empty;
-        private Texture2D emptyIcon;
-        private SortType sortType = SortType.Directory | SortType.Alphabet;
-        private List<Entry> entries = new List<Entry>();
+        private string _title = string.Empty;
+        private Texture2D _emptyIcon;
+        private SortType _sortType = SortType.Directory | SortType.Alphabet;
+        private readonly List<Entry> _entries = new();
 
         /// <summary>
         /// Generates data to populate the search window.
@@ -41,22 +41,22 @@ namespace PancakeEditor.Common
         /// <returns>Returns the list of SearchTreeEntry objects displayed in the search window.</returns>
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
-            if (sortType != SortType.None)
+            if (_sortType != SortType.None)
             {
-                entries.Sort(SortEntriesByGroup);
+                _entries.Sort(SortEntriesByGroup);
             }
 
-            List<SearchTreeEntry> treeEntries = new List<SearchTreeEntry>() {new SearchTreeGroupEntry(new GUIContent(title), 0)};
+            var treeEntries = new List<SearchTreeEntry> {new SearchTreeGroupEntry(new GUIContent(_title), 0)};
 
-            List<string> groups = new List<string>();
-            for (int i = 0; i < entries.Count; i++)
+            var groups = new List<string>();
+            for (var i = 0; i < _entries.Count; i++)
             {
-                Entry entry = entries[i];
+                var entry = _entries[i];
 
-                string group = string.Empty;
+                var group = string.Empty;
                 string[] paths = entry.content.text.Split('/');
                 int length = paths.Length - 1;
-                for (int j = 0; j < length; j++)
+                for (var j = 0; j < length; j++)
                 {
                     string path = paths[j];
 
@@ -71,7 +71,7 @@ namespace PancakeEditor.Common
                 }
 
                 entry.content.text = paths[length];
-                SearchTreeEntry searchTreeEntry = new SearchTreeEntry(entry.content);
+                var searchTreeEntry = new SearchTreeEntry(entry.content);
                 searchTreeEntry.userData = i;
                 searchTreeEntry.level = paths.Length;
                 treeEntries.Add(searchTreeEntry);
@@ -87,7 +87,7 @@ namespace PancakeEditor.Common
         /// <param name="context">Contextual data to pass to the search window when it is first created.</param>
         public bool OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
-            Entry entry = entries[(int) searchTreeEntry.userData];
+            var entry = _entries[(int) searchTreeEntry.userData];
             if (entry.onSelect != null)
             {
                 entry.onSelect.Invoke(entry.data);
@@ -103,14 +103,14 @@ namespace PancakeEditor.Common
         /// <param name="content">The text and icon of the search entry.</param>
         /// <param name="data">A user specified object for attaching application specific data to a search tree entry.</param>
         /// <param name="onSelect">Action with data argument, which called after entry is selected.</param>
-        public void AddEntry(GUIContent content, object data, Action<object> onSelect) { entries.Add(new Entry(content, data, onSelect)); }
+        public void AddEntry(GUIContent content, object data, Action<object> onSelect) { _entries.Add(new Entry(content, data, onSelect)); }
 
         /// <summary>
         /// Add new entry.
         /// </summary>
         /// <param name="content">The text and icon of the search entry.</param>
         /// <param name="onSelect">Action which called after entry is selected.</param>
-        public void AddEntry(GUIContent content, Action onSelect) { entries.Add(new Entry(content, null, (data) => onSelect?.Invoke())); }
+        public void AddEntry(GUIContent content, Action onSelect) { _entries.Add(new Entry(content, null, _ => onSelect?.Invoke())); }
 
         /// <summary>
         /// Add new entry.
@@ -125,7 +125,7 @@ namespace PancakeEditor.Common
         /// </summary>
         /// <param name="name">The name of the search entry.</param>
         /// <param name="onSelect">Action which called after entry is selected.</param>
-        public void AddEntry(string name, Action onSelect) { AddEntry(new GUIContent(name), null, (data) => onSelect?.Invoke()); }
+        public void AddEntry(string name, Action onSelect) { AddEntry(new GUIContent(name), null, _ => onSelect?.Invoke()); }
 
         /// <summary>
         /// Add new indented entity.
@@ -134,7 +134,7 @@ namespace PancakeEditor.Common
         /// <param name="onSelect">Action which called after entry is selected.</param>
         public void AddEntityIndented(string name, Action onSelect)
         {
-            GUIContent content = new GUIContent(name, GetEmptyIcon());
+            var content = new GUIContent(name, GetEmptyIcon());
             AddEntry(content, onSelect);
         }
 
@@ -146,7 +146,7 @@ namespace PancakeEditor.Common
         /// <param name="onSelect">Action with data argument, which called after entry is selected.</param>
         public void AddEntityIndented(string name, object data, Action<object> onSelect)
         {
-            GUIContent content = new GUIContent(name, GetEmptyIcon());
+            var content = new GUIContent(name, GetEmptyIcon());
             AddEntry(content, data, onSelect);
         }
 
@@ -169,7 +169,7 @@ namespace PancakeEditor.Common
         /// <param name="height">Requested height of the window. Set to 0.0f to use the default height.</param>
         public void Open(float width = 0, float height = 0)
         {
-            Vector2 position = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
+            var position = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
             Open(position, width, height);
         }
 
@@ -181,9 +181,9 @@ namespace PancakeEditor.Common
         /// <param name="height">Requested height of the window. Set to 0.0f to use the default height.</param>
         public void Open(Rect buttonRect, float width = 0, float height = 0)
         {
-            Rect screenRect = GUIUtility.GUIToScreenRect(buttonRect);
+            var screenRect = GUIUtility.GUIToScreenRect(buttonRect);
 
-            Vector2 position = screenRect.position;
+            var position = screenRect.position;
             position.x += screenRect.width / 2;
             position.y += screenRect.height + 15;
 
@@ -207,9 +207,9 @@ namespace PancakeEditor.Common
             int rhsLength = rhsPaths.Length;
             int minLength = Mathf.Min(lhsLength, rhsLength);
 
-            for (int i = 0; i < minLength; i++)
+            for (var i = 0; i < minLength; i++)
             {
-                if ((sortType & SortType.Directory) != 0)
+                if ((_sortType & SortType.Directory) != 0)
                 {
                     if (minLength - 1 == i)
                     {
@@ -221,7 +221,7 @@ namespace PancakeEditor.Common
                     }
                 }
 
-                if ((sortType & SortType.Alphabet) != 0)
+                if ((_sortType & SortType.Alphabet) != 0)
                 {
                     int compareText = lhsPaths[i].CompareTo(rhsPaths[i]);
                     if (compareText != 0)
@@ -239,14 +239,14 @@ namespace PancakeEditor.Common
         /// </summary>
         private Texture GetEmptyIcon()
         {
-            if (emptyIcon == null)
+            if (_emptyIcon == null)
             {
-                emptyIcon = new Texture2D(1, 1);
-                emptyIcon.SetPixel(0, 0, Color.clear);
-                emptyIcon.Apply();
+                _emptyIcon = new Texture2D(1, 1);
+                _emptyIcon.SetPixel(0, 0, Color.clear);
+                _emptyIcon.Apply();
             }
 
-            return emptyIcon;
+            return _emptyIcon;
         }
 
         #region [Static Methods]
@@ -255,35 +255,25 @@ namespace PancakeEditor.Common
         /// Create ExLib search window.
         /// </summary>
         /// <param name="title">Window title.</param>
-        /// <returns>ExSearchWindow instance.</returns>
+        /// <returns>SearchWindow instance.</returns>
         public static SearchWindow Create(string title)
         {
-            SearchWindow window = CreateInstance<SearchWindow>();
+            var window = CreateInstance<SearchWindow>();
             window.SetTitle(title);
             return window;
-        }
-
-        /// <summary>
-        /// Create ExLib search window.
-        /// </summary>
-        /// <returns>ExSearchWindow instance.</returns>
-        public static SearchWindow Create()
-        {
-            const string TITLE = "Entries";
-            return Create(TITLE);
         }
 
         #endregion
 
         #region [Getter / Setter]
 
-        public string GetTitle() { return title; }
+        public string GetTitle() { return _title; }
 
-        public void SetTitle(string value) { title = value; }
+        public void SetTitle(string value) { _title = value; }
 
-        public SortType GetSortType() { return sortType; }
+        public SortType GetSortType() { return _sortType; }
 
-        public void SetSortType(SortType value) { sortType = value; }
+        public void SetSortType(SortType value) { _sortType = value; }
 
         #endregion
     }

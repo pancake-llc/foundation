@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,20 +10,28 @@ namespace PancakeEditor.Common
     /// <summary>
     /// Represents a coroutine that has been started running in the editor.
     /// <para>
-    /// Also offers static methods for <see cref="Start">starting</see> and <see cref="Stop">stopping</see> coroutines.
+    /// Also offers static methods for <see cref="Start">starting</see> and <see cref="Stop()">stopping</see> coroutines.
     /// </para>
     /// </summary>
     public sealed class EditorCoroutine : YieldInstruction
     {
-        private static readonly List<EditorCoroutine> Running = new List<EditorCoroutine>();
-        private static readonly FieldInfo WaitForSecondsSeconds;
+        public static event Action<EditorCoroutine> Stopped;
+        private static readonly List<EditorCoroutine> Running = new(1);
+        private static readonly FieldInfo WaitForSecondsSecondsField;
+        private static readonly MethodInfo InvokeCompletionEventMethod;
 
-        private readonly Stack<object> _yielding = new Stack<object>();
-        private double _waitUntil = 0d;
+        private readonly Stack<object> _yielding = new(1);
+        private double _waitUntil;
 
         public bool IsFinished => _yielding.Count == 0;
 
-        static EditorCoroutine() { WaitForSecondsSeconds = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.NonPublic); }
+        static EditorCoroutine()
+        {
+            WaitForSecondsSecondsField = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (WaitForSecondsSecondsField is null) Debug.LogWarning("Field WaitForSeconds.m_Seconds not found.");
+            InvokeCompletionEventMethod = typeof(AsyncOperation).GetMethod("InvokeCompletionEvent", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (InvokeCompletionEventMethod is null) Debug.LogWarning("Method AsyncOperation.InvokeCompletionEvent not found.");
+        }
 
         private EditorCoroutine(IEnumerator routine) => _yielding.Push(routine);
 
@@ -33,16 +42,13 @@ namespace PancakeEditor.Common
         /// <returns>
         /// A reference to the started <paramref name="coroutine"/>.
         /// <para>
-        /// This reference can be passed to <see cref="Stop"/> to stop
+        /// This reference can be passed to <see cref="Stop()"/> to stop
         /// the execution of the coroutine.
         /// </para>
         /// </returns>
         public static EditorCoroutine Start(IEnumerator coroutine)
         {
-            if (Running.Count == 0)
-            {
-                EditorApplication.update += UpdateRunningCoroutines;
-            }
+            if (Running.Count == 0) EditorApplication.update += UpdateRunningCoroutines;
 
             var editorCoroutine = new EditorCoroutine(coroutine);
             Running.Add(editorCoroutine);
@@ -50,38 +56,19 @@ namespace PancakeEditor.Common
         }
 
         /// <summary>
-        /// Stops the <paramref name="coroutine"/> that is running in edit mode.
+        /// Stops the coroutine that is running in edit mode.
         /// </summary>
-        /// <param name="coroutine">
-        /// Reference to the editor <see cref="IEnumerator">coroutine</see> to stop.
-        /// <para>
-        /// This is the reference that was returned by <see cref="Start"/>
-        /// when the coroutine was started.
-        /// </para>
-        /// </param>
-        public static void Stop(EditorCoroutine coroutine)
+        public void Stop()
         {
-            Running.Remove(coroutine);
+            Running.Remove(this);
 
-            if (Running.Count == 0)
-            {
-                EditorApplication.update -= UpdateRunningCoroutines;
-            }
+            if (Running.Count == 0) EditorApplication.update -= UpdateRunningCoroutines;
+
+            Stopped?.Invoke(this);
         }
 
         /// <summary>
         /// Stops the <paramref name="coroutine"/> that is running.
-        /// <para>
-        /// If <see langword="this"/> is an object wrapped by a <see cref="Wrapper{TObject}"/> then
-        /// the <paramref name="coroutine"/> is started on the wrapper behaviour.
-        /// </para>
-        /// <para>
-        /// If <see langword="this"/> is a <see cref="MonoBehaviour"/> then the <paramref name="coroutine"/>
-        /// is started on the object directly.
-        /// </para>
-        /// <para>
-        /// Otherwise the <paramref name="coroutine"/> is started on an <see cref="Updater"/> Instance.
-        /// </para>
         /// </summary>
         /// <param name="coroutine"> The <see cref="IEnumerator">coroutine</see> to stop. </param>
         public static void Stop(IEnumerator coroutine)
@@ -90,15 +77,12 @@ namespace PancakeEditor.Common
             {
                 int counter = editorCoroutine._yielding.Count;
 
-                foreach (var item in editorCoroutine._yielding)
+                foreach (object item in editorCoroutine._yielding)
                 {
-                    if (counter == 1)
+                    if (counter == 1 && item == coroutine)
                     {
-                        if (item == coroutine)
-                        {
-                            Stop(editorCoroutine);
-                            return;
-                        }
+                        editorCoroutine.Stop();
+                        return;
                     }
 
                     counter--;
@@ -125,11 +109,17 @@ namespace PancakeEditor.Common
         /// to freeze for the same duration.
         /// </para>
         /// </summary>
-        public static void FastForwardAll()
+        public static void MoveAllToEnd()
         {
-            for (int i = Running.Count - 1; i >= 0; i--)
+            int count = Running.Count;
+            while (count > 0)
             {
-                Running[i].FastForwardToEnd();
+                for (int i = count - 1; i >= 0; i--)
+                {
+                    Running[i].MoveNext(true);
+                }
+
+                count = Running.Count;
             }
         }
 
@@ -155,28 +145,7 @@ namespace PancakeEditor.Common
         {
             for (int i = Running.Count - 1; i >= 0; i--)
             {
-                try
-                {
-                    if (!Running[i].MoveNext())
-                    {
-                        Running.RemoveAt(i);
-                    }
-                }
-                catch
-                {
-                    Running.RemoveAt(i);
-                    if (Running.Count == 0)
-                    {
-                        EditorApplication.update -= UpdateRunningCoroutines;
-                    }
-
-                    throw;
-                }
-            }
-
-            if (Running.Count == 0)
-            {
-                EditorApplication.update -= UpdateRunningCoroutines;
+                Running[i].MoveNext();
             }
         }
 
@@ -188,81 +157,111 @@ namespace PancakeEditor.Common
         /// <see cref="WaitForSeconds"/> and <see cref="WaitForSecondsRealtime"/> are skipped.
         /// </param>
         /// <returns> <see langword="true"/> if coroutine is still running, <see langword="false"/> if it has finished. </returns>
-        private bool MoveNext(bool skipWaits = false)
+        public bool MoveNext(bool skipWaits = false)
         {
-            if (EditorApplication.timeSinceStartup < _waitUntil && !skipWaits)
-            {
-                return true;
-            }
+            if (EditorApplication.timeSinceStartup < _waitUntil && !skipWaits) return true;
 
             if (_yielding.Count == 0)
             {
+                Stop();
                 return false;
             }
 
-            var current = _yielding.Peek();
+            object current = _yielding.Peek();
 
             if (current is IEnumerator enumerator)
             {
-                if (!enumerator.MoveNext())
+                bool keepWaiting;
+                try
+                {
+                    keepWaiting = enumerator.MoveNext();
+                }
+                catch
+                {
+                    keepWaiting = true;
+                }
+
+                if (!keepWaiting)
                 {
                     _yielding.Pop();
-                    return _yielding.Count > 0;
+                    if (_yielding.Count > 0) return true;
+
+                    Stop();
+                    return false;
                 }
 
                 _yielding.Push(enumerator.Current);
                 return true;
             }
 
-            if (current is CustomYieldInstruction yieldInstruction)
+            else if (current is CustomYieldInstruction yieldInstruction)
             {
-                if (yieldInstruction.keepWaiting)
+                bool keepWaiting;
+                try
                 {
+                    keepWaiting = yieldInstruction.keepWaiting;
+                }
+                catch
+                {
+                    keepWaiting = true;
+                }
+
+                if (!skipWaits)
+                {
+                    if (!keepWaiting) _yielding.Pop();
+
                     return true;
                 }
-
-                _yielding.Pop();
-                return true;
             }
 
-            if (current is WaitForSeconds waitForSeconds)
+            else if (current is WaitForSeconds waitForSeconds)
             {
-                _waitUntil = EditorApplication.timeSinceStartup + (float) WaitForSecondsSeconds.GetValue(waitForSeconds);
-                _yielding.Pop();
-                return true;
+                _waitUntil = EditorApplication.timeSinceStartup + (float) WaitForSecondsSecondsField.GetValue(waitForSeconds);
+                if (!skipWaits)
+                {
+                    _yielding.Pop();
+                    return true;
+                }
             }
 
-            if (current is WaitForSecondsRealtime waitForSecondsRealtime)
+            else if (current is WaitForSecondsRealtime waitForSecondsRealtime)
             {
                 _waitUntil = EditorApplication.timeSinceStartup + waitForSecondsRealtime.waitTime;
-                _yielding.Pop();
-                return true;
-            }
-
-            if (current is WaitForEndOfFrame || current is WaitForFixedUpdate)
-            {
-                _yielding.Pop();
-                return true;
-            }
-
-            if (current is AsyncOperation asyncOperation)
-            {
-                if (!asyncOperation.isDone)
+                if (!skipWaits)
                 {
-                    return false;
+                    _yielding.Pop();
+                    return true;
                 }
+            }
 
-                _yielding.Pop();
-                return _yielding.Count > 0;
+            else if (current is WaitForEndOfFrame or WaitForFixedUpdate)
+            {
+                if (!skipWaits)
+                {
+                    _yielding.Pop();
+                    return true;
+                }
+            }
+
+            else if (current is AsyncOperation {isDone: false} asyncOperation)
+            {
+                if (!skipWaits) return true;
+
+                InvokeCompletionEventMethod?.Invoke(asyncOperation, null);
             }
 
             _yielding.Pop();
-            return _yielding.Count > 0;
+            if (_yielding.Count > 0)
+            {
+                return true;
+            }
+
+            Stop();
+            return false;
         }
 
         /// <summary>
-        /// Continuously advances the coroutine to the next phase
-        /// until it has reached the end.
+        /// Continuously advances the coroutine to the next phase until it has reached the end.
         /// <para>
         /// Note that this locks the current thread until the coroutine has fully finished.
         /// If the coroutine contains <see cref="CustomYieldInstruction">CustomYieldInstructions</see>
@@ -270,10 +269,24 @@ namespace PancakeEditor.Common
         /// to freeze for the same duration.
         /// </para>
         /// </summary>
-        public void FastForwardToEnd()
+        public void MoveToEnd()
         {
-            while (MoveNext(true)) ;
-            Stop(this);
+            while (MoveNext(true))
+            {
+            }
+        }
+
+        public bool Equals(IEnumerator coroutine)
+        {
+            int counter = _yielding.Count;
+            foreach (object item in _yielding)
+            {
+                if (counter == 1 && item == coroutine) return true;
+
+                counter--;
+            }
+
+            return false;
         }
     }
 }

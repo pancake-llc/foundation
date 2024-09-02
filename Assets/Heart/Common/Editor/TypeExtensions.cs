@@ -15,11 +15,11 @@ namespace PancakeEditor.Common
         /// <param name="directDescendants">Select only direct descendants or all subclasses.</param>
         public static IEnumerable<Type> Subclasses(this Type type, bool directDescendants = false)
         {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            for (int i = 0; i < assemblies.Length; i++)
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (var i = 0; i < assemblies.Length; i++)
             {
-                Assembly assembly = assemblies[i];
-                foreach (Type t in assembly.DefinedTypes)
+                var assembly = assemblies[i];
+                foreach (var t in assembly.DefinedTypes)
                 {
                     if ((directDescendants && t.BaseType == type) || t.IsSubclassOf(type))
                     {
@@ -37,7 +37,7 @@ namespace PancakeEditor.Common
         /// <param name="type"></param>
         public static IEnumerable<Type> Subclasses(this Type type, Assembly assembly, bool directDescendants = false)
         {
-            foreach (Type t in assembly.DefinedTypes)
+            foreach (var t in assembly.DefinedTypes)
             {
                 if ((directDescendants && t.BaseType == type) || t.IsSubclassOf(type))
                 {
@@ -53,8 +53,8 @@ namespace PancakeEditor.Common
         {
             do
             {
-                TypeInfo typeInfo = type.GetTypeInfo();
-                foreach (MemberInfo memberInfo in typeInfo.DeclaredMembers)
+                var typeInfo = type.GetTypeInfo();
+                foreach (var memberInfo in typeInfo.DeclaredMembers)
                 {
                     yield return memberInfo;
                 }
@@ -70,8 +70,8 @@ namespace PancakeEditor.Common
         {
             do
             {
-                TypeInfo typeInfo = type.GetTypeInfo();
-                foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields)
+                var typeInfo = type.GetTypeInfo();
+                foreach (var fieldInfo in typeInfo.DeclaredFields)
                 {
                     yield return fieldInfo;
                 }
@@ -87,8 +87,8 @@ namespace PancakeEditor.Common
         {
             do
             {
-                TypeInfo typeInfo = type.GetTypeInfo();
-                foreach (MethodInfo methodInfo in typeInfo.DeclaredMethods)
+                var typeInfo = type.GetTypeInfo();
+                foreach (var methodInfo in typeInfo.DeclaredMethods)
                 {
                     yield return methodInfo;
                 }
@@ -104,8 +104,8 @@ namespace PancakeEditor.Common
         {
             do
             {
-                TypeInfo typeInfo = type.GetTypeInfo();
-                foreach (PropertyInfo propertyInfo in typeInfo.DeclaredProperties)
+                var typeInfo = type.GetTypeInfo();
+                foreach (var propertyInfo in typeInfo.DeclaredProperties)
                 {
                     yield return propertyInfo;
                 }

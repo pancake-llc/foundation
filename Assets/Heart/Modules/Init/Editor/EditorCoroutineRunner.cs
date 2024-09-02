@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace Sisus.Init
 	/// Class that can be used for starting and stopping coroutines in the editor even in edit mode.
 	/// <para>
 	/// The class implements <see cref="ICoroutineRunner"/> and it can be used to substitute other
-	/// <see cref="ICoroutineRunner">ICoroutineRunners</see> such as <see cref="Wrapper">Wrappers</see>
+	/// <see cref="ICoroutineRunner">ICoroutineRunners</see> such as <see cref="Wrapper{TWrapped}">Wrappers</see>
 	/// in unit tests.
 	/// </para>
 	/// </summary>
@@ -26,10 +27,10 @@ namespace Sisus.Init
 		/// </summary>
 		public static readonly EditorCoroutineRunner SharedInstance = new();
 
-		private readonly List<EditorCoroutine> running = new(1);
+		private readonly List<EditorCoroutine> _running = new(1);
 
 		[InitializeOnLoadMethod]
-		static void Init() => Service.SetInstance<ICoroutineRunner>(SharedInstance);
+		private static void Init() => Service.SetInstance<ICoroutineRunner>(SharedInstance);
 
 		/// <summary>
 		/// Starts the provided <paramref name="coroutine"/>.
@@ -40,21 +41,21 @@ namespace Sisus.Init
 		/// </returns>
 		public Coroutine StartCoroutine([DisallowNull] IEnumerator coroutine)
 		{
-			if(running.Count == 0)
+			if(_running.Count == 0)
 			{
 				EditorCoroutine.Stopped += OnSomeEditorCoroutineStopped;
 			}
 
-			running.Add(EditorCoroutine.Start(coroutine));
+			_running.Add(EditorCoroutine.Start(coroutine));
 			return null;
 		}
 
 		/// <inheritdoc/>
 		public void StopCoroutine([DisallowNull] IEnumerator coroutine)
 		{
-			for(int i = running.Count - 1; i >= 0; i--)
+			for(int i = _running.Count - 1; i >= 0; i--)
 			{
-				EditorCoroutine runningCoroutine = running[i];
+				EditorCoroutine runningCoroutine = _running[i];
 				if(runningCoroutine.Equals(coroutine))
 				{
 					runningCoroutine.Stop();
@@ -71,9 +72,9 @@ namespace Sisus.Init
 		/// </summary>
 		public void StopAllCoroutines()
 		{
-			for(int i = running.Count - 1; i >= 0; i--)
+			for(int i = _running.Count - 1; i >= 0; i--)
 			{
-				running[i].Stop();
+				_running[i].Stop();
 			}
 		}
 
@@ -87,12 +88,12 @@ namespace Sisus.Init
 		/// <returns> <see langword="true"/> if any coroutines are still running, <see langword="false"/> if all have finished. </returns>
 		public bool MoveAllNext(bool skipWaits = false)
 		{
-			for(int i = running.Count - 1; i >= 0; i--)
+			for(int i = _running.Count - 1; i >= 0; i--)
 			{
-				running[i].MoveNext(skipWaits);
+				_running[i].MoveNext(skipWaits);
 			}
 
-			return running.Count > 0;
+			return _running.Count > 0;
 		}
 
 		/// <summary>
@@ -107,15 +108,15 @@ namespace Sisus.Init
 		/// </summary>
 		public void MoveAllToEnd()
 		{
-			int count = running.Count;
+			int count = _running.Count;
 			while(count > 0)
 			{
 				for(int i = count - 1; i >= 0; i--)
 				{
-					running[i].MoveNext(true);
+					_running[i].MoveNext(true);
 				}
 
-				count = running.Count;
+				count = _running.Count;
 			}
 		}
 
@@ -131,13 +132,13 @@ namespace Sisus.Init
 		{
 			EditorCoroutine.Stopped -= OnSomeEditorCoroutineStopped;
 			StopAllCoroutines();
-			running.Clear();
+			_running.Clear();
 		}
 
 		private void OnSomeEditorCoroutineStopped(EditorCoroutine coroutine)
 		{
-			running.Remove(coroutine);
-			if(running.Count == 0)
+			_running.Remove(coroutine);
+			if(_running.Count == 0)
 			{
 				EditorCoroutine.Stopped -= OnSomeEditorCoroutineStopped;
 			}

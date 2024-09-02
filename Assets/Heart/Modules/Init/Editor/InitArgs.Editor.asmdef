@@ -4,7 +4,8 @@
     "references": [
         "InitArgs",
         "InitArgs.Services",
-        "Pancake.Localization"
+        "Pancake.Localization",
+        "Pancake.Common.Editor"
     ],
     "includePlatforms": [
         "Editor"

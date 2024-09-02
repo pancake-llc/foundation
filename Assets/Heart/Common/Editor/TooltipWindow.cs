@@ -53,7 +53,7 @@ namespace PancakeEditor.Common
         public override void OnClose()
         {
             if (_coroutine == null) return;
-            EditorCoroutine.Stop(_coroutine);
+            _coroutine.Stop();
             _coroutine = null;
         }
 
