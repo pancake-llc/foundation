@@ -430,9 +430,9 @@ namespace PancakeEditor.Finder
                 Debug.LogWarning("Cache not yet ready! Please wait!");
                 return result;
             }
-            
+
             bool excludePackage = !FinderWindowBase.ShowPackageAsset;
-            
+
             //filter to remove items that already in dictionary
             for (var i = 0; i < guidList.Length; i++)
             {
@@ -442,7 +442,7 @@ namespace PancakeEditor.Finder
                 var child = FinderWindowBase.CacheSetting.Get(guid);
                 if (child == null) continue;
                 if (excludePackage && child.InPackages) continue;
-                
+
                 var r = new FindRef(dict.Count, depth + 1, child, asset);
                 if (!asset.IsFolder) dict.Add(guid, r);
 
@@ -470,7 +470,7 @@ namespace PancakeEditor.Finder
 
                 if (child.IsMissing) continue;
                 if (excludePackage && child.InPackages) continue;
-                
+
                 var r = new FindRef(result.Count, depth + 1, child, asset);
                 if (!asset.IsFolder) result.Add(guid, r);
 
@@ -500,7 +500,7 @@ namespace PancakeEditor.Finder
                 if (child == null) continue;
                 if (child.IsMissing) continue;
                 if (excludePackage && child.InPackages) continue;
-                
+
                 var r = new FindRef(result.Count, depth + 1, child, asset);
                 if (!asset.IsFolder) result.Add(guid, r);
 
@@ -522,7 +522,7 @@ namespace PancakeEditor.Finder
             var dict = new Dictionary<string, FindRef>();
             var list = new List<FindRef>();
             bool excludePackage = !FinderWindowBase.ShowPackageAsset;
-            
+
             for (var i = 0; i < guids.Length; i++)
             {
                 string guid = guids[i];
@@ -531,7 +531,7 @@ namespace PancakeEditor.Finder
                 var asset = FinderWindowBase.CacheSetting.Get(guid);
                 if (asset == null) continue;
                 if (excludePackage && asset.InPackages) continue;
-                
+
                 var r = new FindRef(i, 0, asset, null);
                 if (!asset.IsFolder || addFolder) dict.Add(guid, r);
 
@@ -596,7 +596,7 @@ namespace PancakeEditor.Finder
             var asset = FinderWindowBase.CacheSetting.Get(guid);
             if (asset == null) return;
             if (!FinderWindowBase.ShowPackageAsset && asset.InPackages) return;
-            
+
             var r = new FindRef(0, 1, asset, null);
             dict.Add(guid, r);
         }
@@ -628,28 +628,28 @@ namespace PancakeEditor.Finder
 
         internal readonly FindTreeUI2.GroupDrawer groupDrawer;
 
-        private readonly string _searchTerm = string.Empty;
-        private readonly bool _showSearch = true;
         public readonly bool caseSensitive = false;
-
-        private readonly Func<Sort> _getSortMode;
-        private readonly Func<Mode> _getGroupMode;
-
-        private bool _dirty;
-        private int _excludeCount;
         public bool forceHideDetails;
-
         public readonly List<FindAsset> highlight = new();
-
         public string level0Group;
         public bool showDetail;
-        internal List<FindRef> list;
         public string messageEmpty = "It's empty!";
-
         public string messageNoRefs = "Do select something!";
+        public Func<FindRef, string> customGetGroup;
+        public Action<Rect, string, int> customDrawGroupLabel;
+        public Action<Rect, FindRef> beforeItemDraw;
+        public Action<Rect, FindRef> afterItemDraw;
+
+        internal List<FindRef> list;
         internal Dictionary<string, FindRef> refs;
         private bool _selectFilter;
         private bool _showIgnore;
+        private readonly string _searchTerm = string.Empty;
+        private readonly bool _showSearch = true;
+        private readonly Func<Sort> _getSortMode;
+        private readonly Func<Mode> _getGroupMode;
+        private bool _dirty;
+        private int _excludeCount;
 
         public FindRefDrawer(IWindow window, Func<Sort> getSortMode, Func<Mode> getGroupMode)
         {
@@ -693,7 +693,7 @@ namespace PancakeEditor.Finder
         private void DrawEmpty(Rect rect, string text)
         {
             rect = GUI2.Padding(rect, 2f, 2f);
-            rect.height = 40f;
+            rect.height = 45f;
 
             EditorGUI.HelpBox(rect, text, MessageType.Info);
         }
@@ -764,7 +764,21 @@ namespace PancakeEditor.Finder
                 r.xMin += 16f;
             }
 
-            GUI.Label(r, MyGUIContent.FromString(label), EditorStyles.boldLabel);
+            if (customDrawGroupLabel != null)
+            {
+                customDrawGroupLabel.Invoke(r, label, childCount);
+            }
+            else
+            {
+                var lbContent = MyGUIContent.FromString(label);
+                GUI.Label(r, lbContent, EditorStyles.boldLabel);
+
+                var cRect = r;
+                cRect.x += EditorStyles.boldLabel.CalcSize(lbContent).x;
+                cRect.y += 1f;
+                GUI.Label(cRect, MyGUIContent.FromString($"({childCount})"), EditorStyles.miniLabel);
+            }
+
             bool hasMouse = Event.current.type == EventType.MouseUp && r.Contains(Event.current.mousePosition);
             if (hasMouse && Event.current.button == 1)
             {
@@ -807,13 +821,14 @@ namespace PancakeEditor.Finder
             {
                 if (rf.component == null) return;
                 if (!(rf is FindSceneRef re)) return;
-
+                beforeItemDraw?.Invoke(r, rf);
                 rf.DrawToogleSelect(r);
                 r.xMin += 32f;
                 re.Draw(r, Window, _getGroupMode(), !forceHideDetails);
             }
             else
             {
+                beforeItemDraw?.Invoke(r, rf);
                 rf.DrawToogleSelect(r);
                 r.xMin += 32f;
 
@@ -855,11 +870,6 @@ namespace PancakeEditor.Finder
                 }
 
                 bool isHighlight = highlight.Contains(rf.asset);
-                if (isHighlight)
-                {
-                    var hlRect = new Rect(-20, r.y, 15f, r.height);
-                    GUI2.Rect(hlRect, GUI2.darkGreen);
-                }
 
                 rf.asset.Draw(r,
                     isHighlight,
@@ -870,12 +880,14 @@ namespace PancakeEditor.Finder
                     !forceHideDetails && FinderWindowBase.ShowUsedByClassed,
                     Window);
             }
+
+            afterItemDraw?.Invoke(r, rf);
         }
 
         private string GetGroup(FindRef rf)
         {
+            if (customGetGroup != null) return customGetGroup(rf);
             if (rf.depth == 0) return level0Group;
-
             if (_getGroupMode() == Mode.None) return "(no group)";
 
             FindSceneRef sr = null;
@@ -1056,10 +1068,10 @@ namespace PancakeEditor.Finder
                             rs2.targetType,
                             _getSortMode() == Sort.Path);
                     }
-                    
+
                     if (r1.asset == null) return -1;
                     if (r2.asset == null) return 1;
-                    
+
                     return SortAsset(r1.asset.AssetPath,
                         r2.asset.AssetPath,
                         r1.asset.Extension,

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PancakeEditor.Finder
 {
-    public class SearchView
+    internal class SearchView
     {
         public static GUIStyle toolbarSearchField;
         public static GUIStyle toolbarSearchFieldCancelButton;

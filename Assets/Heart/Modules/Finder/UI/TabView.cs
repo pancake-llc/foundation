@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace PancakeEditor.Finder
 {
-    public class DrawCallback
+    internal class DrawCallback
     {
         public Action<Rect> afterDraw;
         public Action<Rect> beforeDraw;
     }
 
 
-    public class TabView
+    internal class TabView
     {
         public DrawCallback callback;
         public bool canDeselectAll; // can there be no active tabs
@@ -29,7 +29,7 @@ namespace PancakeEditor.Finder
         public float padding = 4f;
         public float offsetFirst;
         public float offsetLast;
-        private readonly List<float> labelWidths = new List<float>();
+        private readonly List<float> labelWidths = new();
 
         public TabView(IWindow w, bool canDeselectAll)
         {
@@ -42,7 +42,7 @@ namespace PancakeEditor.Finder
             var result = false;
 
             // Define the toolbar rect
-            GUIStyle style = EditorStyles.toolbarButton;
+            var style = EditorStyles.toolbarButton;
 
             // Set up label rects if not already done
             if (labelTotalWidth == 0 || labelWidths.Count != labels.Length)
@@ -67,9 +67,10 @@ namespace PancakeEditor.Finder
             // Draw each tab
             var tabRect = toolbarRect;
             tabRect.xMin += offsetFirst;
+            tabRect.xMax -= offsetLast;
 
-            float ratio = flexibleWidth ? ((toolbarRect.width - offsetFirst - offsetLast) / labelTotalWidth) : 1;
-            float pad = flexibleWidth ? padding : 0;
+            float flexSpace = Mathf.Max(0, tabRect.width - labelTotalWidth) / labels.Length;
+            float pad = flexibleWidth ? flexSpace : padding;
 
             for (var i = 0; i < labels.Length; i++)
             {
@@ -77,7 +78,7 @@ namespace PancakeEditor.Finder
                 GUIContent lb = labels[i];
 
                 // Define the toggle rect
-                float w = Mathf.RoundToInt(labelWidths[i] * ratio) + pad;
+                float w = labelWidths[i] + pad;
                 tabRect.width = w;
 
                 // Draw the toggle (or button) for the tab

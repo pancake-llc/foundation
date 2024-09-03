@@ -174,7 +174,7 @@ namespace PancakeEditor.Finder
             assetExtension = string.Empty;
 
             if (string.IsNullOrEmpty(assetPath)) return;
-            
+
             assetExtension = Path.GetExtension(assetPath);
             assetName = Path.GetFileNameWithoutExtension(assetPath);
             int lastSlash = assetPath.LastIndexOf("/", StringComparison.Ordinal) + 1;
@@ -806,6 +806,19 @@ namespace PancakeEditor.Finder
             }
 
             FinderWindowBase.DelayCheck4Changes();
+        }
+
+        internal static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection)
+        {
+            var result = new HashSet<T>();
+            if (collection == null) return result;
+
+            foreach (var item in collection)
+            {
+                result.Add(item);
+            }
+
+            return result;
         }
     }
 }

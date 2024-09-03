@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace PancakeEditor.Finder
 {
-    public static class FinderParser
+    internal static class FinderParser
     {
         public static void ReadYaml(string filePath, Action<string, long> callback) { Read(filePath, ParseLine_Yaml, callback); }
 

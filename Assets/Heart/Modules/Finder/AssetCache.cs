@@ -95,8 +95,6 @@ namespace PancakeEditor.Finder
             foreach (string item in FinderWindowBase.IgnoreAsset)
             {
                 string guid = AssetDatabase.AssetPathToGUID(item);
-                if (guidsIgnore.Contains(guid)) continue;
-
                 guidsIgnore.Add(guid);
             }
         }
@@ -108,9 +106,6 @@ namespace PancakeEditor.Finder
             foreach (var scene in EditorBuildSettings.scenes)
             {
                 string sce = AssetDatabase.AssetPathToGUID(scene.path);
-
-                if (scenes.Contains(sce)) continue;
-
                 scenes.Add(sce);
             }
         }
@@ -220,7 +215,7 @@ namespace PancakeEditor.Finder
         [NonSerialized] internal List<FindAsset> queueLoadContent;
         [NonSerialized] internal int workCount;
 
-        private static readonly HashSet<string> SpecialUseAssets = new HashSet<string>
+        private static readonly HashSet<string> SpecialUseAssets = new()
         {
             "Assets/link.xml", // this file used to control build/link process do not remove
             "Assets/csc.rsp",
@@ -229,7 +224,7 @@ namespace PancakeEditor.Finder
             "Assets/google-services.json"
         };
 
-        private static readonly HashSet<string> SpecialExtensions = new HashSet<string>
+        private static readonly HashSet<string> SpecialExtensions = new()
         {
             ".asmdef",
             ".cginc",
@@ -241,7 +236,15 @@ namespace PancakeEditor.Finder
             ".pdf",
             ".txt",
             ".giparams",
-            ".exr"
+            ".wlt",
+            ".preset",
+            ".exr",
+            ".aar",
+            ".srcaar",
+            ".pom",
+            ".bin",
+            ".html",
+            ".data"
         };
 
         internal float Progress
@@ -267,7 +270,7 @@ namespace PancakeEditor.Finder
                 var item = assetList[i];
                 item.state = EFinderAssetState.Cache;
 
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(item.guid);
+                var path = AssetDatabase.GUIDToAssetPath(item.guid);
                 if (string.IsNullOrEmpty(path))
                 {
                     item.type = EFinderAssetType.Unknown; // to make sure if GUIDs being reused for a different kind of asset
@@ -486,8 +489,7 @@ namespace PancakeEditor.Finder
             if (asset.IsFolder) return;
             foreach (var item in asset.UseGUIDs)
             {
-                FindAsset tAsset;
-                if (assetMap.TryGetValue(item.Key, out tAsset))
+                if (assetMap.TryGetValue(item.Key, out var tAsset))
                 {
                     if (tAsset == null || tAsset.usedByMap == null) continue;
 
@@ -586,6 +588,11 @@ namespace PancakeEditor.Finder
         internal List<FindAsset> ScanUnused()
         {
             if (assetMap == null) Check4Changes(false);
+            
+            // Get Addressable assets
+            var addressable = FindAddressable.IsOk ? FindAddressable.GetAddresses()
+                .SelectMany(item => item.Value.assetGUIDs.Union(item.Value.childGUIDs))
+                .ToHashSet() : new HashSet<string>();
 
             var result = new List<FindAsset>();
             foreach (var item in assetMap)
@@ -601,10 +608,8 @@ namespace PancakeEditor.Finder
                 if (v.type == EFinderAssetType.DLL) continue;
                 if (v.type == EFinderAssetType.Script) continue;
                 if (v.type == EFinderAssetType.Unknown) continue;
-
-                // Lightmap
-                if (v.IsLightMap) continue;
-
+                if (addressable.Contains(v.guid))continue;
+                
                 if (v.IsExcluded) continue;
 
                 if (!string.IsNullOrEmpty(v.AtlasName)) continue;

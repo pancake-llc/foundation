@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace PancakeEditor.Finder
 {
-    public static class GUI2
+    internal static class GUI2
     {
         private static GUIStyle miniLabelAlignRight;
 

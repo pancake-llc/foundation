@@ -81,10 +81,7 @@ namespace PancakeEditor.Finder
 
             public virtual string[] GetChildren(string id) { return null; }
 
-            public virtual void Draw(Rect r, TreeItem item)
-            {
-                GUI.Label(r, MyGUIContent.From(item.id));
-            }
+            public virtual void Draw(Rect r, TreeItem item) { GUI.Label(r, MyGUIContent.From(item.id)); }
         }
 
         public class GroupDrawer : Drawer
@@ -161,17 +158,10 @@ namespace PancakeEditor.Finder
             {
                 if (string.IsNullOrEmpty(id)) return 0;
 
-                if (_groupDict.TryGetValue(id, out var group)) return group.Count;
-
-                return 0;
+                return _groupDict.TryGetValue(id, out var group) ? group.Count : 0;
             }
 
-            public override string[] GetChildren(string id)
-            {
-                if (_groupDict.TryGetValue(id, out var group)) return group.ToArray();
-
-                return null;
-            }
+            public override string[] GetChildren(string id) { return _groupDict.TryGetValue(id, out var group) ? group.ToArray() : null; }
 
             public override void Draw(Rect r, TreeItem item)
             {

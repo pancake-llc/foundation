@@ -70,6 +70,7 @@ namespace PancakeEditor.Finder
         [NonSerialized] private FindRefDrawer _usesDrawer;
         [NonSerialized] private FindRefDrawer _usedByDrawer;
         [NonSerialized] private FindRefDrawer _sceneToAssetDrawer;
+        [NonSerialized] internal FindAddressableDrawer _addressableDrawer;
 
         [NonSerialized] private FindRefDrawer _refInScene;
         [NonSerialized] private FindRefDrawer _sceneUsesDrawer;
@@ -82,7 +83,7 @@ namespace PancakeEditor.Finder
         private string _tempFileID;
         private UnityObject _tempObject;
 
-        protected bool LockSelection => selection != null && selection.isLock;
+        protected bool LockSelection => selection is {isLock: true};
 
         private void OnEnable() { Repaint(); }
 
@@ -99,6 +100,8 @@ namespace PancakeEditor.Finder
             {
                 messageEmpty = "[Selected Assets] are not [USED BY] any other assets!"
             };
+
+            _addressableDrawer = new FindAddressableDrawer(this, () => settings.sortMode, () => settings.groupMode);
 
             _duplicated = new AssetDuplicateTree2(this, () => settings.sortMode, () => settings.toolGroupMode);
             _sceneToAssetDrawer = new FindRefDrawer(this, () => settings.sortMode, () => settings.groupMode)
@@ -194,6 +197,7 @@ namespace PancakeEditor.Finder
 
         private void RefreshHistoryIndex(UnityObject[] objects)
         {
+            if (this == null) return;
             settings.historyIndex = -1;
             if (objects == null || objects.Length == 0) return;
             var history = settings.history;
@@ -218,6 +222,7 @@ namespace PancakeEditor.Finder
         {
             get
             {
+                if (IsFocusingAddressable) return false;
                 if (selection.IsSelectingAsset && IsFocusingUses) return false;
                 if (!selection.IsSelectingAsset && IsFocusingUsedBy) return true;
                 return settings.scene;
@@ -228,6 +233,7 @@ namespace PancakeEditor.Finder
         {
             get
             {
+                if (IsFocusingAddressable) return false;
                 if (selection.IsSelectingAsset && IsFocusingUses) return true;
                 if (!selection.IsSelectingAsset && IsFocusingUsedBy) return false;
                 return settings.asset;
@@ -239,6 +245,7 @@ namespace PancakeEditor.Finder
             if (sp1 == null || sp2 == null) return;
             sp2.splits[0].visible = IsScenePanelVisible;
             sp2.splits[1].visible = IsAssetPanelVisible;
+            sp2.splits[2].visible = IsFocusingAddressable;
             sp2.CalculateWeight();
         }
 
@@ -266,6 +273,7 @@ namespace PancakeEditor.Finder
                 _usesDrawer.Reset(_ids, true);
                 _usedByDrawer.Reset(_ids, false);
                 _refInScene.Reset(_ids, this as IWindow);
+                _addressableDrawer.RefreshView();
             }
             else
             {
@@ -320,6 +328,7 @@ namespace PancakeEditor.Finder
 
         [NonSerialized] public SplitView sp1; // container : Selection / sp2 / Bookmark 
         [NonSerialized] public SplitView sp2; // Scene / Assets
+        [NonSerialized] public SplitView sp3; // Addressable
 
         private void DrawHistory(Rect rect)
         {
@@ -374,7 +383,8 @@ namespace PancakeEditor.Finder
                 splits = new List<SplitView.Info>
                 {
                     new() {title = new GUIContent("Scene", Uniform.IconContent("SceneAsset Icon").image), draw = DrawScene, visible = settings.scene},
-                    new() {title = new GUIContent("Assets", Uniform.IconContent("Folder Icon").image), draw = DrawAsset, visible = settings.asset}
+                    new() {title = new GUIContent("Assets", Uniform.IconContent("Folder Icon").image), draw = DrawAsset, visible = settings.asset},
+                    new() {title = null, draw = rect => _addressableDrawer.Draw(rect), visible = false}
                 }
             };
 
@@ -458,6 +468,7 @@ namespace PancakeEditor.Finder
         {
             if (IsFocusingUses) return selection.IsSelectingAsset ? _usesDrawer : _sceneToAssetDrawer;
             if (IsFocusingUsedBy) return selection.IsSelectingAsset ? _usedByDrawer : null;
+            if (IsFocusingAddressable) return _addressableDrawer.drawer;
             return null;
         }
 
@@ -548,14 +559,15 @@ namespace PancakeEditor.Finder
             return false;
         }
 
-        protected bool IsFocusingUses => _tabs != null && _tabs.current == 0;
-        protected bool IsFocusingUsedBy => _tabs != null && _tabs.current == 1;
+        protected bool IsFocusingUses => _tabs is {current: 0};
+        protected bool IsFocusingUsedBy => _tabs is {current: 1};
+        protected bool IsFocusingAddressable => _tabs is {current: 2};
 
         // 
-        protected bool IsFocusingDuplicate => _toolTabs != null && _toolTabs.current == 0;
-        protected bool IsFocusingGUIDs => _toolTabs != null && _toolTabs.current == 1;
-        protected bool IsFocusingUnused => _toolTabs != null && _toolTabs.current == 2;
-        protected bool IsFocusingUsedInBuild => _toolTabs != null && _toolTabs.current == 3;
+        protected bool IsFocusingDuplicate => _toolTabs is {current: 0};
+        protected bool IsFocusingGUIDs => _toolTabs is {current: 1};
+        protected bool IsFocusingUnused => _toolTabs is {current: 2};
+        protected bool IsFocusingUsedInBuild => _toolTabs is {current: 3};
 
         private static readonly HashSet<FindRefDrawer.Mode> AllowedModes = new() {FindRefDrawer.Mode.Type, FindRefDrawer.Mode.Extension, FindRefDrawer.Mode.Folder};
 
@@ -587,6 +599,19 @@ namespace PancakeEditor.Finder
                 "Not Referenced",
                 "In Build");
             _tabs = TabView.Create(this, false, "Uses", "Used By");
+            if (FindAddressable.AsmStatus == FindAddressable.EAsmStatus.AsmNotFound)
+            {
+                _tabs = TabView.Create(this, false, "Uses", "Used By");
+            }
+            else
+            {
+                _tabs = TabView.Create(this,
+                    false,
+                    "Uses",
+                    "Used By",
+                    "Addressables");
+            }
+
             _tabs.onTabChange = OnTabChange;
             const float iconW = 24f;
             _tabs.offsetFirst = iconW;
@@ -831,7 +856,7 @@ namespace PancakeEditor.Finder
 
             if (IsFocusingUnused)
             {
-                if (_refUnUse.refs != null && _refUnUse.refs.Count == 0)
+                if (_refUnUse.refs is {Count: 0})
                 {
                     EditorGUILayout.HelpBox("Wow! So clean!?", MessageType.Info);
                     EditorGUILayout.HelpBox("Your project does not has have any unused assets, or have you just hit DELETE ALL?", MessageType.Info);
@@ -927,6 +952,7 @@ namespace PancakeEditor.Finder
         {
             _usedByDrawer.RefreshSort();
             _usesDrawer.RefreshSort();
+            _addressableDrawer.RefreshSort();
 
             _duplicated.RefreshSort();
             _sceneToAssetDrawer.RefreshSort();

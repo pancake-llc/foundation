@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace PancakeEditor.Finder
 {
-    public class EnumDrawer
+    internal class EnumDrawer
     {
         internal class EnumInfo
         {

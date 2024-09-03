@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PancakeEditor.Finder
 {
-    public class DeleteButton
+    internal class DeleteButton
     {
         public string confirmMessage;
         public GUIContent deleteLabel;

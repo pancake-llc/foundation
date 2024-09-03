@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PancakeEditor.Finder
 {
-    public static class MyGUIContent
+    internal static class MyGUIContent
     {
         // Cache to improve performance
         private static readonly Dictionary<string, GUIContent> StringMap = new();
