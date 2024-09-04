@@ -15,7 +15,7 @@ using Editor = PancakeEditor.Common.Editor;
 using L = Pancake.Linq.L;
 
 // ReSharper disable CognitiveComplexity
-namespace PancakeEditor.TabEverything
+namespace PancakeEditor
 {
     public static class TabEverything
     {

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace PancakeEditor.TabEverything
+namespace PancakeEditor
 {
     internal static class TabMenu
     {
