@@ -24,6 +24,7 @@ namespace PancakeEditor.Common
         private static GUIStyle richLabelHelpBox;
         private static GUIStyle boldRichLabel;
         private static GUIStyle centerRichLabel;
+        private static bool prevGuiEnabled = true;
 
         private static readonly Dictionary<string, GUIContent> CachedIconContent = new();
         private static readonly UniformFoldoutState FoldoutSettings = new();
@@ -566,6 +567,19 @@ namespace PancakeEditor.Common
                     }
                 }
             }
+        }
+
+        #endregion
+
+
+        #region gui
+
+        public static void ResetGUIEnabled() => GUI.enabled = prevGuiEnabled;
+
+        public static void SetGUIEnabled(bool enabled)
+        {
+            prevGuiEnabled = GUI.enabled;
+            GUI.enabled = enabled;
         }
 
         #endregion

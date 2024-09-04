@@ -97,7 +97,7 @@ namespace PancakeEditor
 
         private static System.Type GetTypeByFullName()
         {
-            TypeExtensions.TryFindTypeByFullName("Pancake.UI.Popup", out var type);
+            TypeExtensions.FindTypeByFullName("Pancake.UI.Popup", out var type);
             return type;
         }
 

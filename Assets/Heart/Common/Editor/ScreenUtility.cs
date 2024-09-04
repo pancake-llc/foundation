@@ -16,8 +16,8 @@ namespace PancakeEditor.Common
                 return Rect.zero;
             }
 
-            var showModeField = containerWindowType.GetField("m_ShowMode", BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var positionProperty = containerWindowType.GetProperty("position", BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            var showModeField = containerWindowType.GetField("m_ShowMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            var positionProperty = containerWindowType.GetProperty("position", BindingFlags.Public | BindingFlags.Instance);
             if (showModeField == null || positionProperty == null)
             {
                 return Rect.zero;

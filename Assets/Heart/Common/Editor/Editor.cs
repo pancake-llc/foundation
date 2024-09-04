@@ -52,15 +52,15 @@ namespace PancakeEditor.Common
         private static void DrawSprite(Sprite sprite, Vector3 worldSpace, Vector3 size)
         {
             if (sprite == null) return;
-            Rect spriteTextureRect = LocalTextureRect(sprite);
+            var spriteTextureRect = LocalTextureRect(sprite);
 
             Handles.BeginGUI();
 
-            Vector2 v0 = HandleUtility.WorldToGUIPoint(worldSpace - size / 2f);
-            Vector2 v1 = HandleUtility.WorldToGUIPoint(worldSpace + size / 2f);
-            Vector2 vMin = new Vector2(Mathf.Min(v0.x, v1.x), Mathf.Min(v0.y, v1.y));
-            Vector2 vMax = new Vector2(Mathf.Max(v0.x, v1.x), Mathf.Max(v0.y, v1.y));
-            Rect r = new Rect(vMin, vMax - vMin);
+            var v0 = HandleUtility.WorldToGUIPoint(worldSpace - size / 2f);
+            var v1 = HandleUtility.WorldToGUIPoint(worldSpace + size / 2f);
+            var vMin = new Vector2(Mathf.Min(v0.x, v1.x), Mathf.Min(v0.y, v1.y));
+            var vMax = new Vector2(Mathf.Max(v0.x, v1.x), Mathf.Max(v0.y, v1.y));
+            var r = new Rect(vMin, vMax - vMin);
             GUI.DrawTextureWithTexCoords(r, sprite.texture, spriteTextureRect);
 
             Handles.EndGUI();
@@ -604,8 +604,8 @@ namespace PancakeEditor.Common
         public static string GetSizeInMemory(this long byteSize)
         {
             string[] sizes = {"B", "KB", "MB", "GB", "TB"};
-            double len = Convert.ToDouble(byteSize);
-            int order = 0;
+            var len = Convert.ToDouble(byteSize);
+            var order = 0;
             while (len >= 1024D && order < sizes.Length - 1)
             {
                 order++;
@@ -617,8 +617,8 @@ namespace PancakeEditor.Common
 
         public static void MoveToCenter(this EditorWindow window)
         {
-            Rect position = window.position;
-            Rect mainWindowPosition = ScreenUtility.GetCenter();
+            var position = window.position;
+            var mainWindowPosition = ScreenUtility.GetCenter();
             if (mainWindowPosition != Rect.zero)
             {
                 float width = (mainWindowPosition.width - position.width) * 0.5f;
@@ -654,6 +654,13 @@ namespace PancakeEditor.Common
 
             return false;
         }
+
+        #region Rect
+
+        private static WrappedEvent Wrap(this Event e) => new(e);
+
+        public static WrappedEvent CurrentEvent =>
+            (Event.current ?? typeof(Event).GetField("s_Current", TypeExtensions.MAX_BINDING_FLAGS)?.GetValue(null) as Event).Wrap();
 
         public static Rect SetPosition(this Rect rect, Vector2 v) => rect.SetPosition(v.x, v.y);
 
@@ -732,5 +739,20 @@ namespace PancakeEditor.Common
 
         public static Rect AddHeight(this Rect rect, float f) => rect.SetHeight(rect.height + f);
         public static Rect AddHeightFromBottom(this Rect rect, float f) => rect.SetHeightFromBottom(rect.height + f);
+
+        public static bool IsHovered(this Rect r) => !CurrentEvent.IsNull && r.Contains(CurrentEvent.MousePosition);
+
+        public static void MarkInteractive(this Rect rect)
+        {
+            if (!CurrentEvent.IsRepaint) return;
+
+            var unclippedRect = (Rect) TypeExtensions.GUIClipUnclipToWindow.Invoke(null, new object[] {rect});
+
+            object curGuiView = TypeExtensions.CurrentGuiView.GetValue(null);
+
+            TypeExtensions.GUIViewMarkHotRegion.Invoke(curGuiView, new object[] {unclippedRect});
+        }
+
+        #endregion
     }
 }
