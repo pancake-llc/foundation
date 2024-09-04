@@ -582,6 +582,8 @@ namespace PancakeEditor.Common
             GUI.enabled = enabled;
         }
 
+        public static void Space(float value = 4) => GUILayout.Space(value);
+
         #endregion
     }
 }
