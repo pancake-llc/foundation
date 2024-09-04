@@ -1519,11 +1519,26 @@ namespace Pancake.Common
         /// <param name="gameObject"></param>
         public static void Destroy(this GameObject gameObject)
         {
+            if (!gameObject) return;
+
 #if UNITY_EDITOR
-            Object.DestroyImmediate(gameObject);
-#else
-            Object.Destroy(gameObject);
+            if (!Application.isPlaying)
+            {
+                Object.DestroyImmediate(gameObject);
+                return;
+            }
 #endif
+            Object.Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// Safe destroy your self
+        /// </summary>
+        /// <param name="gameObject"></param>
+        public static void SafeDestroy(ref GameObject gameObject)
+        {
+            gameObject.Destroy();
+            gameObject = null;
         }
 
         /// <summary>
