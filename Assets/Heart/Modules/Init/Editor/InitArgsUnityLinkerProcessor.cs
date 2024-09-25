@@ -20,22 +20,27 @@ namespace Sisus.Init.Internal
 	internal sealed class InitArgsUnityLinkerProcessor : IPreprocessBuildWithReport, IPostprocessBuildWithReport
 	{
 		private const string AssetsFolder = "Assets";
-		private const string PackagesFolder = "Packages";
-		private const string InitArgsPackageName = "com.sisus.init-args";
-		private const string InitArgsPackagePath = PackagesFolder + "/" + InitArgsPackageName;
-		private const string TemporaryFolderName = "Init(args) Temp";
+		private const string TemporaryFolderName = "Init Temp";
 		private const string TemporaryFolderPath = AssetsFolder + "/" + TemporaryFolderName;
 		private const string LinkXmlFileName = "link.xml";
 
 		public int callbackOrder => 10;
+		
+		public static string GetPathInCurrentEnvironent()
+		{
+			const string upmPath = "Packages/com.pancake.heart/Modules/Init";
+			const string normalPath = "Assets/Heart/Modules/Init/";
+			return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
+		}
+		
 
 		public async void OnPreprocessBuild(BuildReport report)
 		{
-			var linkXmlAssetPaths = Directory.EnumerateFiles(InitArgsPackagePath, LinkXmlFileName, SearchOption.AllDirectories).ToArray();
+			var linkXmlAssetPaths = Directory.EnumerateFiles(GetPathInCurrentEnvironent(), LinkXmlFileName, SearchOption.AllDirectories).ToArray();
 			if(linkXmlAssetPaths.Length == 0)
 			{
 				#if DEV_MODE
-				Debug.LogWarning( $"No link.xml files found in '{InitArgsPackagePath}'. Init(args) build stripping prevention might not work.");
+				Debug.LogWarning( $"No link.xml files found in '{GetPathInCurrentEnvironent()}'. Init(args) build stripping prevention might not work.");
 				#endif
 				return;
 			}
