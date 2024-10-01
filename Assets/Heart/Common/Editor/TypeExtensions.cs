@@ -28,6 +28,11 @@ namespace PancakeEditor.Common
         private static readonly Dictionary<Type, Dictionary<int, MethodInfo>> MethodInfoCache = new();
         private static readonly Dictionary<string, Type> TypeCache = new();
 
+        public static Type InspectorWindow => typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+        public static Type PropertyEditor => typeof(Editor).Assembly.GetType("UnityEditor.PropertyEditor");
+        public static Type GameObjectInspector => typeof(Editor).Assembly.GetType("UnityEditor.GameObjectInspector");
+
+
         public static object GetFieldValue(this object o, string fieldName, bool exceptionIfNotFound = true)
         {
             var type = o as Type ?? o.GetType();

@@ -20,6 +20,7 @@ namespace PancakeEditor.Common
         public Vector2 MousePositionScreenSpace => IsNull ? default : GUIUtility.GUIToScreenPoint(_e.mousePosition);
         public Vector2 MouseDelta => IsNull ? default : _e.delta;
         public EventModifiers Modifiers => IsNull ? default : _e.modifiers;
+        public bool HoldingAnyModifierKey => Modifiers != EventModifiers.None;
 
         public bool HoldingShift => IsNull ? default : _e.shift;
         public bool HoldingCmdOrCtrl => IsNull ? default : _e.command || _e.control;

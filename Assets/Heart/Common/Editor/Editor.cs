@@ -595,12 +595,7 @@ namespace PancakeEditor.Common
                     break;
             }
         }
-
-        /// <summary>
-        /// get inspector type to display window
-        /// </summary>
-        public static Type InspectorWindow => typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
-
+        
         public static string GetSizeInMemory(this long byteSize)
         {
             string[] sizes = {"B", "KB", "MB", "GB", "TB"};

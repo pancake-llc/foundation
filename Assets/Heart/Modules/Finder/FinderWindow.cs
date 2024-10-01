@@ -53,7 +53,7 @@ namespace PancakeEditor.Finder
 
         public static void ShowWindow()
         {
-            var window = GetWindow<FinderWindow>("Finder", true, Editor.InspectorWindow);
+            var window = GetWindow<FinderWindow>("Finder", true, TypeExtensions.InspectorWindow);
             if (window != null)
             {
                 window.InitIfNeeded();

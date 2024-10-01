@@ -928,7 +928,7 @@ namespace PancakeEditor
                 var mRootInstanceID = data.GetMemberValue<int>("m_rootInstanceID");
 
                 SetInitial();
-                Update();
+                LocalUpdate();
                 Reset();
                 return;
 
@@ -944,7 +944,7 @@ namespace PancakeEditor
                     mAssetTree.InvokeMethod("ReloadData");
                 }
 
-                void Update()
+                void LocalUpdate()
                 {
                     if (mRootInstanceID == 0) return;
 
