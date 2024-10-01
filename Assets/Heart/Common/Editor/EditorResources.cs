@@ -186,6 +186,16 @@ namespace PancakeEditor.Common
             return tex;
         }
 
+        public static Texture2D IconCopiedComponent(string theme)
+        {
+            TextureCached.TryGetValue($"{nameof(IconCopiedComponent)}{theme}", out var tex);
+
+            if (tex != null) return tex;
+            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_copied.png" : "icon_copied_dark.png", RELATIVE_PATH);
+            TextureCached[$"{nameof(IconCopiedComponent)}{theme}"] = tex;
+            return tex;
+        }
+        
         public static TextAsset ScreenViewTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("ScreenViewTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
         public static TextAsset ScreenPresenterTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("ScreenPresenterTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
         public static TextAsset AndroidManifestTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("AndroidManifest.xml.txt", RELATIVE_TEMPLATE_PATH);

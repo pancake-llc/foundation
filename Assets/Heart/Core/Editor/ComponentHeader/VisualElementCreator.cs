@@ -29,13 +29,14 @@ namespace PancakeEditor.ComponentHeader
 
         public static VisualElement CreateContainer(string headerElementName, Action onRefresh)
         {
-            var container = new VisualElement {pickingMode = PickingMode.Ignore, style = {flexDirection = FlexDirection.RowReverse, height = 22,}};
+            var container = new VisualElement {pickingMode = PickingMode.Ignore, style = {flexDirection = FlexDirection.RowReverse, height = 22}};
 
             var imageCreator = new ImageCreator(headerElementName, onRefresh);
 
 
             var hasILoadComponent = false;
             var hasBeenRenamed = false;
+
             foreach (var gameObject in Selection.gameObjects)
             {
                 var component = gameObject.GetComponent(GetComponentName(headerElementName));
@@ -108,6 +109,17 @@ namespace PancakeEditor.ComponentHeader
             TooltipWindow.Show("Pasted!");
         }
 
+        private static string GetComponentName(string headerElementName)
+        {
+            return headerElementName switch
+            {
+                "TextMeshPro - TextHeader" => "TextMeshPro",
+                "TextMeshPro - Text (UI)Header" => "TextMeshProUGUI",
+                _ => headerElementName.Remove(headerElementName.Length - 6, 6).Replace(" ", "").Replace("(Script)", "")
+            };
+        }
+
+
         private sealed class ImageCreator
         {
             private readonly string _headerElementName;
@@ -126,7 +138,7 @@ namespace PancakeEditor.ComponentHeader
                     foreach (var gameObject in Selection.gameObjects)
                     {
                         var component = gameObject.GetComponent(GetComponentName(_headerElementName));
-                        action(component);
+                        action?.Invoke(component);
                     }
 
                     _onRefresh();
@@ -152,22 +164,12 @@ namespace PancakeEditor.ComponentHeader
                         top = 3,
                         right = 63 + (int) buttonType * 3,
                         width = 16,
-                        height = 16,
+                        height = 16
                     }
                 };
 
                 return button;
             }
-        }
-
-        private static string GetComponentName(string headerElementName)
-        {
-            return headerElementName switch
-            {
-                "TextMeshPro - TextHeader" => "TextMeshPro",
-                "TextMeshPro - Text (UI)Header" => "TextMeshProUGUI",
-                _ => headerElementName.Remove(headerElementName.Length - 6, 6).Replace(" ", "").Replace("(Script)", "")
-            };
         }
     }
 }
