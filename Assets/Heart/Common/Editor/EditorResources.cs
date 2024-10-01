@@ -14,8 +14,6 @@ namespace PancakeEditor.Common
         public static Texture2D IconEventListener => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_event_listener.png", RELATIVE_PATH);
         public static Texture2D IconList => ProjectDatabase.FindAssetWithPath<Texture2D>("so_blue_list.png", RELATIVE_PATH);
         public static Texture2D IconVariable => ProjectDatabase.FindAssetWithPath<Texture2D>("so_blue_variable.png", RELATIVE_PATH);
-        public static Texture2D StarEmpty => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_star_empty.png", RELATIVE_PATH);
-        public static Texture2D StarFull => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_star_full.png", RELATIVE_PATH);
         public static Texture2D IconAds => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_ads.png", RELATIVE_PATH);
         public static Texture2D IconIAP => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_iap.png", RELATIVE_PATH);
         public static Texture2D IconFirebase => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_firebase.png", RELATIVE_PATH);
@@ -139,12 +137,6 @@ namespace PancakeEditor.Common
         }
 
         public static Texture2D IconTrim => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_trim.png", RELATIVE_PATH);
-        public static Texture2D IconCategoryLayout => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_category_layout.png", RELATIVE_PATH);
-        public static Texture2D IconDelete => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_delete.png", RELATIVE_PATH);
-        public static Texture2D IconDuplicate => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_duplicate.png", RELATIVE_PATH);
-        public static Texture2D IconEdit => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_edit.png", RELATIVE_PATH);
-        public static Texture2D IconPing => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_ping.png", RELATIVE_PATH);
-        public static Texture2D IconCancel => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_cancel.png", RELATIVE_PATH);
 
         public static Texture2D IconCopyComponent(string theme)
         {
@@ -195,7 +187,7 @@ namespace PancakeEditor.Common
             TextureCached[$"{nameof(IconCopiedComponent)}{theme}"] = tex;
             return tex;
         }
-        
+
         public static TextAsset ScreenViewTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("ScreenViewTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
         public static TextAsset ScreenPresenterTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("ScreenPresenterTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
         public static TextAsset AndroidManifestTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("AndroidManifest.xml.txt", RELATIVE_TEMPLATE_PATH);
