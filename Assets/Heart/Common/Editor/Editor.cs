@@ -649,6 +649,10 @@ namespace PancakeEditor.Common
 
             return false;
         }
+        
+        public static void RecordUndo(this Object o, string operationName = "") => Undo.RecordObject(o, operationName);
+        
+        public static void Dirty(this Object o) => EditorUtility.SetDirty(o);
 
         #region Rect
 
