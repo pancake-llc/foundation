@@ -19,8 +19,8 @@ namespace Pancake.Tracking
         public static void StartTrackingAdjust()
         {
 #if PANCAKE_ADJUST
-            var _ = new UnityEngine.GameObject("Adjust", typeof(com.adjust.sdk.Adjust));
-            com.adjust.sdk.Adjust.StartTracking(AdjustConfig.AppToken, AdjustConfig.Environment, AdjustConfig.LogLevel);
+            _ = new UnityEngine.GameObject("Adjust", typeof(AdjustSdk.Adjust));
+            AdjustSdk.Adjust.StartTracking(AdjustConfig.AppToken, AdjustConfig.Environment, AdjustConfig.LogLevel);
 #endif
         }
     }

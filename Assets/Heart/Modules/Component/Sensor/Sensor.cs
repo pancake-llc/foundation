@@ -1,5 +1,5 @@
 ﻿#if PANCAKE_ALCHEMY
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 #endif
 using UnityEngine;
 using UnityEngine.Events;

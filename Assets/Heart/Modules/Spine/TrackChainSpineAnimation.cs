@@ -1,7 +1,7 @@
 #if PANCAKE_SPINE
 using System;
 using System.Collections;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using Pancake.Common;
 using Spine.Unity;
 using UnityEngine;

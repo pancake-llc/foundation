@@ -289,6 +289,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4acd881ca74540a49adbeb932210c0c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: component
+      Entry: 6
+      Data: 
 --- !u!114 &5695992426041291485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,7 +511,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: -2160}
+  m_AnchoredPosition: {x: 20, y: -894}
   m_SizeDelta: {x: -40, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &5812871064201299233
@@ -609,6 +621,93 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c66699331357ddf4d8b9d1170618cd6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 995968833226339298, guid: 9ff642a41b80bd145b2998394decfd20, type: 3}
+    - {fileID: 3685194583428526754, guid: ebf548ca3e8f3584198d42f48bd10208, type: 3}
+    - {fileID: 8713169971505445862, guid: 0527cc17a3766464e995bb92259edb91, type: 3}
+    - {fileID: 2751185077155432247, guid: 1b6b5dac5fabf204fad126c0553e69f9, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _prefabContainer
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Pancake.Game.UI.CreditElementType,
+        Pancake.Game],[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Pancake.Game.UI.CreditElementType,
+        Pancake.Game]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 3
+    - Name: $v
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   enabledSound: 0
   audioOpen:
     name: 
@@ -632,18 +731,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 38ef6a0a8a80c3d49a94ed6942b43220, type: 2}
   container: {fileID: 2485103165204280189}
   buttonClose: {fileID: 4487852404142314590}
-  __alchemySerializationData_Pancake_Game_UI_CreditView:
-    _prefabContainer:
-      isCreated: 1
-      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": 0\n    },\n    {\n       
-        \"Key\": 1,\n        \"Value\": 1\n    },\n    {\n        \"Key\": 2,\n       
-        \"Value\": 2\n    },\n    {\n        \"Key\": 3,\n        \"Value\": 3\n   
-        }\n]"
-    unityObjectReferences:
-    - {fileID: 995968833226339298, guid: 9ff642a41b80bd145b2998394decfd20, type: 3}
-    - {fileID: 2751185077155432247, guid: 1b6b5dac5fabf204fad126c0553e69f9, type: 3}
-    - {fileID: 3685194583428526754, guid: ebf548ca3e8f3584198d42f48bd10208, type: 3}
-    - {fileID: 8713169971505445862, guid: 0527cc17a3766464e995bb92259edb91, type: 3}
 --- !u!114 &3447712721848528053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,6 +743,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b235054c0e47513499ab1a054c2fd969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   usePrefabNameAsId: 1
   <Id>k__BackingField: 
   enterAnimations: []

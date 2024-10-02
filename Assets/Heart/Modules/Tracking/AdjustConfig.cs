@@ -1,5 +1,5 @@
 #if PANCAKE_ADJUST
-using com.adjust.sdk;
+using AdjustSdk;
 #endif
 #if UNITY_EDITOR
 using UnityEditor;

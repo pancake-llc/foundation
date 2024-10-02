@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using Pancake.Common;
 using Sisus.Init;
 using UnityEngine.Events;

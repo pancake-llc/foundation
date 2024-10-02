@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using DebugUI;
 using UnityEngine;
 using UnityEngine.UIElements;

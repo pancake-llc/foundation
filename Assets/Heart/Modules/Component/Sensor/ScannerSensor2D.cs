@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 #if PANCAKE_ALCHEMY
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 #endif
 using Pancake.Common;
 using UnityEngine;

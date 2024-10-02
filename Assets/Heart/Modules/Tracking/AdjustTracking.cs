@@ -1,5 +1,5 @@
 #if PANCAKE_ADJUST
-using com.adjust.sdk;
+using AdjustSdk;
 #endif
 
 namespace Pancake.Tracking
@@ -9,24 +9,24 @@ namespace Pancake.Tracking
         public static void TrackRevenue(double value, string network, string unitId, string placement, string clientType)
         {
 #if PANCAKE_ADJUST
-            var source = "";
+            string source;
             switch (clientType.ToLower())
             {
                 case "admob":
-                    source = com.adjust.sdk.AdjustConfig.AdjustAdRevenueSourceAdMob;
+                    source = "admob_sdk";
                     break;
                 default:
-                    source = com.adjust.sdk.AdjustConfig.AdjustAdRevenueSourceAppLovinMAX;
+                    source = "applovin_max_sdk";
                     break;
             }
 
             var adRevenue = new AdjustAdRevenue(source);
-            adRevenue.setRevenue(value, "USD");
-            adRevenue.setAdRevenueNetwork(network);
-            adRevenue.setAdRevenuePlacement(placement);
-            adRevenue.setAdRevenueUnit(unitId);
+            adRevenue.SetRevenue(value, "USD");
+            adRevenue.AdRevenueNetwork = network;
+            adRevenue.AdRevenuePlacement = placement;
+            adRevenue.AdRevenueUnit = unitId;
 
-            Adjust.trackAdRevenue(adRevenue);
+            Adjust.TrackAdRevenue(adRevenue);
 #endif
         }
     }

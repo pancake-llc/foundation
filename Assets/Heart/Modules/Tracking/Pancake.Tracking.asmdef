@@ -4,7 +4,8 @@
     "references": [
         "GUID:adac8d59ad7e8504f82d387cded797a7",
         "GUID:73cfe616a226dd64690d08b6164cb0e2",
-        "GUID:88be65f96b86746888c927a5c8ff3534"
+        "GUID:88be65f96b86746888c927a5c8ff3534",
+        "GUID:7d8924c6e6beb44e18f19e8c0b5068cd"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -12,14 +13,15 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "Firebase.App.dll",
-        "Firebase.Analytics.dll"
+        "Firebase.Analytics.dll",
+        "Sirenix.OdinInspector.Attributes.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [
         {
-            "name": "com.pancake.adjust",
-            "expression": "4.32.0",
+            "name": "com.adjust.sdk",
+            "expression": "5.0.3",
             "define": "PANCAKE_ADJUST"
         },
         {

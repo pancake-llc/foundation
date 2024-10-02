@@ -1,101 +1,66 @@
-﻿using Alchemy.Editor;
-using Pancake;
+﻿using Pancake;
 using Pancake.Linq;
 using Pancake.UI;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
+using System;
+using System.Collections.Generic;
+using Editor = PancakeEditor.Common.Editor;
 
 namespace PancakeEditor
 {
-    [CustomAttributeDrawer(typeof(PopupPickupAttribute))]
-    public class PopupPickupDrawer : AlchemyAttributeDrawer
+    [CustomPropertyDrawer(typeof(PopupPickupAttribute))]
+    internal sealed class PopupPickupDrawer : PropertyDrawer
     {
-        public override void OnCreateElement()
+        private string _selectedId;
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // Create a container for the horizontal layout
-            var container = new VisualElement {style = {flexDirection = FlexDirection.Row, alignItems = Align.Center, marginBottom = 2}};
+            EditorGUI.BeginProperty(position, label, property);
 
-            var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name.ToCamelCase())) {style = {marginLeft = 3, marginRight = 0, flexGrow = 1}};
+            var labelRect = new Rect(position.x, position.y, position.width * 0.4f, EditorGUIUtility.singleLineHeight);
+            var buttonRect = new Rect(position.x + position.width * 0.45f, position.y, position.width * 0.55f, EditorGUIUtility.singleLineHeight);
 
-            var button = new Button
-            {
-                text = "Select type...",
-                style =
-                {
-                    flexGrow = 1,
-                    marginLeft = 0,
-                    flexShrink = 0,
-                    marginRight = -3,
-                    backgroundColor = Uniform.Error,
-                    color = Color.white
-                }
-            };
+            EditorGUI.LabelField(labelRect, ObjectNames.NicifyVariableName(property.name.ToCamelCase()));
 
-            if (!string.IsNullOrEmpty(SerializedProperty.stringValue))
-            {
-                var type = GetTypeByFullName();
-                if (type != null)
-                {
-                    var result = type.GetAllSubClass<Popup>();
-                    foreach (var t in result)
-                    {
-                        if (t.Name == SerializedProperty.stringValue)
-                        {
-                            button.text = SerializedProperty.stringValue;
-                            button.style.backgroundColor = new Color(0.05f, 0.61f, 0.53f, 0.31f);
-                            break;
-                        }
+            _selectedId = string.IsNullOrEmpty(property.stringValue) ? "Select type..." : property.stringValue;
 
-                        button.text = "Failed load...";
-                        button.style.backgroundColor = Uniform.Error;
-                    }
-                }
-            }
+            var buttonColor = string.IsNullOrEmpty(property.stringValue) ? Uniform.Error : new Color(0.05f, 0.61f, 0.53f, 0.31f);
+            var defaultColor = GUI.backgroundColor;
 
-            button.clicked += () =>
+            GUI.backgroundColor = buttonColor;
+
+            if (GUI.Button(buttonRect, _selectedId))
             {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("None (-1)"),
-                    false,
-                    () =>
-                    {
-                        SetAndApplyProperty(SerializedProperty, string.Empty);
-                        button.text = "Select type...";
-                        button.style.backgroundColor = Uniform.Error;
-                    });
+
+                menu.AddItem(new GUIContent("None (-1)"), string.IsNullOrEmpty(property.stringValue), () => { SetAndApplyProperty(property, string.Empty); });
+
                 var type = GetTypeByFullName();
                 if (type != null)
                 {
-                    var result = type.GetAllSubClass<Popup>().Filter(t => !t.Name.Equals("Popup`1"));
+                    var result = GetSubClasses(type);
+
                     for (var i = 0; i < result.Count; i++)
                     {
-                        if (i == 0) menu.AddSeparator("");
-                        int cachei = i;
-                        menu.AddItem(new GUIContent($"{result[cachei].Name} ({cachei})"),
-                            false,
-                            () =>
-                            {
-                                SetAndApplyProperty(SerializedProperty, result[cachei].Name);
-                                button.text = result[cachei].Name;
-                                button.style.backgroundColor = new Color(0.05f, 0.61f, 0.53f, 0.31f);
-                            });
+                        int cacheIndex = i;
+                        bool isSelected = property.stringValue == result[cacheIndex].Name;
+                        menu.AddItem(new GUIContent(result[cacheIndex].Name), isSelected, () => { SetAndApplyProperty(property, result[cacheIndex].Name); });
                     }
                 }
 
-                menu.DropDown(new Rect(button.worldBound.position, Vector2.zero));
-            };
+                menu.DropDown(new Rect(Editor.CurrentEvent.MousePosition, Vector2.zero));
+            }
 
+            GUI.backgroundColor = defaultColor;
 
-            container.Add(label);
-            container.Add(button);
-
-            TargetElement.Clear();
-            TargetElement.Add(container);
+            EditorGUI.EndProperty();
         }
 
-        private static System.Type GetTypeByFullName()
+        private List<Type> GetSubClasses(Type baseType) { return baseType.GetAllSubClass<Popup>().Filter(t => !t.Name.Equals("Popup`1")); }
+
+        private Type GetTypeByFullName()
         {
             TypeExtensions.FindTypeByFullName("Pancake.UI.Popup", out var type);
             return type;
@@ -104,6 +69,7 @@ namespace PancakeEditor
         private void SetAndApplyProperty(SerializedProperty property, string value)
         {
             property.stringValue = value;
+            _selectedId = value;
             property.serializedObject.ApplyModifiedProperties();
         }
     }

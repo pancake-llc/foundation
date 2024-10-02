@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 
 // ReSharper disable InconsistentNaming
 namespace Pancake.Game.UI

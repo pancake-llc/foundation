@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using Pancake.Common;
 using Pancake.Linq;
 #if PANCAKE_UNITASK
@@ -19,7 +19,7 @@ namespace Pancake.LevelSystem
     {
         [SerializeField] private StringConstant type;
         [SerializeField] private ELoopType loopType = ELoopType.Shuffle;
-        [HorizontalLine] [SerializeField] private LevelSetting[] levelSettings;
+        [SerializeField, Space] private LevelSetting[] levelSettings;
         [ReadOnly] [SerializeField] private LevelComponent previousLevelLoaded;
         [ReadOnly] [SerializeField] private LevelComponent nextLevelLoaded;
         private bool _isReplay;
@@ -202,6 +202,7 @@ namespace Pancake.LevelSystem
         {
             if (Dimensions.TryGetValue(id, out var dimension)) dimension.ChangeLevelIndexEvent -= action;
         }
+
         public static UniTask<LevelComponent> LoadLevel(string id, int index) { return Dimensions[id].LoadLevel(index); }
         public static LevelComponent GetNextLevelLoaded(string id) { return Dimensions[id].GetNextlevelLoaded(); }
         public static LevelComponent GetPreviousLevelLoaded(string id) { return Dimensions[id].GetPreviousLevelLoaded(); }

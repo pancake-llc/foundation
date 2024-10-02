@@ -71,67 +71,54 @@ namespace PancakeEditor.Common
             }
         }
 
-        public static Texture2D TreeMapCurrent
+        public static Texture2D IconTreeMapCurrent
         {
             get
             {
-                TextureCached.TryGetValue(nameof(TreeMapCurrent), out var tex);
+                TextureCached.TryGetValue(nameof(IconTreeMapCurrent), out var tex);
 
                 if (tex != null) return tex;
-                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_current.png", RELATIVE_PATH);
-                TextureCached[nameof(TreeMapCurrent)] = tex;
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("icon_tree_map_current.png", RELATIVE_PATH);
+                TextureCached[nameof(IconTreeMapCurrent)] = tex;
                 return tex;
             }
         }
 
-        public static Texture2D TreeMapLast
+        public static Texture2D IconTreeMapLast
         {
             get
             {
-                TextureCached.TryGetValue(nameof(TreeMapLast), out var tex);
+                TextureCached.TryGetValue(nameof(IconTreeMapLast), out var tex);
 
                 if (tex != null) return tex;
-                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_last.png", RELATIVE_PATH);
-                TextureCached[nameof(TreeMapLast)] = tex;
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("icon_tree_map_last.png", RELATIVE_PATH);
+                TextureCached[nameof(IconTreeMapLast)] = tex;
                 return tex;
             }
         }
 
-        public static Texture2D TreeMapLevel
+        public static Texture2D IconTreeMapLevel
         {
             get
             {
-                TextureCached.TryGetValue(nameof(TreeMapLevel), out var tex);
+                TextureCached.TryGetValue(nameof(IconTreeMapLevel), out var tex);
 
                 if (tex != null) return tex;
-                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level.png", RELATIVE_PATH);
-                TextureCached[nameof(TreeMapLevel)] = tex;
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("icon_tree_map_level.png", RELATIVE_PATH);
+                TextureCached[nameof(IconTreeMapLevel)] = tex;
                 return tex;
             }
         }
 
-        public static Texture2D TreeMapLevel4
+        public static Texture2D IconTreeMapLine
         {
             get
             {
-                TextureCached.TryGetValue(nameof(TreeMapLevel4), out var tex);
+                TextureCached.TryGetValue(nameof(IconTreeMapLine), out var tex);
 
                 if (tex != null) return tex;
-                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level4.png", RELATIVE_PATH);
-                TextureCached[nameof(TreeMapLevel4)] = tex;
-                return tex;
-            }
-        }
-
-        public static Texture2D TreeMapLine
-        {
-            get
-            {
-                TextureCached.TryGetValue(nameof(TreeMapLine), out var tex);
-
-                if (tex != null) return tex;
-                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_line.png", RELATIVE_PATH);
-                TextureCached[nameof(TreeMapLine)] = tex;
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("icon_tree_map_line.png", RELATIVE_PATH);
+                TextureCached[nameof(IconTreeMapLine)] = tex;
                 return tex;
             }
         }

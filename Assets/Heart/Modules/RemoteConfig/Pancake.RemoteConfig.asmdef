@@ -13,7 +13,8 @@
     "precompiledReferences": [
         "Firebase.App.dll",
         "Firebase.RemoteConfig.dll",
-        "Firebase.TaskExtension.dll"
+        "Firebase.TaskExtension.dll",
+        "Sirenix.Serialization.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

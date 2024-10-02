@@ -1,63 +1,40 @@
-﻿using Alchemy.Editor;
+﻿using System;
+using System.Linq;
 using Pancake;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
-using System;
-using System.Linq;
-using PancakeEditor.Common;
 
 namespace PancakeEditor
 {
-    [CustomAttributeDrawer(typeof(HideEnumAttribute))]
-    public class HideEnumAttributeDrawer : AlchemyAttributeDrawer
+    [CustomPropertyDrawer(typeof(HideEnumAttribute))]
+    public sealed class HideEnumPropertyDrawer : PropertyDrawer
     {
-        public override void OnCreateElement()
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            // Create a container for the layout
-            var container = new VisualElement {style = {flexDirection = FlexDirection.Row, alignItems = Align.Center, marginBottom = 2}};
+            var container = new VisualElement();
+            var enumType = fieldInfo.FieldType;
+            var hideEnumAttribute = (HideEnumAttribute) attribute;
+            var hiddenValues = hideEnumAttribute.HiddenValues.Cast<Enum>();
 
-            var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name)) {style = {marginLeft = 3, marginRight = 0, flexGrow = 1}};
+            var displayedOptions = Enum.GetValues(enumType).Cast<Enum>().Where(e => !hiddenValues.Contains(e)).ToList();
 
-            var enumType = TypeExtensions.GetFieldInfoFromProperty(SerializedProperty).FieldType;
-            if (!enumType.IsEnum)
+            var currentEnumValue = (Enum) Enum.ToObject(enumType, property.enumValueIndex);
+            int currentIndex = displayedOptions.IndexOf(currentEnumValue);
+
+            var popupField = new PopupField<Enum>(property.displayName, displayedOptions, currentIndex)
             {
-                Debug.LogError("SerializedProperty is not an enum type.");
-                return;
-            }
+                formatListItemCallback = item => item.ToString(), formatSelectedValueCallback = item => item.ToString()
+            };
 
-            // Ensure attribute is not null
-            if (Attribute is HideEnumAttribute hideEnumAttribute)
+            popupField.RegisterValueChangedCallback(evt =>
             {
-                var hiddenValues = hideEnumAttribute.HiddenValues.Cast<Enum>().ToList();
-                var displayedOptions = Enum.GetValues(enumType).Cast<Enum>().Where(e => !hiddenValues.Contains(e)).ToList();
+                property.enumValueIndex = Array.IndexOf(Enum.GetValues(enumType), evt.newValue);
+                property.serializedObject.ApplyModifiedProperties();
+            });
 
-                var currentEnumValue = (Enum) Enum.ToObject(enumType, SerializedProperty.enumValueIndex);
-                int currentIndex = displayedOptions.IndexOf(currentEnumValue);
+            container.Add(popupField);
 
-                // Create a PopupField to select from the filtered enum options
-                var popupField = new PopupField<Enum>(string.Empty, displayedOptions, currentIndex) {style = {flexGrow = 1, marginLeft = 0, marginRight = -3}};
-
-                // Update the SerializedProperty when a new value is selected
-                popupField.RegisterValueChangedCallback(evt => { SetAndApplyProperty(SerializedProperty, evt.newValue); });
-
-                container.Add(label);
-                container.Add(popupField);
-            }
-            else
-            {
-                Debug.LogError("HideEnumAttribute is null or not correctly assigned.");
-            }
-
-            // Clear the TargetElement and add the custom container
-            TargetElement.Clear();
-            TargetElement.Add(container);
-        }
-
-        private void SetAndApplyProperty(SerializedProperty property, Enum value)
-        {
-            property.enumValueIndex = Convert.ToInt32(value);
-            property.serializedObject.ApplyModifiedProperties();
+            return container;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
@@ -14,7 +13,9 @@ namespace PancakeEditor
         {
             var heartSetting = Resources.Load<HeartSettings>(nameof(HeartSettings));
             var heartEditorSetting = Resources.Load<HeartEditorSettings>(nameof(HeartEditorSettings));
-            if (heartSetting == null || heartEditorSetting == null)
+            var hierarchySetting = Resources.Load<HierarchySettings>(nameof(HierarchySettings));
+
+            if (heartSetting == null || heartEditorSetting == null || hierarchySetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
@@ -37,6 +38,15 @@ namespace PancakeEditor
                             $"{nameof(HeartEditorSettings).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HeartEditorSettings)}.asset");
                     }
 
+                    if (hierarchySetting == null)
+                    {
+                        var editorSetting = ScriptableObject.CreateInstance<HierarchySettings>();
+                        if (!Directory.Exists(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH);
+                        AssetDatabase.CreateAsset(editorSetting, $"{Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HierarchySettings)}.asset");
+                        Debug.Log(
+                            $"{nameof(HierarchySettings).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HierarchySettings)}.asset");
+                    }
+
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                 }
@@ -51,6 +61,9 @@ namespace PancakeEditor
                 EditorGUILayout.Space();
                 var editorHeartEditorSetting = UnityEditor.Editor.CreateEditor(heartEditorSetting);
                 editorHeartEditorSetting.OnInspectorGUI();
+                EditorGUILayout.Space();
+                var editorHierarchySetting = UnityEditor.Editor.CreateEditor(hierarchySetting);
+                editorHierarchySetting.OnInspectorGUI();
             }
         }
     }

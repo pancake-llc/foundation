@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alchemy.Serialization;
 using Pancake.Monetization;
+using Sirenix.OdinInspector;
 #if PANCAKE_REMOTE_CONFIG
 using Firebase;
 using Firebase.Extensions;
@@ -12,10 +12,9 @@ using UnityEngine;
 
 namespace Pancake.Tracking
 {
-    [AlchemySerialize]
-    public partial class RemoteConfig : MonoBehaviour
+    public class RemoteConfig : SerializedMonoBehaviour
     {
-        [AlchemySerializeField, NonSerialized] private Dictionary<StringConstant, string> remoteData = new();
+        [SerializeField] private Dictionary<StringConstant, string> remoteData = new();
         [SerializeField] private StringConstant currentAdNetwork;
 
         public static bool IsFetchCompleted { get; set; }

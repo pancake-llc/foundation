@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using Pancake.IAP;
 using Pancake.Localization;
 using UnityEngine;

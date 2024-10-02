@@ -1,11 +1,10 @@
 ﻿using System;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Pancake
 {
     [Serializable]
-    [DisableAlchemyEditor]
     public abstract class RandomValue<T>
     {
         [SerializeField] protected bool useConstant;

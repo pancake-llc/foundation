@@ -1,5 +1,5 @@
 ﻿using System;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,8 +9,8 @@ namespace Pancake.LevelSystem
     public abstract class LevelComponent : GameComponent, ISerializationCallbackReceiver
     {
         [SerializeField] private StringConstant type;
-        [SerializeField, HideInEditMode, ReadOnly] protected int originLevelIndex;
-        [SerializeField, HideInEditMode, ReadOnly] protected int currentLevelIndex;
+        [SerializeField, HideInEditorMode, ReadOnly] protected int originLevelIndex;
+        [SerializeField, HideInEditorMode, ReadOnly] protected int currentLevelIndex;
 
         private static event Action WinEvent;
         private static event Action LoseEvent;

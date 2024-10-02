@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Alchemy.Serialization;
 using Cysharp.Threading.Tasks;
 using Pancake.Common;
 using Pancake.Linq;
@@ -10,8 +9,7 @@ using UnityEngine.UI;
 
 namespace Pancake.Game.UI
 {
-    [AlchemySerialize]
-    public partial class DailyRewardView : View
+    public class DailyRewardView : View
     {
         [SerializeField] private Button buttonClose;
         [SerializeField] private DailyRewardDayElement dayPrefab;
@@ -20,7 +18,7 @@ namespace Pancake.Game.UI
         [SerializeField] private DailyRewardData specialDayData;
         [SerializeField] private DailyRewardDayElement specialDayElement;
         [SerializeField] private ScrollRect scroll;
-        [AlchemySerializeField, NonSerialized] private Dictionary<EDailyRewardType, DayRewardComponent> _dayRewards = new();
+        [SerializeField] private Dictionary<EDailyRewardType, DayRewardComponent> _dayRewards = new();
         [SerializeField] private Color claimableColor;
         [SerializeField] private StringConstant coinCurrencyType;
         [SerializeField] private StringConstant gemCurrencyType;

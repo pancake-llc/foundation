@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
 using UnityEngine;

@@ -1326,9 +1326,9 @@ namespace PancakeEditor
             if (!(editor.target is Component component)) return;
 
             GUILayout.Label("", GUILayout.Height(0), GUILayout.ExpandWidth(true));
-            var headerRect = GUILayoutUtility.GetLastRect().MoveY(-48).SetHeight(50).AddWidthFromMid(8);
-            var nameRect = headerRect.MoveX(43).MoveY(5).SetHeight(20).SetXMax(headerRect.xMax - 50);
-            var subtextRect = headerRect.MoveX(43).MoveY(22).SetHeight(20);
+            var headerRect = GUILayoutUtility.GetLastRect().AddY(-48).SetHeight(50).AddWidthFromMid(8);
+            var nameRect = headerRect.AddX(43).AddY(5).SetHeight(20).SetXMax(headerRect.xMax - 50);
+            var subtextRect = headerRect.AddX(43).AddY(22).SetHeight(20);
 
 
             HideName();
@@ -1368,7 +1368,7 @@ namespace PancakeEditor
 
             void GoName()
             {
-                var goNameRect = subtextRect.MoveX(GUI.skin.label.CalcSize(new GUIContent("Component of ")).x - 3)
+                var goNameRect = subtextRect.AddX(GUI.skin.label.CalcSize(new GUIContent("Component of ")).x - 3)
                     .SetWidth(component.gameObject.name.GetLabelWidth(isBold: true));
 
                 goNameRect.MarkInteractive();

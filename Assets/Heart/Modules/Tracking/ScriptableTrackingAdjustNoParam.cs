@@ -1,5 +1,5 @@
 #if PANCAKE_ADJUST
-using com.adjust.sdk;
+using AdjustSdk;
 #endif
 using UnityEngine;
 
@@ -16,7 +16,7 @@ namespace Pancake.Tracking
         {
 #if PANCAKE_ADJUST
             if (!Application.isMobilePlatform) return;
-            Adjust.trackEvent(new AdjustEvent(eventToken));
+            Adjust.TrackEvent(new AdjustEvent(eventToken));
 #endif
         }
     }

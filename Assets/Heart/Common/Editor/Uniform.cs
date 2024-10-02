@@ -194,6 +194,9 @@ namespace PancakeEditor.Common
         public static Color Error => Red;
         public static Color Warning => Orange;
         public static Color Notice => Orange;
+        public static Color HighlightBackground => EditorGUIUtility.isProSkin ? new Color(0.17f, 0.36f, 0.53f) : new Color(0.23f, 0.45f, 0.69f);
+        public static Color HighlightBackgroundInactive => EditorGUIUtility.isProSkin ? new Color(0.3f, 0.3f, 0.3f) : new Color(0.68f, 0.68f, 0.68f);
+        public static Color WindowBackground => EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.78f, 0.78f, 0.78f);
 
         #endregion
 

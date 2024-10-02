@@ -18,7 +18,8 @@
         "GoogleMobileAds.Core.dll",
         "Newtonsoft.Json.dll",
         "GoogleMobileAds.Ump.dll",
-        "GoogleMobileAds.Ump.Unity.dll"
+        "GoogleMobileAds.Ump.Unity.dll",
+        "Sirenix.Serialization.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

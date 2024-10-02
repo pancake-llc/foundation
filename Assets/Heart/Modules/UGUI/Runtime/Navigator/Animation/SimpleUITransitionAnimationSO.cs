@@ -1,5 +1,4 @@
-﻿using Alchemy.Inspector;
-using LitMotion;
+﻿using LitMotion;
 using Pancake.Common;
 using UnityEngine;
 
@@ -13,10 +12,10 @@ namespace Pancake.UI
         [SerializeField] private float delay;
         [SerializeField] private float duration;
         [SerializeField] private Ease ease = Ease.Linear;
-        [SerializeField, HorizontalLine] private EAlignment beforeAlignment = EAlignment.Center;
+        [SerializeField, Space] private EAlignment beforeAlignment = EAlignment.Center;
         [SerializeField] private Vector3 beforeScale = Vector3.one;
         [SerializeField] private float beforeAlpha = 1f;
-        [SerializeField, HorizontalLine] private EAlignment afterAlignment = EAlignment.Center;
+        [SerializeField, Space] private EAlignment afterAlignment = EAlignment.Center;
         [SerializeField] private Vector3 afterScale = Vector3.one;
         [SerializeField] private float afterAlpha = 1f;
 

@@ -1,6 +1,4 @@
-#if PANCAKE_ALCHEMY
-using Alchemy.Inspector;
-#endif
+using Sirenix.OdinInspector;
 #if PANCAKE_LITMOTION
 using LitMotion;
 using LitMotion.Extensions;
@@ -25,18 +23,8 @@ namespace Pancake.Component
         [SerializeField] private float sizeYExpland = 90f;
 
         [Header("SOUND"), SerializeField] protected bool enabledSound;
-
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
-#endif
-        [SerializeField, AudioPickup]
-        protected AudioId audioOpen;
-
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
-#endif
-        [SerializeField, AudioPickup]
-        protected AudioId audioClose;
+        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound))] protected AudioId audioOpen;
+        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound))] protected AudioId audioClose;
 
         public void Show(LocaleText localeText)
         {

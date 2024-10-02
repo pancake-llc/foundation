@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Pancake

@@ -2,31 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Pancake.Sound;
-#if PANCAKE_ALCHEMY
-using Alchemy.Inspector;
-using Alchemy.Serialization;
-#endif
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VitalRouter;
 
 namespace Pancake.Component
 {
-    [AlchemySerialize]
     [EditorIcon("icon_default")]
-    public partial class VfxParticleCollision : GameComponent
+    public class VfxParticleCollision : GameComponent
     {
         public StringConstant type;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
-#if PANCAKE_ALCHEMY
-        [AlchemySerializeField, NonSerialized]
-#endif
-        public Dictionary<int, int> numberParticleMap = new();
+        public Dictionary<int, int> numberParticleMap;
 
         [SerializeField] private bool enabledSound;
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound)), Indent]
-#endif
-        [SerializeField, AudioPickup]
+
+        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound)), Indent]
         private AudioId audioCollision;
 
         private int _segmentValue;

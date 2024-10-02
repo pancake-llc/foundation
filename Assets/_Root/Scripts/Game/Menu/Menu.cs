@@ -1,5 +1,5 @@
 using System;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using Pancake.Component;
 using Pancake.Localization;
 using Pancake.Sound;
@@ -22,12 +22,12 @@ namespace Pancake.Game
         [SerializeField] private Button buttonLeaderboard;
         [SerializeField] private LocaleText localeTextInGameNoti;
 
-        [HorizontalLine, SerializeField, PopupPickup] private string settingPopupKey;
+        [Space, SerializeField, PopupPickup] private string settingPopupKey;
         [SerializeField, PopupPickup] private string dailyRewardPopupKey;
         [SerializeField, PopupPickup] private string shopPopupKey;
         [SerializeField, PopupPickup] private string leaderboardPopupKey;
 
-        [HorizontalLine, SerializeField, AudioPickup] private AudioId bgm;
+        [Space, SerializeField, AudioPickup] private AudioId bgm;
 
         private void Start()
         {

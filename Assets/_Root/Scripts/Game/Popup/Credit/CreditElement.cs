@@ -1,4 +1,4 @@
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 
 namespace Pancake.Game.UI
 {

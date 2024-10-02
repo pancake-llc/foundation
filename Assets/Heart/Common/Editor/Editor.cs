@@ -595,7 +595,7 @@ namespace PancakeEditor.Common
                     break;
             }
         }
-        
+
         public static string GetSizeInMemory(this long byteSize)
         {
             string[] sizes = {"B", "KB", "MB", "GB", "TB"};
@@ -649,9 +649,9 @@ namespace PancakeEditor.Common
 
             return false;
         }
-        
+
         public static void RecordUndo(this Object o, string operationName = "") => Undo.RecordObject(o, operationName);
-        
+
         public static void Dirty(this Object o) => EditorUtility.SetDirty(o);
 
         #region Rect
@@ -676,15 +676,27 @@ namespace PancakeEditor.Common
             return rect;
         }
 
-        public static Rect MoveX(this Rect rect, float value)
+        public static Rect AddX(this Rect rect, float value)
         {
             rect.x += value;
             return rect;
         }
 
-        public static Rect MoveY(this Rect rect, float value)
+        public static Rect AddY(this Rect rect, float value)
         {
             rect.y += value;
+            return rect;
+        }
+        
+        public static Rect AddXMax(this Rect rect, float value)
+        {
+            rect.xMax += value;
+            return rect;
+        }
+
+        public static Rect AddYMax(this Rect rect, float value)
+        {
+            rect.yMax += value;
             return rect;
         }
 
@@ -716,14 +728,6 @@ namespace PancakeEditor.Common
             return rect;
         }
 
-        public static Rect SetHeightFromMid(this Rect rect, float px)
-        {
-            rect.y += rect.height / 2;
-            rect.height = px;
-            rect.y -= rect.height / 2;
-            return rect;
-        }
-
         public static Rect SetHeightFromBottom(this Rect rect, float px)
         {
             rect.y += rect.height;
@@ -733,10 +737,13 @@ namespace PancakeEditor.Common
         }
 
         public static Rect AddWidth(this Rect rect, float f) => rect.SetWidth(rect.width + f);
+
         public static Rect AddWidthFromMid(this Rect rect, float f) => rect.SetWidthFromMid(rect.width + f);
+
         public static Rect AddWidthFromRight(this Rect rect, float f) => rect.SetWidthFromRight(rect.width + f);
 
         public static Rect AddHeight(this Rect rect, float f) => rect.SetHeight(rect.height + f);
+
         public static Rect AddHeightFromBottom(this Rect rect, float f) => rect.SetHeightFromBottom(rect.height + f);
 
         public static bool IsHovered(this Rect r) => !CurrentEvent.IsNull && r.Contains(CurrentEvent.MousePosition);

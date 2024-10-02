@@ -11,14 +11,13 @@ namespace PancakeEditor.Common
         private static readonly Dictionary<string, string> InternalDependencies = new()
         {
             {"com.cysharp.unitask", "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.5"},
-            {"com.annulusgames.alchemy", "https://github.com/pancake-llc/Alchemy.git?path=/Alchemy/Assets/Alchemy"},
             {"com.annulusgames.lit-motion", "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v1.9.0"},
             {
                 "com.annulusgames.component-cache-generator",
                 "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator#v0.1.1"
             },
             {"com.annulusgames.debug-ui", "https://github.com/AnnulusGames/DebugUI.git?path=src/DebugUI/Assets/DebugUI#v1.0.2"},
-            {"jp.hadashikick.vitalrouter", "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#1.0.1"},
+            {"jp.hadashikick.vitalrouter", "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#1.4.2"}
         };
 
         protected override Dictionary<string, string> Dependencies => InternalDependencies;

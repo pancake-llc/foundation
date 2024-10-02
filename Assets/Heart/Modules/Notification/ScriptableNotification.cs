@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 using Pancake.Common;
 using Pancake.Localization;
 using UnityEngine;
@@ -34,7 +34,7 @@ namespace Pancake.Notification
         [SerializeField] private bool repeat;
         [SerializeField] internal bool bigPicture;
 
-        [ShowIf(nameof(bigPicture)), Blockquote("File bigpicture must be place in folder StreamingAsset \nName Picture must contains file extension ex .jpg"),
+        [ShowIf(nameof(bigPicture)), InfoBox("File bigpicture must be place in folder StreamingAsset \nName Picture must contains file extension ex .jpg"),
          LabelText("  Name Picture")]
         [SerializeField]
         internal string namePicture;

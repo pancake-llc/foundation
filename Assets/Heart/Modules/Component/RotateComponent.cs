@@ -1,6 +1,6 @@
 using UnityEngine;
 #if PANCAKE_ALCHEMY
-using Alchemy.Inspector;
+using Sirenix.OdinInspector;
 #endif
 #if PANCAKE_LITMOTION
 using LitMotion;

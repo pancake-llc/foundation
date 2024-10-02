@@ -1,41 +1,29 @@
-﻿using Alchemy.Editor;
-using Pancake.Sound;
+﻿using Pancake.Sound;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace PancakeEditor.Sound
 {
-    [CustomAttributeDrawer(typeof(AudioPickupAttribute))]
-    public class AudioIdPickupDrawer : AlchemyAttributeDrawer
+    [CustomPropertyDrawer(typeof(AudioPickupAttribute))]
+    public class AudioIdPickupDrawer : PropertyDrawer
     {
-        public override void OnCreateElement()
+        private string _selectedId;
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (SerializedProperty.type != nameof(AudioId)) return;
-            var idProperty = SerializedProperty.FindPropertyRelative("id");
-            var nameProperty = SerializedProperty.FindPropertyRelative("name");
+            if (property.type != nameof(AudioId)) return;
 
-            // Create a container for the horizontal layout
-            var container = new VisualElement {style = {flexDirection = FlexDirection.Row, alignItems = Align.Center, marginBottom = 2}};
+            var idProperty = property.FindPropertyRelative("id");
+            var nameProperty = property.FindPropertyRelative("name");
 
-            var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name.ToCamelCase())) {style = {marginLeft = 3, marginRight = 0, flexGrow = 1}};
+            EditorGUI.BeginProperty(position, label, property);
+            var labelRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, position.height);
+            EditorGUI.LabelField(labelRect, label);
+            var buttonRect = new Rect(position.x + EditorGUIUtility.labelWidth + 2, position.y, position.width - EditorGUIUtility.labelWidth - 2, position.height);
+            var buttonText = "Select type...";
+            var buttonColor = Uniform.Error;
 
-            var button = new Button
-            {
-                text = "Select type...",
-                style =
-                {
-                    flexGrow = 1,
-                    marginLeft = 0,
-                    flexShrink = 0,
-                    marginRight = -3,
-                    backgroundColor = Uniform.Error,
-                    color = Color.white
-                }
-            };
-
-            // Set the initial text of the button
             if (!string.IsNullOrEmpty(idProperty.stringValue))
             {
                 var allAudioAsset = ProjectDatabase.FindAll<AudioData>();
@@ -43,53 +31,51 @@ namespace PancakeEditor.Sound
                 {
                     if (t.id == idProperty.stringValue)
                     {
-                        button.text = nameProperty.stringValue;
-                        button.style.backgroundColor = new Color(0.99f, 0.5f, 0.24f, 0.31f);
+                        buttonText = nameProperty.stringValue;
+                        buttonColor = new Color(0.99f, 0.5f, 0.24f, 0.31f);
+                        _selectedId = idProperty.stringValue;
                         break;
                     }
 
-                    button.text = "Failed load...";
-                    button.style.backgroundColor = Uniform.Error;
+                    buttonText = "Failed load...";
+                    buttonColor = Uniform.Error;
                 }
             }
 
-            button.clicked += () =>
+            var originalColor = GUI.backgroundColor;
+            GUI.backgroundColor = buttonColor;
+            if (GUI.Button(buttonRect, buttonText))
             {
                 var menu = new GenericMenu();
                 var allAudioAsset = ProjectDatabase.FindAll<AudioData>();
-                menu.AddItem(new GUIContent("None (-1)"),
-                    false,
+
+                menu.AddItem(new GUIContent("None"),
+                    _selectedId == string.Empty,
                     () =>
                     {
                         SetAndApplyProperty(idProperty, string.Empty);
-                        button.text = "Select type...";
-                        button.style.backgroundColor = Uniform.Error;
+                        SetAndApplyProperty(nameProperty, string.Empty);
+                        _selectedId = string.Empty;
                     });
+
                 for (var i = 0; i < allAudioAsset.Count; i++)
                 {
-                    if (i == 0) menu.AddSeparator("");
-                    int cachei = i;
-                    menu.AddItem(new GUIContent($"{allAudioAsset[cachei].name} ({cachei})"),
-                        false,
+                    var audioData = allAudioAsset[i];
+                    menu.AddItem(new GUIContent($"{audioData.name}"),
+                        audioData.id == _selectedId,
                         () =>
                         {
-                            SetAndApplyProperty(idProperty, allAudioAsset[cachei].id);
-                            SetAndApplyProperty(nameProperty, allAudioAsset[cachei].name);
-                            button.text = allAudioAsset[cachei].name;
-                            button.style.backgroundColor = new Color(0.99f, 0.5f, 0.24f, 0.31f);
+                            SetAndApplyProperty(idProperty, audioData.id);
+                            SetAndApplyProperty(nameProperty, audioData.name);
+                            _selectedId = audioData.id;
                         });
                 }
 
-                menu.DropDown(new Rect(button.worldBound.position, Vector2.zero));
-            };
+                menu.DropDown(buttonRect);
+            }
 
-
-            container.Add(label);
-            container.Add(button);
-
-            // Add the container to the target element, which will hide default UI
-            TargetElement.Clear();
-            TargetElement.Add(container);
+            GUI.backgroundColor = originalColor;
+            EditorGUI.EndProperty();
         }
 
         private void SetAndApplyProperty(SerializedProperty property, string value)
