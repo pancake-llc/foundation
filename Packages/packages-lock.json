@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.adjust.sdk": {
-      "version": "https://github.com/pancake-llc/adjust.git?path=Assets/Adjust#5.0.3",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "6802398d55b1c91741973ee4227166cd82e30b12"
-    },
     "com.annulusgames.component-cache-generator": {
       "version": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",
       "depth": 0,

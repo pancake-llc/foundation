@@ -43,8 +43,8 @@
             "define": "PANCAKE_NOTIFICATION"
         },
         {
-            "name": "com.pancake.adjust",
-            "expression": "4.33.0",
+            "name": "com.adjust.sdk",
+            "expression": "5.0.3",
             "define": "PANCAKE_ADJUST"
         },
         {
