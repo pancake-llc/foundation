@@ -5,6 +5,7 @@ using PancakeEditor.Common;
 
 namespace PancakeEditor
 {
+    // ReSharper disable once UnusedType.Global
     public sealed class HierarchySeparatorDrawer : HierarchyDrawer
     {
         static Color SeparatorColor => new(0.5f, 0.5f, 0.5f);

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -5,10 +6,20 @@ using Pancake;
 
 namespace PancakeEditor
 {
+    // ReSharper disable once UnusedType.Global
     public sealed class HierarchyToggleDrawer : HierarchyDrawer
     {
         public override void OnGUI(int instanceID, Rect selectionRect)
         {
+            try
+            {
+                _ = HierarchySettings.Instance;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (gameObject == null) return;
             if (gameObject.TryGetComponent<HierarchyObject>(out _)) return;

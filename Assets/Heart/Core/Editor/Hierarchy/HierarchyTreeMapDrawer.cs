@@ -1,13 +1,24 @@
+using System;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
 {
+    // ReSharper disable once UnusedType.Global
     public class HierarchyTreeMapDrawer : HierarchyDrawer
     {
         public override void OnGUI(int instanceID, Rect selectionRect)
         {
+            try
+            {
+                _ = HierarchySettings.Instance;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (gameObject == null) return;
 

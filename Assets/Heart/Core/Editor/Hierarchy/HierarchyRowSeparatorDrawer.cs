@@ -1,13 +1,23 @@
-using PancakeEditor;
+using System;
 using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
 {
+    // ReSharper disable once UnusedType.Global
     public class HierarchyRowSeparatorDrawer : HierarchyDrawer
     {
         public override void OnGUI(int instanceID, Rect selectionRect)
         {
+            try
+            {
+                _ = HierarchySettings.Instance;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
             if (!HierarchySettings.ShowSeparator) return;
             var rect = new Rect {y = selectionRect.y, width = selectionRect.width + selectionRect.x, height = 1, x = 0};
 
