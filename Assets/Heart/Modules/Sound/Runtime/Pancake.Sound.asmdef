@@ -19,7 +19,7 @@
     "versionDefines": [
         {
             "name": "com.annulusgames.lit-motion",
-            "expression": "1.0.0",
+            "expression": "1.9.0",
             "define": "PANCAKE_LITMOTION"
         }
     ],

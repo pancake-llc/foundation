@@ -1,4 +1,6 @@
-﻿using DebugUI;
+﻿#if PANCAKE_DEBUG_UI
+using DebugUI;
+#endif
 using Pancake.PlayerLoop;
 using UnityEngine;
 
@@ -9,6 +11,7 @@ namespace Pancake.DebugView
         private short _fps;
         private float _t = 0.1f;
 
+#if PANCAKE_DEBUG_UI
         public override void Configure(DebugUIBuilder builder)
         {
             GameLoop.Register(this, OnFPSUpdated, PlayerLoopTiming.PreUpdate);
@@ -22,6 +25,7 @@ namespace Pancake.DebugView
                 x => Time.timeScale = x);
             return;
         }
+#endif
 
         private void OnFPSUpdated()
         {

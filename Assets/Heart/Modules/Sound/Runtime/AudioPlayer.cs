@@ -1,6 +1,9 @@
 ﻿using System;
+#if PANCAKE_LITMOTION
 using LitMotion;
 using LitMotion.Extensions;
+#endif
+
 using Pancake.Common;
 using Pancake.Pools;
 using UnityEngine;
@@ -25,7 +28,7 @@ namespace Pancake.Sound
         public bool IsPlaying() => audioSource.isPlaying;
         public bool IsLooping() => audioSource.loop;
         internal void SetVolume(float volume) => audioSource.volume = volume;
-        
+
         internal void Play(AudioClip clip, bool loop, float volume, string idHandle)
         {
             idAudioHandle = idHandle;
@@ -46,19 +49,24 @@ namespace Pancake.Sound
             //Start the clip at the same time the previous one left, if length allows
             if (startTime <= audioSource.clip.length) audioSource.time = startTime;
 
+#if PANCAKE_LITMOTION
             LMotion.Create(0, volume, duration).WithEase(Ease.Linear).BindToVolume(audioSource).AddTo(gameObject);
+#endif
         }
 
         internal void FadeIn(float volume, float duration)
         {
+#if PANCAKE_LITMOTION
             LMotion.Create(audioSource.volume, volume, duration).WithEase(Ease.Linear).BindToVolume(audioSource).AddTo(gameObject);
+#endif
         }
 
         internal void FadeOut(float volume, float duration, float effectiveTime)
         {
             float originalVolume = audioSource.volume;
+#if PANCAKE_LITMOTION
             LMotion.Create(audioSource.volume, volume, duration).WithEase(Ease.Linear).BindToVolume(audioSource).AddTo(gameObject);
-
+#endif
             if (effectiveTime >= 0) this.Delay(effectiveTime, () => FadeIn(originalVolume, duration));
         }
 

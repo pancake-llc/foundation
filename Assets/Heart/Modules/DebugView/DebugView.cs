@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+#if PANCAKE_DEBUG_UI
 using DebugUI;
+#endif
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,10 +16,13 @@ namespace Pancake.DebugView
         private Vector2Int referenceResolution = new(1080, 1920);
 
         protected readonly List<DebugPageBase> pages = new();
+#if PANCAKE_DEBUG_UI
         protected readonly DebugUIBuilder builder = new();
+#endif
 
         private void Start()
         {
+#if PANCAKE_DEBUG_UI
             uiDocument.panelSettings.referenceResolution = referenceResolution;
             builder.ConfigureWindowOptions(options =>
             {
@@ -36,6 +41,7 @@ namespace Pancake.DebugView
             if (!HeartSettings.DebugView) HideDebug();
 
             return;
+#endif
         }
 
         private void OnResolutionChanged(Vector2Int value) { uiDocument.panelSettings.referenceResolution = value; }
