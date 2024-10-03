@@ -3,7 +3,6 @@ using System.Linq;
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-//using PancakeEditor.Sound;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -293,6 +292,7 @@ namespace PancakeEditor
                                 });
                         break;
                     case WizardAllType.InAppPurchase:
+#if PANCAKE_IAP
                         var iapSettings = ProjectDatabase.FindAll<Pancake.IAP.IAPSettings>();
                         if (!iapSettings.IsNullOrEmpty())
                             ShowContextMenu(iapSettings[0],
@@ -307,6 +307,8 @@ namespace PancakeEditor
                                         RegistryManager.Resolve();
                                     }
                                 });
+#endif
+
                         break;
                     case WizardAllType.HeartSetting:
                         var heartSetting = Resources.Load<HeartSettings>(nameof(HeartSettings));
