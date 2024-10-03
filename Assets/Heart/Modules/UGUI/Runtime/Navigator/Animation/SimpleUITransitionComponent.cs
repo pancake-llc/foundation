@@ -38,8 +38,8 @@ namespace Pancake.UI
         {
             time = 0f.Max(time - delay);
             float progress = duration <= 0f ? 1f : (time / duration).Clamp01();
-            var e = ease;
 #if PANCAKE_LITMOTION
+            var e = ease;
             if (ease == Ease.CustomAnimationCurve) e = Ease.OutQuad;
             progress = EaseUtility.Evaluate(progress, e);
 #endif

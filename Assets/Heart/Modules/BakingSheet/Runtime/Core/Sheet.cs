@@ -12,7 +12,7 @@ namespace Pancake.BakingSheet
     /// <summary>
     /// Represents a single page of Sheet.
     /// </summary>
-    /// <typeparam name="TKey">Type of Id column.</typeparam>
+    /// <typeparam name="TKey">Type of id column.</typeparam>
     /// <typeparam name="TValue">Type of Row.</typeparam>
     public abstract partial class Sheet<TKey, TValue> : KeyedCollection<TKey, TValue>, ISheet<TKey, TValue> where TValue : SheetRow<TKey>, new()
     {
@@ -28,7 +28,7 @@ namespace Pancake.BakingSheet
             get
             {
                 if (id == null || !Contains(id))
-                    return default(TValue);
+                    return default;
                 return base[id];
             }
         }
@@ -39,7 +39,7 @@ namespace Pancake.BakingSheet
         bool ISheet.Contains(object key) => Contains((TKey) key);
         void ISheet.Add(object value) => Add((TValue) value);
 
-        public new Enumerator GetEnumerator() => new Enumerator(this);
+        public new Enumerator GetEnumerator() => new(this);
         IEnumerator<ISheetRow> ISheet.GetEnumerator() => GetEnumerator();
 
         protected override TKey GetKeyForItem(TValue item) { return item.Id; }
@@ -164,8 +164,8 @@ namespace Pancake.BakingSheet
     }
 
     /// <summary>
-    /// Represents a single page of Sheet, with string Id.
-    /// For other type of Id, use generic version.
+    /// Represents a single page of Sheet, with string id.
+    /// For other type of id, use generic version.
     /// </summary>
     /// <typeparam name="T">Type of Row.</typeparam>
     public abstract class Sheet<T> : Sheet<string, T>, ISheet<T> where T : SheetRow<string>, new()

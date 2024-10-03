@@ -18,7 +18,9 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.Initialize && !_isInitialized)
             {
+#if PANCAKE_UNITASK
                 await view.InitializeAsync();
+#endif
                 _isInitialized = true;
             }
         }
@@ -31,7 +33,9 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.BeforeFirstEnter && !_isInitialized)
             {
+#if PANCAKE_UNITASK
                 await view.InitializeAsync();
+#endif
                 _isInitialized = true;
             }
         }
