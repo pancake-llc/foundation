@@ -174,7 +174,7 @@ namespace Pancake.IAP
             foreach (var p in IAPSettings.Products)
             {
                 if (!p.id.Equals(id)) continue;
-                p.OnPurchaseFailed.Raise();
+                p.OnPurchaseFailed.Raise(reason);
                 C.CallActionClean(ref p.purchaseFailedCallback, reason);
             }
         }

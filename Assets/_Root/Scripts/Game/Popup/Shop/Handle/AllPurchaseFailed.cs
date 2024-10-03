@@ -7,6 +7,6 @@ namespace Pancake.Game.UI
     [EditorIcon("so_blue_event")]
     public class AllPurchaseFailed : IAPPurchaseFailed
     {
-        public override void Raise() { }
+        public override void Raise(string reason) { }
     }
 }
