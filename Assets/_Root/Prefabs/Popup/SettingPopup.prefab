@@ -333,7 +333,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7153341864181535424}
-  - component: {fileID: 2918151553597937159}
+  - component: {fileID: 7442107685696396822}
   m_Layer: 5
   m_Name: Terrm
   m_TagString: Untagged
@@ -356,7 +356,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1049299072470666788}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2918151553597937159
+--- !u!114 &7442107685696396822
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 145563497218107922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
+  m_Script: {fileID: 11500000, guid: 1168ed5c2e918af4381ef54f2a833695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hierarchyObjectMode: 0
@@ -1419,6 +1419,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 280465abeb3e1094da2d38e9bc2d5d86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _buttonsLanguage
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[UnityEngine.SystemLanguage,
+        UnityEngine.CoreModule],[Pancake.UI.UIButtonText, Pancake.UGUI]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[UnityEngine.SystemLanguage,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _buttonsQuality
+      Entry: 7
+      Data: 2|System.Collections.Generic.Dictionary`2[[Pancake.Game.EQuality, Pancake.Game],[Pancake.UI.UIButtonText,
+        Pancake.UGUI]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 3|System.Collections.Generic.EnumEqualityComparer`1[[Pancake.Game.EQuality,
+        Pancake.Game]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   enabledSound: 0
   audioOpen:
     name: bgm_gameplay
@@ -1451,22 +1512,6 @@ MonoBehaviour:
   groupFacebookURL: 
   creditPopupKey: CreditPopup
   backupDataPopupKey: BackupDataPopup
-  __alchemySerializationData_Pancake_Game_UI_SettingView:
-    _buttonsLanguage:
-      isCreated: 1
-      data: "[\n    {\n        \"Key\": 10,\n        \"Value\": 0\n    },\n    {\n       
-        \"Key\": 39,\n        \"Value\": 1\n    }\n]"
-    _buttonsQuality:
-      isCreated: 1
-      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": 2\n    },\n    {\n       
-        \"Key\": 1,\n        \"Value\": 3\n    },\n    {\n        \"Key\": 2,\n       
-        \"Value\": 4\n    }\n]"
-    unityObjectReferences:
-    - {fileID: 7579323152516476335}
-    - {fileID: 2383515475480868187}
-    - {fileID: 5335983914463774886}
-    - {fileID: 1970256070001264383}
-    - {fileID: 5032709799278932460}
 --- !u!114 &3058685168928674365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1479,6 +1524,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ad96c1643d89d43b79fc080579e521, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   usePrefabNameAsId: 1
   <Id>k__BackingField: 
   enterAnimations: []
@@ -1746,7 +1800,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 111271018585033227}
-  - component: {fileID: 1093711314548230985}
+  - component: {fileID: 7213067864833111578}
   m_Layer: 5
   m_Name: Sound
   m_TagString: Untagged
@@ -1769,7 +1823,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1049299072470666788}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1093711314548230985
+--- !u!114 &7213067864833111578
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1778,7 +1832,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1765118865132806970}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
+  m_Script: {fileID: 11500000, guid: 1168ed5c2e918af4381ef54f2a833695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hierarchyObjectMode: 0
@@ -1977,7 +2031,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 430, y: -17.005}
+  m_AnchoredPosition: {x: 313, y: -17.005}
   m_SizeDelta: {x: 175.36, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &987973584088466721
@@ -2124,7 +2178,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5015320928401352339}
-  - component: {fileID: 4371759546465132657}
+  - component: {fileID: 4004507710454047025}
   m_Layer: 5
   m_Name: Language
   m_TagString: Untagged
@@ -2147,7 +2201,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1049299072470666788}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4371759546465132657
+--- !u!114 &4004507710454047025
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2156,7 +2210,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2222592022266983453}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
+  m_Script: {fileID: 11500000, guid: 1168ed5c2e918af4381ef54f2a833695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hierarchyObjectMode: 0
@@ -3064,7 +3118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6568675352000640730}
-  - component: {fileID: 2635122878341300017}
+  - component: {fileID: 2065641687989751735}
   m_Layer: 5
   m_Name: Quality
   m_TagString: Untagged
@@ -3087,7 +3141,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1049299072470666788}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2635122878341300017
+--- !u!114 &2065641687989751735
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3096,7 +3150,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3378918728255422182}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
+  m_Script: {fileID: 11500000, guid: 1168ed5c2e918af4381ef54f2a833695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hierarchyObjectMode: 0
@@ -6776,7 +6830,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 380, y: -17.005}
+  m_AnchoredPosition: {x: 263, y: -17.005}
   m_SizeDelta: {x: 127.98, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4190306391577949785
@@ -7747,7 +7801,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 632715803421840062}
-  - component: {fileID: 7700779979649757749}
+  - component: {fileID: 8780860176796084981}
   m_Layer: 5
   m_Name: Other
   m_TagString: Untagged
@@ -7770,7 +7824,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1049299072470666788}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7700779979649757749
+--- !u!114 &8780860176796084981
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7779,7 +7833,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9122826184769768290}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
+  m_Script: {fileID: 11500000, guid: 1168ed5c2e918af4381ef54f2a833695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hierarchyObjectMode: 0

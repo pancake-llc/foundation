@@ -1,11 +1,7 @@
-﻿using Pancake.Game.Interfaces;
-using Sisus.Init;
-using UnityEngine.EventSystems;
+﻿using UnityEngine.EventSystems;
 
 namespace Pancake.Game
 {
-    [Service(typeof(IJoystick), LazyInit = true, FindFromScene = true)]
-    [Service(typeof(FloatingJoystick),LazyInit = true, FindFromScene = true)]
     public class FloatingJoystick : Joystick
     {
         private bool _pointedDown;

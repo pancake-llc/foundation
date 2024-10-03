@@ -292,6 +292,7 @@ GameObject:
   - component: {fileID: 183388689}
   - component: {fileID: 183388688}
   - component: {fileID: 183388687}
+  - component: {fileID: 183388690}
   m_Layer: 5
   m_Name: joystick
   m_TagString: Untagged
@@ -386,6 +387,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 183388685}
   m_CullTransparentMesh: 1
+--- !u!114 &183388690
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183388685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5110ca77f497ab4588c197f096f4004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  service: {fileID: 183388687}
+  toClients: 4
+  definingType:
+    scriptAssetGuid: 03f202d4b32445db8e713588203a36f9
+    TypeNameAndAssembly: Pancake.Game.Interfaces.IJoystick, Pancake.Game.Interfaces
 --- !u!1 &479011228
 GameObject:
   m_ObjectHideFlags: 0
