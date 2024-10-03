@@ -1,6 +1,7 @@
 ﻿using System;
-using Sirenix.OdinInspector;
+#if PANCAKE_LITMOTION
 using LitMotion;
+#endif
 using Pancake.AssetLoader;
 using UnityEngine;
 
@@ -61,10 +62,24 @@ namespace Pancake.UI
         }
 
         public static ITransitionAnimation SheetEnterAnim =>
-            Instance.sheetEnterAnim != null ? Instantiate(Instance.sheetEnterAnim) : SimpleUITransitionAnimationSO.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
+            Instance.sheetEnterAnim != null
+                ? Instantiate(Instance.sheetEnterAnim)
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation SheetExitAnim =>
-            Instance.sheetExitAnim != null ? Instantiate(Instance.sheetExitAnim) : SimpleUITransitionAnimationSO.CreateInstance(afterAlpha: 0f, easeType: Ease.Linear);
+            Instance.sheetExitAnim != null
+                ? Instantiate(Instance.sheetExitAnim)
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(afterAlpha: 0f, easeType: Ease.Linear);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PagePushEnterAnim =>
             Instance.pagePushEnterAnim != null
@@ -99,12 +114,22 @@ namespace Pancake.UI
         public static ITransitionAnimation PopupBackdropEnter =>
             Instance.popupBackdropEnterAnim != null
                 ? Instantiate(Instance.popupBackdropEnterAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PopupBackdropExit =>
             Instance.popupBackdropExitAnim != null
                 ? Instantiate(Instance.popupBackdropExitAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(afterAlpha: 1f, easeType: Ease.Linear);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(afterAlpha: 1f, easeType: Ease.Linear);
+#else
+                null;
+#endif
 
         public static bool EnableInteractionInTransition { get => Instance.enableInteractionInTransition; set => Instance.enableInteractionInTransition = value; }
 

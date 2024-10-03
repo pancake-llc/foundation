@@ -1,4 +1,5 @@
-﻿using Pancake.Localization;
+﻿#if PANCAKE_ROUTER
+using Pancake.Localization;
 using VitalRouter;
 
 namespace Pancake.Component
@@ -43,3 +44,4 @@ namespace Pancake.Component
         public UIShowAfterCommand(string group) { Group = group; }
     }
 }
+#endif

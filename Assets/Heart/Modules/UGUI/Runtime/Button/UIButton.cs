@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Threading;
-using LitMotion.Extensions;
 using Pancake.Common;
 using Pancake.Sound;
 using UnityEngine;
@@ -12,6 +11,7 @@ using Cysharp.Threading.Tasks;
 #endif
 #if PANCAKE_LITMOTION
 using LitMotion;
+using LitMotion.Extensions;
 #endif
 
 namespace Pancake.UI

@@ -1,6 +1,4 @@
-#if PANCAKE_ALCHEMY
 using Sirenix.OdinInspector;
-#endif
 #if PANCAKE_LITMOTION
 using LitMotion;
 using LitMotion.Extensions;
@@ -17,19 +15,13 @@ namespace Pancake.Component
         [SerializeField] private Vector3 value;
         [SerializeField] private bool startWith;
 
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(startWith)), LabelText("     Value")]
-#endif
-        [SerializeField]
+        [SerializeField, ShowIf(nameof(startWith)), LabelText("     Value")]
         private Vector3 startValue;
 
         [SerializeField] private bool loop;
 
 #if PANCAKE_LITMOTION
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(loop)), LabelText("      Mode")]
-#endif
-        [SerializeField]
+        [SerializeField, ShowIf(nameof(loop)), LabelText("      Mode")]
         private LoopType loopType = LoopType.Restart;
 
         [SerializeField] private Ease ease;

@@ -2,7 +2,6 @@
     "name": "Pancake.Notification",
     "rootNamespace": "Pancake.Notification",
     "references": [
-        "GUID:88be65f96b86746888c927a5c8ff3534",
         "GUID:ac145e6b8c6034cdbadc8c6e26aedbcf",
         "GUID:1e8e55397bd004beaba78a667566665f",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",

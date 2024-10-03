@@ -2,7 +2,6 @@
     "name": "Pancake.Component",
     "rootNamespace": "",
     "references": [
-        "GUID:88be65f96b86746888c927a5c8ff3534",
         "GUID:adac8d59ad7e8504f82d387cded797a7",
         "GUID:f4bbbe38ed06eef458a5b3516216a659",
         "GUID:c7e7793e0b5d326429f90e6fd716775e",
@@ -27,9 +26,9 @@
             "define": "PANCAKE_LITMOTION"
         },
         {
-            "name": "com.annulusgames.alchemy",
+            "name": "jp.hadashikick.vitalrouter",
             "expression": "1.0.0",
-            "define": "PANCAKE_ALCHEMY"
+            "define": "PANCAKE_ROUTER"
         }
     ],
     "noEngineReferences": false

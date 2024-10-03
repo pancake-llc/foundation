@@ -1,5 +1,6 @@
-﻿using Sirenix.OdinInspector;
+﻿#if PANCAKE_LITMOTION
 using LitMotion;
+#endif
 using Pancake.Common;
 using UnityEngine;
 
@@ -10,7 +11,9 @@ namespace Pancake.UI
     {
         [SerializeField] private float delay;
         [SerializeField] private float duration;
-        [Space] [SerializeField] private Ease ease = Ease.Linear;
+#if PANCAKE_LITMOTION
+        [SerializeField, Space] private Ease ease = Ease.Linear;
+#endif
         [SerializeField] private EAlignment beforeAligment = EAlignment.Center;
         [SerializeField] private Vector3 beforeScale = Vector3.one;
         [Space] [SerializeField] private float beforeAlpha = 1f;
@@ -36,8 +39,10 @@ namespace Pancake.UI
             time = 0f.Max(time - delay);
             float progress = duration <= 0f ? 1f : (time / duration).Clamp01();
             var e = ease;
+#if PANCAKE_LITMOTION
             if (ease == Ease.CustomAnimationCurve) e = Ease.OutQuad;
             progress = EaseUtility.Evaluate(progress, e);
+#endif
             var position = Vector3.Lerp(_beforePosition, _afterPosition, progress);
             var scale = Vector3.Lerp(beforeScale, afterScale, progress);
             float alpha = Math.Lerp(beforeAlpha, afterAlpha, progress);

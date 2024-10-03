@@ -1,16 +1,11 @@
-﻿#if PANCAKE_ALCHEMY
-using Sirenix.OdinInspector;
-#endif
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Pancake.Component
 {
     public abstract class Sensor : GameComponent
     {
-#if PANCAKE_ALCHEMY
-        [Blockquote("Raycast after raycastRate frame\nraycastRate = 1 => Raycast after every frame\nraycastRate = 2 => Raycast every 2 frames")]
-#endif
+        [InfoBox("Raycast after raycastRate frame\nraycastRate = 1 => Raycast after every frame\nraycastRate = 2 => Raycast every 2 frames")]
         [SerializeField, Range(1, 8)]
         protected int raycastRate = 1;
 

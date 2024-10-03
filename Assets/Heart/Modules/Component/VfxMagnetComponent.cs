@@ -1,6 +1,4 @@
-#if PANCAKE_ALCHEMY
 using Sirenix.OdinInspector;
-#endif
 using System.Collections.Generic;
 using Pancake.Pools;
 using Pancake.Sound;
@@ -32,10 +30,8 @@ namespace Pancake.Component
         [SerializeField] private float fxScale = 1f;
         [SerializeField] private ParticleSystemForceField particleForceField;
         [SerializeField] private bool isPlaySound;
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(isPlaySound)), Indent]
-#endif
-        [SerializeField, AudioPickup]
+
+        [ShowIf(nameof(isPlaySound)), Indent, SerializeField, AudioPickup]
         private AudioId audioSpawn;
 
         private readonly List<GameObject> _fxInstances = new();

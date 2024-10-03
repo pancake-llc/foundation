@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Pancake.Common;
-#if PANCAKE_ALCHEMY
 using Sirenix.OdinInspector;
-#endif
 using UnityEngine;
 
 namespace Pancake.Component
 {
     public class RaySensor : Sensor
     {
-#if PANCAKE_ALCHEMY
-        [Blockquote("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate")]
-#endif
-        [SerializeField]
+        [InfoBox("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate")] [SerializeField]
         private int sensorNumber = 2;
 
         [SerializeField] private float radius = 1f;
@@ -25,17 +20,9 @@ namespace Pancake.Component
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-#if PANCAKE_ALCHEMY
-        [Required]
-#endif
-        [Space(8), SerializeField]
-        private Transform start;
+        [Space(8), SerializeField, Required] private Transform start;
 
-#if PANCAKE_ALCHEMY
-        [Required]
-#endif
-        [SerializeField]
-        private Transform source;
+        [SerializeField, Required] private Transform source;
 
         [SerializeField] private GameObjectUnityEvent detectedEvent;
 

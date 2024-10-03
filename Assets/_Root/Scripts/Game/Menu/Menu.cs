@@ -1,11 +1,9 @@
 using System;
-using Sirenix.OdinInspector;
 using Pancake.Component;
 using Pancake.Localization;
 using Pancake.Sound;
 using Pancake.UI;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VitalRouter;
 

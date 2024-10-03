@@ -4,7 +4,9 @@ using System.Linq;
 using Pancake.Sound;
 using Sirenix.OdinInspector;
 using UnityEngine;
+#if PANCAKE_ROUTER
 using VitalRouter;
+#endif
 
 namespace Pancake.Component
 {
@@ -49,7 +51,9 @@ namespace Pancake.Component
 
         private void OnParticleCollision(GameObject particle)
         {
+#if PANCAKE_ROUTER
             Router.Default.PublishAsync(new UpdateCurrencyWithValueCommand(type.Value, _segmentValue));
+#endif
             if (enabledSound) audioCollision.Play();
         }
 
@@ -65,7 +69,9 @@ namespace Pancake.Component
                 externalForcesModule.RemoveAllInfluences();
                 externalForcesModule.enabled = false;
                 _returnEvent.Invoke(gameObject);
+#if PANCAKE_ROUTER
                 if (_isFxInstanceEmpty.Invoke()) Router.Default.PublishAsync(new UpdateCurrencyCommand(type.Value));
+#endif
             }
         }
     }

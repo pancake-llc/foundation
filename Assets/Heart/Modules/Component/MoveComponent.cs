@@ -1,6 +1,4 @@
-#if PANCAKE_ALCHEMY
 using Sirenix.OdinInspector;
-#endif
 #if PANCAKE_LITMOTION
 using LitMotion;
 using LitMotion.Extensions;
@@ -16,25 +14,16 @@ namespace Pancake
         [SerializeField] private float duration;
         [SerializeField] private bool useTransform;
 
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(useTransform)), LabelText("      Target")]
-#endif
-        [SerializeField]
+        [SerializeField, ShowIf(nameof(useTransform)), LabelText("      Target")]
         private Transform target;
 
-#if PANCAKE_ALCHEMY
-        [HideIf(nameof(useTransform)), LabelText("     Value")]
-#endif
-        [SerializeField]
+        [SerializeField, HideIf(nameof(useTransform)), LabelText("     Value")]
         private Vector3 value;
 
         [SerializeField] private bool loop;
 
 #if PANCAKE_LITMOTION
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(loop)), LabelText("      Mode")]
-#endif
-        [SerializeField]
+        [SerializeField, ShowIf(nameof(loop)), LabelText("      Mode")]
         private LoopType loopType = LoopType.Restart;
 
         [SerializeField] private Ease ease;
@@ -42,7 +31,7 @@ namespace Pancake
 #endif
 
 
-#if UNITY_EDITOR && PANCAKE_ALCHEMY
+#if UNITY_EDITOR
         [Button, ShowIf(nameof(ShowButtonEdit))]
         private void Edit()
         {

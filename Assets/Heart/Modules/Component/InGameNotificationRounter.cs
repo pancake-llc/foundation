@@ -1,7 +1,9 @@
 using Pancake.Common;
 using Pancake.Pools;
 using UnityEngine;
+#if PANCAKE_ROUTER
 using VitalRouter;
+#endif
 
 namespace Pancake.Component
 {
@@ -11,7 +13,8 @@ namespace Pancake.Component
     {
         [SerializeField] private GameObject notificationPrefab;
         [SerializeField] private RectTransform root;
-        
+
+#if PANCAKE_ROUTER
         private void Awake() { MapTo(Router.Default); }
 
         public void OnSpawn(SpawnInGameNotiCommand cmd)
@@ -25,5 +28,6 @@ namespace Pancake.Component
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, root.rect.width - 100);
             instance.Show(cmd.LocaleText);
         }
+#endif
     }
 }

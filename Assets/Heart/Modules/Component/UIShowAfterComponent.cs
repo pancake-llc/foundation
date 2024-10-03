@@ -1,7 +1,9 @@
 ﻿using LitMotion;
 using LitMotion.Extensions;
 using UnityEngine;
+#if PANCAKE_ROUTER
 using VitalRouter;
+#endif
 
 namespace Pancake.Component
 {
@@ -17,6 +19,7 @@ namespace Pancake.Component
 
         private Vector2 _defaultPosition;
 
+#if PANCAKE_ROUTER
         private void OnEnable() { MapTo(Router.Default); }
 
         private void OnDisable() { UnmapRoutes(); }
@@ -42,5 +45,6 @@ namespace Pancake.Component
                     break;
             }
         }
+#endif
     }
 }

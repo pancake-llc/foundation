@@ -1,6 +1,8 @@
 using LitMotion;
 using LitMotion.Extensions;
+#if PANCAKE_ROUTER
 using VitalRouter;
+#endif
 
 namespace Pancake.Component
 {
@@ -17,6 +19,7 @@ namespace Pancake.Component
         [SerializeField] private Ease ease;
         [SerializeField] private float duration = 0.5f;
 
+#if PANCAKE_ROUTER
         private void OnEnable() { MapTo(Router.Default); }
 
         private void OnDisable() { UnmapRoutes(); }
@@ -40,5 +43,6 @@ namespace Pancake.Component
                     break;
             }
         }
+#endif
     }
 }
