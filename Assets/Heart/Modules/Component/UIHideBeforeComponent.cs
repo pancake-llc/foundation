@@ -8,7 +8,9 @@ namespace Pancake.Component
 {
     using UnityEngine;
 
+#if PANCAKE_ROUTER
     [Routes]
+#endif
     [EditorIcon("icon_default")]
     public partial class UIHideBeforeComponent : MonoBehaviour
     {

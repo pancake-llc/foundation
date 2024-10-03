@@ -3,26 +3,16 @@ using System.Collections.Generic;
 using Pancake.Pools;
 using Pancake.Sound;
 using UnityEngine;
+#if PANCAKE_ROUTER
 using VitalRouter;
+#endif
 
 namespace Pancake.Component
 {
-    public readonly struct VfxMagnetCommand : ICommand
-    {
-        public string Type { get; }
-        public Vector3 Position { get; }
-        public int Value { get; }
-
-        public VfxMagnetCommand(string type, Vector3 position, int value)
-        {
-            Type = type;
-            Position = position;
-            Value = value;
-        }
-    }
-
-    [EditorIcon("icon_default")]
+#if PANCAKE_ROUTER
     [Routes]
+#endif
+    [EditorIcon("icon_default")]
     public partial class VfxMagnetComponent : GameComponent
     {
         [SerializeField] private StringConstant type;
@@ -36,8 +26,6 @@ namespace Pancake.Component
 
         private readonly List<GameObject> _fxInstances = new();
 
-        private void Awake() { MapTo(Router.Default); }
-
         private void ReturnFx(GameObject fx)
         {
             _fxInstances.Remove(fx);
@@ -45,6 +33,9 @@ namespace Pancake.Component
         }
 
         private bool IsFxInstanceEmpty() => _fxInstances.Count == 0;
+
+#if PANCAKE_ROUTER
+        private void Awake() { MapTo(Router.Default); }
 
         public void OnSpawnVfx(VfxMagnetCommand data)
         {
@@ -71,5 +62,6 @@ namespace Pancake.Component
             ps.Play();
             if (isPlaySound) audioSpawn.Play();
         }
+#endif
     }
 }

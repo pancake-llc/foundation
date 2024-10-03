@@ -7,7 +7,9 @@ using VitalRouter;
 
 namespace Pancake.Component
 {
+#if PANCAKE_ROUTER
     [Routes]
+#endif
     [EditorIcon("icon_default")]
     public partial class UIShowAfterComponent : MonoBehaviour
     {
