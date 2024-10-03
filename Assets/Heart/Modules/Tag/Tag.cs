@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Pancake.ExTag
 {
     [EditorIcon("icon_enum")]
-    public class Tag : GameComponent, ISerializationCallbackReceiver
+    public class Tag : GameComponent
     {
         /// <summary>
         /// Get the tags associated with this GameObject as `StringConstants` in a `ReadOnlyList&lt;T&gt;`.
@@ -41,7 +41,7 @@ namespace Pancake.ExTag
 
         #region Serialization
 
-        public void OnBeforeSerialize()
+        protected override void OnBeforeSerialize()
         {
 #if UNITY_EDITOR
             if (!EditorApplication.isPlaying && !EditorApplication.isUpdating && !EditorApplication.isCompiling) return;
@@ -53,7 +53,7 @@ namespace Pancake.ExTag
             }
         }
 
-        public void OnAfterDeserialize()
+        protected override void OnAfterDeserialize()
         {
             _sortedTags = new SortedList<string, StringConstant>();
 

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 namespace Pancake.LevelSystem
 {
     [EditorIcon("icon_default")]
-    public abstract class LevelComponent : GameComponent, ISerializationCallbackReceiver
+    public abstract class LevelComponent : GameComponent
     {
         [SerializeField] private StringConstant type;
         [SerializeField, HideInEditorMode, ReadOnly] protected int originLevelIndex;
@@ -86,7 +86,7 @@ namespace Pancake.LevelSystem
             SkipEvent = null;
         }
 
-        public void OnBeforeSerialize()
+        protected override void OnBeforeSerialize()
         {
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlaying && !UnityEditor.EditorApplication.isUpdating && !UnityEditor.EditorApplication.isCompiling) return;
@@ -94,6 +94,6 @@ namespace Pancake.LevelSystem
             Clear();
         }
 
-        public void OnAfterDeserialize() { }
+        protected override void OnAfterDeserialize() { }
     }
 }
