@@ -53,9 +53,9 @@ namespace Pancake.IAP
 
         public void OnInitializeFailed(InitializationFailureReason error, string message) { OnInitializeFailed(error); }
 
-        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription) { InternalPurchaseFailed(product.definition.id); }
+        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription) { InternalPurchaseFailed(product.definition.id, failureDescription.reason.ToString()); }
 
-        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { InternalPurchaseFailed(product.definition.id); }
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { InternalPurchaseFailed(product.definition.id, failureReason.ToString()); }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
@@ -168,14 +168,14 @@ namespace Pancake.IAP
             return product;
         }
 
-        private void InternalPurchaseFailed(string id)
+        private void InternalPurchaseFailed(string id, string reason)
         {
             Advertising.ChangePreventDisplayAppOpen(false);
             foreach (var p in IAPSettings.Products)
             {
                 if (!p.id.Equals(id)) continue;
                 p.OnPurchaseFailed.Raise();
-                C.CallActionClean(ref p.purchaseFailedCallback);
+                C.CallActionClean(ref p.purchaseFailedCallback, reason);
             }
         }
 

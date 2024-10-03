@@ -21,6 +21,6 @@ MonoBehaviour:
     custom: 0
   detectDeviceLanguage: 1
   importLocation: Assets/_Root/Storages/Localizations
-  googleTranslateApiKey: AIzaSyCdaIrrJRYcYq0NwAo8luJQ120Dy-mfz6I
+  googleTranslateApiKey: 
   spreadsheetKey: 
   serviceAccountCredential: 

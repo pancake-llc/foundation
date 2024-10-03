@@ -18,22 +18,22 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_FIREBASE_ANALYTIC
-            Uniform.DrawInstalled("analytic 12.1.0");
+            Uniform.DrawInstalled("analytic 12.3.0");
             EditorGUILayout.Space();
 #endif
 
 #if PANCAKE_FIREBASE_REMOTECONFIG
-            Uniform.DrawInstalled("remote config 12.1.0");
+            Uniform.DrawInstalled("remote config 12.3.0");
             EditorGUILayout.Space();
 #endif
 
 #if PANCAKE_FIREBASE_MESSAGING
-            Uniform.DrawInstalled("messaging 12.1.0");
+            Uniform.DrawInstalled("messaging 12.3.0");
             EditorGUILayout.Space();
 #endif
 
 #if PANCAKE_FIREBASE_CRASHLYTIC
-            Uniform.DrawInstalled("crashlytic 12.1.0");
+            Uniform.DrawInstalled("crashlytic 12.3.0");
             EditorGUILayout.Space();
 #endif
 
@@ -41,9 +41,9 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Analytic", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.google.firebase.analytics", "https://github.com/firebase-unity/firebase-analytics.git#12.1.0");
-                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.1.0");
-                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.177");
+                RegistryManager.Add("com.google.firebase.analytics", "https://github.com/firebase-unity/firebase-analytics.git#12.3.0");
+                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.3.0");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.183");
                 RegistryManager.Resolve();
             }
 
@@ -55,9 +55,9 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Remote Config", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.google.firebase.remote-config", "https://github.com/firebase-unity/firebase-remote-config.git#12.1.0");
-                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.1.0");
-                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.177");
+                RegistryManager.Add("com.google.firebase.remote-config", "https://github.com/firebase-unity/firebase-remote-config.git#12.3.0");
+                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.3.0");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.183");
                 RegistryManager.Resolve();
             }
 
@@ -68,9 +68,9 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Messaging", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.google.firebase.messaging", "https://github.com/firebase-unity/firebase-messaging.git#12.1.0");
-                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.1.0");
-                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.177");
+                RegistryManager.Add("com.google.firebase.messaging", "https://github.com/firebase-unity/firebase-messaging.git#12.3.0");
+                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.3.0");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.183");
                 RegistryManager.Resolve();
             }
 
@@ -81,9 +81,9 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Crashlytic", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.google.firebase.crashlytics", "https://github.com/firebase-unity/firebase-crashlytics.git#12.1.0");
-                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.1.0");
-                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.177");
+                RegistryManager.Add("com.google.firebase.crashlytics", "https://github.com/firebase-unity/firebase-crashlytics.git#12.3.0");
+                RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.3.0");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.183");
                 RegistryManager.Resolve();
             }
 
@@ -140,6 +140,7 @@ namespace PancakeEditor
 
 #if PANCAKE_FIREBASE_ANALYTIC || PANCAKE_FIREBASE_REMOTECONFIG || PANCAKE_FIREBASE_MESSAGING || PANCAKE_FIREBASE_CRASHLYTIC
             GUILayout.FlexibleSpace();
+            var previousColor = GUI.backgroundColor;
             GUI.backgroundColor = Uniform.Red;
             if (GUILayout.Button("Uninstall All Firebase Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
@@ -155,7 +156,7 @@ namespace PancakeEditor
                 }
             }
 
-            GUI.backgroundColor = Color.white;
+            GUI.backgroundColor = previousColor;
 #endif
         }
     }

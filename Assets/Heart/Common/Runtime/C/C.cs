@@ -20,6 +20,19 @@ namespace Pancake.Common
         }
 
         /// <summary>
+        /// Call action and remove reference
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="value"></param>
+        public static void CallActionClean<T>(ref Action<T> action, T value)
+        {
+            if (action == null) return;
+            var a = action;
+            action.Invoke(value);
+            action = null;
+        }
+
+        /// <summary>
         /// copy <paramref name="data"/> parameter data in to clipboard
         /// </summary>
         /// <param name="data">string</param>

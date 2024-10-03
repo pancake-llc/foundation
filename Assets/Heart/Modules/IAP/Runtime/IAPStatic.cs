@@ -23,7 +23,7 @@ namespace Pancake.IAP
         /// <param name="product"></param>
         /// <param name="onFailed"></param>
         /// <returns></returns>
-        public static IAPDataVariable OnPurchaseFailed(this IAPDataVariable product, Action onFailed)
+        public static IAPDataVariable OnPurchaseFailed(this IAPDataVariable product, Action<string> onFailed)
         {
             product.purchaseFailedCallback = onFailed;
             return product;
