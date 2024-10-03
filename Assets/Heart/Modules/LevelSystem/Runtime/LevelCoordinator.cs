@@ -203,7 +203,9 @@ namespace Pancake.LevelSystem
             if (Dimensions.TryGetValue(id, out var dimension)) dimension.ChangeLevelIndexEvent -= action;
         }
 
+#if PANCAKE_UNITASK
         public static UniTask<LevelComponent> LoadLevel(string id, int index) { return Dimensions[id].LoadLevel(index); }
+#endif
         public static LevelComponent GetNextLevelLoaded(string id) { return Dimensions[id].GetNextlevelLoaded(); }
         public static LevelComponent GetPreviousLevelLoaded(string id) { return Dimensions[id].GetPreviousLevelLoaded(); }
     }

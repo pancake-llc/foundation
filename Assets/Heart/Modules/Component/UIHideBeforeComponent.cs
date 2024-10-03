@@ -1,5 +1,7 @@
+#if PANCAKE_LITMOTION
 using LitMotion;
 using LitMotion.Extensions;
+#endif
 #if PANCAKE_ROUTER
 using VitalRouter;
 #endif
@@ -18,7 +20,9 @@ namespace Pancake.Component
         [SerializeField] private RectTransform target;
         [SerializeField] private EFourDirection direction;
         [SerializeField] private float value;
+#if PANCAKE_LITMOTION
         [SerializeField] private Ease ease;
+#endif
         [SerializeField] private float duration = 0.5f;
 
 #if PANCAKE_ROUTER
@@ -29,9 +33,11 @@ namespace Pancake.Component
         public void OnHide(UIHideBeforeCommand cmd)
         {
             if (!cmd.Group.Equals(group.Value)) return;
+#if PANCAKE_LITMOTION
             switch (direction)
             {
                 case EFourDirection.Top:
+
                     LMotion.Create(target.anchoredPosition.y, value, duration).WithEase(ease).BindToAnchoredPositionY(target).AddTo(target);
                     break;
                 case EFourDirection.Down:
@@ -44,6 +50,7 @@ namespace Pancake.Component
                     LMotion.Create(target.anchoredPosition.x, value, duration).WithEase(ease).BindToAnchoredPositionX(target).AddTo(target);
                     break;
             }
+#endif
         }
 #endif
     }

@@ -84,32 +84,62 @@ namespace Pancake.UI
         public static ITransitionAnimation PagePushEnterAnim =>
             Instance.pagePushEnterAnim != null
                 ? Instantiate(Instance.pagePushEnterAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Right, afterAlignment: EAlignment.Center);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Right, afterAlignment: EAlignment.Center);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PagePushExitAnim =>
             Instance.pagePushExitAnim != null
                 ? Instantiate(Instance.pagePushExitAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Center, afterAlignment: EAlignment.Left);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Center, afterAlignment: EAlignment.Left);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PagePopEnterAnim =>
             Instance.pagePopEnterAnim != null
                 ? Instantiate(Instance.pagePopEnterAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Left, afterAlignment: EAlignment.Center);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Left, afterAlignment: EAlignment.Center);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PagePopExitAnim =>
             Instance.pagePopExitAnim != null
                 ? Instantiate(Instance.pagePopExitAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Center, afterAlignment: EAlignment.Right);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(beforeAlignment: EAlignment.Center, afterAlignment: EAlignment.Right);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PopupEnterAnim =>
             Instance.popupEnterAnim != null
                 ? Instantiate(Instance.popupEnterAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(beforeScale: Vector3.one * 0.3f, beforeAlpha: 0f);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(beforeScale: Vector3.one * 0.3f, beforeAlpha: 0f);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PopupExitAnim =>
             Instance.popupExitAnim != null
                 ? Instantiate(Instance.popupExitAnim)
-                : SimpleUITransitionAnimationSO.CreateInstance(afterScale: Vector3.one * 0.3f, afterAlpha: 0f);
+                :
+#if PANCAKE_LITMOTION
+                SimpleUITransitionAnimationSO.CreateInstance(afterScale: Vector3.one * 0.3f, afterAlpha: 0f);
+#else
+                null;
+#endif
 
         public static ITransitionAnimation PopupBackdropEnter =>
             Instance.popupBackdropEnterAnim != null
