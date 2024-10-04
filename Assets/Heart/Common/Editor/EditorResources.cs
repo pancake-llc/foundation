@@ -30,47 +30,6 @@ namespace PancakeEditor.Common
         public static Texture2D IconPopup => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_popup.png", RELATIVE_PATH);
         public static Texture2D IconYellowAudioSource => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_yellow_audiosource.png", RELATIVE_PATH);
 
-        public static Texture2D BoxContentDark
-        {
-            get
-            {
-                TextureCached.TryGetValue(nameof(BoxContentDark), out var tex);
-
-                if (tex != null) return tex;
-                tex = Editor.ConvertToTexture(
-                    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAD1BMVEVEREQlJSUmJiYtLS04ODhTxJsAAAAAJklEQVQI12NQYIAAGIMZxmBiEIAwGKnOQFhhDKaBlLOiIBAImQAAdGYChuP2NCcAAAAASUVORK5CYII=");
-                TextureCached[nameof(BoxContentDark)] = tex;
-                return tex;
-            }
-        }
-
-        public static Texture2D BoxBackgroundDark
-        {
-            get
-            {
-                TextureCached.TryGetValue(nameof(BoxBackgroundDark), out var tex);
-
-                if (tex != null) return tex;
-                tex = Editor.ConvertToTexture(
-                    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAD1BMVEVEREQlJSUtLS0mJiY4ODhE6guiAAAAJ0lEQVQI12NwMhQEAmEVBiUGEABSBhAGM4MAhMFIdQbcCrilcGcAAP3gA3XIoRcnAAAAAElFTkSuQmCC");
-                TextureCached[nameof(BoxBackgroundDark)] = tex;
-                return tex;
-            }
-        }
-
-        public static Texture2D EvenBackground
-        {
-            get
-            {
-                TextureCached.TryGetValue(nameof(EvenBackground), out var tex);
-
-                if (tex != null) return tex;
-                tex = Editor.ConvertToTexture("iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFAQMAAAC3obSmAAAAA1BMVEVEREQ1TRdOAAAACklEQVQI12OAAwAACgABaQY5MgAAAABJRU5ErkJggg==");
-                TextureCached[nameof(EvenBackground)] = tex;
-                return tex;
-            }
-        }
-
         public static Texture2D IconTreeMapCurrent
         {
             get

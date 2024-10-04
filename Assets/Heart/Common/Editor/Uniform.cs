@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace PancakeEditor.Common
 {
@@ -34,45 +33,6 @@ namespace PancakeEditor.Common
 
 
         #region prop
-
-        public static GUIStyle ContentList
-        {
-            get
-            {
-                if (contentList != null) return contentList;
-                contentList = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.EvenBackground}};
-                return contentList;
-            }
-        }
-
-        public static GUIStyle BoxContent
-        {
-            get
-            {
-                if (contentBox != null) return contentBox;
-                contentBox = new GUIStyle
-                {
-                    border = new RectOffset(2, 2, 2, 2),
-                    normal = {background = EditorResources.BoxContentDark, scaledBackgrounds = new[] {EditorResources.BoxContentDark}}
-                };
-                return contentBox;
-            }
-        }
-
-        public static GUIStyle Box
-        {
-            get
-            {
-                if (box != null) return box;
-                box = new GUIStyle
-                {
-                    border = new RectOffset(2, 2, 2, 2),
-                    margin = new RectOffset(2, 2, 2, 2),
-                    normal = {background = EditorResources.BoxBackgroundDark, scaledBackgrounds = new[] {EditorResources.BoxBackgroundDark}}
-                };
-                return box;
-            }
-        }
 
         public static GUIStyle FoldoutButton
         {
