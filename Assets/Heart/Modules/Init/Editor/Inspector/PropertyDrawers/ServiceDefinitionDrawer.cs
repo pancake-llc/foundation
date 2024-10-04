@@ -44,7 +44,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			var serviceRect = position;
-			bool hasValue = state.serviceProperty.objectReferenceValue != null;
+			bool hasValue = state.serviceProperty.objectReferenceValue;
 			float controlWidth = hasValue ? (position.width - asLabelWidth) * 0.5f : position.width;
 			serviceRect.width = controlWidth;
 
@@ -81,7 +81,7 @@ namespace Sisus.Init.EditorOnly.Internal
                     for(int i = 0, count = components.Count; i < count; i++)
                     {
 						var component = components[i];
-						if(component == null)
+						if(!component)
                         {
 							continue;
                         }
@@ -206,138 +206,177 @@ namespace Sisus.Init.EditorOnly.Internal
 			);
 		}
 
-		private static IEnumerable<Type> GetTypeOptions(object serviceValue)
+		private static List<Type> GetTypeOptions(object serviceValue)
         {
 			if(serviceValue is null)
             {
-				return new Type[0];
+				return new(0);
 			}
 
-			var typeOptions = Enumerable.Empty<Type>();
-			ConcatTypeOptions(ref typeOptions, serviceValue);
-			var distinct = typeOptions.Distinct();
+			var typeOptions = GetTypeBaseTypesInterfacesIncludingFromProvidedValues(serviceValue);
 
-			if(CountExceeds(distinct, 30))
+			if(typeOptions.Count > 30)
             {
-				distinct = distinct.OrderBy(t => t.Name);
+				typeOptions.Sort((x, y) => x.Name.CompareTo(y.Name));
 			}
 
-			return distinct;
+			return typeOptions;
 		}
 
-		private static void ConcatTypeOptions(ref IEnumerable<Type> typeOptions, object serviceValue)
+		private static List<Type> GetTypeBaseTypesInterfacesIncludingFromProvidedValues([AllowNull] object serviceOrServiceProvider)
         {
-            if(serviceValue is null)
-            {
-                return;
-            }
+			var providedValueTypes = new List<Type>(64);
 
-			var serviceType = serviceValue.GetType();
-			if(!(serviceValue is IValueProvider valueProvider))
-            {
-				ConcatAllTypeOptions(ref typeOptions, serviceType);
-				return;
-            }
-
-			object wrappedValue = valueProvider.Value;
-			if(wrappedValue != Null)
+			if(serviceOrServiceProvider is null)
 			{
-				var wrappedType = wrappedValue.GetType();
-				ConcatTypeOptions(ref typeOptions, serviceType, wrappedType);
-				return;
+				return providedValueTypes;
 			}
 
-			foreach(var interfaceType in serviceType.GetInterfaces())
+			var serviceOrServiceProviderType = serviceOrServiceProvider.GetType();
+
+			if (serviceOrServiceProvider is IValueProvider valueProvider)
 			{
-				if(!interfaceType.IsGenericType || interfaceType.GetGenericTypeDefinition() != typeof(IValueProvider<>))
+				try
 				{
-					continue;
+					object wrappedValue = valueProvider.Value;
+					if(wrappedValue != Null)
+					{
+						AddIfDoesNotContain(providedValueTypes, wrappedValue.GetType());
+					}
+				}
+				catch
+				#if DEV_MODE
+				(Exception e) { Debug.LogWarning($"{serviceOrServiceProviderType} IValueProvider.Value threw {e}.");
+				#else
+				{
+					#endif
 				}
 
-				var wrappedType = interfaceType.GetGenericArguments()[0];
-				if(!TypeUtility.IsNullOrBaseType(wrappedType))
+				foreach(var interfaceType in serviceOrServiceProviderType.GetInterfaces())
 				{
-					ConcatTypeOptions(ref typeOptions, serviceType, wrappedType);
-					return;
+					if(!interfaceType.IsGenericType
+						|| interfaceType.GetGenericTypeDefinition() is not Type typeDefinition
+						|| (typeDefinition != typeof(IValueProvider<>) && typeDefinition != typeof(IValueProviderAsync<>)))
+					{
+						continue;
+					}
+
+					var wrappedType = interfaceType.GetGenericArguments()[0];
+					if(!TypeUtility.IsNullOrBaseType(wrappedType))
+					{
+						AddIfDoesNotContain(providedValueTypes, wrappedType);
+					}
+				}
+			}
+			else if (serviceOrServiceProvider is IValueByTypeProvider valueByTypeProvider)
+			{
+				var client = serviceOrServiceProvider as Component;
+				foreach(var providedValueType in TypeUtility.GetAllTypesVisibleTo(serviceOrServiceProviderType, t => valueByTypeProvider.CanProvideValue(t, client), 256))
+				{
+					AddIfDoesNotContain(providedValueTypes, providedValueType);
 				}
 			}
 
-			ConcatAllTypeOptions(ref typeOptions, serviceType);
+			int capacity = 1 + providedValueTypes.Count;
+			capacity += capacity;
+			capacity += capacity;
+			var results = new List<Type>(capacity);
+
+			foreach(var providedValueType in providedValueTypes)
+			{
+				if(!providedValueType.IsInterface)
+				{
+					AddIfDoesNotContain(results, providedValueType);
+				}
+			}
+
+			AddIfDoesNotContain(results, serviceOrServiceProviderType);
+
+			foreach(var providedValueType in providedValueTypes)
+			{
+				if(!providedValueType.IsInterface)
+				{
+					AddBaseTypes(results, providedValueType);
+				}
+			}
+
+			AddBaseTypes(results, serviceOrServiceProviderType);
+
+			foreach(var providedValueType in providedValueTypes)
+			{
+				if(!providedValueType.IsInterface)
+				{
+					AddDerivedTypes(results, providedValueType);
+				}
+			}
+
+			AddDerivedTypes(results, serviceOrServiceProviderType);
+
+			foreach(var providedValueType in providedValueTypes)
+			{
+				if(!providedValueType.IsInterface)
+				{
+					AddInterfaces(results, providedValueType);
+				}
+			}
+
+			AddInterfaces(results, serviceOrServiceProviderType);
+
+			foreach(var providedValueType in providedValueTypes)
+			{
+				if(providedValueType.IsInterface)
+				{
+					AddIfDoesNotContain(results, providedValueType);
+				}
+			}
+
+			foreach(var providedValueType in providedValueTypes)
+			{
+				if(providedValueType.IsInterface)
+				{
+					AddBaseTypes(results, providedValueType);
+				}
+			}
+
+			return results;
+		}
+		
+		private static void AddIfDoesNotContain(List<Type> addToList, Type wrappedValueType)
+		{
+			if(!addToList.Contains(wrappedValueType))
+			{
+				addToList.Add(wrappedValueType);
+			}
 		}
 
-		private static void ConcatTypeOptions(ref IEnumerable<Type> typeOptions, [DisallowNull] Type serviceType, [AllowNull] Type wrappedType)
-        {
-			if(TypeUtility.IsNullOrBaseType(wrappedType))
+		private static void AddBaseTypes(List<Type> addToList, Type parentType)
+		{
+			if(parentType.IsValueType)
 			{
-				ConcatAllTypeOptions(ref typeOptions, serviceType);
 				return;
 			}
 
-			if(wrappedType.IsInterface)
+			for(var baseType = parentType.BaseType; !TypeUtility.IsNullOrBaseType(baseType); baseType = baseType.BaseType)
 			{
-				ConcatTypeAndBaseTypes(ref typeOptions, serviceType);
-				ConcatDerivedTypes(ref typeOptions, serviceType);
-				ConcatTypeAndBaseTypes(ref typeOptions, wrappedType);
-				ConcatInterfaces(ref typeOptions, serviceType);
-				return;
+				AddIfDoesNotContain(addToList, baseType);
 			}
+		}
+
+		private static void AddDerivedTypes(List<Type> addToList, Type baseType)
+		{
+			foreach(var derivedType in TypeCache.GetTypesDerivedFrom(baseType))
+			{
+				AddIfDoesNotContain(addToList, derivedType);
+			}
+		}
+		
+		private static void AddInterfaces(List<Type> addToList, Type type)
+		{
+			addToList.AddRange(type.GetInterfaces().Where(ShouldNotIgnoreInterface));
+
+			static bool ShouldNotIgnoreInterface(Type type) => !ShouldIgnoreInterface(type);
 			
-			typeOptions = typeOptions.Append(wrappedType);
-			typeOptions = typeOptions.Append(serviceType);
-			ConcatBaseTypes(ref typeOptions, wrappedType);
-			ConcatBaseTypes(ref typeOptions, serviceType);
-			ConcatDerivedTypes(ref typeOptions, wrappedType);
-			ConcatDerivedTypes(ref typeOptions, serviceType);
-			ConcatInterfaces(ref typeOptions, wrappedType);
-			ConcatInterfaces(ref typeOptions, serviceType);
-		}
-
-		private static void ConcatAllTypeOptions(ref IEnumerable<Type> typeOptions, Type serviceType)
-        {
-			ConcatTypeAndBaseTypes(ref typeOptions, serviceType);
-			ConcatInterfaces(ref typeOptions, serviceType);
-		}
-
-		private static void ConcatTypeAndBaseTypes(ref IEnumerable<Type> typeOptions, Type type)
-		{
-			if(type.IsValueType)
-			{
-				typeOptions = typeOptions.Append(type);
-				return;
-			}
-
-			for(var t = type; !TypeUtility.IsNullOrBaseType(t); t = t.BaseType)
-			{
-				typeOptions = typeOptions.Append(t);
-			}
-		}
-
-		private static void ConcatBaseTypes(ref IEnumerable<Type> typeOptions, Type type)
-		{
-			if(type.IsValueType)
-			{
-				return;
-			}
-
-			for(var t = type.BaseType; !TypeUtility.IsNullOrBaseType(t); t = t.BaseType)
-			{
-				typeOptions = typeOptions.Append(t);
-			}
-		}
-
-		private static void ConcatDerivedTypes(ref IEnumerable<Type> typeOptions, Type type)
-        {
-			typeOptions = typeOptions.Concat(TypeCache.GetTypesDerivedFrom(type));
-		}
-
-		private static void ConcatInterfaces(ref IEnumerable<Type> typeOptions, Type type)
-		{
-			typeOptions = typeOptions.Concat(type.GetInterfaces().Where(ShouldNotIgnoreInterface));
-		}
-
-		private static bool ShouldNotIgnoreInterface(Type type) => !ShouldIgnoreInterface(type);
-
-		private static bool ShouldIgnoreInterface(Type type) => type == typeof(ISerializationCallbackReceiver)
+			static bool ShouldIgnoreInterface(Type type) => type == typeof(ISerializationCallbackReceiver)
 			|| type == typeof(IOneArgument) || type == typeof(ITwoArguments) || type == typeof(IThreeArguments) || type == typeof(IFourArguments) || type == typeof(IFiveArguments) || type == typeof(ISixArguments)
 			|| type == typeof(IWrapper)
 			|| type == typeof(IComparable) || type == typeof(IFormattable) || type == typeof(IConvertible) || type == typeof(IDisposable)
@@ -346,23 +385,6 @@ namespace Sisus.Init.EditorOnly.Internal
 				|| type == typeof(IWrapper<>)
 				|| typeDefinition == typeof(IFirstArgument<>) || typeDefinition == typeof(ISecondArgument<>) || typeDefinition == typeof(IThirdArgument<>)
 				|| typeDefinition == typeof(IFourthArgument<>) || typeDefinition == typeof(IFifthArgument<>) || typeDefinition == typeof(ISixthArgument<>)));
-
-		private static bool CountExceeds(IEnumerable<Type> typeOptions, int count)
-        {
-			int counter = 0;
-			using(var enumerator = typeOptions.GetEnumerator())
-			{
-				while(enumerator.MoveNext())
-				{
-					counter++;
-					if(counter > count)
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
-        }
+		}
     }
 }

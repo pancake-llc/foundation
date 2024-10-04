@@ -207,7 +207,9 @@ namespace Sisus.Init
 		/// <returns> <see langword="true"/> if service was found; otherwise, <see langword="false"/>. </returns>
 		public static bool TryGetFor<TService>([DisallowNull] Component client, [NotNullWhen(true), MaybeNullWhen(false)] out TService service)
 		{
+			#if DEV_MODE
 			Debug.Assert(client);
+			#endif
 
 			bool foundResult = false;
 			ScopedService<TService>.Instance nearest = default;
@@ -540,23 +542,6 @@ namespace Sisus.Init
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/>.
 		/// <para>
-		/// The service can be retrieved from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
-		/// </para>
-		/// <para>
-		/// This method can only be called from the main thread.
-		/// </para>
-		/// </summary>
-		/// <typeparam name="TService"> The defining type of the service. </typeparam>
-		/// <param name="client"> The client <see cref="Component"/> that needs the service. </param>
-		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
-		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is accessible to the <paramref name="client"/>. </exception>
-		[return: NotNull]
-		public static TService Get<TService>([DisallowNull] Component client) => TryGetFor(client.gameObject, out TService service) ? service : throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {client.GetType().Name}.");
-
-		/// <summary>
-		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/>.
-		/// <para>
 		/// The service can be retrieved from <see cref="Services"/> components in the active scenes, or failing that,
 		/// from the globally shared <see cref="Service{TService}.Instance"/>.
 		/// </para>
@@ -569,7 +554,7 @@ namespace Sisus.Init
 		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is accessible to the <paramref name="client"/>. </exception>
 		[return: NotNull]
-		public static TService Get<TService>([DisallowNull] GameObject client) => TryGetFor(client, out TService service) ? service : throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {client.GetType().Name}.");
+		public static TService GetFor<TService>([DisallowNull] GameObject client) => TryGetFor(client, out TService service) ? service : throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {client.GetType().Name}.");
 
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for any client.
@@ -582,7 +567,6 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TService"> The defining type of the service. </typeparam>
-		/// <param name="client"> The client <see cref="GameObject"/> that needs the service. </param>
 		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is globally accessible to any client. </exception>
 		[return: NotNull]

@@ -88,7 +88,8 @@ namespace Sisus.Init.EditorOnly.Internal
 		private NullGuardResult? nullGuardResultLastFrame;
 		private Object[] initializers = new Object[1];
 		private Editor initializerEditor;
-		private bool lockInitializers = false;
+		private bool lockInitializers;
+		private bool shouldUpdateInitArgumentDependentState;
 
 		#if ODIN_INSPECTOR
 		private PropertyTree odinPropertyTree;
@@ -225,6 +226,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private void UpdateInitArgumentDependentState(bool hasInitializers)
 		{
+			shouldUpdateInitArgumentDependentState = false;
 			int count = initParameterTypes.Length;
 			allParametersAreServices = true;
 			hasServiceParameters = false;
@@ -251,14 +253,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			UpdateTooltips(hasInitializers);
 		}
 
-		void OnInitArgumentServiceChanged()
-		{
-			GetInitializersOnTargets(out bool hasInitializers, out _);
-			UpdateInitArgumentDependentState(hasInitializers);
-		}
+		private void OnInitArgumentServiceChanged() => shouldUpdateInitArgumentDependentState = true;
 
 		/// <summary>
-		/// Gets a value indicating whether or not the user has hidden the Init section for the target.
+		/// Gets a value indicating whether the user has hidden the Init section for the target.
 		/// </summary>
 		/// <param name="target">
 		/// Components or scriptable object that is the target of the top-level Editor.
@@ -306,7 +304,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			MonoScript initializableScript;
 			if(target is MonoBehaviour monoBehaviour)
 			{
-				if(InitializerUtility.TryGetInitializer(monoBehaviour, out IInitializer initializer)
+				if(InitializerUtility.TryGetInitializer(monoBehaviour, out var initializer)
 					&& initializer is IInitializerEditorOnly initializerEditorOnly)
 				{
 					return initializerEditorOnly.NullArgumentGuard;
@@ -448,23 +446,33 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static NullArgumentGuard WithFlagToggled(NullArgumentGuard nullArgumentGuard, NullArgumentGuard toggleFlag)
 			=> toggleFlag == NullArgumentGuard.None ? NullArgumentGuard.None : nullArgumentGuard.WithFlagToggled(toggleFlag);
 
-		private static bool GetBoolUserData([AllowNull] MonoScript initializableScript, [DisallowNull] Type initializableType, [DisallowNull] string userDataKey)
+		private static bool GetBoolUserData([AllowNull] MonoScript initializableScript, [DisallowNull] Type initializableType, [DisallowNull] string userDataKey, bool defaultValue = false)
 		{
-			if(!initializableScript || !initializableScript.TryGetUserData(userDataKey, out bool value))
+			if (initializableScript && initializableScript.TryGetUserData(userDataKey, out bool? valueFromMetaData))
 			{
-				value = EditorPrefsUtility.GetBoolUserData(initializableType, userDataKey);
+				return valueFromMetaData ?? defaultValue;
 			}
 
-			return value;
+			// Use EditorPrefs as fallback, in cases where type is inside a DLL etc.
+			return EditorPrefsUtility.GetBoolUserData(initializableType, userDataKey, defaultValue);
 		}
 
 		private static TEnum GetEnumUserData<TEnum>([AllowNull] MonoScript targetScript, [DisallowNull] Type targetType, [DisallowNull] string userDataKey, TEnum defaultValue = default) where TEnum : struct, Enum
-			=> targetScript && targetScript.TryGetUserData(userDataKey, out TEnum value) ? value : EditorPrefsUtility.GetEnumUserData(targetType, userDataKey, defaultValue);
+		{
+			if(targetScript && targetScript.TryGetUserData(userDataKey, out TEnum? valueFromMetaData))
+			{
+				return valueFromMetaData ?? defaultValue;
+			}
+
+			// Use EditorPrefs as fallback, in cases where type is inside a DLL etc.
+			return EditorPrefsUtility.GetEnumUserData(targetType, userDataKey, defaultValue);
+		}
 
 		private static void SetUserData([AllowNull] MonoScript initializableScript, [DisallowNull] Type initializableType, [DisallowNull] string userDataKey, bool value, bool defaultValue = false)
 		{
 			if(!initializableScript || !initializableScript.TrySetUserData(userDataKey, value, defaultValue))
 			{
+				// Use EditorPrefs as fallback, in cases where type is inside a DLL etc.
 				EditorPrefsUtility.SetUserData(initializableType, userDataKey, value, defaultValue);
 			}
 		}
@@ -589,12 +597,17 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			GetInitializersOnTargets(out bool hasInitializers, out Object firstInitializer);
 
+			if(shouldUpdateInitArgumentDependentState)
+			{
+				UpdateInitArgumentDependentState(hasInitializers);
+			}
+
 			bool mixedInitializers = false;
 			if(hasInitializers)
 			{
 				for(int i = 0, initializerCount = initializers.Length; i < initializerCount; i++)
 				{
-					if(initializers[i] == null)
+					if(!initializers[i])
 					{
 						mixedInitializers = true;
 						break;
@@ -747,8 +760,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				var nullGuardIconRect = addInitializerOrContextMenuRect;
 				nullGuardIconRect.y -= 1f;
 				nullGuardIconRect.x -= addInitializerOrContextMenuRect.width;
-				
-				var nullArgumentGuard = GetEnumUserData<NullArgumentGuard>(Target is MonoBehaviour monoBehaviour ? MonoScript.FromMonoBehaviour(monoBehaviour) : null, Target.GetType(), NullArgumentGuardUserDataKey);
+
+				var nullArgumentGuard = GetNullArgumentGuardFlags(Target);
 
 				if(GUI.Button(nullGuardIconRect, GUIContent.none, EditorStyles.label))
 				{

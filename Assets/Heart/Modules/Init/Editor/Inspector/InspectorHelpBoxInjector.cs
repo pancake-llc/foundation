@@ -36,20 +36,15 @@ namespace Sisus.Init.EditorOnly.Internal
 				foreach(var serviceDefinition in servicesComponent.providesServices)
 				{
 					var service = serviceDefinition.service;
-					if(service == null)
+					if(!service)
 					{
 						continue;
 					}
 
 					var serviceConcreteType = service.GetType();
-					if(serviceConcreteType is null)
-					{
-						continue;
-					}
 
-					Type definingType = serviceDefinition.definingType ?? service.GetType();
-					GlobalServiceInfo serviceAttributeInfo;
-					if(TryGetServiceAttributeInfo(definingType, out serviceAttributeInfo))
+					var definingType = serviceDefinition.definingType.Value ?? serviceConcreteType;
+					if(TryGetServiceAttributeInfo(definingType, out _))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, servicesComponent.toClients);
 						height += DrawHelpBox(MessageType.Info, content);
@@ -66,7 +61,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				foreach(var serviceTag in ServiceTagUtility.GetServiceTags(component))
 				{
 					if(serviceTag.DefiningType is Type definingType
-					&& TryGetServiceAttributeInfo(definingType, out var serviceAttributeInfo))
+					&& TryGetServiceAttributeInfo(definingType, out _))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, serviceTag.ToClients);
 						height += DrawHelpBox(MessageType.Info, content);

@@ -64,7 +64,7 @@ namespace Sisus.Init
 		/// if one is found in the project; otherwise, <see langword="null"/>.
 		/// </returns>
 		bool IValueByTypeProvider.TryGetFor<TService>([AllowNull] Component client, [MaybeNullWhen(false), NotNullWhen(true)] out TService service)
-			=> client != null ? Service.TryGet(out service) : Service.TryGetFor(client, out service);
+			=> client ? Service.TryGetFor(client, out service) : Service.TryGet(out service);
 
 		/// <returns>
 		/// Returns always <see langword="true"/> as long as <typeparamref name="TService"/> is not a value type.

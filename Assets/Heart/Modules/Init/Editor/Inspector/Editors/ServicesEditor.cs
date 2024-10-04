@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace Sisus.Init.EditorOnly.Internal
         private SerializedProperty providesServices;
         private SerializedProperty toClients;
 
-        private static readonly GUIContent clientsLabel = new GUIContent("For Clients");
+        private static readonly GUIContent clientsLabel = new("For Clients");
 
         private void OnEnable() => Setup();
         
@@ -35,7 +34,7 @@ namespace Sisus.Init.EditorOnly.Internal
             EditorGUILayout.PropertyField(toClients, clientsLabel);
             if(EditorGUI.EndChangeCheck())
 			{
-                var allInstances = 
+                var allInstances =
                 #if UNITY_2023_1_OR_NEWER
                 FindObjectsByType<Services>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
                 #else
@@ -46,7 +45,7 @@ namespace Sisus.Init.EditorOnly.Internal
                 {
                     foreach(var definition in servicesComponent.providesServices)
 					{
-                        if(definition.definingType?.Value is Type definingType && definition.service is Object service)
+                        if(definition.definingType?.Value is Type definingType && definition.service is Object service && service)
                         {
                             ServiceUtility.RemoveFromClients(service, definingType, servicesComponent.toClients, servicesComponent);
                         }
@@ -59,7 +58,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
                     foreach(var definition in servicesComponent.providesServices)
 					{
-                        if(definition.definingType?.Value is Type definingType && definition.service is Object service)
+                        if(definition.definingType?.Value is Type definingType && definition.service is Object service && service)
                         {
                             ServiceUtility.AddFor(service, definingType, servicesComponent.toClients, servicesComponent);
                         }

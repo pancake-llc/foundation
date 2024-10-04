@@ -420,16 +420,30 @@ namespace Sisus.Init.EditorOnly
 			if(internalEditorIsGenericInspector)
 			{
 				serializedObject.Update();
-				DrawPropertiesExcluding(serializedObject, scriptField);
-				serializedObject.ApplyModifiedProperties();
+
+				try
+				{
+					DrawPropertiesExcluding(serializedObject, scriptField);
+				}
+				finally
+				{
+					serializedObject.ApplyModifiedProperties();
+				}
 			}
 			else
 			{
 				serializedObject.ApplyModifiedProperties();
 				internalEditor.serializedObject.Update();
-				internalEditor.OnInspectorGUI();
-				internalEditor.serializedObject.ApplyModifiedProperties();
-				serializedObject.Update();
+
+				try
+				{
+					internalEditor.OnInspectorGUI();
+				}
+				finally
+				{
+					internalEditor.serializedObject.ApplyModifiedProperties();
+					serializedObject.Update();
+				}
 			}
 
 			#if DEV_MODE

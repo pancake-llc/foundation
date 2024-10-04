@@ -92,7 +92,7 @@ namespace Sisus.Init
 		/// </summary>
 		[MaybeNull, Obsolete(nameof(Value) + " should be used instead.", false)]
 		public T ValueOrDefault => TryGetValue(out T result) ? result : default;
-		
+
 		/// <summary>
 		/// Gets the value of the current <see cref="Any{T}"/> object
 		/// if it has been assigned a valid underlying value;
@@ -156,7 +156,7 @@ namespace Sisus.Init
 		public static Any<T> FromObject([AllowNull] Object value) => new Any<T>(value);
 
 		/// <summary>
-		/// Returns a value indicating whether or not it is possible to create an instance of the
+		/// Returns a value indicating whether it is possible to create an instance of the
 		/// <see cref="Any"/> struct with the underlying value of <paramref name="fromReference"/>.
 		/// </summary>
 		/// <param name="fromReference"> The underlying value of the <see cref="Any{T}"/> object. </param>
@@ -224,7 +224,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="value"> The value to convert. </param>
 		public static implicit operator Any<T>(T value) => new Any<T>(value);
- 
+
 		/// <summary>
 		/// Gets the current value of this object.
 		/// <para>
@@ -327,10 +327,13 @@ namespace Sisus.Init
 				}
 			}
 
+			if(value is null || (value is Object unityObject && !unityObject))
+			{
+				return (client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out T result) : Service.TryGet(out result)) ? result : default;
+			}
+
 			return value switch
 			{
-				null when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
-				null => Service.TryGet(out T service) ? service : default,
 				// Needed to support value providers in Any.Serialization.cs
 				IValueProvider<T> valueProvider => valueProvider.Value,
 				_ => value
@@ -346,6 +349,12 @@ namespace Sisus.Init
 				return result;
 			}
 			#endif
+
+			if(result is not null && result.GetHashCode() is 0)
+			{
+				value = default;
+				return default;
+			}
 
 			value = result;
 			return result;
@@ -415,19 +424,19 @@ namespace Sisus.Init
 
 			return reference switch
 			{
-				// Handle "fake null" references
 				null => value switch
 				{
-					null when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
-					null => Service.TryGet(out T service) ? service : default,
+					null => (client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out T result) : Service.TryGet(out result)) ? result : default,
+					Object unityObject when !unityObject => (client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out T result) : Service.TryGet(out result)) ? result : default,
 					// Needed to support value providers in Any.Serialization.cs
 					IValueProvider<T> valueProvider => valueProvider.Value,
 					_ => value
 				},
+				// Handle "fake null" references
 				_ when reference.GetHashCode() == 0 => value switch
 				{
-					null when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
-					null => Service.TryGet(out T service) ? service : default,
+					null => (client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out T result) : Service.TryGet(out result)) ? result : default,
+					Object unityObject when !unityObject => (client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out T result) : Service.TryGet(out result)) ? result : default,
 					// Needed to support value providers in Any.Serialization.cs
 					IValueProvider<T> valueProvider => valueProvider.Value,
 					_ => value
@@ -540,17 +549,20 @@ namespace Sisus.Init
 				}
 			}
 
-			#if UNITY_EDITOR
-			if(context.IsEditMode() && ServiceUtility.IsServiceDefiningType<T>())
+			if(value is null || (value is Object unityObject && !unityObject))
 			{
-				return true;
+				#if UNITY_EDITOR
+				if(context.IsEditMode() && ServiceUtility.IsServiceDefiningType<T>())
+				{
+					return true;
+				}
+				#endif
+
+				return client && context.IsUnitySafeContext() ? Service.ExistsFor<T>(client) : Service.Exists<T>();
 			}
-			#endif
 
 			return value switch
 			{
-				null when client && context.IsUnitySafeContext() => Service.ExistsFor<T>(client),
-				null => Service.Exists<T>(),
 				// Support value providers in Any.Serialization.cs, like _String.
 				IValueProvider<T> valueProvider => valueProvider.TryGetFor(client, out _),
 				_ => true,
@@ -697,12 +709,13 @@ namespace Sisus.Init
 				}
 			}
 
+			if(value is null || (value is Object unityObject && !unityObject))
+			{
+				return client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out result) : Service.TryGet(out result);
+			}
+
 			switch(value)
 			{
-				case null when client && context.IsUnitySafeContext():
-					return Service.TryGetFor(client, out result);
-				case null:
-					return Service.TryGet(out result);
 				// Support value providers in Any.Serialization.cs, like _String.
 				case IValueProvider<T> valueProvider:
 					return valueProvider.TryGetFor(client, out result);
@@ -984,7 +997,7 @@ namespace Sisus.Init
 						#else
 						return awaitable.IsFaulted ? NullGuardResult.ValueProviderException : NullGuardResult.Passed;
 						#endif
-						
+
 					case IValueByTypeProviderAsync valueProvider:
 						awaitable = valueProvider.GetForAsync<T>(client);
 						#if UNITY_2023_1_OR_NEWER
@@ -1006,10 +1019,13 @@ namespace Sisus.Init
 				return NullGuardResult.Passed;
 			}
 
+			if(value is null || (value is Object unityObject && !unityObject))
+			{
+				return (client && context.IsUnitySafeContext() ? Service.ExistsFor<T>(client) : Service.Exists<T>()) ? NullGuardResult.Passed : NullGuardResult.ValueMissing;
+			}
+
 			return value switch
 			{
-				null when client && context.IsUnitySafeContext() => Service.ExistsFor<T>(client) ? NullGuardResult.Passed : NullGuardResult.ValueMissing,
-				null => Service.Exists<T>() ? NullGuardResult.Passed : NullGuardResult.ValueMissing,
 				// Support value providers in Any.Serialization.cs, like _String.
 				IValueProvider<T> valueProvider => valueProvider.Value is not null ? NullGuardResult.Passed : NullGuardResult.InvalidValueProviderState,
 				_ => NullGuardResult.Passed,

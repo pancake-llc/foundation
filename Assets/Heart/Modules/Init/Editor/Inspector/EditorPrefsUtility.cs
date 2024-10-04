@@ -72,7 +72,6 @@ namespace Sisus.Init.EditorOnly.Internal
 		public static bool GetBoolUserData(string userDataKey, bool defaultValue = false) => EditorPrefs.GetBool(GetEditorPrefsKey(userDataKey), defaultValue);
 		public static int GetIntUserData([DisallowNull] Type classType, string userDataKey, int defaultValue = 0) => EditorPrefs.GetInt(GetEditorPrefsKey(classType, userDataKey), defaultValue);
 		public static TEnum GetEnumUserData<TEnum>([DisallowNull] Type classType, string userDataKey, TEnum defaultValue = default) where TEnum : Enum => (TEnum)(object)EditorPrefs.GetInt(GetEditorPrefsKey(classType, userDataKey), (int)(object)defaultValue);
-
 		private static string GetEditorPrefsKey([DisallowNull] Type classType, [DisallowNull] string userDataKey) => "InitArgs." + classType.Name + "." + userDataKey;
 		private static string GetEditorPrefsKey(string userDataKey) => "InitArgs." + userDataKey;
 	}

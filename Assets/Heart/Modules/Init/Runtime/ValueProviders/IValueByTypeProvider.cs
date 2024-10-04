@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -45,5 +47,16 @@ namespace Sisus.Init
 		/// at runtime; otherwise, <see langword="false"/>.
 		/// </returns>
 		bool CanProvideValue<TValue>([AllowNull] Component client) => TryGetFor<TValue>(client, out _);
+
+		bool CanProvideValue(Type valueType, Component client) => (bool)canProvideValueGeneric.MakeGenericMethod(valueType).Invoke(this, WithArgument(client));
+
+		private static object[] WithArgument(object argument)
+		{
+			singleArgument[0] = argument;
+			return singleArgument;
+		}
+
+		private static readonly object[] singleArgument = new object[1];
+		private static readonly MethodInfo canProvideValueGeneric =   typeof(IValueByTypeProvider).GetMethod("CanProvideValue", new[] { typeof(Component) });
 	}
 }

@@ -56,7 +56,6 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object that can asynchronously retrieve a value for a client <see cref="Component"/>.
 	/// <para>
-	/// <para>
 	/// Base interface of <see cref="IValueProvider{TValue}"/>.
 	/// </para>
 	/// </summary>

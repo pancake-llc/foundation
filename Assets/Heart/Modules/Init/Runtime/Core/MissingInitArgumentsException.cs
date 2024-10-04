@@ -15,13 +15,13 @@ namespace Sisus.Init
 		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
 		/// </summary>
 		/// <param name="clientType"> Type of the client that was initialized without the necessary arguments. </param>
-		public MissingInitArgumentsException([DisallowNull] Type clientType, Type missingDependency = null) : base(GenerateMessage(clientType, false, missingDependency)) { }
+		public MissingInitArgumentsException([DisallowNull] Type clientType, params Type[] missingDependencies) : base(GenerateMessage(clientType, false, missingDependencies)) { }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
 		/// </summary>
 		/// <param name="client"> The client object that was initialized without the necessary arguments. </param>
-		public MissingInitArgumentsException([DisallowNull] object client, Type missingDependency = null) : this(client.GetType()) { }
+		public MissingInitArgumentsException([DisallowNull] object client, params Type[] missingDependencies) : this(client.GetType(), missingDependencies) { }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
@@ -81,19 +81,19 @@ namespace Sisus.Init
 
 					if(missingArgumentCount == 1)
 					{
-						sb.Append("requires initialization argument ");
+						sb.Append(" requires initialization argument ");
 						sb.Append(missingDependencyList);
 						sb.Append(" but was loaded without having been provided it.");
 					}
 					else if(missingArgumentCount == 2)
 					{
-						sb.Append("requires initialization arguments ");
+						sb.Append(" requires initialization arguments ");
 						sb.Append(missingDependencyList);
 						sb.Append(" but was loaded without having been provided both of them.");
 					}
 					else
 					{
-						sb.Append("requires initialization arguments ");
+						sb.Append(" requires initialization arguments ");
 						sb.Append(missingDependencyList);
 						sb.Append(" but was loaded without having been provided all of them.");
 					}

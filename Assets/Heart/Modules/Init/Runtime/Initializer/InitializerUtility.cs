@@ -254,27 +254,6 @@ namespace Sisus.Init.Internal
 			return false;
 		}
 
-		// public static bool TryGetInitializer(object initializable, out IInitializer initializer)
-		// {
-		// 	if(initializable is not Component component || !component)
-		// 	{
-		// 		initializer = null;
-		// 		return false;
-		// 	}
-		//
-		// 	foreach(var someInitializer in component.gameObject.GetComponentsNonAlloc<IInitializer>())
-		// 	{
-		// 		if(someInitializer.Target == component)
-		// 		{
-		// 			initializer = someInitializer;
-		// 			return true;
-		// 		}
-		// 	}
-		//
-		// 	initializer = null;
-		// 	return false;
-		// }
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void InvokeAtEndOfFrameIfNotAsset([DisallowNull] Component target, [DisallowNull] Action action)
 		{

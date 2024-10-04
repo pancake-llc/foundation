@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -21,6 +20,11 @@ namespace Sisus.Init
 		/// The plain old class <see cref="object"/> wrapped by this <see cref="UnityEngine.Object"/>.
 		/// </summary>
 		new TWrapped WrappedObject { get; }
+
+		/// <summary>
+		/// The plain old class <see cref="object"/> wrapped by this <see cref="UnityEngine.Object"/>.
+		/// </summary>
+		object IWrapper.WrappedObject => WrappedObject;
 	}
 
 	/// <summary>
@@ -52,13 +56,13 @@ namespace Sisus.Init
 		/// if the wrapper class does not derive from <see cref="MonoBehaviour"/>.
 		/// </summary>
 		[MaybeNull]
-		MonoBehaviour AsMonoBehaviour { get; }
+		MonoBehaviour AsMonoBehaviour => this as MonoBehaviour;
 
 		/// <summary>
 		/// This wrapper as an <see cref="Object"/>.
 		/// </summary>
 		[NotNull]
-		Object AsObject { get; }
+		Object AsObject => this as Object;
 
 		/// <summary>
 		/// Should the object be hidden, saved with the Scene or modifiable by the user?
@@ -83,7 +87,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Cancellation token raised when the wrapper is destroyed.
 		/// </summary>
-		CancellationToken destroyCancellationToken { get; }
+		System.Threading.CancellationToken destroyCancellationToken { get; }
 		#endif
 	}
 }

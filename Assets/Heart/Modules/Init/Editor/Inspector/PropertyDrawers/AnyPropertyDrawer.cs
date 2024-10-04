@@ -1256,6 +1256,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			
 				anyType = GetAnyTypeFromField(fieldInfo);
 				valueType = GetValueTypeFromAnyType(anyType);
+
 				objectFieldType = typeof(Object);
 				
 				isService = IsService(anyProperty.serializedObject.targetObject, valueType);
@@ -1611,7 +1612,16 @@ namespace Sisus.Init.EditorOnly.Internal
 							return false;
 						}
 
-						valueType = TypeUtility.GetCollectionElementType(valueType);
+						var elementType = TypeUtility.GetCollectionElementType(valueType);
+						if(elementType is null)
+						{
+							#if DEV_MODE
+							Debug.LogWarning($"Failed to get collection element type from {valueType}.");
+							#endif
+							return false;
+						}
+
+						valueType = elementType;
 					}
 
 					if((!whereAll.HasFlag(Is.Class)			|| valueType.IsClass) &&

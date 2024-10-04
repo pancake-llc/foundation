@@ -30,37 +30,28 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// </summary>
 		public static bool TrySetUserData([DisallowNull] this MonoScript script, string userDataKey, int value, int defaultValue = 0)
 		{
-			// Use EditorPrefs as fallback, in cases where type is inside a DLL etc.
-			if(!AssetDatabase.IsMetaFileOpenForEdit(script)
-			|| AssetDatabase.GetAssetPath(script) is not string scriptPath
-			|| AssetImporter.GetAtPath(scriptPath) is not AssetImporter assetImporter)
+			if(!TryGetAssetImporterWithEditableUserData(script, out var assetImporter))
 			{
 				return false;
 			}
 
-			string userData = assetImporter.userData;
-
-			#if UNITY_2023_2 || UNITY_2023_3 || UNITY_6000_0 || INIT_ARGS_DISABLE_WRITE_TO_METADATA
-			// Certain Unity versions have a bug where userData always returns an empty string:
-			// https://issuetracker.unity3d.com/issues/empty-string-is-returned-when-using-assetimporter-dot-userdata
-			if(userData.Length == 0)
-			{
-				return false;
-			}
+			#if DEV_MODE
+			var scriptPath = AssetDatabase.GetAssetPath(script);
 			#endif
 
-			string[] userDataLines = userData.Length == 0 ? Array.Empty<string>() : userData.Split('\n', StringSplitOptions.None);
+			string userData = assetImporter.userData;
+			var userDataLines = userData.Length == 0 ? Array.Empty<string>() : userData.Split(new[] { "\r\n", "\n", ", " }, StringSplitOptions.RemoveEmptyEntries);
 			string setUserDataLine = userDataKey + ": " + value;
 			bool userDataLinesUpdated = false;
 			for(int i = 0; i < userDataLines.Length; i++)
 			{
-				string userDataLine = userDataLines[i];
+				var userDataLine = userDataLines[i];
 				if(!userDataLine.StartsWith(userDataKey + ": "))
 				{
 					continue;
 				}
 				
-				if(userDataLine == setUserDataLine)
+				if(string.Equals(userDataLine, setUserDataLine))
 				{
 					return true;
 				}
@@ -99,12 +90,12 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			userData = string.Join('\n', userDataLines);
+			userData = string.Join(", ", userDataLines);
 			assetImporter.userData = userData;
 			assetImporter.SaveAndReimport();
 
 			#if DEV_MODE
-			EditorApplication.delayCall += () => 
+			EditorApplication.delayCall += () =>
 			{
 				var importer = AssetImporter.GetAtPath(scriptPath);
 				if(importer.userData != userData)
@@ -120,11 +111,18 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// <summary>
 		/// Get boolean user data from the script's meta file.
 		/// </summary>
-		public static bool TryGetUserData([DisallowNull] this MonoScript script, string userDataKey, out bool value)
+		/// <param name="script"> Scripts whose metadata to read. </param>
+		/// <param name="userDataKey"> Key for the metadata entry. </param>
+		/// <param name="value">
+		/// When this method returns, contains enum value that was read from user data, if it contained an entry with
+		/// the given key; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <returns> <see langword="true"/> if the script's metadata is open for reading and writing; otherwise, <see langword="false"/>. </returns>
+		public static bool TryGetUserData([DisallowNull] this MonoScript script, string userDataKey, out bool? value)
 		{
-			if(script.TryGetUserData(userDataKey, out int intValue))
+			if(script.TryGetUserData(userDataKey, out int? valueFromMetadata))
 			{
-				value = intValue != 0;
+				value = valueFromMetadata is int and not 0;
 				return true;
 			}
 
@@ -135,11 +133,19 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// <summary>
 		/// Get enum user data from the script's meta file.
 		/// </summary>
-		public static bool TryGetUserData<TEnum>([DisallowNull] this MonoScript script, string userDataKey, out TEnum value) where TEnum : Enum
+		/// <param name="script"> Scripts whose metadata to read. </param>
+		/// <param name="userDataKey"> Key for the metadata entry. </param>
+		/// <param name="value">
+		/// When this method returns, contains enum value that was read from user data, if it contained an entry with
+		/// the given key; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <typeparam name="TEnum"> Type of the enum. </typeparam>
+		/// <returns> <see langword="true"/> if the script's metadata is open for reading and writing; otherwise, <see langword="false"/>. </returns>
+		public static bool TryGetUserData<TEnum>([DisallowNull] this MonoScript script, string userDataKey, out TEnum? value) where TEnum : struct, Enum
 		{
-			if(script.TryGetUserData(userDataKey, out int intValue))
+			if(script.TryGetUserData(userDataKey, out int? valueFromMetadata))
 			{
-				value = (TEnum)(object)intValue;
+				value = valueFromMetadata is int @int ? (TEnum)(object)@int : null;
 				return true;
 			}
 
@@ -147,22 +153,62 @@ namespace Sisus.Init.EditorOnly.Internal
 			return false;
 		}
 
-		/// <summary>
-		/// Get integer user data from the script's meta file.
-		/// </summary>
-		public static bool TryGetUserData([DisallowNull] this MonoScript script, string userDataKey, out int value)
+		/// <returns> <see langword="true"/> if the script's metadata is open for reading and writing; otherwise, <see langword="false"/>. </returns>
+		private static bool TryGetAllUserData([DisallowNull] this MonoScript script, out string userData)
 		{
-			// Use EditorPrefs as fallback, in cases where type is inside a DLL etc.
-			if(!AssetDatabase.IsMetaFileOpenForEdit(script)
-			|| AssetDatabase.GetAssetPath(script) is not string scriptPath
-			|| AssetImporter.GetAtPath(scriptPath) is not MonoImporter assetImporter)
+			if(!TryGetAssetImporterWithEditableUserData(script, out var assetImporter))
 			{
-				value = default;
+				userData = default;
 				return false;
 			}
 
-			string userData = assetImporter.userData;
-			string[] userDataLines = userData.Length == 0 ? Array.Empty<string>() : userData.Split('\n', StringSplitOptions.None);
+			userData = assetImporter.userData;
+			return true;
+		}
+
+		/// <returns> <see langword="true"/> if the script's metadata is open for reading and writing; otherwise, <see langword="false"/>. </returns>
+		private static bool TryGetAssetImporterWithEditableUserData([DisallowNull] this MonoScript script, out MonoImporter assetImporter)
+		{
+			if(!AssetDatabase.IsMetaFileOpenForEdit(script)
+			|| AssetDatabase.GetAssetPath(script) is not string scriptPath)
+			{
+				assetImporter = null;
+				return false;
+			}
+
+			assetImporter = AssetImporter.GetAtPath(scriptPath) as MonoImporter;
+
+			#if UNITY_2023_2 || UNITY_2023_3 || UNITY_6000_0 || INIT_ARGS_DISABLE_WRITE_TO_METADATA
+			// Certain Unity versions have a bug where userData always returns an empty string:
+			// https://issuetracker.unity3d.com/issues/empty-string-is-returned-when-using-assetimporter-dot-userdata
+			if(assetImporter.userData.Length == 0)
+			{
+				assetImporter = null;
+				return false;
+			}
+			#endif
+
+			return assetImporter;
+		}
+
+		/// <summary>
+		/// Get integer user data from the script's meta file.
+		/// </summary>
+		/// <param name="value">
+		/// When this method returns, contains enum value that was read from user data, if it contained an entry with
+		/// the given key; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <typeparam name="TEnum"> Type of the enum. </typeparam>
+		/// <returns> <see langword="true"/> if the script's metadata is open for reading and writing; otherwise, <see langword="false"/>. </returns>
+		public static bool TryGetUserData([DisallowNull] this MonoScript script, string userDataKey, out int? value)
+		{
+			if(!TryGetAllUserData(script, out var userData))
+			{
+				value = null;
+				return false;
+			}
+
+			string[] userDataLines = userData.Length == 0 ? Array.Empty<string>() : userData.Split(new[] { "\r\n", "\n", ", " }, StringSplitOptions.RemoveEmptyEntries);
 			string userDataPrefix = userDataKey + ": ";
 
 			for(int i = 0; i < userDataLines.Length; i++)
@@ -170,12 +216,16 @@ namespace Sisus.Init.EditorOnly.Internal
 				string userDataLine = userDataLines[i];
 				if(userDataLine.StartsWith(userDataPrefix))
 				{
-					return int.TryParse(userDataLine.Substring(userDataPrefix.Length), out value);
+					if(int.TryParse(userDataLine.Substring(userDataPrefix.Length), out int valueFromLine))
+					{
+						value = valueFromLine;
+						return true;
+					}
 				}
 			}
 
-			value = default;
-			return false;
+			value = null;
+			return true;
 		}
 	}
 }

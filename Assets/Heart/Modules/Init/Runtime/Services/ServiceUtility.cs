@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Sisus.Init.Internal;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -271,7 +272,7 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// Determines whether or not service of type <typeparamref name="TService"/>
+		/// Determines whether service of type <typeparamref name="TService"/>
 		/// is available for the <paramref name="client"/>.
 		/// <para>
 		/// The service can be located from <see cref="Services"/> components in the active scenes,
@@ -456,40 +457,9 @@ namespace Sisus.Init
 			Debug.Assert(service != NullExtensions.Null, definingType?.Name ?? "service null", service as Object);
 			#endif
 
-			if(!definingType.IsInstanceOfType(service))
+			if(!definingType.IsInstanceOfType(service) && !TryExtractServiceFrom(service, definingType, clients, container, out service))
 			{
-				if(service is not IValueProvider valueProvider)
-				{
-					LogInvalidServiceDefinitionError(service.GetType(), definingType);
-					return;
-				}
-
-				if(valueProvider.Value is object providedValue)
-				{
-					if(!definingType.IsInstanceOfType(providedValue))
-					{
-						LogInvalidServiceDefinitionError(service.GetType(), definingType);
-						return;
-					}
-
-					service = providedValue;
-				}
-				else if(valueProvider is IInitializer initializer)
-				{
-					object initialized = initializer.InitTarget();
-					if(!definingType.IsInstanceOfType(initialized))
-					{
-						LogInvalidServiceDefinitionError(service.GetType(), definingType);
-						return;
-					}
-
-					service = initialized;
-				}
-				else
-				{
-					LogInvalidServiceDefinitionError(service.GetType(), definingType);
-					return;
-				}
+				return;
 			}
 
 			if(!scopedServiceAdders.TryGetValue(definingType, out var adder))
@@ -499,6 +469,173 @@ namespace Sisus.Init
 			}
 			
 			adder.AddFor(service, clients, container);
+
+			static bool TryExtractServiceFrom(object provider, Type definingType, Clients clients, Component container, out object result)
+			{
+				if(provider is IValueProvider valueProvider)
+				{
+					if(valueProvider.TryGetFor(container, out result))
+					{
+						return true;
+					}
+
+					// Support situation where object implements multiple different IValueProvider<TService>
+					// interfaces  and IValueProvider.TryGetFor always returns false.
+					if(typeof(IValueProvider<>).MakeGenericType(definingType) is { } genericValueProviderType
+						&& genericValueProviderType.IsInstanceOfType(provider))
+					{
+						var tryGetForMethod = genericValueProviderType.GetMethod(nameof(IValueProvider<object>.TryGetFor));
+						var args = new[] { container, null };
+						if((bool)tryGetForMethod.Invoke(provider, args))
+						{
+							result = args[1];
+							return true;
+						}
+					}
+				}
+
+				// TODO: Register service as Task<T> immediately?
+				// Just ContinueWith to register when ready?
+				if(provider is IValueProviderAsync valueProviderAsync)
+				{
+					var serviceGetter = valueProviderAsync.GetForAsync(container);
+					_ = AddForAsync(provider, serviceGetter, definingType, clients, container);
+					result = null;
+					return false;
+				}
+
+				if(provider is IValueByTypeProvider valueByTypeProvider)
+				{
+					var tryGetForMethod =  typeof(IValueByTypeProvider).GetMethod(nameof(IValueByTypeProvider.TryGetFor)).MakeGenericMethod(definingType);
+					var args = new[] { container, null };
+					if((bool)tryGetForMethod.Invoke(provider, args))
+					{
+						result = args[1];
+						return true;
+					}
+
+					if(!Application.isPlaying && valueByTypeProvider.CanProvideValue(definingType, container))
+					{
+						#if DEV_MODE && DEBUG_ENABLED
+						Debug.Log("Can't register {TypeUtility.ToString(provider.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because it is an IValueByTypeProvider, CanProvideValue returned true, and this is edit mode.");
+						#endif
+						result = null;
+						return false;
+					}
+				}
+
+				if(provider is IInitializer initializer)
+				{
+					if(!Application.isPlaying)
+					{
+						#if DEV_MODE && DEBUG_ENABLED
+						Debug.Log("Can't register {TypeUtility.ToString(service.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because it is an initializer, and this is edit mode.");
+						#endif
+						result = null;
+						return false;
+					}
+
+					object initialized = initializer.InitTarget();
+					if(!definingType.IsInstanceOfType(initialized))
+					{
+						LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+						result = null;
+						return false;
+					}
+
+					result = initialized;
+					return true;
+				}
+
+				if(provider is IWrapper and Object unityObject)
+				{
+					if(!Application.isPlaying && typeof(IWrapper<>).MakeGenericType(definingType).IsInstanceOfType(provider))
+					{
+						#if DEV_MODE && DEBUG_ENABLED
+						Debug.Log("Can't register wrapper {TypeUtility.ToString(service.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because the wrapper could have an initializer, and this is edit mode");
+						#endif
+						result = null;
+						return false;
+					}
+
+					if(InitializerUtility.TryGetInitializer(unityObject, out initializer)
+					&& initializer.InitTarget() is object initialized
+					&& definingType.IsInstanceOfType(initialized))
+					{
+						result = initialized;
+						return true;
+					}
+				}
+
+				LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+				result = null;
+				return false;
+			}
+
+			#if !UNITY_2023_1_OR_NEWER
+			static async Task AddForAsync(object provider, [AllowNull] Task<object> serviceGetter, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
+			{
+				try
+				{
+					object service = await serviceGetter;
+					if(service is not null)
+					{
+						AddFor(service, definingType, clients, container);
+						return;
+					}
+				}
+				// Handle edge case: in situations where an object implements multiple IValueProviderAsync<T> interfaces,
+				// the non-generic IValueProviderAsync.GetValueValueAsync might throw NotSupportedException or return null.
+				catch
+				#if DEV_MODE
+				(Exception e) { Debug.Log(e);
+				#else
+					{
+				#endif
+				}
+
+				if(typeof(IValueProviderAsync<>).MakeGenericType(definingType) is { } valueProviderAsyncGenericType
+				&& valueProviderAsyncGenericType.IsInstanceOfType(provider))
+				{
+					var getForAsyncMethod = valueProviderAsyncGenericType.GetMethod(nameof(IValueProviderAsync<object>.GetForAsync));
+					serviceGetter = getForAsyncMethod.Invoke(provider, new object[] { container }) as Task<object>;
+					object service = await serviceGetter;
+					if(service is not null)
+					{
+						AddFor(service, definingType, clients, container);
+					}
+				}
+
+				LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+			}
+			#endif
+
+			#if UNITY_2023_1_OR_NEWER
+			static async Awaitable<object> AddForAsync(object provider, [AllowNull] Awaitable<object> serviceGetter, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
+			{
+				try
+				{
+					object service = await serviceGetter;
+					if(service is not null)
+					{
+						AddFor(service, definingType, clients, container);
+						return service;
+					}
+				}
+				// Handle edge case: in situations where an object implements multiple IValueProviderAsync<T> interfaces,
+				// the non-generic IValueProviderAsync.GetValueValueAsync might throw NotSupportedException or return null.
+				catch
+				#if DEV_MODE
+				(Exception e) { Debug.Log(e);
+				#else
+				{
+				#endif
+				}
+
+				LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+				return null;
+			}
+			#endif
 
 			static void LogInvalidServiceDefinitionError(Type concreteType, Type definingType)
 			{

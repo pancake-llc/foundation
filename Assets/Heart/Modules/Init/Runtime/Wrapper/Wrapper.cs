@@ -97,6 +97,9 @@ namespace Sisus.Init
 		/// </summary>
 		TWrapped IValueProvider<TWrapped>.Value => wrapped;
 
+		public Wrapper() { }
+		public Wrapper(TWrapped wrapped) => this.wrapped = wrapped;
+
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>(Component client, out TValue value)
 		{
@@ -118,8 +121,10 @@ namespace Sisus.Init
 		/// <para>
 		/// <see cref="OnReset"/> is called when the user hits the Reset button in the Inspector's
 		/// context menu or when adding the component to a GameObject the first time.
+		/// </para>
 		/// <para>
 		/// This function is only called in the editor in edit mode.
+		/// </para>
 		/// </summary>
 		/// <param name="wrapped"> The wrapped object to reset. </param>
 		protected virtual void OnReset(ref TWrapped wrapped) { }
@@ -281,7 +286,7 @@ namespace Sisus.Init
 		/// <see cref="Start"/> is called on the frame when a script is enabled just before any of the Update methods are called the first time.
 		/// <para>
 		/// Like the <see cref="Awake"/> function, <see cref="Start"/> is called exactly once in the lifetime of the script.
-		/// However, Awake is called when the script object is initialised, regardless of whether or not the script is enabled.
+		/// However, Awake is called when the script object is initialised, regardless of whether the script is enabled.
 		/// Start may not be called on the same frame as Awake if the script is not enabled at initialisation time.
 		/// </para>
 		/// </summary>

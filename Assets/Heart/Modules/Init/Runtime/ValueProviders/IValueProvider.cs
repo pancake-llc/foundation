@@ -8,7 +8,7 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object that can provide a <see cref="Value"/> of type <typeparamref name="TValue"/> on demand.
 	/// <para>
-	/// If a class derives from <see cref="Object"/> and implements <see cref="IValueProvider{T}"/> then
+	/// If a class derives from <see cref="UnityEngine.Object"/> and implements <see cref="IValueProvider{T}"/> then
 	/// <see cref="Any{T}"/> can wrap an instance of this class and return its <see cref="IValueProvider{T}.Value"/>
 	/// when <see cref="Any{T}.Value"/> is called.
 	/// </para>
@@ -33,6 +33,18 @@ namespace Sisus.Init
 		object IValueProvider.Value => Value;
 
 		/// <summary>
+		/// Gets a value indicating whether this value provider can provide a value of type
+		/// <typeparamref name="TValue"/> for the <paramref name="client"/> at this time.
+		/// </summary>
+		/// <param name="client">
+		/// The component requesting the value, if request is coming from a component; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if can provide a value for the client at this time; otherwise, <see langword="false"/>.
+		/// </returns>
+		new bool HasValueFor(Component client) => TryGetFor(client, out _);
+
+		/// <summary>
 		/// Gets the value of type <typeparamref name="TValue"/> for the <paramref name="client"/>.
 		/// </summary>
 		/// <param name="client">
@@ -42,6 +54,9 @@ namespace Sisus.Init
 		/// When this method returns, contains the value of type <typeparamref name="TValue"/>, if available; otherwise, the default value of <typeparamref name="TValue"/>.
 		/// This parameter is passed uninitialized.
 		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if a value was provided; otherwise, <see langword="false"/>.
+		/// </returns>
 		bool TryGetFor([AllowNull] Component client, [NotNullWhen(true), MaybeNullWhen(false)] out TValue value)
 		{
 			value = Value;
@@ -69,5 +84,17 @@ namespace Sisus.Init
 			value = Value;
 			return value != Null;
 		}
+
+		/// <summary>
+		/// Gets a value indicating whether this value provider can provide a value
+		/// for the <paramref name="client"/> at this time.
+		/// </summary>
+		/// <param name="client">
+		/// The component requesting the value, if request is coming from a component; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if can provide a value for the client at this time; otherwise, <see langword="false"/>.
+		/// </returns>
+		bool HasValueFor(Component client) => TryGetFor(client, out _);
 	}
 }

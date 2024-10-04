@@ -48,6 +48,7 @@ namespace Sisus.Init
 	/// </item>
 	/// </list>
 	/// </para>
+	/// </summary>
 	/// <typeparam name="TWrapped"> Type of the plain old class object wrapped by this scriptable object. </typeparam>
 	public abstract class ScriptableWrapper<TWrapped> : ScriptableObject, IWrapper<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
 	{

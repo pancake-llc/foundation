@@ -247,12 +247,12 @@ namespace Sisus.Init.Internal
 		private void Register()
 		{
 			#if UNITY_EDITOR
-			if(service == null)
+			if(!service)
 			{
 				return;
 			}
 
-			Clients registerForClients = toClients switch
+			var registerForClients = toClients switch
 			{
 				Clients.InGameObject => toClients,
 				Clients.InChildren => toClients,
@@ -260,7 +260,7 @@ namespace Sisus.Init.Internal
 				Clients.InHierarchyRootChildren => toClients,
 				_ when PrefabUtility.IsPartOfPrefabAsset(this) => Clients.InHierarchyRootChildren,
 				Clients.InScene => toClients,
-				_ when PrefabStageUtility.GetPrefabStage(gameObject) != null => Clients.InScene,
+				_ when PrefabStageUtility.GetPrefabStage(gameObject) => Clients.InScene,
 				_ => toClients
 			};
 
@@ -448,7 +448,7 @@ namespace Sisus.Init.Internal
 				return;
 			}
 
-			ServiceUtility.AddFor(service, definingType, toClients, this);
+			Register();
 		}
 
 		NullGuardResult INullGuardByType.EvaluateNullGuard<TValue>(Component client)

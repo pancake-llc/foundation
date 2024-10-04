@@ -46,7 +46,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Returns a new instance of the <see cref="TService"/> class, or <see langword="null"/>.
 		/// <para>
-		/// By default this method returns <see langword="null"/>. In this case the framework
+		/// By default, this method returns <see langword="null"/>. In this case the framework
 		/// will take care of creating the instance internally.
 		/// </para>
 		/// <para>

@@ -19,11 +19,11 @@ namespace Sisus.Init.Internal
 		/// </para>
 		/// </summary>
 		/// <returns> Awaitable task that completes when it's safe to use the Unity API. </returns>
-		public static System.Threading.Tasks.Task<bool> UnitySafeContext()
+		public static Task<bool> UnitySafeContext()
 		{
 			lock(instance)
 			{
-				var completionSource = new System.Threading.Tasks.TaskCompletionSource<bool>();
+				var completionSource = new TaskCompletionSource<bool>();
 				waitingForNextFrame.Enqueue(completionSource);
 				return completionSource.Task;
 			}

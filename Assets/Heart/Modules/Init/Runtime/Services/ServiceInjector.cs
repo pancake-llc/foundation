@@ -1314,7 +1314,7 @@ namespace Sisus.Init.Internal
 
 			return result;
 
-			void LogMissingDependencyWarning(Type initializerType, Type dependencyType)
+				void LogMissingDependencyWarning(Type initializerType, Type dependencyType)
 			{
 				if(FillIfEmpty(servicesInScene).TryGetValue(dependencyType, out var serviceInfo))
 				{

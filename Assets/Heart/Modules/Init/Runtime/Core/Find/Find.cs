@@ -2663,6 +2663,7 @@ namespace Sisus.Init
 		/// <para>
 		/// This method is only available in the editor.
 		/// </para>
+		/// </summary>
 		/// <param name="classType"> Type of the class whose script asset to load. </param>
 		/// <param name="result">
 		/// When this method returns, contains loaded script asset, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
@@ -2671,7 +2672,7 @@ namespace Sisus.Init
 		public static bool Script([DisallowNull] Type classType, [NotNullWhen(true), MaybeNullWhen(false)] out MonoScript result)
 		{
 			result = Script(classType);
-			return result != null;
+			return result;
 		}
 		#endif
 

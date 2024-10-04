@@ -85,7 +85,7 @@ namespace Sisus.Init.Internal
 				return false;
 			}
 
-			foreach(ServiceDefinition definition in providesServices)
+			foreach(var definition in providesServices)
 			{
 				if(definition.definingType.Value != typeof(TValue))
 				{
@@ -110,7 +110,7 @@ namespace Sisus.Init.Internal
 				return false;
 			}
 
-			foreach(ServiceDefinition definition in providesServices)
+			foreach(var definition in providesServices)
 			{
 				if(definition.definingType.Value != typeof(TValue))
 				{
@@ -131,7 +131,7 @@ namespace Sisus.Init.Internal
 			foreach(var serviceDefinition in providesServices)
 			{
 				var service = serviceDefinition.service;
-				if(service == null)
+				if(!service)
 				{
 					Debug.LogWarning($"{GetType().Name} has a missing service reference.", this);
 					continue;

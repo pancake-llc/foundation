@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+
 using Unity.Collections;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -297,6 +299,60 @@ namespace Sisus.Init.Internal
 		/// <summary>
 		/// NOTE: Even if this looks unused, it can be used in builds.
 		/// </summary>
+		[return: NotNull]
+		internal static List<Type> GetAllTypesVisibleTo([AllowNull] Type visibleTo, Func<Type, bool> filter, int estimatedResultCount)
+		{
+			var results = new List<Type>(estimatedResultCount);
+
+			var assemblyContainingType = visibleTo.Assembly;
+			results.AddRange(assemblyContainingType.GetLoadableTypes(false)
+				// TODO:
+				// 1. skip private classes that are not nested under visibleTo.
+				// 2. skip protected classes that visibleTo does not derive from.
+				// 3. skip private protected classes that visibleTo does not derive from.
+				.Where(filter));
+
+			foreach(var visibleAssembly in GetAllAssembliesVisibleToThreadSafe(visibleTo.Assembly))
+			{
+				if(visibleAssembly != assemblyContainingType)
+				{
+					results.AddRange(visibleAssembly.GetLoadableTypes(true).Where(filter));
+				}
+			}
+
+			return results;
+		}
+
+		public static IEnumerable<Assembly> GetAllAssembliesVisibleToThreadSafe([AllowNull] Assembly visibleTo)
+		{
+			var referencedAssemblyNames = visibleTo.GetReferencedAssemblies().Select(name => name.Name).ToArray();
+			int referencedAssembliesCount = referencedAssemblyNames.Length;
+			var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+			for(int n = allAssemblies.Length - 1; n >= 0; n--)
+			{
+				var assembly = allAssemblies[n];
+
+				// skip dynamic assemblies to prevent NotSupportedException from being thrown when calling GetTypes
+				if(assembly.IsDynamic)
+				{
+					continue;
+				}
+
+				var assemblyName = assembly.GetName().Name;
+				for(int r = referencedAssembliesCount - 1; r >= 0; r--)
+				{
+					if(string.Equals(referencedAssemblyNames[r], assemblyName))
+					{
+						yield return assembly;
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// NOTE: Even if this looks unused, it can be used in builds.
+		/// </summary>
 		public static IEnumerable<Assembly> GetAllAssembliesThreadSafe([AllowNull] Assembly mustReferenceAssembly)
 		{
 			var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -334,7 +390,7 @@ namespace Sisus.Init.Internal
 		public static string ToStringNicified([DisallowNull] Type type)
 		{
 			#if UNITY_EDITOR
-			if(!type.IsGenericType && !type.IsInterface)
+			if(type is { IsGenericType: false, IsInterface: false })
 			{
 				return UnityEditor.ObjectNames.NicifyVariableName(ToString(type));
 			}
