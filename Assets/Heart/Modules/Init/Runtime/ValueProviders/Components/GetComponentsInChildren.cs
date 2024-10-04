@@ -14,8 +14,8 @@ namespace Sisus.Init.ValueProviders
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
 	[ValueProviderMenu(MENU_NAME, WhereAll = Is.Collection | Is.SceneObject, Not = typeof(GameObject), Order = 10, Tooltip = "Collection will be created at runtime from the components attached to this game object and all its children.")]
 	#endif
-	#if DEV_MODE
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1007)]
 	#endif
 	internal sealed class GetComponentsInChildren : ScriptableObject, IValueByTypeProvider
 	#if UNITY_EDITOR

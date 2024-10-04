@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92485a2a483aa8c4aafcd282d17da2a1, type: 3}
+  m_Script: {fileID: 11500000, guid: c9003bb4e1f70c5468301a405c0be82d, type: 3}
   m_Name: Get Component In Parent
   m_EditorClassIdentifier: 

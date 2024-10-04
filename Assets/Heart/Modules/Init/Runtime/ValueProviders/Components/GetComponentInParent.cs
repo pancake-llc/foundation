@@ -12,8 +12,8 @@ namespace Sisus.Init.ValueProviders
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
 	[ValueProviderMenu(MENU_NAME, Is.SceneObject, Order = 1.2f, Tooltip = "Value will be located at runtime from this game object or any of its parents.")]
 	#endif
-	#if DEV_MODE
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1005)]
 	#endif
 	internal sealed class GetComponentInParent : ScriptableObject, IValueByTypeProvider
 	#if UNITY_EDITOR

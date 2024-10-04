@@ -16,8 +16,8 @@ namespace Sisus.Init.ValueProviders
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
 	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Component | Is.WrappedObject, WhereAll = Is.Concrete, Order = 1.6f, Tooltip = "Value will be located at runtime from this game object.\n\nIf no result is found, a new instance will be attached to the game object automatically.")]
 	#endif
-	#if DEV_MODE
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1009)]
 	#endif
 	internal sealed class GetOrAddComponent : ScriptableObject, IValueByTypeProvider
 	#if UNITY_EDITOR

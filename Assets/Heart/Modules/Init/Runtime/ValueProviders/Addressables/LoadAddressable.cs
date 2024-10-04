@@ -21,7 +21,7 @@ namespace Sisus.Init.ValueProviders
 	[ValueProviderMenu(MENU_NAME, Is.Asset, Order = 10, Tooltip = "Addressable asset with the given key will be loaded at runtime.")]
 	#endif
 	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 100)]
 	#endif
 	internal sealed class LoadAddressable : ScriptableObject<AssetReference>, IEquatable<LoadAddressable>, IValueByTypeReleaser
 		, IValueByTypeProviderAsync
@@ -29,7 +29,7 @@ namespace Sisus.Init.ValueProviders
 		, INullGuard
 		#endif
 	{
-		private const string MENU_NAME = "Load Addressable";
+		private const string MENU_NAME = "Addressable/Load Addressable";
 
 		[SerializeField]
 		private AssetReference addressableAsset = new("");

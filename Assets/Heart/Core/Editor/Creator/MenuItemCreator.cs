@@ -11,82 +11,6 @@ namespace PancakeEditor
 {
     public static class MenuItemCreator
     {
-        [MenuItem("GameObject/Pancake/UIButton", false, 1000)]
-        public static void CreateUIButtonEmpty()
-        {
-            var t = CreateObject<Image>("Button");
-            var button = t.gameObject.AddComponent<UIButton>();
-            button.targetGraphic = t.GetComponent<Image>();
-            Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton");
-            SetupUIButton(t);
-            Selection.activeTransform = t;
-        }
-
-        private static void SetupUIButton(RectTransform button)
-        {
-            var uiButton = button.GetComponent<UIButton>();
-            button.sizeDelta = new Vector2(160, 60);
-            uiButton.IsMotion = true;
-        }
-
-        [MenuItem("GameObject/Pancake/UIButton - TextMeshPro", false, 1000)]
-        private static void CreateUIButtonText()
-        {
-            var t = CreateObject<Image>("Button");
-            var button = t.gameObject.AddComponent<UIButtonText>();
-            button.targetGraphic = t.GetComponent<Image>();
-            Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton TMP");
-            SetupUIButton(t);
-            Selection.activeTransform = t;
-        }
-
-        [MenuItem("GameObject/Pancake/UIButton - Text Only", false, 1000)]
-        private static void CreateUIButtonTextOnly()
-        {
-            var t = CreateObject<TextMeshProUGUI>("Button");
-            var button = t.gameObject.AddComponent<UIButtonText>();
-            button.targetGraphic = t.GetComponent<TextMeshProUGUI>();
-            Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton Only Text");
-            SetupUIButton(t);
-            Selection.activeTransform = t;
-        }
-
-        [MenuItem("GameObject/Pancake/UIPopup", false, 1000)]
-        public static void CreateUIPopupEmpty()
-        {
-            var popup = CreateUIPopupObject();
-            Undo.RegisterCreatedObjectUndo(popup.gameObject, "Create UIPopup");
-            Selection.activeTransform = popup;
-        }
-
-        [MenuItem("GameObject/Pancake/UI Set Native Size + Pivot", false, 1000)]
-        private static void SetSizeAndPivot()
-        {
-            foreach (GameObject gameObject in Selection.gameObjects)
-            {
-                // process all selected game objects which have a RectTransform + Image
-                RectTransform transform = gameObject.GetComponent<RectTransform>();
-                Image image = gameObject.GetComponent<Image>();
-
-                if (transform && image && image.sprite)
-                {
-                    // set size as it is defined by source image sprite
-                    image.SetNativeSize();
-
-#if UNITY_2018_1_OR_NEWER
-                    // use mesh defined by source sprite to render UI image
-                    image.useSpriteMesh = true;
-#endif
-
-                    // set pivot point as defined by source sprite
-                    Vector2 size = transform.sizeDelta * image.pixelsPerUnit;
-                    Vector2 pixelPivot = image.sprite.pivot;
-                    // sprite pivot point is defined in pixel, RectTransform pivot point is normalized
-                    transform.pivot = new Vector2(pixelPivot.x / size.x, pixelPivot.y / size.y);
-                }
-            }
-        }
-
         private static RectTransform CreateUIPopupObject()
         {
             var prefabRoot = PrefabDatabase.GetPrefabRoot();
@@ -202,5 +126,87 @@ namespace PancakeEditor
             var canvas = CreateCanvas();
             return CreateObjectWithComponent<T>(canvas.transform, name);
         }
+
+        [MenuItem("GameObject/Pancake/UIButton", false, 1000)]
+        public static void CreateUIButtonEmpty()
+        {
+            var t = CreateObject<Image>("Button");
+            var button = t.gameObject.AddComponent<UIButton>();
+            button.targetGraphic = t.GetComponent<Image>();
+            Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton");
+            SetupUIButton(t);
+            Selection.activeTransform = t;
+        }
+
+        private static void SetupUIButton(RectTransform button)
+        {
+            var uiButton = button.GetComponent<UIButton>();
+            button.sizeDelta = new Vector2(160, 60);
+            uiButton.IsMotion = true;
+        }
+
+        [MenuItem("GameObject/Pancake/UIButton - TextMeshPro", false, 1000)]
+        private static void CreateUIButtonText()
+        {
+            var t = CreateObject<Image>("Button");
+            var button = t.gameObject.AddComponent<UIButtonText>();
+            button.targetGraphic = t.GetComponent<Image>();
+            Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton TMP");
+            SetupUIButton(t);
+            Selection.activeTransform = t;
+        }
+
+        [MenuItem("GameObject/Pancake/UIButton - Text Only", false, 1000)]
+        private static void CreateUIButtonTextOnly()
+        {
+            var t = CreateObject<TextMeshProUGUI>("Button");
+            var button = t.gameObject.AddComponent<UIButtonText>();
+            button.targetGraphic = t.GetComponent<TextMeshProUGUI>();
+            Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton Only Text");
+            SetupUIButton(t);
+            Selection.activeTransform = t;
+        }
+
+        [MenuItem("GameObject/Pancake/UIPopup", false, 1000)]
+        public static void CreateUIPopupEmpty()
+        {
+            var popup = CreateUIPopupObject();
+            Undo.RegisterCreatedObjectUndo(popup.gameObject, "Create UIPopup");
+            Selection.activeTransform = popup;
+        }
+
+        [MenuItem("GameObject/Pancake/UI Set Native Size + Pivot", false, 1000)]
+        private static void SetSizeAndPivot()
+        {
+            foreach (GameObject gameObject in Selection.gameObjects)
+            {
+                // process all selected game objects which have a RectTransform + Image
+                RectTransform transform = gameObject.GetComponent<RectTransform>();
+                Image image = gameObject.GetComponent<Image>();
+
+                if (transform && image && image.sprite)
+                {
+                    // set size as it is defined by source image sprite
+                    image.SetNativeSize();
+
+#if UNITY_2018_1_OR_NEWER
+                    // use mesh defined by source sprite to render UI image
+                    image.useSpriteMesh = true;
+#endif
+
+                    // set pivot point as defined by source sprite
+                    Vector2 size = transform.sizeDelta * image.pixelsPerUnit;
+                    Vector2 pixelPivot = image.sprite.pivot;
+                    // sprite pivot point is defined in pixel, RectTransform pivot point is normalized
+                    transform.pivot = new Vector2(pixelPivot.x / size.x, pixelPivot.y / size.y);
+                }
+            }
+        }
+
+        [MenuItem("Assets/Create/Value Providers/Single Instance", false, 1000)]
+        private static void ValueProviderHeader() { }
+
+        [MenuItem("Assets/Create/Value Providers/Single Instance", true, 1000)]
+        private static bool ValueProviderHeaderValidate() { return false; }
     }
 }

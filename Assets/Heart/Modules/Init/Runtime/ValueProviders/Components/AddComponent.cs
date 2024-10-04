@@ -14,8 +14,8 @@ namespace Sisus.Init.ValueProviders
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
 	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Component | Is.WrappedObject, WhereAll = Is.Concrete, Not = typeof(GameObject), Order = 1.5f)]
 	#endif
-	#if DEV_MODE
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1001)]
 	#endif
 	internal sealed class AddComponent : ScriptableObject, IValueByTypeProvider
 	#if UNITY_EDITOR

@@ -20,7 +20,7 @@ namespace Sisus.Init.ValueProviders
 	[ValueProviderMenu(MENU_NAME, typeof(Texture), Order = 10)]
 	#endif
 	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 103)]
 	#endif
 	internal sealed class LoadAddressableTexture : ScriptableObject<AssetReferenceTexture>, IEquatable<LoadAddressableTexture>, IValueReleaser<Texture>
 		, IValueProviderAsync<Texture>
@@ -28,7 +28,7 @@ namespace Sisus.Init.ValueProviders
 		, INullGuard
 		#endif
 	{
-		private const string MENU_NAME = "Load Addressable Texture";
+		private const string MENU_NAME = "Addressable/Load Texture";
 
 		[SerializeField]
 		private AssetReferenceTexture addressableAsset;

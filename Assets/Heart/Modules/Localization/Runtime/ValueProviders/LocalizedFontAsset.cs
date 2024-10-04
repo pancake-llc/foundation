@@ -17,7 +17,7 @@ namespace Sisus.Init.Internal
     [ValueProviderMenu("Localized Font Asset", typeof(TMP_FontAsset), Order = 1, Tooltip = "Text will be localized at runtime for the active locale.")]
 #endif
 #if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
-    [CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+    [CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 100)]
 #endif
     public class LocalizedFontAsset : ScriptableObject,
         IValueProvider<TMP_FontAsset>
@@ -26,7 +26,7 @@ namespace Sisus.Init.Internal
         INullGuard
 #endif
     {
-        private const string MENU_NAME = "Localized Font Asset";
+        private const string MENU_NAME = "Localization/Font Asset";
         [SerializeField] internal LocaleTMPFont value;
         public TMP_FontAsset Value => value == null ? null : value.Value;
 

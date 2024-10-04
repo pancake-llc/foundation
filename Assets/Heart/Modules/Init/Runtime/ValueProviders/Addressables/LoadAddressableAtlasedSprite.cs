@@ -22,7 +22,7 @@ namespace Sisus.Init.ValueProviders
 	[ValueProviderMenu(MENU_NAME, typeof(Sprite), Order = 10)]
 	#endif
 	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 101)]
 	#endif
 	internal sealed class LoadAddressableAtlasedSprite : ScriptableObject<AssetReferenceAtlasedSprite>, IEquatable<LoadAddressableAtlasedSprite>, IValueReleaser<Sprite>
 		, IValueProviderAsync<Sprite>
@@ -30,7 +30,7 @@ namespace Sisus.Init.ValueProviders
 		, INullGuard
 		#endif
 	{
-		private const string MENU_NAME = "Load Addressable Atlased Sprite";
+		private const string MENU_NAME = "Addressable/Load Atlased Sprite";
 
 		[SerializeField]
 		private AssetReferenceAtlasedSprite atlasedSprite = new("");
