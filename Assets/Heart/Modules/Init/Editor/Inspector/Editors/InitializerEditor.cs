@@ -18,7 +18,7 @@ namespace Sisus.Init.EditorOnly
 	{
 		protected internal const string InitArgumentMetadataClassName = InitializerUtility.InitArgumentMetadataClassName;
 
-		private static readonly Dictionary<int, string[]> fieldsToExcludeByArgumentCount = new(13)
+		private static readonly Dictionary<int, string[]> fieldsToExcludeByArgumentCount = new(14)
 		{
 			{ 0, new[] { "m_Script" } },
 			{ 1, new[] { "m_Script", "argument" } },
@@ -31,8 +31,9 @@ namespace Sisus.Init.EditorOnly
 			{ 8, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument" } },
 			{ 9, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument" } },
 			{ 10, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument" } },
-			{ 11, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "eleventhArgument" } },
-			{ 12, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "eleventhArgument", "twelfthArgument" } }
+			{ 11, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument"} },
+			{ 12, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument" } },
+			{ 13, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument", "twelfthArgument" } }
 		};
 
 		private bool setupDone;
@@ -225,7 +226,7 @@ namespace Sisus.Init.EditorOnly
 				parameterGUIs[i].DrawArgumentField(IsNullAllowed, ServicesShown);
 			}
 
-			Editor.DrawPropertiesExcluding(serializedObject, fieldsToExcludeByArgumentCount[parameterGUIs.Length]);
+			Editor.DrawPropertiesExcluding(serializedObject, fieldsToExcludeByArgumentCount[parameterGUIs.Length + 1]);
 		}
 
 		private void OnDisable()

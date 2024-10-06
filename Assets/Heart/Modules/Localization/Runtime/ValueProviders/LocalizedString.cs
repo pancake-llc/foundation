@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Pancake;
 using Pancake.Localization;
 using UnityEngine;
 using static Sisus.Init.ValueProviders.ValueProviderUtility;
@@ -18,6 +18,7 @@ namespace Sisus.Init.Internal
 #if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
     [CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 101)]
 #endif
+    [EditorIcon("icon_value_provider")]
     public sealed class LocalizedString : ScriptableObject,
         IValueProvider<string>
 #if UNITY_EDITOR
