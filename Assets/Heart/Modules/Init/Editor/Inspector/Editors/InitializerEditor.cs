@@ -1,22 +1,39 @@
 ﻿//#define DEBUG_ENABLED
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Sisus.Init.EditorOnly.Internal;
 using Sisus.Init.Internal;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using static Sisus.Init.EditorOnly.Internal.InitializerEditorUtility;
 
 namespace Sisus.Init.EditorOnly
 {
-	using static Internal.InitializerEditorUtility;
-
-	[CanEditMultipleObjects]
+	[CustomEditor(typeof(InitializerBaseInternal), editorForChildClasses:true, isFallback = true), CanEditMultipleObjects]
 	public class InitializerEditor : Editor
 	{
 		protected internal const string InitArgumentMetadataClassName = InitializerUtility.InitArgumentMetadataClassName;
+
+		private static readonly Dictionary<int, string[]> fieldsToExcludeByArgumentCount = new(13)
+		{
+			{ 0, new[] { "m_Script" } },
+			{ 1, new[] { "m_Script", "argument" } },
+			{ 2, new[] { "m_Script", "argument", "firstArgument" } },
+			{ 3, new[] { "m_Script", "argument", "firstArgument", "secondArgument" } },
+			{ 4, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument" } },
+			{ 5, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument" } },
+			{ 6, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument" } },
+			{ 7, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument" } },
+			{ 8, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument" } },
+			{ 9, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument" } },
+			{ 10, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument" } },
+			{ 11, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "eleventhArgument" } },
+			{ 12, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "eleventhArgument", "twelfthArgument" } }
+		};
 
 		private bool setupDone;
 		private SerializedProperty client;
@@ -28,15 +45,10 @@ namespace Sisus.Init.EditorOnly
 		private InitParameterGUI[] parameterGUIs = new InitParameterGUI[0];
 		private Type clientType;
 		private bool drawNullArgumentGuard;
-		private ServiceChangedListener[] serviceChangedListeners = Array.Empty<ServiceChangedListener>();
-
-		protected virtual Type[] GetGenericArguments() => target.GetType().BaseType.GetGenericArguments();
-		protected virtual Type GetClientType(Type[] genericArguments) => genericArguments[0];
-		protected virtual Type[] GetInitArgumentTypes(Type[] genericArguments) => genericArguments.Skip(1).ToArray();
-
+		private ServiceChangedListener targetServiceChangedListener;
+		private ServiceChangedListener[] initArgumentServiceChangedListeners = Array.Empty<ServiceChangedListener>();
 		private static bool ServicesShown => InitializerGUI.ServicesShown;
-
-		protected virtual bool HasUserDefinedInitArgumentFields { get; }
+		protected virtual bool HasUserDefinedInitArgumentFields => false;
 
 		private bool IsNullAllowed
 		{
@@ -55,6 +67,9 @@ namespace Sisus.Init.EditorOnly
 
 		internal void Setup([AllowNull] InitializerGUI externallyOwnedInitializerGUI)
 		{
+			var wasDrawing = LayoutUtility.NowDrawing;
+			LayoutUtility.NowDrawing = this;
+
 			#if DEV_MODE && DEBUG_ENABLED
 			Debug.Log($"{GetType().Name}.Setup() with Event.current:{Event.current.type}");
 			#endif
@@ -66,8 +81,12 @@ namespace Sisus.Init.EditorOnly
 			nullArgumentGuard = serializedObject.FindProperty(nameof(nullArgumentGuard));
 			drawNullArgumentGuard = nullArgumentGuard != null;
 
-			var genericArguments = GetGenericArguments();
-			clientType = GetClientType(genericArguments);
+			if(!InitializerUtility.TryGetClientAndInitArgumentTypes(target.GetType(), out clientType, out var initArgumentTypes))
+			{
+				clientType = typeof(Object);
+				initArgumentTypes = Array.Empty<Type>();
+			}
+
 			clientIsInitializable = IsInitializable(clientType);
 			var initializers = targets;
 			int count = targets.Length;
@@ -83,27 +102,33 @@ namespace Sisus.Init.EditorOnly
 				}
 			}
 
-			if(count > 0 && clients[0] == null)
+			if(count > 0 && !clients[0])
 			{
 				clients = Array.Empty<Object>();
 			}
 
-			var initArguments = GetInitArgumentTypes(genericArguments);
 			if(externallyOwnedInitializerGUI is null)
 			{
 				DisposeOwnedInitializerGUI();
-				ownedInitializerGUI = new InitializerGUI(targets, clients, initArguments, this);
+				ownedInitializerGUI = new InitializerGUI(serializedObject, clients, initArgumentTypes, this);
 				ownedInitializerGUI.Changed += OnOwnedInitializerGUIChanged;
 			}
 
-			SetupParameterGUIs(initArguments);
-			ServiceChangedListener.UpdateAll(ref serviceChangedListeners, genericArguments, OnInitArgumentServiceChanged);
+			SetupParameterGUIs(initArgumentTypes);
+
+			LayoutUtility.NowDrawing = wasDrawing;
+
+			if(clientType is not null)
+			{
+				targetServiceChangedListener ??= ServiceChangedListener.Create(clientType, OnTargetOrInitArgumentServiceChanged);
+			}
+			ServiceChangedListener.UpdateAll(ref initArgumentServiceChangedListeners, initArgumentTypes, OnTargetOrInitArgumentServiceChanged);
 
 			LayoutUtility.Repaint(this);
 		}
 
 		// This can get called during deserialization, which could result in errors
-		private void OnInitArgumentServiceChanged() => EditorApplication.delayCall += ()=>
+		private void OnTargetOrInitArgumentServiceChanged() => EditorApplication.delayCall += ()=>
 		{
 			if(!this || !serializedObject.targetObject)
 			{
@@ -111,6 +136,7 @@ namespace Sisus.Init.EditorOnly
 			}
 
 			OnDisable();
+
 			Setup(externallyOwnedInitializerGUI);
 		};
 
@@ -123,8 +149,8 @@ namespace Sisus.Init.EditorOnly
 		private protected virtual void SetupParameterGUIs(Type[] argumentTypes)
 		{
 			DisposeParameterGUIs();
-			parameterGUIs = HasUserDefinedInitArgumentFields ? Array.Empty<InitParameterGUI>() : CreateParameterGUIs(clientType, argumentTypes);
-            
+			parameterGUIs = HasUserDefinedInitArgumentFields ? Array.Empty<InitParameterGUI>() : CreateParameterGUIs(argumentTypes);
+
 			AnyPropertyDrawer.UserSelectedTypeChanged -= OnInitArgUserSelectedTypeChanged;
 			if(parameterGUIs.Length > 0)
 			{
@@ -140,7 +166,7 @@ namespace Sisus.Init.EditorOnly
 			}
 		}
 
-		private InitParameterGUI[] CreateParameterGUIs(Type clientType, Type[] argumentTypes)
+		private InitParameterGUI[] CreateParameterGUIs(Type[] argumentTypes)
 			=> InitializerEditorUtility.CreateParameterGUIs(serializedObject, clientType, argumentTypes);
 
 		public override void OnInspectorGUI()
@@ -149,8 +175,6 @@ namespace Sisus.Init.EditorOnly
 
 			bool hierarchyModeWas = EditorGUIUtility.hierarchyMode;
 			EditorGUIUtility.hierarchyMode = true;
-
-			serializedObject.Update();
 
 			if(client == null)
 			{
@@ -162,6 +186,8 @@ namespace Sisus.Init.EditorOnly
 				EditorGUIUtility.hierarchyMode = hierarchyModeWas;
 				return;
 			}
+
+			GUILayout.Space(-EditorGUIUtility.singleLineHeight);
 
 			var rect = EditorGUILayout.GetControlRect();
 			rect.y -= 2f;
@@ -175,15 +201,7 @@ namespace Sisus.Init.EditorOnly
 			iconRect.height = 20f;
 			GUI.Label(iconRect, GetReferenceTooltip(client.serializedObject.targetObject, client.objectReferenceValue, clientIsInitializable));
 
-			GUILayout.Space(-EditorGUIUtility.singleLineHeight - 2f);
-			ownedInitializerGUI.OnInspectorGUI(); 
-
-			//if(client.objectReferenceValue is not ScriptableObject)
-			//{
-			//	DrawClientField(rect, client, clientLabel, clientIsInitializable, hasServiceArguments);
-			//}
-
-			serializedObject.ApplyModifiedProperties();
+			ownedInitializerGUI.OnInspectorGUI();
 
 			EditorGUIUtility.hierarchyMode = hierarchyModeWas;
 		}
@@ -198,28 +216,25 @@ namespace Sisus.Init.EditorOnly
 			int count = parameterGUIs.Length;
 			if(count == 0)
 			{
-				var serializedProperty = serializedObject.GetIterator();
-				serializedProperty.NextVisible(true);
-				while(serializedProperty.NextVisible(false))
-				{
-					EditorGUILayout.PropertyField(serializedProperty);
-				}
-
+				serializedObject.DrawPropertiesWithoutScriptField();
 				return;
 			}
 
 			for(int i = 0; i < count; i++)
 			{
-				InitParameterGUI drawer = parameterGUIs[i];
-				drawer.DrawArgumentField(IsNullAllowed, ServicesShown);
+				parameterGUIs[i].DrawArgumentField(IsNullAllowed, ServicesShown);
 			}
+
+			Editor.DrawPropertiesExcluding(serializedObject, fieldsToExcludeByArgumentCount[parameterGUIs.Length]);
 		}
 
 		private void OnDisable()
 		{
 			AnyPropertyDrawer.DisposeAllStaticState();
 			AnyPropertyDrawer.UserSelectedTypeChanged -= OnInitArgUserSelectedTypeChanged;
-			ServiceChangedListener.DisposeAll(ref serviceChangedListeners);
+			targetServiceChangedListener?.Dispose();
+			targetServiceChangedListener = null;
+			ServiceChangedListener.DisposeAll(ref initArgumentServiceChangedListeners);
 			DisposeParameterGUIs();
 			DisposeOwnedInitializerGUI();
 		}
@@ -268,7 +283,7 @@ namespace Sisus.Init.EditorOnly
 				Setup(externallyOwnedInitializerGUI);
 				return;
 			}
-			
+
 			SetupDuringNextOnGUI();
 		}
 
@@ -276,7 +291,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			setupDone = false;
 			Repaint();
-			LayoutUtility.ExitGUI(this);
+			LayoutUtility.ExitGUI();
 		}
 
 		private void OnOwnedInitializerGUIChanged(InitializerGUI initializerGUI)

@@ -2538,24 +2538,25 @@ namespace Sisus.Init
 
 		#if UNITY_EDITOR
 		/// <summary>
-		/// Loads the <see cref="MonoScript"/> asset that contains the definition for the <paramref name="classType"/>.
+		/// Loads the <see cref="MonoScript"/> asset that contains the definition for the <paramref name="type"/>.
 		/// <para>
 		/// This method is only available in the editor.
 		/// </para>
 		/// </summary>
-		/// <param name="classType"> Type of the class whose script asset to load. </param>
+		/// <param name="type"> Type of the class whose script asset to load. </param>
+		/// <param name="ignoreEditorScripts"></param>
 		/// <returns> The loaded script asset, if found; otherwise, <see langword="null"/>. </returns>
 		[return: MaybeNull]
-		public static MonoScript Script([DisallowNull] Type classType)
+		public static MonoScript Script([DisallowNull] Type type)
 		{
-			if(classType.IsNested)
+			if(type.IsNested)
 			{
-				classType = classType.DeclaringType;
+				type = type.DeclaringType;
 			}
 
-			string name = classType.Name;
+			string name = type.Name;
 
-			if(classType.IsGenericType)
+			if(type.IsGenericType)
 			{
 				// Parse out generic type information from generic type name
 				int i = name.IndexOf('`');
@@ -2566,9 +2567,9 @@ namespace Sisus.Init
 
 				// Additionally, convert generic types to their generic type defitions.
 				// E.g. List<string> to List<>.
-				if(!classType.IsGenericTypeDefinition)
+				if(!type.IsGenericTypeDefinition)
 				{
-					classType = classType.GetGenericTypeDefinition();
+					type = type.GetGenericTypeDefinition();
 				}
 			}
 
@@ -2590,24 +2591,24 @@ namespace Sisus.Init
 				if(string.Equals(filename, name, StringComparison.OrdinalIgnoreCase))
 				{
 					var scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
-					if(scriptAsset == null)
+					if(!scriptAsset)
 					{
 						continue;
 					}
 
 					var scriptClassType = scriptAsset.GetClass();
-					if(scriptClassType == classType)
+					if(scriptClassType == type)
 					{
 						return scriptAsset;
 					}
 
-					if(scriptClassType == null)
+					if(scriptClassType is null)
 					{
 						fallback = scriptAsset;
 					}
 					
 					#if DEV_MODE && DEBUG_FIND_SCRIPT
-					Debug.Log($"FindScriptFile({TypeUtility.ToString(classType)}) ignoring file @ \"{path}\" because MonoScript.GetClass() result {TypeUtility.ToString(scriptClassType)} did not match classType.");
+					Debug.Log($"FindScriptFile({TypeUtility.ToString(type)}) ignoring file @ \"{path}\" because MonoScript.GetClass() result {TypeUtility.ToString(scriptClassType)} did not match type.");
 					#endif
 				}
 			}
@@ -2625,13 +2626,13 @@ namespace Sisus.Init
 					{
 						var scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
 						var scriptClassType = scriptAsset.GetClass();
-						if(scriptClassType == classType)
+						if(scriptClassType == type)
 						{
 							return scriptAsset;
 						}
 
 						#if DEV_MODE && DEBUG_FIND_SCRIPT
-						Debug.LogWarning($"FindScriptFile({TypeUtility.ToString(classType)}) second pass: ignoring partial match @ \"{path}\" because MonoScript.GetClass() result {TypeUtility.ToString(scriptClassType)} did not match classType.");
+						Debug.LogWarning($"FindScriptFile({TypeUtility.ToString(type)}) second pass: ignoring partial match @ \"{path}\" because MonoScript.GetClass() result {TypeUtility.ToString(scriptClassType)} did not match type.");
 						#endif
 					}
 				}
@@ -2640,17 +2641,17 @@ namespace Sisus.Init
 			// If was unable to verify correct script class type using MonoScript.GetClass()
 			// but there was a probable match whose GetClass() returned null (seems to happen
 			// with all generic types), then return that.
-			if(fallback != null)
+			if(fallback)
 			{
 				#if DEV_MODE && DEBUG_FIND_SCRIPT
-				Debug.LogWarning($"FindScriptFile({TypeUtility.ToString(classType)}) returning fallback result @ \"{AssetDatabase.GetAssetPath(fallback)}\".");
+				Debug.LogWarning($"FindScriptFile({TypeUtility.ToString(type)}) returning fallback result @ \"{AssetDatabase.GetAssetPath(fallback)}\".");
 				#endif
 
 				return fallback;
 			}
 
 			#if DEV_MODE
-			Debug.Log($"FindScriptFile({TypeUtility.ToString(classType)}) failed to find MonoScript for classType {TypeUtility.ToString(classType)} AssetDatabase.FindAssets(\"{name} t:MonoScript\") returned {count} results.");
+			Debug.Log($"FindScriptFile({TypeUtility.ToString(type)}) failed to find MonoScript for type {TypeUtility.ToString(type)} AssetDatabase.FindAssets(\"{name} t:MonoScript\") returned {count} results.");
 			#endif
 
 			return null;
@@ -2659,19 +2660,19 @@ namespace Sisus.Init
 
 		#if UNITY_EDITOR
 		/// <summary>
-		/// Loads the <see cref="MonoScript"/> asset that contains the definition for the <paramref name="classType"/>.
+		/// Loads the <see cref="MonoScript"/> asset that contains the definition for the <paramref name="type"/>.
 		/// <para>
 		/// This method is only available in the editor.
 		/// </para>
 		/// </summary>
-		/// <param name="classType"> Type of the class whose script asset to load. </param>
+		/// <param name="type"> Type of the class whose script asset to load. </param>
 		/// <param name="result">
 		/// When this method returns, contains loaded script asset, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
 		/// </param>
 		/// <returns> <see langword="true"/> if a script asset was found; otherwise, <see langword="false"/>. </returns>
-		public static bool Script([DisallowNull] Type classType, [NotNullWhen(true), MaybeNullWhen(false)] out MonoScript result)
+		public static bool Script([DisallowNull] Type type, [NotNullWhen(true), MaybeNullWhen(false)] out MonoScript result)
 		{
-			result = Script(classType);
+			result = Script(type);
 			return result;
 		}
 		#endif
@@ -3398,7 +3399,7 @@ namespace Sisus.Init
 
 			if(!typesToFindableTypes.TryGetValue(interfaceType, out var existingFindableTypes))
 			{
-				typesToFindableTypes[interfaceType] = new Type[] { implementingUnityObjectType };
+				typesToFindableTypes[interfaceType] = new[] { implementingUnityObjectType };
 				return;
 			}
 
@@ -3426,7 +3427,7 @@ namespace Sisus.Init
 		private static T InChildrenByExactType<T>([DisallowNull] GameObject gameObject, Type findableType, bool includeInactive)
 		{
 			var component = gameObject.GetComponentInChildren(findableType, includeInactive);
-			if(component != null)
+			if(component)
 			{
 				return As<T>(component);
 			}

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
-namespace Sisus.Init.EditorOnly
+namespace Sisus.Shared.EditorOnly
 {
     /// <summary>
     /// A method that is called before or after the header GUI of a component is drawn.

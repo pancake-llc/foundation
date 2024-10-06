@@ -37,7 +37,7 @@ namespace Sisus.Init.Internal
 		#if UNITY_EDITOR
 		public static void OnValidate(Object obj, ref ServiceDefinition definition)
 		{
-			if(definition.service == null)
+			if(!definition.service)
 			{
 				return;
 			}

@@ -22,19 +22,21 @@ namespace Sisus.Init.Internal
 			foreach(var typeWithAttribute in typesWithAttribute)
 			{
 				var attributes = typeWithAttribute.GetCustomAttributes<ServiceAttribute>().ToArray();
-				var info = new GlobalServiceInfo(typeWithAttribute, attributes);
-				if(info.concreteType is null)
+				foreach(var info in GlobalServiceInfo.From(typeWithAttribute, attributes))
 				{
-					#if DEV_MODE
-					UnityEngine.Debug.Log(typeWithAttribute.Name + " concrete type is null.");
-					#endif
-					continue;
-				}
+					if(info.concreteType is null)
+					{
+						#if DEV_MODE
+						UnityEngine.Debug.Log(typeWithAttribute.Name + " concrete type is null.");
+						#endif
+						continue;
+					}
 
-				concreteTypes[info.concreteType] = info;
-				foreach(var definingType in info.definingTypes)
-				{
-					definingTypes[definingType] = info;
+					concreteTypes[info.concreteType] = info;
+					foreach(var definingType in info.definingTypes)
+					{
+						definingTypes[definingType] = info;
+					}
 				}
 			}
 		}

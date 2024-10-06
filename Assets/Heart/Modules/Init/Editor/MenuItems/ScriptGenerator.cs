@@ -434,11 +434,11 @@ namespace Sisus.Init.EditorOnly.Internal
 							}
 						}
 
-						name = GetLabel(member.Name).text.Replace(" ", "");
+						name = GetLabel(member.Name).Replace(" ", "");
 					}
 					else
 					{
-						name = GetLabel(NameOfWithoutIllegalCharacters(parameterType)).text.Replace(" ", "");
+						name = GetLabel(NameOfWithoutIllegalCharacters(parameterType)).Replace(" ", "");
 					}
 
 					if(string.IsNullOrEmpty(name))
@@ -712,10 +712,53 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static Type[] GetInitParameters(Type clientType)
 		{
-			var resultFromInitializableInitializerOrConstructor = GetInitParameterTypes(GetInitializerTypes(clientType).FirstOrDefault(), clientType);
-			if(resultFromInitializableInitializerOrConstructor.Length > 0)
+			if(typeof(IWrapper).IsAssignableFrom(clientType))
 			{
-				return resultFromInitializableInitializerOrConstructor;
+				foreach((Type wrappedType, Type[] wrapperTypes) in Find.typeToWrapperTypes)
+				{
+					if(Array.IndexOf(wrapperTypes, clientType) != -1)
+					{
+						clientType = wrappedType;
+						break;
+					}
+				}
+			}
+
+			if(Find.typeToWrapperTypes.ContainsKey(clientType))
+			{
+				foreach(var constructor in clientType.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
+				{
+					var parameters = constructor.GetParameters();
+					if(parameters.Length > 0)
+					{
+						return parameters.Select(p => p.ParameterType).ToArray();
+					}
+				}
+			}
+
+			if(InitializableUtility.TryGetParameterTypes(clientType, out var parameterTypes))
+			{
+				return parameterTypes;
+			}
+
+			if(!typeof(Object).IsAssignableFrom(clientType))
+			{
+				foreach(var constructor in clientType.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
+				{
+					var parameters = constructor.GetParameters();
+					if(parameters.Length > 0)
+					{
+						return parameters.Select(p => p.ParameterType).ToArray();
+					}
+				}
+			}
+
+			foreach(var initializerType in GetInitializerTypes(clientType))
+			{
+				if(InitializerUtility.TryGetInitArgumentTypes(initializerType, out var initArgumentTypes))
+				{
+					return initArgumentTypes;
+				}
 			}
 
 			var allProperties = clientType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)

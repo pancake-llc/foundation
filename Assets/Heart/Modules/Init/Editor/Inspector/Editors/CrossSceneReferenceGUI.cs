@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace Sisus.Init.EditorOnly
 {
-	public sealed class CrossSceneReferenceGUI : IDisposable
+	internal sealed class CrossSceneReferenceGUI : IDisposable
 	{
 		private static GUIContent sceneIcon;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,15 +10,12 @@ namespace Sisus.Init.EditorOnly.Internal
 	{
 		public static InitParameterGUI NowDrawing { get; private set; }
 
-		public GUIContent label;
 		public readonly SerializedProperty anyProperty;
-		public readonly SerializedProperty referenceProperty;
-		public readonly Type valueType;
-		public readonly bool isService;
+		private readonly GUIContent label;
+		private readonly bool isService;
 
 		public Attribute[] Attributes { get; private set; }
 		public bool NullArgumentGuardActive { get; private set; }
-		public bool ServicesShown { get; private set; }
 
 		public InitParameterGUI(GUIContent label, SerializedProperty anyProperty, Type valueType, Attribute[] attributes = null)
 		{
@@ -25,10 +23,8 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			this.label = label;
 			this.anyProperty = anyProperty;
-			this.valueType = valueType;
 			Attributes = attributes;
-			isService = ServiceUtility.TryGetFor(anyProperty.serializedObject.targetObject, valueType, out _, Context.MainThread);
-			referenceProperty = anyProperty.FindPropertyRelative("reference");
+			isService = ServiceUtility.TryGetFor(anyProperty.serializedObject.targetObject, valueType, out _);
 
 			NowDrawing = null;
 		}

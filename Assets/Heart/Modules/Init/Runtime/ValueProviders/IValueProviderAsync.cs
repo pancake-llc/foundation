@@ -36,6 +36,26 @@ namespace Sisus.Init
 		GetForAsync([AllowNull] Component client);
 
 		/// <summary>
+		/// Gets a value indicating whether this value provider can provide a value of type
+		/// <typeparamref name="TValue"/> for the <paramref name="client"/> at this time.
+		/// </summary>
+		/// <param name="client">
+		/// The component requesting the value, if request is coming from a component; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if can provide a value for the client at this time; otherwise, <see langword="false"/>.
+		/// </returns>
+		bool HasValueFor(Component client)
+		{
+			var awaitable = GetForAsync(client);
+			#if UNITY_2023_1_OR_NEWER
+			return !awaitable.GetAwaiter().IsCompleted || awaitable.GetAwaiter().GetResult() is not null;
+			#else
+			return !awaitable.IsFaulted;
+			#endif
+		}
+
+		/// <summary>
 		/// Gets the value of type <typeparamref name="TValue"/> for the <paramref name="client"/>.
 		/// </summary>
 		/// <param name="client">

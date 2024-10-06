@@ -133,6 +133,16 @@ namespace PancakeEditor.Common
             TextureCached[$"{nameof(IconCopiedComponent)}{theme}"] = tex;
             return tex;
         }
+        
+        public static Texture2D IconNullGuardPassed(string theme)
+        {
+            TextureCached.TryGetValue($"{nameof(IconNullGuardPassed)}{theme}", out var tex);
+
+            if (tex != null) return tex;
+            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_nullguard_passed.png" : "icon_nullguard_passed_dark.png", RELATIVE_PATH);
+            TextureCached[$"{nameof(IconNullGuardPassed)}{theme}"] = tex;
+            return tex;
+        }
 
         public static TextAsset ScreenViewTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("ScreenViewTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
         public static TextAsset ScreenPresenterTemplate => ProjectDatabase.FindAssetWithPath<TextAsset>("ScreenPresenterTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);

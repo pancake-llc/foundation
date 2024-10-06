@@ -1,0 +1,16 @@
+﻿{
+  "name": "Unity.InternalAPIEditorBridgeDev.004",
+  "rootNamespace": "Sisus.Shared",
+  "references": [],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

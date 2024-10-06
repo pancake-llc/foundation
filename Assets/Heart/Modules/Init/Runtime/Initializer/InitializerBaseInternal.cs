@@ -12,10 +12,11 @@ using Object = UnityEngine.Object;
 using Sisus.Init.EditorOnly;
 #endif
 
-[assembly: InternalsVisibleTo("InitArgs.UIToolkit")]
-
 namespace Sisus.Init.Internal
 {
+    // Base class for all Initializers; targeted by InitializerEditor.
+	public abstract class InitializerBaseInternal : MonoBehaviour { }
+
 	/// <summary>
 	/// A base class for a component that can specify the arguments used to initialize a client of type <typeparamref name="TClient"/>.
 	/// <para>
@@ -26,7 +27,7 @@ namespace Sisus.Init.Internal
 	/// </para>
 	/// </summary>
 	/// <typeparam name="TClient"> Type of the initialized client component. </typeparam>
-	public abstract class InitializerBaseInternal<TClient> : MonoBehaviour, IInitializer<TClient>, IValueProvider<TClient>, IValueByTypeProvider
+	public abstract class InitializerBaseInternal<TClient> : InitializerBaseInternal, IInitializer<TClient>, IValueProvider<TClient>, IValueByTypeProvider
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly<TClient>
 		#endif
@@ -318,7 +319,8 @@ namespace Sisus.Init.Internal
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(argument == Null)
 			{
-				throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TArgument));
+				GetMissingInitArgumentsException(this, typeof(TArgument)).LogAsError();
+				throw new ArgumentNullException(typeof(TArgument).Name);
 			}
 			#endif
 		}
@@ -333,6 +335,11 @@ namespace Sisus.Init.Internal
 
 		private void DestroySelfIfNotAsset()
 		{
+			if(!this)
+			{
+				return;
+			}
+
 			#if UNITY_EDITOR
 			if(gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
 			{
@@ -340,10 +347,7 @@ namespace Sisus.Init.Internal
 			}
 			#endif
 
-			if(this)
-			{
-				Destroy(this);
-			}
+			Destroy(this);
 		}
 
 		#if UNITY_EDITOR

@@ -292,7 +292,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					else if(currentlyRenderedTree.GetSelectedChild().OnAction())
 					{
 						CloseWindow();
-						LayoutUtility.ExitGUI(null);
+						LayoutUtility.ExitGUI();
 					}
 					Repaint();
 					Event.current.Use();

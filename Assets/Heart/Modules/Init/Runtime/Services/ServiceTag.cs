@@ -53,7 +53,7 @@ namespace Sisus.Init.Internal
 
 					Debug.LogWarning($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(DefiningType)} value: null.", gameObject);
 				}
-				else if(service != null && !IsValidDefiningTypeFor(value, service))
+				else if(service && !IsValidDefiningTypeFor(value, service))
 				{
 					#if UNITY_EDITOR
 					EditorApplication.delayCall = OnValidateDelayed;
@@ -79,7 +79,7 @@ namespace Sisus.Init.Internal
 				service = value;
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
-				if(value == null)
+				if(!value)
 				{
 					#if UNITY_EDITOR
 					EditorApplication.delayCall = OnValidateDelayed;
@@ -111,10 +111,10 @@ namespace Sisus.Init.Internal
 
 		bool IValueProvider<Component>.TryGetFor(Component client, out Component value)
 		{
-			if(client != null ? IsAvailableToClient(client.gameObject) : IsAvailableToAnyClient())
+			if(client ? IsAvailableToClient(client.gameObject) : IsAvailableToAnyClient())
 			{
 				value = service;
-				return service != null;
+				return service;
 			}
 			
 			value = null;
@@ -148,9 +148,9 @@ namespace Sisus.Init.Internal
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
 		{
 			if(definingType.Value == typeof(TValue)
-			&& service != null
+			&& service
 			&& Find.In(service, out value)
-			&& (IsAvailableToAnyClient() || (client != null && IsAvailableToClient(client.gameObject))))
+			&& (IsAvailableToAnyClient() || (client && IsAvailableToClient(client.gameObject))))
 			{
 				return true;
 			}
@@ -161,12 +161,12 @@ namespace Sisus.Init.Internal
 
 		bool IValueByTypeProvider.CanProvideValue<TValue>(Component client)
 		{
-			if(definingType.Value != typeof(TValue) || service == null || service is not TValue)
+			if(definingType.Value != typeof(TValue) || !service || service is not TValue)
 			{
 				return false;
 			}
 
-			if(!IsAvailableToAnyClient() && (client == null || !IsAvailableToClient(client.gameObject)))
+			if(!IsAvailableToAnyClient() && (!client || !IsAvailableToClient(client.gameObject)))
 			{
 				return false;
 			}
@@ -177,7 +177,7 @@ namespace Sisus.Init.Internal
 		private void Awake()
 		{
 			#if UNITY_EDITOR
-			if(service == null)
+			if(!service)
 			{
 				return;
 			}
@@ -204,8 +204,10 @@ namespace Sisus.Init.Internal
 
 		internal bool IsAvailableToClient([DisallowNull] GameObject client)
 		{
-			Debug.Assert(client != null);
-			Debug.Assert(this != null);
+			#if DEV_MODE
+			Debug.Assert(client);
+			Debug.Assert(this);
+			#endif
 
 			switch(toClients)
 			{
@@ -223,7 +225,7 @@ namespace Sisus.Init.Internal
 					return false;
 				case Clients.InParents:
 					var clientTransform = client.transform;
-					for(var parent = transform; parent != null; parent = parent.parent)
+					for(var parent = transform; parent; parent = parent.parent)
 					{
 						if(parent == clientTransform)
 						{
@@ -252,7 +254,7 @@ namespace Sisus.Init.Internal
 				return;
 			}
 
-			var registerForClients = toClients switch
+			Clients registerForClients = toClients switch
 			{
 				Clients.InGameObject => toClients,
 				Clients.InChildren => toClients,

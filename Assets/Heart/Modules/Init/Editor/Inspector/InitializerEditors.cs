@@ -4,10 +4,10 @@ using System.Linq;
 using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEngine;
-using static Sisus.Init.EditorOnly.DragAndDropUtility;
+using static Sisus.Init.EditorOnly.Internal.DragAndDropUtility;
 using static UnityEditorInternal.ComponentUtility;
 
-namespace Sisus.Init.EditorOnly
+namespace Sisus.Init.EditorOnly.Internal
 {
 	/// <summary>
 	/// Class responsible for setting Initializer inspector hide flags on/off
@@ -48,7 +48,7 @@ namespace Sisus.Init.EditorOnly
 
 			foreach(var initializer in InitializersWithClientOnSameGameObject)
 			{
-				if(!(initializer is Component initializerComponent) || initializerComponent == null || initializer.Target != DragAndDroppedComponent || DragSourceGameObject == DropTargetGameObject)
+				if(!(initializer is Component initializerComponent) || !initializerComponent || initializer.Target != DragAndDroppedComponent || DragSourceGameObject == DropTargetGameObject)
 				{
 					continue;
 				}

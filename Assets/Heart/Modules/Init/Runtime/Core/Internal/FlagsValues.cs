@@ -1,12 +1,12 @@
 ﻿namespace Sisus.Init
 {
 	/// <summary>
-	/// Helper class that lists all valid values that an int-backed bit field enumeration type can have.
+	/// Specifies all the possible flags that can be set in an int-backed bit field enumeration type.
 	/// <example>
 	/// <code>
 	/// using System;
 	/// using static Sisus.Init.FlagsValues;
-	/// 
+	///
 	/// [Flags]
 	/// public enum MyEnum
 	/// {
@@ -78,111 +78,116 @@
 		public const int _10 = 1 << 9;
 
 		/// <summary>
-		/// Value of 1024.
+		/// Value of 1024 (1 KiB).
 		/// </summary>
 		public const int _11 = 1 << 10;
 
 		/// <summary>
-		/// Value of 2048.
+		/// Value of 2048 (2 KiB).
 		/// </summary>
 		public const int _12 = 1 << 11;
 
 		/// <summary>
-		/// Value of 4096.
+		/// Value of 4096 (4 KiB).
 		/// </summary>
 		public const int _13 = 1 << 12;
 
 		/// <summary>
-		/// Value of 8192.
+		/// Value of 8192 (8 KiB).
 		/// </summary>
 		public const int _14 = 1 << 13;
 
 		/// <summary>
-		/// Value of 16384.
+		/// Value of 16 384 (16 KiB).
 		/// </summary>
 		public const int _15 = 1 << 14;
 
 		/// <summary>
-		/// Value of 32768.
+		/// Value of 32 768 (32 KiB).
 		/// </summary>
 		public const int _16 = 1 << 15;
 
 		/// <summary>
-		/// Value of 65536.
+		/// Value of 65 536 (64 KiB).
 		/// </summary>
 		public const int _17 = 1 << 16;
 
 		/// <summary>
-		/// Value of 131072.
+		/// Value of 131 072 (128 KiB).
 		/// </summary>
 		public const int _18 = 1 << 17;
 
 		/// <summary>
-		/// Value of 262144.
+		/// Value of 262 144 (256 KiB).
 		/// </summary>
 		public const int _19 = 1 << 18;
 
 		/// <summary>
-		/// Value of 524288.
+		/// Value of 524 288 (512 KiB).
 		/// </summary>
 		public const int _20 = 1 << 19;
 
 		/// <summary>
-		/// Value of 1048576.
+		/// Value of 1 048 576 (1 MiB).
 		/// </summary>
 		public const int _21 = 1 << 20;
 
 		/// <summary>
-		/// Value of 2097152.
+		/// Value of 2 097 152 (2 MiB).
 		/// </summary>
 		public const int _22 = 1 << 21;
 
 		/// <summary>
-		/// Value of 4194304.
+		/// Value of 4 194 304 (4 MiB).
 		/// </summary>
 		public const int _23 = 1 << 22;
 
 		/// <summary>
-		/// Value of 8388608.
+		/// Value of 8 388 608 (8 MiB).
 		/// </summary>
 		public const int _24 = 1 << 23;
 
 		/// <summary>
-		/// Value of 16777216.
+		/// Value of 16 777 216 (16 MiB).
 		/// </summary>
 		public const int _25 = 1 << 24;
 
 		/// <summary>
-		/// Value of 33554432.
+		/// Value of 33554432 (32 MiB).
 		/// </summary>
 		public const int _26 = 1 << 25;
 
 		/// <summary>
-		/// Value of 67108864.
+		/// Value of 67 108 864 (64 MiB).
 		/// </summary>
 		public const int _27 = 1 << 26;
 
 		/// <summary>
-		/// Value of 134217728.
+		/// Value of 134 217 728 (128 MiB).
 		/// </summary>
 		public const int _28 = 1 << 27;
 
 		/// <summary>
-		/// Value of 268435456.
+		/// Value of 268 435 456 (256 MiB).
 		/// </summary>
 		public const int _29 = 1 << 28;
 
 		/// <summary>
-		/// Value of 536870912.
+		/// Value of 536 870 912 (512 MiB).
 		/// </summary>
 		public const int _30 = 1 << 29;
 
 		/// <summary>
-		/// Value of 1073741824.
-		/// <para>
-		/// The largest possible value that an int-backed bit field enumeration type can have.
-		/// </para>
+		/// Value of 1073741824 (1 GiB).
 		/// </summary>
 		public const int _31 = 1 << 30;
+
+		/// <summary>
+		/// Value of -2147483648 (<see cref="int.MinValue"/>).
+		/// <para>
+		/// The last bit in an int-backed bit field is represented by the sign of the integer.
+		/// </para>
+		/// </summary>
+		public const int _32 = 1 << 31;
 	}
 }

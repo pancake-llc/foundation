@@ -34,7 +34,19 @@ namespace Sisus.Init
 		bool TryGetFor<TValue>([AllowNull] Component client, [NotNullWhen(true), MaybeNullWhen(false)] out TValue value);
 
 		/// <summary>
-		/// Gets a value indicating whether or not this value provider can potentially provide
+		/// Gets a value indicating whether this value provider can provide a value of type
+		/// <typeparamref name="TValue"/> for the <paramref name="client"/> at this time.
+		/// </summary>
+		/// <param name="client">
+		/// The component requesting the value, if request is coming from a component; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if can provide a value for the client at this time; otherwise, <see langword="false"/>.
+		/// </returns>
+		bool HasValueFor<TValue>(Component client) => TryGetFor<TValue>(client, out _);
+
+		/// <summary>
+		/// Gets a value indicating whether this value provider can potentially provide
 		/// a value of the given type to the client at runtime.
 		/// <para>
 		/// Used by the Inspector to determine if the value provider can be assigned to an Init argument field.
@@ -48,7 +60,7 @@ namespace Sisus.Init
 		/// </returns>
 		bool CanProvideValue<TValue>([AllowNull] Component client) => TryGetFor<TValue>(client, out _);
 
-		bool CanProvideValue(Type valueType, Component client) => (bool)canProvideValueGeneric.MakeGenericMethod(valueType).Invoke(this, WithArgument(client));
+		bool CanProvideValue(Type ofType, Component toClient) => (bool)canProvideValueGeneric.MakeGenericMethod(ofType).Invoke(this, WithArgument(toClient));
 
 		private static object[] WithArgument(object argument)
 		{

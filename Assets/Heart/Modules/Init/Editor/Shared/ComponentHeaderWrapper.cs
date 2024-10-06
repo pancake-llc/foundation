@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Sisus.Init.EditorOnly
+namespace Sisus.Shared.EditorOnly
 {
     /// <summary>
     /// Class that can wrap the <see cref="IMGUIContainer.onGUIHandler"/>

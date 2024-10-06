@@ -29,7 +29,6 @@ namespace Sisus.Init
 			}
 
 			var sb = new StringBuilder();
-			sb.Append("Unable to initialize service because its constructor requires another service, which can not be constructed without the prior service existing first.");
 			string firstName = TypeUtility.ToString(dependencyChain[0].ConcreteOrDefiningType);
 
 			if(count == 1)
@@ -46,7 +45,6 @@ namespace Sisus.Init
 			}
 			
 			string secondName = TypeUtility.ToString(dependencyChain[1].ConcreteOrDefiningType);
-
 			sb.Append("Unable to initialize service ");
 			sb.Append(firstName);
 			sb.Append(" because its constructor requires another service, which can not be constructed without the prior service existing first.\n");

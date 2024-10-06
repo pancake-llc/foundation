@@ -36,7 +36,27 @@ namespace Sisus.Init
 		GetForAsync<TValue>([AllowNull] Component client);
 
 		/// <summary>
-		/// Gets a value indicating whether or not this value provider can potentially provide
+		/// Gets a value indicating whether this value provider can provide a value of type
+		/// <typeparamref name="TValue"/> for the <paramref name="client"/> at this time.
+		/// </summary>
+		/// <param name="client">
+		/// The component requesting the value, if request is coming from a component; otherwise, <see langword="null"/>.
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if can provide a value for the client at this time; otherwise, <see langword="false"/>.
+		/// </returns>
+		bool HasValueFor<TValue>(Component client)
+		{
+			var awaitable = GetForAsync<TValue>(client);
+			#if UNITY_2023_1_OR_NEWER
+			return !awaitable.GetAwaiter().IsCompleted || awaitable.GetAwaiter().GetResult() is not null;
+			#else
+			return !awaitable.IsFaulted;
+			#endif
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this value provider can potentially provide
 		/// a value of the given type to the client at runtime.
 		/// <para>
 		/// Used by the Inspector to determine if the value provider can be assigned to an Init argument field.

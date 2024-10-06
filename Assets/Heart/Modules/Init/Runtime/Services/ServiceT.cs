@@ -36,8 +36,9 @@ namespace Sisus.Init
 		public static TService Instance = default; // as a performance optimization, use a field instead of a property in release builds.
 		#endif
 
-		internal static void Clear() => Service.SetInstance<TService>(default);
-		
+		internal static void Unset() => Service.Unset<TService>();
+		internal static void Dispose() => Service.Dispose<TService>();
+
 		static Service()
 		{
 			#if DEV_MODE || (DEBUG && INIT_ARGS_SAFE_MODE)
@@ -58,7 +59,7 @@ namespace Sisus.Init
 			#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
 			if(Service.nowSettingInstance != typeof(TService))
 			{
-				if(ServiceInjector.uninitializedServices.TryGetValue(typeof(TService), out var definition))
+				if(ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo))
 				{
 					#if UNITY_EDITOR
 					if(!EditorOnly.ThreadSafe.Application.IsPlaying)
@@ -67,20 +68,7 @@ namespace Sisus.Init
 					}
 					#endif
 
-					_ = ServiceInjector.LazyInit(definition, typeof(TService));
-				}
-				else if(typeof(TService).IsGenericType
-					&& !typeof(TService).IsGenericTypeDefinition
-					&& ServiceInjector.uninitializedServices.TryGetValue(typeof(TService).GetGenericTypeDefinition(), out definition))
-				{
-					#if UNITY_EDITOR
-					if(!EditorOnly.ThreadSafe.Application.IsPlaying)
-					{
-						return;
-					}
-					#endif
-
-					_ = ServiceInjector.LazyInit(definition, typeof(TService));
+					_ = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
 				}
 			}
 			#endif

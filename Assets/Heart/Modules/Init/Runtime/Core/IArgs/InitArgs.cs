@@ -586,7 +586,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for the argument it accepts,
 		/// then the argument can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// or <see cref="Object.FindObjectOfType"/>.
+		/// or <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TArgument}"/> interface in order for it to be used with this function.
@@ -631,7 +631,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentForAutoInit<TClient, TArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentForAutoInit<TClient, TArgument>(client, context))
 				{
 					#if DEV_MODE && DEBUG_ENABLED
 					Debug.Log($"Argument {typeof(TArgument)} of {typeof(TClient).Name} is auto-inititable. Fetching via GetAutoInitArgument.", client as Object);
@@ -660,7 +662,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument}"/> interface in order for it to be used with this function.
@@ -709,7 +711,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -737,7 +741,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument}"/> interface in order for it to be used with this function.
@@ -792,7 +796,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -823,7 +829,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> interface in order for it to be used with this function.
@@ -880,7 +886,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -914,7 +922,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> interface in order for it to be used with this function.
@@ -975,7 +983,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -1012,7 +1022,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> interface in order for it to be used with this function.
@@ -1076,7 +1086,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -1116,7 +1128,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> interface in order for it to be used with this function.
@@ -1184,7 +1196,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -1227,7 +1241,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/> interface in order for it to be used with this function.
@@ -1298,7 +1312,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -1344,7 +1360,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/> interface in order for it to be used with this function.
@@ -1419,7 +1435,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -1468,7 +1486,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/> interface in order for it to be used with this function.
@@ -1546,7 +1564,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -1598,7 +1618,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/> interface in order for it to be used with this function.
@@ -1680,7 +1700,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);
@@ -1735,7 +1757,7 @@ namespace Sisus.Init
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for each argument it accepts,
 		/// then the arguments can also be retrieved autonomously by this method using methods such as <see cref="GameObject.GetComponent">GetComponent</see>
-		/// and <see cref="Object.FindObjectOfType"/>.
+		/// and <see cref="Object.FindAnyObjectByType"/>.
 		/// </para>
 		/// <para>
 		/// The <paramref name="client"/> must implement the <see cref="IArgs{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/> interface in order for it to be used with this function.
@@ -1820,7 +1842,9 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(context.IsEditMode())
 			{
-				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>(client))
+				// When a client has an initializer attached, the initializer takes over the responsibility
+				// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
+				if(TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>(client, context))
 				{
 					firstArgument = GetAutoInitArgument<TClient, TFirstArgument>(client, 0);
 					secondArgument = GetAutoInitArgument<TClient, TSecondArgument>(client, 1);

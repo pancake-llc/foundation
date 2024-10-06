@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Sisus.Init.ValueProviders;
 using UnityEngine;
-using static Sisus.Init.ValueProviders.ValueProviderUtility;
 
 namespace Sisus.Init
 {
@@ -20,21 +20,21 @@ namespace Sisus.Init
 	/// <para>
 	/// Additionally, it makes it easier to swap your service provider with another implementation at a later time.
 	/// </para>
+	/// <para>
 	/// A third benefit is that it makes your code less coupled with other classes, making it much easier to
 	/// port the code over to another project for example.
 	/// </para>
 	/// <para>
-	/// The <see cref="ServiceProvider"/> class is a <see cref="ServiceAttribute">service</see> itself.
-	/// This means that an instance of the class can be automatically received by any classes that derive from
+	/// The <see cref="ServiceProvider"/> can be automatically received by classes that derive from
 	/// <see cref="MonoBehaviour{IServiceProvider}"/> or <see cref="ScriptableObject{IServiceProvider}"/>.
 	/// </para>
 	/// </summary>
 	[Service(typeof(IServiceProvider)), Service(typeof(System.IServiceProvider))]
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
-	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Class | Is.Interface, WhereNone = Is.BuiltIn | Is.Service, Order = 100f, Tooltip = "An instance of this dynamic service is expected to become available for the client at runtime.\n\nService can be a component that has the Service Tag, or an Object registered as a service in a Services component, that is located in another scene or prefab.\n\nThe service could also be manually registered in code using " + nameof(Service) + "." + nameof(Service.SetInstance) + ".")]
+	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Class | Is.Interface, WhereNone = Is.BuiltIn | Is.Service, Order = 100f, Tooltip = "An instance of this dynamic service is expected to become available for the client at runtime.\n\nService can be a component that has the Service Tag, or an Object registered as a service in a Services component, that is located in another scene or prefab.\n\nThe service could also be manually registered in code using " + nameof(Service) + "." + nameof(Service.Set) + ".")]
 	#endif
 	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1002)]
+	[CreateAssetMenu(fileName = MENU_NAME, menuName = ValueProviderUtility.CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1002)]
 	#endif
 	public sealed class ServiceProvider : ScriptableObject, IServiceProvider, System.IServiceProvider, IValueByTypeProvider, INullGuardByType
 	{
@@ -73,20 +73,7 @@ namespace Sisus.Init
 		/// to the user about missing arguments.
 		/// </para>
 		/// </returns>
-		NullGuardResult INullGuardByType.EvaluateNullGuard<TService>(Component client)
-		{
-			if(client ? Service.ExistsFor<TService>(client) : Service.Exists<TService>())
-			{
-				return NullGuardResult.Passed;
-			}
-
-			if(ServiceUtility.IsServiceDefiningType<TService>())
-			{
-				return NullGuardResult.Passed;
-			}
-
-			return NullGuardResult.ValueProviderValueNullInEditMode;
-		}
+		NullGuardResult INullGuardByType.EvaluateNullGuard<TService>(Component client) => NullGuardResult.Passed;
 
 		/// <summary>
 		/// Gets the service object of the specified type.

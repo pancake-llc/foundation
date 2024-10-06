@@ -24,24 +24,84 @@ namespace Sisus.Init
 	internal static class ScopedService<TService>
 	{
 		#if UNITY_EDITOR
-		// In the editor services can registered in OnValidate and OnAfterDeserialize,
+		// In the editor services can be registered in OnValidate and OnAfterDeserialize,
 		// so we need to use thread safe collections. In builds services are only registered
 		// in OnEnable, so we can just use a simple list.
 		// In the editor we also use separate caches for edit and play modes to avoid issues with
 		// Add / Remove not being called in pairs when entering / exiting play mode etc.
-		private static readonly ConcurrentDictionary<Instance, byte> instancesInEditMode = new ConcurrentDictionary<Instance, byte>();
-		private static readonly ConcurrentDictionary<Instance, byte> instancesInPlayMode = new ConcurrentDictionary<Instance, byte>();
+		private static readonly ConcurrentDictionary<Instance, byte> instancesInEditMode = new();
+		private static readonly ConcurrentDictionary<Instance, byte> instancesInPlayMode = new();
 
 		public static ICollection<Instance> Instances => (EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode).Keys;
 		#else
 		public static readonly List<Instance> Instances = new List<Instance>();
 		#endif
 
-		public static bool ExistsForAnyClients()
+		internal static bool IsServiceFor([DisallowNull] Component client, [DisallowNull] TService test)
+		{
+			#if DEV_MODE
+			Debug.Assert(client is not null, "ScopedService<T>.IsServiceFor called with null client.");
+			Debug.Assert(test is not null, "ScopedService<T>.IsServiceFor called with null object to test.");
+			#endif
+
+			foreach(var instance in Instances)
+			{
+				#if UNITY_EDITOR
+				if(!instance.serviceProvider)
+				{
+					continue;
+				}
+				#endif
+
+				if(ReferenceEquals(test, instance.service))
+				{
+					return Service.IsAccessibleTo(instance, client.transform);
+				}
+			}
+
+			return false;
+		}
+
+		public static bool IsService(TService test)
+		{
+			#if DEV_MODE
+			Debug.Assert(test is not null, "ScopedService<T>.IsService called with null object to test.");
+			#endif
+
+			foreach(var instance in Instances)
+			{
+				#if UNITY_EDITOR
+				if(!instance.serviceProvider)
+				{
+					continue;
+				}
+				#endif
+
+				if(ReferenceEquals(test, instance.service))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether a service of type <see paramref="TService"/> exists
+		/// with accessibility level <see cref="Clients.Everywhere"/>.
+		/// </summary>
+		public static bool ExistsForAllClients()
 		{
 			foreach(var instance in Instances)
 			{
-				if(instance.clients == Clients.Everywhere && !(instance.service is null))
+				#if UNITY_EDITOR
+				if(!instance.serviceProvider)
+				{
+					continue;
+				}
+				#endif
+
+				if(instance is { clients: Clients.Everywhere, service: not null })
 				{
 					return true;
 				}

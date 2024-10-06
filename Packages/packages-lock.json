@@ -256,11 +256,11 @@
       }
     },
     "jp.hadashikick.vitalrouter": {
-      "version": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#1.4.2",
+      "version": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#1.4.3",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "053643d3bec05bcabc2995548a3e4ee8cc10f717"
+      "hash": "de22a2987246dec7be4e7bb84ba8659bd2c8db37"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

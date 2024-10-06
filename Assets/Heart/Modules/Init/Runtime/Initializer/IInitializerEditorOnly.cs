@@ -1,11 +1,6 @@
 ﻿#if UNITY_EDITOR
-using System.Runtime.CompilerServices;
 using Sisus.Init.Internal;
 using UnityEngine;
-
-[assembly: InternalsVisibleTo("InitArgs.Editor")]
-[assembly: InternalsVisibleTo("Tests.EditMode")]
-[assembly: InternalsVisibleTo("Tests.PlayMode")]
 
 namespace Sisus.Init.EditorOnly
 {

@@ -130,6 +130,8 @@ namespace Sisus.Init
 			#endif
 		}
 
+		public string HeaderText { get; set; } = "Runtime State";
+
 		private void DrawRuntimeMembers()
 		{
 			if(fields.Count == 0)
@@ -140,7 +142,11 @@ namespace Sisus.Init
 			GUILayout.Space(5f);
 
 			GUI.enabled = false;
-			GUILayout.Label("Runtime State", EditorStyles.boldLabel);
+
+			if(HeaderText.Length > 0)
+			{
+				GUILayout.Label(HeaderText, EditorStyles.boldLabel);
+			}
 
 			var rect = GUILayoutUtility.GetLastRect();
 			rect.y += rect.height;

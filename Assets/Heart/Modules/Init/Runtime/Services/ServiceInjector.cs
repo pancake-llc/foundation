@@ -51,7 +51,7 @@ namespace Sisus.Init.Internal
 		/// This only takes into consideration services defined using the <see cref="ServiceAttribute"/>.
 		/// Services set up in scenes and prefabs using <see cref="ServiceTag"/> and <see cref="Services"/>
 		/// components are not guaranteed to be yet loaded even if this is <see langword="true"/>.
-		/// Services that are registered manually using <see cref="Service.SetInstance"/> are also not
+		/// Services that are registered manually using <see cref="Service.Set{TService}"/> are also not
 		/// guaranteed to be loaded even if this is <see langword="true"/>.
 		/// </para>
 		/// </summary>
@@ -66,7 +66,7 @@ namespace Sisus.Init.Internal
 		/// <para>
 		/// Services set up in scenes and prefabs using <see cref="ServiceTag"/> and <see cref="Services"/>
 		/// components are not guaranteed to be yet loaded even if this is <see langword="true"/>.
-		/// Services that are registered manually using <see cref="Service.SetInstance"/> are also not
+		/// Services that are registered manually using <see cref="Service.Set{TService}"/> are also not
 		/// guaranteed to be loaded even if this is <see langword="true"/>.
 		/// </para>
 		/// </summary>
@@ -89,7 +89,7 @@ namespace Sisus.Init.Internal
 		/// </summary>
 		public static event Action AsyncServicesBecameReady;
 		internal static Dictionary<Type, object> services = new();
-		internal static readonly Dictionary<Type, GlobalServiceInfo> uninitializedServices = new();
+		private static readonly Dictionary<Type, GlobalServiceInfo> uninitializedServices = new(); // Lazy and transient
 		private static GameObject container;
 		#if DEV_MODE || DEBUG
 		private static readonly HashSet<GlobalServiceInfo> exceptionsLogged = new();
@@ -334,23 +334,6 @@ namespace Sisus.Init.Internal
 		}
 		#endif
 
-		private static void ForEachService(Action<object> action)
-		{
-			foreach(var service in services.Values.Distinct())
-			{
-				if(service is Task task)
-				{
-					task.ContinueWith(InvokeOnResult);
-				}
-				else
-				{
-					action(service);
-				}
-			}
-
-			void InvokeOnResult(Task task) => action(task.GetResult());
-		}
-
 		private static void CreateServicesContainer()
 		{
 			container = new GameObject("Services");
@@ -359,14 +342,38 @@ namespace Sisus.Init.Internal
 			Object.DontDestroyOnLoad(container);
 		}
 
+		internal static Task<object> Register(GlobalServiceInfo serviceInfo) // TODO: Add overload accepting an array -> and support initializing them in optimal order automatically!
+		{
+			if (!serviceInfo.LazyInit /* && ServicesAreReady*/)
+			{
+				return LazyInit(serviceInfo, serviceInfo.definingTypes.FirstOrDefault() ?? serviceInfo.concreteType);
+			}
+
+			#if DEV_MODE && DEBUG_LAZY_INIT
+			Debug.Log($"Will not initialize {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} yet because it LazyInit is True.");
+			#endif
+
+			if(serviceInfo.concreteType is Type concreteType)
+			{
+				uninitializedServices[concreteType] = serviceInfo;
+			}
+
+			foreach(var definingType in serviceInfo.definingTypes)
+			{
+				uninitializedServices[definingType] = serviceInfo;
+			}
+
+			return Task.FromResult(default(object));
+		}
+
 		private static void InitializeServices(List<GlobalServiceInfo> globalServiceInfos, HashSet<Type> initialized, [DisallowNull] Dictionary<Type, ScopedServiceInfo> servicesInScene, [DisallowNull] List<IInitializer> initializersInScene)
 		{
 			foreach(var serviceInfo in globalServiceInfos)
 			{
-				if(serviceInfo.LazyInit || serviceInfo.ConcreteOrDefiningType.IsGenericTypeDefinition)
+				if(serviceInfo.LazyInit)
 				{
 					#if DEV_MODE && DEBUG_LAZY_INIT
-					Debug.Log($"Will not initialize {serviceInfo.ConcreteOrDefiningType.FullName} yet because it has LazyInit set to true");
+					Debug.Log($"Will not initialize {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} yet because LazyInit is True.");
 					#endif
 
 					if(serviceInfo.concreteType is Type concreteType)
@@ -397,7 +404,7 @@ namespace Sisus.Init.Internal
 				{
 					if(task.Exception is { } aggregateException)
 					{
-						LogException(aggregateException);
+						aggregateException.LogToConsole();
 					}
 					else
 					{
@@ -409,13 +416,13 @@ namespace Sisus.Init.Internal
 		}
 
 		/// <param name="requestedServiceType"> The type of the initialization argument being requested for the client. Could be abstract. </param>
-		internal static async Task LazyInit([DisallowNull] GlobalServiceInfo serviceInfo, [DisallowNull] Type requestedServiceType)
+		internal static async Task<object> LazyInit([DisallowNull] GlobalServiceInfo serviceInfo, [DisallowNull] Type requestedServiceType)
 		{
 			#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
 			if(requestedServiceType.IsGenericTypeDefinition)
 			{
 				Debug.LogError($"LazyInit called with {nameof(requestedServiceType)} {TypeUtility.ToString(requestedServiceType)} that was a generic type definition. This should not happen.");
-				return;
+				return null;
 			}
 			#endif
 
@@ -424,39 +431,51 @@ namespace Sisus.Init.Internal
 				#if DEV_MODE
 				Debug.LogWarning($"LazyInit({TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} as {TypeUtility.ToString(requestedServiceType)}) called but could not determine {nameof(concreteType)} for service. Should this ever happen? Should the method be renamed to TryLazyInit?");
 				#endif
-				return;
+				return null;
 			}
+
+			#if DEV_MODE
+			Debug.Assert(!concreteType.IsAbstract, $"GetConcreteAndClosedType result {TypeUtility.ToString(concreteType)} was abstract.");
+			Debug.Assert(!concreteType.IsGenericTypeDefinition, $"GetConcreteAndClosedType result {TypeUtility.ToString(concreteType)} was an generic type definition.");
+			#endif
 
 			// If service has already been initialized, no need to do anything.
 			if(services.TryGetValue(concreteType, out object service))
 			{
-				return;
+				return service;
 			}
 
-			if(serviceInfo.ConcreteOrDefiningType is Type concreteOrDefiningType)
+			#if DEV_MODE
+			Debug.Assert(TryGetUninitializedServiceInfo(serviceInfo.ConcreteOrDefiningType, out _), concreteType);
+			#endif
+
+			bool isTransient = serviceInfo.IsTransient;
+			if(!isTransient)
 			{
-				if(concreteOrDefiningType.IsGenericTypeDefinition ?
-					!uninitializedServices.ContainsKey(concreteOrDefiningType)
-				: !uninitializedServices.Remove(concreteOrDefiningType))
+				if(!uninitializedServices.Remove(serviceInfo.ConcreteOrDefiningType))
 				{
-					return;
+					return null;
+				}
+
+				var definingTypes = serviceInfo.definingTypes;
+				foreach(var definingType in definingTypes)
+				{
+					uninitializedServices.Remove(definingType);
 				}
 			}
 
-			var definingTypes = serviceInfo.definingTypes;
-			foreach(var definingType in definingTypes)
-			{
-				uninitializedServices.Remove(definingType);
-			}
-
 			#if DEV_MODE && DEBUG_LAZY_INIT
-			Debug.Log($"LazyInit({(serviceInfo.concreteType ?? serviceInfo.definingTypes[0]).FullName})");
+			Debug.Log($"LazyInit({TypeUtility.ToString(concreteType)})");
 			#endif
 
 			var initialized = new HashSet<Type>(0);
 			var servicesInScene = new Dictionary<Type, ScopedServiceInfo>(0);
 			var initializersInScene = new List<IInitializer>(0);
 			service = await GetOrInitializeService(serviceInfo, initialized, servicesInScene, initializersInScene, concreteType);
+
+			#if DEV_MODE
+			Debug.Assert(service is not Task);
+			#endif
 
 			#if UNITY_EDITOR
 			if(container && container.TryGetComponent(out ServicesDebugger debugger))
@@ -469,53 +488,98 @@ namespace Sisus.Init.Internal
 
 			await HandleExecutingEventFunctionsFor(service);
 
-			[return: MaybeNull]
-			static Type GetConcreteAndClosedType([DisallowNull] GlobalServiceInfo serviceInfo, [DisallowNull] Type requestedServiceType)
+			return service;
+		}
+
+		[return: MaybeNull]
+		private static Type GetConcreteAndClosedType([DisallowNull] GlobalServiceInfo serviceInfo, [DisallowNull] Type requestedServiceType)
+		{
+			Type concreteType = serviceInfo.concreteType;
+
+			if(concreteType is null)
 			{
-				Type concreteType = serviceInfo.concreteType;
-				if(concreteType is null)
-				{
-					if(!requestedServiceType.IsAbstract)
-					{
-						return requestedServiceType;
-					}
-
-					concreteType = Array.Find(serviceInfo.definingTypes, t => !t.IsAbstract);
-					if(concreteType is null)
-					{
-						return null;
-					}
-				}
-
-				if(!concreteType.IsGenericTypeDefinition)
-				{
-					return concreteType;
-				}
-
-				if(!requestedServiceType.IsAbstract
-				&& requestedServiceType.GetGenericTypeDefinition().IsAssignableFrom(concreteType))
+				if(!requestedServiceType.IsAbstract)
 				{
 					return requestedServiceType;
 				}
-				
-				if(requestedServiceType.IsGenericType)
+
+				// Support ServiceAttribute being attached to an interface, with defining type being set to a concrete type.
+				// E.g. interface ILogger<T> with attribute [Service(typeof(Logger<>))].
+				concreteType = Array.Find(serviceInfo.definingTypes, t => !t.IsAbstract);
+				if(concreteType is null)
 				{
-					var requestedServiceTypeGenericArguments = requestedServiceType.GetGenericArguments();
-					if(requestedServiceTypeGenericArguments.Length == concreteType.GetGenericArguments().Length)
-					{
-						concreteType = concreteType.MakeGenericType(requestedServiceTypeGenericArguments);
-						if(requestedServiceType.IsAssignableFrom(concreteType))
-						{
-							return concreteType;
-						}
-					}
+					return null;
+				}
+			}
+
+			#if DEV_MODE
+			Debug.Assert(!concreteType.IsAbstract, $"GetConcreteAndClosedType result {TypeUtility.ToString(concreteType)} was abstract.");
+			#endif
+
+			if(!concreteType.IsGenericTypeDefinition)
+			{
+				#if DEV_MODE
+				if(concreteType.IsGenericType && concreteType.GetGenericArguments().Any(t => t.IsGenericParameter)) Debug.LogError($"GetConcreteAndClosedType result {TypeUtility.ToString(concreteType)} had a generic parameter.");
+				#endif
+
+				return concreteType;
+			}
+
+			if(!requestedServiceType.IsAbstract)
+			{
+				return requestedServiceType;
+			}
+
+			int requiredGenericArgumentCount = concreteType.GetGenericArguments().Length;
+			for(var typeOrBaseType = requestedServiceType; typeOrBaseType != null; typeOrBaseType = typeOrBaseType.BaseType)
+			{
+				if(!typeOrBaseType.IsGenericType)
+				{
+					continue;
 				}
 
-				return Array.Find(serviceInfo.definingTypes, t => !t.IsAbstract);
+				var genericArguments = typeOrBaseType.GetGenericArguments();
+				if(genericArguments.Length != requiredGenericArgumentCount)
+				{
+					continue;
+				}
+
+				var closedConcreteType = concreteType.MakeGenericType(genericArguments);
+				if(requestedServiceType.IsAssignableFrom(closedConcreteType))
+				{
+					return closedConcreteType;
+				}
 			}
+
+			if(!requestedServiceType.IsInterface)
+			{
+				foreach(var interfaceType in requestedServiceType.GetInterfaces())
+				{
+					if(!interfaceType.IsGenericType)
+					{
+						continue;
+					}
+
+					var genericArguments = interfaceType.GetGenericArguments();
+					if(genericArguments.Length != requiredGenericArgumentCount)
+					{
+						continue;
+					}
+
+					var closedConcreteType = concreteType.MakeGenericType(genericArguments);
+					if(requestedServiceType.IsAssignableFrom(closedConcreteType))
+					{
+						return closedConcreteType;
+					}
+				}
+			}
+
+			#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+			throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.UnresolveableConcreteType);
+			#endif
 		}
 
-		private static async Task<object> GetOrInitializeService(GlobalServiceInfo serviceInfo, HashSet<Type> initialized, [DisallowNull] Dictionary<Type, ScopedServiceInfo> servicesInScene, [DisallowNull] List<IInitializer> initializersInScene, Type overrideConcreteType)
+		private static async Task<object> GetOrInitializeService(GlobalServiceInfo serviceInfo, HashSet<Type> initialized, [DisallowNull] Dictionary<Type, ScopedServiceInfo> servicesInScene, [DisallowNull] List<IInitializer> initializersInScene, [AllowNull] Type overrideConcreteType)
 		{
 			var concreteType = overrideConcreteType ?? serviceInfo.concreteType;
 			if((concreteType ?? serviceInfo.definingTypes.FirstOrDefault()) is not Type concreteOrDefiningType)
@@ -537,7 +601,7 @@ namespace Sisus.Init.Internal
 			Task<object> task;
 			try
 			{
-				task = InitializeService(serviceInfo, initialized, servicesInScene, initializersInScene);
+				task = InitializeService(serviceInfo, initialized, servicesInScene, initializersInScene, concreteType);
 			}
 			catch(ServiceInitFailedException)
 			{
@@ -579,14 +643,13 @@ namespace Sisus.Init.Internal
 			Debug.Assert(IsInstanceOf(serviceInfo, result), serviceInfo.ConcreteOrDefiningType.Name);
 			#endif
 
-			SetInstanceSync(serviceInfo, result);
+			FinalizeServiceImmediate(serviceInfo, result);
 			return result;
 		}
 
-		private static async Task<object> InitializeService([DisallowNull] GlobalServiceInfo serviceInfo, [DisallowNull] HashSet<Type> initialized, [DisallowNull] Dictionary<Type, ScopedServiceInfo> servicesInScene, [DisallowNull] List<IInitializer> initializersInScene)
+		private static async Task<object> InitializeService([DisallowNull] GlobalServiceInfo serviceInfo, [DisallowNull] HashSet<Type> initialized, [DisallowNull] Dictionary<Type, ScopedServiceInfo> servicesInScene, [DisallowNull] List<IInitializer> initializersInScene, Type concreteType)
 		{
 			object result;
-			Type concreteType = serviceInfo.concreteType;
 			if(typeof(IServiceInitializer).IsAssignableFrom(serviceInfo.classWithAttribute))
 			{
 				if(initialized.Contains(concreteType))
@@ -916,8 +979,7 @@ namespace Sisus.Init.Internal
 
 				if(typeof(ScriptableObject).IsAssignableFrom(concreteType))
 				{
-					Debug.LogWarning($"Invalid Service Definition: Service '{concreteType.Name}' is a scriptable object type but has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Scriptable objects can not exist in scenes and as such can't be retrieved using this method.");
-					return null;
+					throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.ScriptableObjectWithFindFromScene);
 				}
 
 				#if UNITY_EDITOR
@@ -1054,110 +1116,7 @@ namespace Sisus.Init.Internal
 			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
 			if(serviceInfo.AddressableKey is string addressableKey)
 			{
-				var asyncOperation = Addressables.LoadAssetAsync<Object>(addressableKey);
-				Object asset;
-
-				if(serviceInfo.LoadAsync)
-				{
-					asset = await asyncOperation.Task;
-				}
-				else
-				{
-					asset = asyncOperation.WaitForCompletion();
-				}
-
-				#if DEBUG || INIT_ARGS_SAFE_MODE
-				if(!asset)
-				{
-					throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.MissingAddressable);
-				}
-				#endif
-
-				if(asset is GameObject gameObject)
-				{
-					if(serviceInfo.ShouldInstantiate(true))
-					{
-						result = await InstantiateFromAsset(gameObject, serviceInfo, initialized, servicesInScene, initializersInScene);
-
-						#if DEBUG || INIT_ARGS_SAFE_MODE
-						if(result is null)
-						{
-							Debug.LogWarning($"Service Not Found: No object of type {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} was found on the clone instantiated from the addressable '{addressableKey}'.", asset);
-							return null;
-						}
-						#endif
-					}
-					else
-					{
-						result = await GetServiceFromInstance(gameObject, serviceInfo);
-						
-						#if DEBUG || INIT_ARGS_SAFE_MODE
-						if(result is null)
-						{
-							Debug.LogWarning($"Service Not Found: No service of type {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} was found on the addressable '{addressableKey}'.", asset);
-							return null;
-						}
-						#endif
-					}
-				}
-				else if(asset is ScriptableObject scriptableObject)
-				{
-					if(serviceInfo.ShouldInstantiate(false))
-					{
-						result = await InstantiateFromAsset(scriptableObject, serviceInfo, initialized, servicesInScene, initializersInScene);
-
-						#if DEBUG || INIT_ARGS_SAFE_MODE
-						if(result is null)
-						{
-							Debug.LogWarning($"Service Not Found: No service of type {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} was found on the clone created from the addressable '{addressableKey}'.", asset);
-							return null;
-						}
-						#endif
-					}
-					else
-					{
-						result = await GetServiceAsync(scriptableObject, serviceInfo);
-
-						#if DEBUG || INIT_ARGS_SAFE_MODE
-						if(result is null)
-						{
-							Debug.LogWarning($"Service Not Found: No service of type {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} was found on the addressable '{addressableKey}'.", asset);
-							return null;
-						}
-						#endif
-
-						#if DEV_MODE && DEBUG_CREATE_SERVICES
-						Debug.Log($"Service {concreteType.Name} loaded via addressables successfully.", asset);
-						#endif
-					}
-				}
-				else if(IsInstanceOf(serviceInfo, asset))
-				{
-					#if DEV_MODE && DEBUG_CREATE_SERVICES
-					Debug.Log($"Service {concreteType.Name} loaded via addressables successfully.", asset);
-					#endif
-
-					result = asset;
-				}
-				else
-				{
-					Debug.LogWarning($"Service Not Found: Addressable asset '{addressableKey}' could not be converted to type {serviceInfo.definingTypes.FirstOrDefault()?.Name}.", asset);
-					return null;
-				}
-
-				#if DEBUG || INIT_ARGS_SAFE_MODE
-				if(result is null)
-				{
-					Debug.LogWarning($"Service Not Found: No service of type {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)} was found on the clone created from the addressable '{addressableKey}'.", asset);
-					return null;
-				}
-				#endif
-
-				#if DEV_MODE && DEBUG_CREATE_SERVICES
-				if(result is not null) Debug.Log($"Service {concreteType.Name} loaded via addressables successfully.", asset);
-				#endif
-
-				return result;
+				return await InitializeAddressableAsset(addressableKey, serviceInfo, initialized, servicesInScene, initializersInScene);
 			}
 			#endif
 
@@ -1249,7 +1208,6 @@ namespace Sisus.Init.Internal
 				if(!allArgumentsAvailable)
 				{
 					initialized.Remove(concreteType);
-					//throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.Unknown);
 					continue;
 				}
 
@@ -1314,7 +1272,7 @@ namespace Sisus.Init.Internal
 
 			return result;
 
-				void LogMissingDependencyWarning(Type initializerType, Type dependencyType)
+			void LogMissingDependencyWarning(Type initializerType, Type dependencyType)
 			{
 				if(FillIfEmpty(servicesInScene).TryGetValue(dependencyType, out var serviceInfo))
 				{
@@ -1332,6 +1290,111 @@ namespace Sisus.Init.Internal
 					Debug.LogWarning($"{TypeUtility.ToString(initializerType)} needs service {TypeUtility.ToString(dependencyType)} to initialize {TypeUtility.ToString(concreteType)}, but instance not found among {services.Count + servicesInScene.Count + uninitializedServices.Count} services.");
 				}
 			}
+		}
+
+		private static async Task<Object> LoadAddressableAsset(string addressableKey, GlobalServiceInfo serviceInfo)
+		{
+			var asyncOperation = Addressables.LoadAssetAsync<Object>(addressableKey);
+			Object asset;
+
+			if(serviceInfo.LoadAsync)
+			{
+				asset = await asyncOperation.Task;
+			}
+			else
+			{
+				asset = asyncOperation.WaitForCompletion();
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(!asset)
+			{
+				throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.MissingAddressable);
+			}
+			#endif
+
+			return asset;
+		}
+
+		private static async Task<object> InitializeAddressableAsset(string addressableKey, GlobalServiceInfo serviceInfo, HashSet<Type> initialized, Dictionary<Type, ScopedServiceInfo> servicesInScene, List<IInitializer> initializersInScene)
+		{
+			var asset = await LoadAddressableAsset(addressableKey, serviceInfo);
+
+			object result;
+			if(asset is GameObject gameObject)
+			{
+				if(serviceInfo.ShouldInstantiate(true))
+				{
+					result = await InstantiateFromAsset(gameObject, serviceInfo, initialized, servicesInScene, initializersInScene);
+
+					#if DEBUG || INIT_ARGS_SAFE_MODE
+					if(result is null) throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.MissingComponent, asset);
+					#endif
+
+					#if DEV_MODE && DEBUG_CREATE_SERVICES
+					Debug.Log($"Service {concreteType.Name} Instantiated from addressable asset \"{addressableKey}\" successfully.", asset);
+					#endif
+
+					return result;
+				}
+
+				result = await GetServiceFromInstance(gameObject, serviceInfo);
+
+				#if DEBUG || INIT_ARGS_SAFE_MODE
+				if(result is null) throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.MissingComponent, asset);
+				#endif
+
+				#if DEV_MODE && DEBUG_CREATE_SERVICES
+				Debug.Log($"Service {concreteType.Name} loaded from addressable asset \"{addressableKey}\" successfully.", asset);
+				#endif
+
+				return result;
+			}
+
+			if(asset is ScriptableObject scriptableObject)
+			{
+				if(serviceInfo.ShouldInstantiate(false))
+				{
+					result = await InstantiateFromAsset(scriptableObject, serviceInfo, initialized, servicesInScene, initializersInScene);
+
+					#if DEBUG || INIT_ARGS_SAFE_MODE
+					if(result is null) throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.MissingComponent, asset);
+					#endif
+
+					#if DEV_MODE && DEBUG_CREATE_SERVICES
+					Debug.Log($"Service {concreteType.Name} Instantiated from addressable asset \"{addressableKey}\" successfully.", asset);
+					#endif
+
+					return result;
+				}
+				else
+				{
+					result = await GetServiceAsync(scriptableObject, serviceInfo);
+
+					#if DEBUG || INIT_ARGS_SAFE_MODE
+					if(result is null) throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.MissingComponent, asset);
+					#endif
+
+					#if DEV_MODE && DEBUG_CREATE_SERVICES
+					Debug.Log($"Service {concreteType.Name} loaded from addressable asset \"{addressableKey}\" successfully.", asset);
+					#endif
+
+					return result;
+				}
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(!IsInstanceOf(serviceInfo, asset))
+			{
+				throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.AssetNotConvertible, asset);
+			}
+			#endif
+
+			#if DEV_MODE && DEBUG_CREATE_SERVICES
+			Debug.Log($"Service {concreteType.Name} loaded from addressable asset \"{addressableKey}\" successfully.", asset);
+			#endif
+
+			return asset;
 		}
 
 		private static Exception CreateAggregateException(Exception exiting, Exception addition)
@@ -2124,14 +2187,70 @@ namespace Sisus.Init.Internal
 
 		private static bool IsInstanceOf([DisallowNull] GlobalServiceInfo serviceInfo, [AllowNull] object instance)
 		{
-			if(serviceInfo.concreteType is Type concreteType && !concreteType.IsInstanceOfType(instance))
+			if(instance is null)
 			{
 				return false;
 			}
 
+			if(serviceInfo.concreteType is Type concreteType)
+			{
+				if(concreteType.IsGenericTypeDefinition)
+				{
+					bool matchFound = false;
+					for(var type = concreteType; type != null; type = type.BaseType)
+					{
+						if(type.IsGenericType && type.GetGenericTypeDefinition() == concreteType)
+						{
+							matchFound = true;
+							break;
+						}
+					}
+
+					if(!matchFound)
+					{
+						return false;
+					}
+				}
+				else if(!concreteType.IsInstanceOfType(instance))
+				{
+					return false;
+				}
+			}
+
 			foreach(var definingType in serviceInfo.definingTypes)
 			{
-				if(!definingType.IsInstanceOfType(instance))
+				if(definingType.IsGenericTypeDefinition)
+				{
+					bool matchFound = false;
+					if(definingType.IsInterface)
+					{
+						foreach(var interfaceType in instance.GetType().GetInterfaces())
+						{
+							if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == definingType)
+							{
+								matchFound = true;
+								break;
+							}
+						}
+					}
+					else
+					{
+						for(var type = instance.GetType(); type != null; type = type.BaseType)
+						{
+							if(type.IsGenericType && type.GetGenericTypeDefinition() == definingType)
+							{
+								matchFound = true;
+								break;
+							}
+						}
+					}
+
+					if(!matchFound)
+					{
+						return false;
+					}
+				}
+				else if(!definingType.IsInstanceOfType(instance))
 				{
 					return false;
 				}
@@ -2160,60 +2279,90 @@ namespace Sisus.Init.Internal
 					return true;
 				}
 
-				return false;
+				if(!definingType.IsGenericType)
+				{
+					return false;
+				}
+
+				// Handle open generic types.
+				// E.g. with attribute [Service(typeof(ILogger<>))] on class Logger<T>,
+				// when ILogger<Client> is requested, should return new Logger<Client>.
+				var definingTypeDefinition = definingType.GetGenericTypeDefinition();
+				if(!uninitializedServices.TryGetValue(definingTypeDefinition, out serviceInfo))
+				{
+					return false;
+				}
 			}
 
 			#if DEV_MODE && DEBUG_LAZY_INIT
 			Debug.Log($"Initializing service {definingType.Name} with LazyInit=true because it is a dependency of another service.");
 			#endif
 
-			uninitializedServices.Remove(serviceInfo.concreteType);
-			foreach(var singleDefiningType in serviceInfo.definingTypes)
+			if(!serviceInfo.IsTransient)
 			{
-				uninitializedServices.Remove(singleDefiningType);
-			}
+				uninitializedServices.Remove(serviceInfo.concreteType);
 
-			service = InitializeService(serviceInfo, initialized, servicesInScene, initializersInScene);
-			if(service is null)
-			{
-				return false;
-			}
-
-			if(service is Task task)
-			{
-				services[serviceInfo.concreteType] = task;
-				foreach(var singleDefiningType in serviceInfo.definingTypes)
+				foreach(var serviceInfoDefiningType in serviceInfo.definingTypes)
 				{
-					services[singleDefiningType] = task;
+					uninitializedServices.Remove(serviceInfoDefiningType);
+				}
+			}
+
+			var initializeServiceTask = InitializeService(serviceInfo, initialized, servicesInScene, initializersInScene, GetConcreteAndClosedType(serviceInfo, definingType));
+			if(initializeServiceTask.IsCompleted)
+			{
+				service = initializeServiceTask.Result;
+				if(service is null)
+				{
+					return false;
 				}
 
-				_ = SetInstanceAsync(serviceInfo, task);
+				FinalizeServiceImmediate(serviceInfo, service);
 				return true;
 			}
 
-			SetInstanceSync(serviceInfo, service);
-			return service != null;
+			service = FinalizeServiceAsync(serviceInfo, initializeServiceTask);
+			return true;
 		}
 
-		private static async Task SetInstanceAsync(GlobalServiceInfo serviceInfo, Task loadServiceTask)
+		private static async Task<object> FinalizeServiceAsync(GlobalServiceInfo serviceInfo, Task<object> initializeServiceTask)
 		{
-			var service = await loadServiceTask.GetResult();
-
-			SetInstanceSync(serviceInfo, service);
-
-			SubscribeToUpdateEvents(service);
-			ExecuteAwake(service);
-			ExecuteOnEnable(service);
-			ExecuteStartAtEndOfFrame(service);
+			var service = await initializeServiceTask;
+			FinalizeServiceImmediate(serviceInfo, service);
+			return service;
 		}
 
-		private static void SetInstanceSync(GlobalServiceInfo serviceInfo, object service) => SetInstanceSync(serviceInfo.definingTypes, service);
-
-		private static void SetInstanceSync(Type[] definingTypes, object service)
+		private static object FinalizeServiceImmediate(GlobalServiceInfo serviceInfo, object service)
 		{
+			if(!serviceInfo.IsTransient)
+			{
+				SetInstanceSync(serviceInfo, service);
+			}
+
+			if(ServicesAreReady)
+			{
+				SubscribeToUpdateEvents(service);
+				ExecuteAwake(service);
+				ExecuteOnEnable(service);
+				ExecuteStartAtEndOfFrame(service);
+			}
+
+			return service;
+		}
+
+		private static void SetInstanceSync(GlobalServiceInfo serviceInfo, object service)
+		{
+			#if DEV_MODE
+			if(serviceInfo.IsTransient)
+			{
+				Debug.LogError(TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType));
+				return;
+			}
+			#endif
+
 			services[service.GetType()] = service;
 
-			foreach(var definingType in definingTypes)
+			foreach(var definingType in serviceInfo.definingTypes)
 			{
 				services[definingType] = service;
 				ServiceUtility.SetInstance(definingType, service);
@@ -2710,7 +2859,28 @@ namespace Sisus.Init.Internal
 
 		private static List<GlobalServiceInfo> GetServiceDefinitions() => ServiceAttributeUtility.concreteTypes.Values.Concat(ServiceAttributeUtility.definingTypes.Values.Where(d => d.concreteType is null)).ToList();
 
-		public static bool CanProvideService<TService>() => services.ContainsKey(typeof(TService)) || uninitializedServices.ContainsKey(typeof(TService));
+		internal static bool CanProvideService<TService>() => services.ContainsKey(typeof(TService)) || uninitializedServices.ContainsKey(typeof(TService));
+
+		internal static bool TryGetUninitializedServiceInfo(Type requestedType, out GlobalServiceInfo info)
+		{
+			if(uninitializedServices.TryGetValue(requestedType, out info))
+			{
+				return true;
+			}
+
+			if(!requestedType.IsGenericType)
+			{
+				return false;
+			}
+
+			var requestedTypeDefinition = requestedType.GetGenericTypeDefinition();
+			if(uninitializedServices.TryGetValue(requestedTypeDefinition, out info))
+			{
+				return true;
+			}
+
+			return false;
+		}
 
 		private sealed class ScopedServiceInfo
 		{
@@ -2729,7 +2899,6 @@ namespace Sisus.Init.Internal
 		private sealed class InitArgsSetMethodInvoker
 		{
 			public readonly object[] clientTypeAndServices;
-
 			private readonly Type[] serviceTypes;
 			private readonly MethodInfo method;
 

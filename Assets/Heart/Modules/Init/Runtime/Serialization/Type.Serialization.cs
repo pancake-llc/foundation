@@ -240,7 +240,7 @@ namespace Sisus.Init.Serialization
 			}
 
 			var script = Find.Script(type);
-			if(script == null)
+			if(!script)
 			{
 				return "";
 			}

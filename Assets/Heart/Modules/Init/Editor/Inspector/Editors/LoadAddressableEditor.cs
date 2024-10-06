@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Sisus.Init.EditorOnly
 {
 	[CustomEditor(typeof(LoadAddressable))]
-	public sealed class LoadAddressableEditor : ValueProviderDrawer
+	internal sealed class LoadAddressableEditor : ValueProviderDrawer
 	{
 		public override void Draw([AllowNull] GUIContent label, [AllowNull] SerializedProperty anyProperty, [AllowNull] Type valueType)
 		{

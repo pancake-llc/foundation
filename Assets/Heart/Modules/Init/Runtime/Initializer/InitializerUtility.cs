@@ -18,6 +18,8 @@ using UnityEditor.SceneManagement;
 using static Sisus.Init.EditorOnly.AutoInitUtility;
 using static Sisus.Init.ServiceUtility;
 using Debug = UnityEngine.Debug;
+
+[assembly:InternalsVisibleTo("InitArgs.Odin")]
 #endif
 
 namespace Sisus.Init.Internal
@@ -112,6 +114,39 @@ namespace Sisus.Init.Internal
 			{ typeof(IElevenArguments), 11 },
 			{ typeof(ITwelveArguments), 12 }
 		};
+
+		public static bool TryGetClientAndInitArgumentTypes(Type initializerType, out Type clientType, out Type[] initArgumentTypes)
+		{
+			foreach(var interfaceType in initializerType.GetInterfaces())
+			{
+				if(interfaceType.IsGenericType && argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition()))
+				{
+					var genericArguments = interfaceType.GetGenericArguments();
+					clientType = genericArguments[0];
+					initArgumentTypes = genericArguments.Skip(1).ToArray();
+					return true;
+				}
+			}
+
+			clientType = null;
+			initArgumentTypes = null;
+			return false;
+		}
+
+		public static bool TryGetInitArgumentTypes(Type initializerType, out Type[] initArgumentTypes)
+		{
+			foreach(var interfaceType in initializerType.GetInterfaces())
+			{
+				if(interfaceType.IsGenericType && argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition()))
+				{
+					initArgumentTypes = interfaceType.GetGenericArguments().Skip(1).ToArray();
+					return true;
+				}
+			}
+
+			initArgumentTypes = null;
+			return false;
+		}
 
 		/// <summary>
 		/// NOTE: Never cache or modify the list returned by this method!
@@ -473,6 +508,66 @@ namespace Sisus.Init.Internal
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static bool IsAsyncValueProvider<TArgument>(Any<TArgument> argument) => ValueProviderUtility.IsAsyncValueProvider(argument.reference) && argument.reference;
 		#endif
+
+		internal static MissingInitArgumentsException GetMissingInitArgumentsException<TClient>([DisallowNull] IInitializer<TClient> initializer, Type argumentType = null)
+		{
+			var initializerType = initializer.GetType();
+			var clientType = typeof(TClient);
+			var context = initializer.Target ? initializer.Target : initializer as Object;
+
+			if(argumentType is null)
+			{
+				return new($"{initializerType.Name} failed to initialize {clientType.Name}.", context);
+			}
+
+			if(argumentType.GetCustomAttributes<ServiceAttribute>().FirstOrDefault() is ServiceAttribute serviceAttribute)
+			{
+				var definingType = serviceAttribute.definingType;
+				if(definingType is not null)
+				{
+					if(!definingType.IsAssignableFrom(argumentType))
+					{
+						if(typeof(IValueProvider<>).MakeGenericType(definingType).IsAssignableFrom(argumentType))
+						{
+							return new($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute and implements IValueProvider<{definingType.Name}> but the instance was still null.", context);
+						}
+
+						if(definingType.IsInterface)
+						{
+							return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but does not implement {definingType.Name}.", context);
+						}
+
+						return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but does not derive from {definingType.Name}.", context);
+					}
+
+					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but its instance was still null.", context);
+				}
+
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its instance was still null.", context);
+			}
+
+			bool userCanModifyClass = clientType.Namespace is not string clientNamespace || !clientNamespace.StartsWith("Unity");
+			string derivesFromImplementsOrIs = !userCanModifyClass
+												? (!argumentType.IsAbstract && !TypeUtility.IsBaseType(argumentType) ? "a component of type" : argumentType.IsInterface ? "a component that implements" : "a component that derives from")
+												: (!argumentType.IsAbstract && !TypeUtility.IsBaseType(argumentType) ? "the class" : argumentType.IsInterface ? "a class that implements" : "a class that derives from");
+
+			if(!typeof(Component).IsAssignableFrom(argumentType))
+			{
+				if(!userCanModifyClass)
+				{
+					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a value using the Inspector or select the 'Make Service Of Type...' item in the context menu of {derivesFromImplementsOrIs} {argumentType.Name}.", context);
+				}
+
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a value using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {derivesFromImplementsOrIs} {argumentType.Name}.\nIf you have already done one of these things, initialization could also be failing due to circular dependencies (e.g. ({clientType.Name} depends on {argumentType.Name}, and {argumentType.Name} depends on {clientType.Name}).", context);
+			}
+
+			if(!userCanModifyClass)
+			{
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector.", context);
+			}
+
+			return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {derivesFromImplementsOrIs} {argumentType.Name}.", context);
+		}
 
 		internal static MissingInitArgumentsException GetMissingInitArgumentsException([DisallowNull] Type initializerType, [DisallowNull] Type clientType, Type argumentType = null)
 		{

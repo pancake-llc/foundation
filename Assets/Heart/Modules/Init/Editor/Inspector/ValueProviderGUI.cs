@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Sisus.Init.Internal;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -10,23 +11,21 @@ using Object = UnityEngine.Object;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
-	public sealed class ValueProviderGUI : IDisposable
+	internal sealed class ValueProviderGUI : IDisposable
 	{
 		private Editor editor;
-		private readonly GUIContent prefixLabel = new("");
-		private readonly GUIContent valueProviderLabel = new("");
+		private readonly GUIContent prefixLabel;
+		private readonly GUIContent valueProviderLabel;
 		private readonly SerializedProperty anyProperty;
 		private readonly SerializedProperty referenceProperty;
 		private readonly Type valueType;
 		private readonly bool isControlless;
 		private readonly Action onDiscardButtonPressed;
-		private static readonly GUILayoutOption[] discardButtonLayoutOptions = new[] { GUILayout.Height(10f), GUILayout.Width(10f) };
+		private static readonly GUILayoutOption[] discardButtonLayoutOptions = { GUILayout.Height(10f), GUILayout.Width(10f) };
 
-		private static Color ObjectFieldBackgroundColor => LayoutUtility.NowDrawing is InitializableEditor or InitializerEditor
-														// EditorStyles.HelpBox background color
-														? (EditorGUIUtility.isProSkin ? new Color32(64, 64, 64, 255) : new Color32(208, 208, 208, 255))
-														// Inspector background color
-														:(EditorGUIUtility.isProSkin ? new Color32(56, 56, 56, 255) : new Color32(200, 200, 200, 255));
+		private static Color ObjectFieldBackgroundColor => InitializerGUI.NowDrawing is not null ? HelpBoxBackgroundColor : InspectorBackgroundColor;
+		private static Color HelpBoxBackgroundColor => EditorGUIUtility.isProSkin ? new Color32(64, 64, 64, 255) : new Color32(208, 208, 208, 255);
+		private static Color InspectorBackgroundColor => EditorGUIUtility.isProSkin ? new Color32(56, 56, 56, 255) : new Color32(200, 200, 200, 255);
 
 		public ValueProviderGUI(Editor editor, GUIContent prefixLabel, SerializedProperty anyProperty, SerializedProperty referenceProperty, Type valueType, Action onDiscardButtonPressed)
 		{
@@ -79,7 +78,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				valueProviderLabel = GUIContent.none;
 			}
 
-			if(editor is ValueProviderDrawer || !CustomEditorUtility.IsGenericInspectorType(editor.GetType()))
+			if(editor is ValueProviderDrawer || !CustomEditorUtility.IsDefaultOrOdinEditor(editor.GetType()))
 			{
 				isControlless = false;
 			}
@@ -313,7 +312,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public void Dispose()
 		{
-			if(editor != null)
+			if(editor)
 			{
 				Object.DestroyImmediate(editor);
 				editor = null;

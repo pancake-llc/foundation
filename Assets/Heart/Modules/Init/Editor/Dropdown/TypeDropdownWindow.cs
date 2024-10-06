@@ -290,7 +290,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					else if(currentlyRenderedTree.GetSelectedChild().OnAction())
 					{
 						Close();
-						LayoutUtility.ExitGUI(null);
+						LayoutUtility.ExitGUI();
 					}
 
 					Event.current.Use();

@@ -1,5 +1,6 @@
 ﻿using System;
 using Sisus.Init.Internal;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,15 +37,20 @@ namespace Sisus.Init.EditorOnly.Internal
 				foreach(var serviceDefinition in servicesComponent.providesServices)
 				{
 					var service = serviceDefinition.service;
-					if(!service)
+					if(service == null)
 					{
 						continue;
 					}
 
 					var serviceConcreteType = service.GetType();
+					if(serviceConcreteType is null)
+					{
+						continue;
+					}
 
-					var definingType = serviceDefinition.definingType.Value ?? serviceConcreteType;
-					if(TryGetServiceAttributeInfo(definingType, out _))
+					Type definingType = serviceDefinition.definingType ?? service.GetType();
+					GlobalServiceInfo serviceAttributeInfo;
+					if(TryGetServiceAttributeInfo(definingType, out serviceAttributeInfo))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, servicesComponent.toClients);
 						height += DrawHelpBox(MessageType.Info, content);
@@ -61,7 +67,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				foreach(var serviceTag in ServiceTagUtility.GetServiceTags(component))
 				{
 					if(serviceTag.DefiningType is Type definingType
-					&& TryGetServiceAttributeInfo(definingType, out _))
+					&& TryGetServiceAttributeInfo(definingType, out var serviceAttributeInfo))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, serviceTag.ToClients);
 						height += DrawHelpBox(MessageType.Info, content);

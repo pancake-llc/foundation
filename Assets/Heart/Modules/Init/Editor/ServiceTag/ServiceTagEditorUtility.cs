@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Sisus.Init.Internal;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,7 +12,7 @@ using static Sisus.Init.Internal.ServiceTagUtility;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
-	public static class ServiceTagEditorUtility
+	internal static class ServiceTagEditorUtility
 	{
 		internal static Component openSelectTagsMenuFor;
 		private static readonly GUIContent serviceLabel = new("Service", "An instance of this service will be automatically provided during initialization.");
@@ -125,7 +126,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						return;
 					}
 
-					LayoutUtility.ExitGUI(null);
+					LayoutUtility.ExitGUI();
 				}
 			}
 			catch(TargetInvocationException)
@@ -135,15 +136,15 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			var classWithAttribute = ServiceInjector.GetClassWithServiceAttribute(serviceDefiningType);
 			var script = Find.Script(classWithAttribute != null ? classWithAttribute : serviceDefiningType);
-			if(script == null && classWithAttribute != null)
+			if(!script && classWithAttribute != null)
 			{
 				script = Find.Script(serviceDefiningType);
 			}
 
-			if(script != null)
+			if(script)
 			{
 				EditorGUIUtility.PingObject(script);
-				LayoutUtility.ExitGUI(null);
+				LayoutUtility.ExitGUI();
 			}
 		}
 
@@ -195,7 +196,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		internal static void PingService(Object service)
 		{
 			EditorGUIUtility.PingObject(service);
-			LayoutUtility.ExitGUI(null);
+			LayoutUtility.ExitGUI();
 		}
 
 		internal static void SelectAllReferencesInScene(object serviceOrServiceProvider)

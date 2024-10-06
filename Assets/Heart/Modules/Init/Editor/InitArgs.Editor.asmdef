@@ -5,7 +5,8 @@
         "InitArgs",
         "InitArgs.Services",
         "Pancake.Localization",
-        "Pancake.Common.Editor"
+        "Pancake.Common.Editor",
+        "Unity.InternalAPIEditorBridgeDev.004"
     ],
     "includePlatforms": [
         "Editor"

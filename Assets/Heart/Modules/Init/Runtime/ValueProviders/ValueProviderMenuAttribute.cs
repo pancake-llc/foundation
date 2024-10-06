@@ -65,6 +65,7 @@ namespace Sisus.Init
 		/// </para>
 		/// <para>
 		/// The menu item will also appear in the dropdown menu of all Init parameters whose type derives from any of the specified types.
+		/// </para>
 		/// <para>
 		/// The menu item will also appear in the dropdown menu of all Init parameters whose type implements any of the specified types, when they are interfaces.
 		/// </para>
@@ -78,6 +79,7 @@ namespace Sisus.Init
 		/// </para>
 		/// <para>
 		/// The menu item will also not appear in the dropdown menu of any Init parameters whose type derives from any of the specified types.
+		/// </para>
 		/// <para>
 		/// The menu item will also not be added in the dropdown menu of any Init parameters whose type implements any of the specified types, when they are interfaces.
 		/// </para>
@@ -91,6 +93,7 @@ namespace Sisus.Init
 		/// </para>
 		/// <para>
 		/// The menu item will also appear in the dropdown menu of all Init parameters whose type derives from the specified type.
+		/// </para>
 		/// <para>
 		/// The menu item will also appear in the dropdown menu of all Init parameters whose type implements
 		/// the specified type, when is it an interface.
@@ -109,6 +112,7 @@ namespace Sisus.Init
 		/// </para>
 		/// <para>
 		/// The menu item will not appear added in the dropdown menu of any Init parameters whose type derives from the specified type.
+		/// </para>
 		/// <para>
 		/// The menu item will also not appear in the dropdown menu of any Init parameters whose type implements
 		/// the specified type, when is it an interface.
@@ -165,7 +169,7 @@ namespace Sisus.Init
 		Unconstrained = 0,
 		
 		/// <summary>
-		/// Shown in dropdown menus of reference type parameters.
+		/// Shown in dropdown menus of reference type Init parameters.
 		/// </summary>
 		Class = _1,
 
@@ -175,12 +179,12 @@ namespace Sisus.Init
 		ValueType = _2,
 
 		/// <summary>
-		/// Shown in dropdown menus of concrete parameter types.
+		/// Shown in dropdown menus of concrete type Init parameters.
 		/// </summary>
 		Concrete = _3,
 
 		/// <summary>
-		/// Shown in dropdown menus of abstract parameter types.
+		/// Shown in dropdown menus of abstract type Init parameters.
 		/// </summary>
 		Abstract = _4,
 
@@ -190,52 +194,57 @@ namespace Sisus.Init
 		Interface = _5,
 
 		/// <summary>
-		/// Shown in dropdown menus of built-in C# types, like <see cref="bool"/>, <see cref="int"/>, <see cref="float"/> and <see cref="string"/>.
+		/// Shown in dropdown menus of Init parameters of built-in C# type,
+		/// such as <see cref="bool"/>, <see cref="int"/>, <see cref="float"/> and <see cref="string"/>.
 		/// </summary>
 		BuiltIn = _6,
 
 		/// <summary>
-		/// Shown in dropdown menus of component type parameters.
+		/// Shown in dropdown menus of component type Init parameters.
 		/// <para>
-		/// This includes <see cref="Component"/>-derived types, as well as interface types
-		/// that are implemented by <see cref="Component"/>-derived types.
+		/// This includes both <see cref="Component"/>-derived types, as well as any interface types
+		/// which are implemented by at least one <see cref="Component"/>-derived type.
 		/// </para>
 		/// </summary>
 		Component = _7,
 
 		/// <summary>
-		/// Shown in dropdown menus of parameters of plain old C# types that have a <see cref="Wrapper{}"/> component,
+		/// Shown in dropdown menus of Init parameters of plain old C# types that have a <see cref="Wrapper{}"/> component,
 		/// making it possible to attach them to <see cref="GameObject"/>s.
 		/// </summary>
 		WrappedObject = _8,
 
 		/// <summary>
-		/// Shown in dropdown menus of parameters of types that can be exit as part of a scene.
+		/// Shown in dropdown menus of Init parameters of types that can exist as part of a scene.
 		/// <para>
-		/// This includes <see cref="Component"/>-derived types, plain old C# types that have a <see cref="Wrapper{}"/> component,
-		/// interface types that are implemented by components, as well as <see cref="GameObject"/>.
-		/// class.
+		/// This includes all <see cref="Component"/>-derived types,
+		/// all plain old C# types that have a <see cref="Wrapper{}"/> class,
+		/// all interface types that are implemented by at least one <see cref="Component"/>-derived type,
+		/// and the <see cref="GameObject"/> type.
 		/// </para>
 		/// </summary>
 		SceneObject = _9,
 
 		/// <summary>
-		/// Shown in dropdown menus of parameters of types that can exist as a standalone asset, or as part of a prefab.
+		/// Shown in dropdown menus of Init parameters of types that can exist as a standalone asset, or as part of a prefab.
 		/// <para>
-		/// This includes <see cref="Object"/>-derived types, plain old C# types that have a <see cref="Wrapper{}"/> component,
-		/// interface types that are implemented by <see cref="Object"/>-derived types, as well as <see cref="GameObject"/>.
+		/// This includes all <see cref="Object"/>-derived types,
+		/// all plain old C# types that have a <see cref="Wrapper{}"/> class,
+		/// all interface types that are implemented by at least one <see cref="Object"/>-derived type,
+		/// and the <see cref="GameObject"/> type.
 		/// </para>
 		/// </summary>
 		Asset = _10,
 
 		/// <summary>
-		/// Shown in dropdown menus of parameters that implement <see cref="IEnumerable"/>,
+		/// Shown in dropdown menus of Init parameters that implement <see cref="IEnumerable"/>,
 		/// such as <see cref="List{T}"/> and <see cref="Array"/>.
 		/// </summary>
 		Collection = _11,
 
 		/// <summary>
-		/// Shown in dropdown menus of parameters that are global service types (have the ServiceAttribute).
+		/// Shown in dropdown menus of Init parameters whose type is the defining type of a Service
+		/// (registered using the ServiceAttribute).
 		/// </summary>
 		Service = _12,
 	}

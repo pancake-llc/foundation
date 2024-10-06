@@ -68,7 +68,7 @@ namespace Sisus.Init
 	/// </list>
 	/// </para>
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
 	[MeansImplicitUse(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
 	[RequireAttributeUsages]
 	public class ServiceAttribute : PreserveAttribute

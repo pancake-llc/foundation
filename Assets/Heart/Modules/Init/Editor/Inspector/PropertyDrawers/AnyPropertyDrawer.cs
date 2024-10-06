@@ -10,6 +10,7 @@ using System.Reflection;
 using Sisus.Init.Internal;
 using Sisus.Init.Serialization;
 using Sisus.Init.ValueProviders;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -57,6 +58,11 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public override void OnGUI(Rect position, SerializedProperty anyProperty, GUIContent label)
 		{
+			// if(!anyProperty.serializedObject.IsValid())
+			// {
+			// 	return;
+			// }
+
 			var targetObject = anyProperty.serializedObject.targetObject;
 			if(!statesByTarget.TryGetValue(targetObject, out var states))
 			{
@@ -73,7 +79,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				state = new State(anyProperty, fieldInfo);
 				states.Add(anyProperty.propertyPath, state);
 			}
-			else if(state.ValueHasChanged() || !state.IsValid() || state.anyProperty.serializedObject != anyProperty.serializedObject)
+			else if(!state.IsValid() || state.ValueHasChanged() || state.anyProperty.serializedObject != anyProperty.serializedObject)
 			{
 				#if DEV_MODE && DEBUG_ENABLED
 				if(!state.IsValid()) { Debug.LogWarning($"State.IsValid:false with Event.current:{Event.current?.type.ToString() ?? "None"}"); }
@@ -91,7 +97,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				state.Update();
 			}
 
-			height = DrawValueField(position, anyProperty, state, label);
+			height = DrawValueField(position, anyProperty, state, state.Label);
 			anyProperty.serializedObject.ApplyModifiedProperties();
 		}
 
@@ -192,7 +198,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			object managedValue = valueProperty == null || valueProperty.propertyType == SerializedPropertyType.ObjectReference ? null : valueProperty.GetValue();
 			bool managedValueIsNull = managedValue is null;
 			var referenceValue = referenceProperty.objectReferenceValue;
-			bool objectReferenceValueIsNull = referenceValue == null;
+			bool objectReferenceValueIsNull = !referenceValue;
 			var firstTargetObject = anyProperty.serializedObject.targetObject;
 			bool drawAsObjectField = !objectReferenceValueIsNull || (draggingAssignableObject && managedValueIsNull) || (!state.isService && state.drawObjectField);
 			bool hasSerializedValue = !managedValueIsNull || !objectReferenceValueIsNull;
@@ -206,7 +212,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(clicked)
 				{
-					LayoutUtility.ExitGUI(null);
+					LayoutUtility.ExitGUI();
 				}
 
 				return EditorGUIUtility.singleLineHeight;
@@ -256,7 +262,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					controlRect = DrawTypeDropdown(controlRect, state, false);
 				}
 
-				if(referenceValue != null)
+				if(referenceValue)
 				{
 					if(referenceValue is CrossSceneReference crossSceneReference)
 					{
@@ -288,7 +294,7 @@ namespace Sisus.Init.EditorOnly.Internal
 							return EditorGUI.GetPropertyHeight(valueProperty, label, true);
 						}
 					}
-					else if(GetScene(referenceValue) is Scene referenceScene && referenceScene.IsValid() && referenceScene != GetScene(firstTargetObject))
+					else if(GetScene(referenceValue) is var referenceScene && referenceScene.IsValid() && referenceScene != GetScene(firstTargetObject))
 					{
 						#if DEV_MODE && DEBUG_CROSS_SCENE_REFERENCES
 						Debug.Log($"Cross scene reference detected. {referenceValue.name} ({referenceValue.GetType().Name}) scene != {GetScene(firstTargetObject)}");
@@ -334,14 +340,14 @@ namespace Sisus.Init.EditorOnly.Internal
 
 					GUI.color = guiColorWas;
 
-					if(setReferenceValue != referenceValue && (setReferenceValue == null || TryGetAssignableType(state, setReferenceValue, out Type referenceType)))
+					if(setReferenceValue != referenceValue && (!setReferenceValue || TryGetAssignableType(state, setReferenceValue, out Type referenceType)))
 					{
 						Scene referencerScene = GetScene(firstTargetObject);
 						GameObject referencedGameObject = GetGameObject(setReferenceValue);
 						Scene referencedScene = GetScene(setReferenceValue);
 						Scene? prefabStage = PrefabStageUtility.GetCurrentPrefabStage()?.scene;
-						bool referencedIsSceneObject = referencedScene.IsValid() || (referencedGameObject != null && PrefabStageUtility.GetPrefabStage(referencedGameObject) != null);
-						bool referecerIsPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(firstTargetObject)|| PrefabStageUtility.GetPrefabStage(GetGameObject(firstTargetObject)) != null;
+						bool referencedIsSceneObject = referencedScene.IsValid() || (referencedGameObject && PrefabStageUtility.GetPrefabStage(referencedGameObject));
+						bool referecerIsPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(firstTargetObject)|| PrefabStageUtility.GetPrefabStage(GetGameObject(firstTargetObject));
 						if(referencedIsSceneObject && referecerIsPrefabAsset)
 						{
 							#if DEV_MODE && DEBUG_CROSS_SCENE_REFERENCES
@@ -498,7 +504,15 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				Rect prefixRect = position;
 				prefixRect.xMax = remainingRect.x;
+
+				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
+				{
+					GUI.color = setGUIColor;
+				}
+
 				DrawObjectField(prefixRect, referenceValue, state);
+
+				GUI.color = guiColorWas;
 			}
 			else if(drawTypeDropdownButton && !managedValueIsNull && valueProperty.HasFoldoutInInspector(managedValue.GetType()))
 			{
@@ -872,7 +886,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			EditorGUI.ObjectField(controlRect, state.referenceProperty, state.objectFieldType, GUIContent.none);
 
 			Object newReferenceValue = state.referenceProperty.objectReferenceValue;
-			if(newReferenceValue == referenceValue || newReferenceValue == null)
+			if(newReferenceValue == referenceValue || !newReferenceValue)
 			{
 				return;
 			}
@@ -881,10 +895,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				if(newReferenceValue is GameObject gameObject)
 				{
-
-
 					newReferenceValue = Find.In(gameObject, state.valueType) as Object;
-					if(newReferenceValue == null)
+					if(!newReferenceValue)
 					{
 						state.referenceProperty.objectReferenceValue = referenceValue;
 						return;
@@ -916,7 +928,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				UserSelectedTypeChanged?.Invoke(state.anyProperty, null);
 				GUI.changed = true;
 				InspectorContents.Repaint();
-				LayoutUtility.ExitGUI(null);
+				LayoutUtility.ExitGUI();
 			}
 		}
 
@@ -1072,8 +1084,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			int indentLevelWas = EditorGUI.indentLevel;
 			EditorGUI.indentLevel = 0;
 
-			// If GUI is tinted red by null argument guard, but value selected in the dropdown is not Null,
-			// then we don't tint the type dropdown value red, as that would be misleading, but only the value that follows it.
+			// If GUI is tinted by null argument guard, but value selected in the dropdown is not Null,
+			// then we don't tint the type dropdown value, as that would be misleading, but only the value that follows it.
 			if(state.typeDropdownButton.buttonLabel.text.Length == 0 && (GUI.color == InitializerEditorUtility.NullGuardFailedColor || GUI.color == InitializerEditorUtility.NullGuardWarningColor))
 			{
 				var guiColorWas = GUI.color;
@@ -1250,12 +1262,11 @@ namespace Sisus.Init.EditorOnly.Internal
 				referenceProperty = anyProperty.FindPropertyRelative(nameof(Any<object>.reference));
 				valueProperty = anyProperty.FindPropertyRelative(nameof(Any<object>.value));
 
-				label = InitParameterGUI.NowDrawing?.label ?? new GUIContent(anyProperty.displayName, anyProperty.tooltip);
-
 				bool valuePropertyIsNull = valueProperty is null;
 			
 				anyType = GetAnyTypeFromField(fieldInfo);
 				valueType = GetValueTypeFromAnyType(anyType);
+				label = InitializerEditorUtility.GetLabel(anyProperty, valueType, fieldInfo);
 
 				objectFieldType = typeof(Object);
 				
@@ -1411,7 +1422,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				bool GetShouldDrawObjectField(bool managedValueIsNull)
 				{
-					if(referenceProperty.objectReferenceValue != null)
+					if(referenceProperty.objectReferenceValue)
 					{
 						return true;
 					}
@@ -1770,7 +1781,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			public int TryGetValue(out object value, out Object reference)
 			{
 				reference = referenceProperty?.objectReferenceValue;
-				if(reference != null)
+				if(reference)
 				{
 					value = null;
 					return 1;
@@ -1798,7 +1809,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				if(valueProperty == null || valueProperty.propertyType != SerializedPropertyType.ManagedReference || valueType.IsPrimitive || valueType == typeof(string) || valueType.IsEnum)
 				{
-					return new Type[] { valueType };
+					return new[] { valueType };
 				}
 
 				IEnumerable<Type> typeOptions
@@ -1896,7 +1907,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				)
 				{
 					Editor valueProviderEditor = Editor.CreateEditor(valueProvider, null);
-					if(valueProviderEditor != null)
+					if(valueProviderEditor)
 					{
 						valueProviderGUI = new ValueProviderGUI(valueProviderEditor, label, anyProperty, referenceProperty, valueType, DiscardObjectReferenceValue);
 					}

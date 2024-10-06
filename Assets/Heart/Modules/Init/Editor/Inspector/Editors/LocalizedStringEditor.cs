@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Sisus.Init.EditorOnly
 {
 	[CustomEditor(typeof(LocalizedString))]
-	public sealed class LocalizedStringEditor : ValueProviderDrawer
+	internal sealed class LocalizedStringEditor : ValueProviderDrawer
 	{
 		public override void Draw([AllowNull] GUIContent label, [AllowNull] SerializedProperty anyProperty, [AllowNull] Type valueType)
 		{

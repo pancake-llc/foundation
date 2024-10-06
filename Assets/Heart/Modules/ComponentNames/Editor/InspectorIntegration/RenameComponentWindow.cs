@@ -1,5 +1,5 @@
 ﻿using System;
-using Sisus.Init.EditorOnly;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 

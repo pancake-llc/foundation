@@ -24,7 +24,7 @@ namespace Sisus.Init
 	/// it will receive it in its <see cref="Init"/> function automatically during initialization.
 	/// </para>
 	/// <para>
-	/// If the object depends on a class that doen't have the <see cref="ServiceAttribute"/>,
+	/// If the object depends on a class that doesn't have the <see cref="ServiceAttribute"/>,
 	/// then an <see cref="ScriptableObjectInitializer{TScriptableObject, TArgument}"/>
 	/// can be used to specify its initialization argument.
 	/// </para>
@@ -32,6 +32,7 @@ namespace Sisus.Init
 	/// Instances of classes inheriting from <see cref="ScriptableObject{TArgument}"/> receive the argument
 	/// via the <see cref="Init"/> method where it can be assigned to a member field or property.
 	/// </para>
+	/// </summary>
 	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> function. </typeparam>
 	public abstract class ScriptableObject<TArgument> : ScriptableObject, IInitializable<TArgument>, IInitializable
 		#if UNITY_EDITOR

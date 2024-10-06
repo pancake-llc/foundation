@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Sisus.Init.Internal;
 using Sisus.Init.Reflection;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Sisus.Init.EditorOnly.Internal
 	internal static class InitializerEditorUtility
 	{
 		internal static readonly Color NullGuardFailedColor = new(1f, 0.82f, 0f, 1f);
-		internal static readonly Color NullGuardWarningColor = new Color(0.4f, 0.6f, 1f, 1f);
+		internal static readonly Color NullGuardWarningColor = new(0.4f, 0.6f, 1f, 1f);
 
 		private static readonly GUIContent clientNullTooltip = new("", "A new instance will be added to this GameObject during initialization.");
 		private static readonly GUIContent clientPrefabTooltip = new("", "A new instance will be created by cloning this prefab during initialization.");
@@ -35,113 +36,92 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static readonly HashSet<Type> initializableEditors = new(12)
 		{
-			{ typeof(InitializableT1Editor) },
-			{ typeof(InitializableT2Editor) },
-			{ typeof(InitializableT3Editor) },
-			{ typeof(InitializableT4Editor) },
-			{ typeof(InitializableT5Editor) },
-			{ typeof(InitializableT6Editor) },
-			{ typeof(InitializableT7Editor) },
-			{ typeof(InitializableT8Editor) },
-			{ typeof(InitializableT9Editor) },
-			{ typeof(InitializableT10Editor) },
-			{ typeof(InitializableT11Editor) },
-			{ typeof(InitializableT12Editor) }
+			typeof(InitializableT1EditorDecorator),
+			typeof(InitializableT2EditorDecorator),
+			typeof(InitializableT3EditorDecorator),
+			typeof(InitializableT4EditorDecorator),
+			typeof(InitializableT5EditorDecorator),
+			typeof(InitializableT6EditorDecorator),
+			typeof(InitializableT7EditorDecorator),
+			typeof(InitializableT8EditorDecorator),
+			typeof(InitializableT9EditorDecorator),
+			typeof(InitializableT10EditorDecorator),
+			typeof(InitializableT11EditorDecorator),
+			typeof(InitializableT12EditorDecorator)
 		};
 
-		private static readonly Dictionary<int, Type> initializableEditorsByArgumentCount = new(12)
+		private static readonly Dictionary<int, Type> initializableEditorDecoratorsByArgumentCount = new(12)
 		{
-			{ 1,  typeof(InitializableT1Editor) },
-			{ 2,  typeof(InitializableT2Editor) },
-			{ 3,  typeof(InitializableT3Editor) },
-			{ 4,  typeof(InitializableT4Editor) },
-			{ 5,  typeof(InitializableT5Editor) },
-			{ 6,  typeof(InitializableT6Editor) },
-			{ 7,  typeof(InitializableT7Editor) },
-			{ 8,  typeof(InitializableT8Editor) },
-			{ 9,  typeof(InitializableT9Editor) },
-			{ 10, typeof(InitializableT10Editor) },
-			{ 11, typeof(InitializableT11Editor) },
-			{ 12, typeof(InitializableT12Editor) }
+			{ 1,  typeof(InitializableT1EditorDecorator) },
+			{ 2,  typeof(InitializableT2EditorDecorator) },
+			{ 3,  typeof(InitializableT3EditorDecorator) },
+			{ 4,  typeof(InitializableT4EditorDecorator) },
+			{ 5,  typeof(InitializableT5EditorDecorator) },
+			{ 6,  typeof(InitializableT6EditorDecorator) },
+			{ 7,  typeof(InitializableT7EditorDecorator) },
+			{ 8,  typeof(InitializableT8EditorDecorator) },
+			{ 9,  typeof(InitializableT9EditorDecorator) },
+			{ 10, typeof(InitializableT10EditorDecorator) },
+			{ 11, typeof(InitializableT11EditorDecorator) },
+			{ 12, typeof(InitializableT12EditorDecorator) }
 		};
 
-		private static readonly Dictionary<Type, Type> targetEditorDecoratorTypes = new()
+		private static readonly Dictionary<Type, Type> editorDecoratorTypes = new()
 		{
-			{ typeof(InitializerBaseInternal<>), typeof(InitializerEditor) },
-			{ typeof(CustomInitializer<,>), typeof(CustomInitializerEditor) },
-			{ typeof(CustomInitializer<,,>), typeof(CustomInitializerEditor) },
-			{ typeof(CustomInitializer<,,,>), typeof(CustomInitializerEditor) },
-			{ typeof(CustomInitializer<,,,,>), typeof(CustomInitializerEditor) },
-			{ typeof(CustomInitializer<,,,,,>), typeof(CustomInitializerEditor) },
-			{ typeof(CustomInitializer<,,,,,,>), typeof(CustomInitializerEditor) },
-			{ typeof(InitializerBase<,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(InitializerBase<,,,,,,,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(Initializer<,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(Initializer<,,,,,,,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(WrapperInitializerBase<,,>), typeof(WrapperInitializerEditor) },
-			{ typeof(WrapperInitializerBase<,,,>), typeof(WrapperInitializerEditor) },
-			{ typeof(WrapperInitializerBase<,,,,>), typeof(WrapperInitializerEditor) },
-			{ typeof(WrapperInitializerBase<,,,,,>), typeof(WrapperInitializerEditor) },
-			{ typeof(WrapperInitializerBase<,,,,,,>), typeof(WrapperInitializerEditor) },
-			{ typeof(WrapperInitializerBase<,,,,,,,>), typeof(WrapperInitializerEditor) },
-			{ typeof(Wrapper<>), typeof(WrapperEditor) },
-			{ typeof(ScriptableObjectInitializerBase<,>), typeof(InitializerEditor) },
-			{ typeof(ScriptableObjectInitializer<,>), typeof(InitializerEditor) },
-			{ typeof(ScriptableObjectInitializer<,,>), typeof(InitializerEditor) },
-			{ typeof(ScriptableObjectInitializer<,,,>), typeof(InitializerEditor) },
-			{ typeof(ScriptableObjectInitializer<,,,,>), typeof(InitializerEditor) },
-			{ typeof(ScriptableObjectInitializer<,,,,,>), typeof(InitializerEditor) },
-			{ typeof(ScriptableObjectInitializer<,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(StateMachineBehaviourInitializerBase<,>), typeof(InitializerBaseEditor) },
-			{ typeof(StateMachineBehaviourInitializerBase<,,>), typeof(InitializerBaseEditor) },
-			{ typeof(StateMachineBehaviourInitializerBase<,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(StateMachineBehaviourInitializerBase<,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(StateMachineBehaviourInitializerBase<,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(StateMachineBehaviourInitializerBase<,,,,,,>), typeof(InitializerBaseEditor) },
-			{ typeof(StateMachineBehaviourInitializer<,>), typeof(InitializerEditor) },
-			{ typeof(StateMachineBehaviourInitializer<,,>), typeof(InitializerEditor) },
-			{ typeof(StateMachineBehaviourInitializer<,,,>), typeof(InitializerEditor) },
-			{ typeof(StateMachineBehaviourInitializer<,,,,>), typeof(InitializerEditor) },
-			{ typeof(StateMachineBehaviourInitializer<,,,,,>), typeof(InitializerEditor) },
-			{ typeof(StateMachineBehaviourInitializer<,,,,,,>), typeof(InitializerEditor) },
-			{ typeof(InactiveInitializerBaseInternal<>), typeof(InactiveInitializerEditor) },
-			{ typeof(InactiveInitializer), typeof(InactiveInitializerEditor) }
+			{ typeof(ConstructorBehaviour<>), typeof(ConstructorBehaviourT1EditorDecorator) },
+			{ typeof(ConstructorBehaviour<,>), typeof(ConstructorBehaviourT2EditorDecorator) },
+			{ typeof(ConstructorBehaviour<,,>), typeof(ConstructorBehaviourT3EditorDecorator) },
+			{ typeof(ConstructorBehaviour<,,,>), typeof(ConstructorBehaviourT4EditorDecorator) },
+			{ typeof(ConstructorBehaviour<,,,,>), typeof(ConstructorBehaviourT5EditorDecorator) },
+			{ typeof(ConstructorBehaviour<,,,,,>), typeof(ConstructorBehaviourT6EditorDecorator) },
+			{ typeof(IInitializable<>), typeof(InitializableT1EditorDecorator) },
+			{ typeof(IInitializable<,>), typeof(InitializableT2EditorDecorator) },
+			{ typeof(IInitializable<,,>), typeof(InitializableT3EditorDecorator) },
+			{ typeof(IInitializable<,,,>), typeof(InitializableT4EditorDecorator) },
+			{ typeof(IInitializable<,,,,>), typeof(InitializableT5EditorDecorator) },
+			{ typeof(IInitializable<,,,,,>), typeof(InitializableT6EditorDecorator) },
+			{ typeof(IInitializable<,,,,,,>), typeof(InitializableT7EditorDecorator) },
+			{ typeof(IInitializable<,,,,,,,>), typeof(InitializableT8EditorDecorator) },
+			{ typeof(IInitializable<,,,,,,,,>), typeof(InitializableT9EditorDecorator) },
+			{ typeof(IInitializable<,,,,,,,,,>), typeof(InitializableT10EditorDecorator) },
+			{ typeof(IInitializable<,,,,,,,,,,>), typeof(InitializableT11EditorDecorator) },
+			{ typeof(IInitializable<,,,,,,,,,,,>), typeof(InitializableT12EditorDecorator) },
+			{ typeof(MonoBehaviour<>), typeof(MonoBehaviourT1EditorDecorator) },
+			{ typeof(MonoBehaviour<,>), typeof(MonoBehaviourT2EditorDecorator) },
+			{ typeof(MonoBehaviour<,,>), typeof(MonoBehaviourT3EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,>), typeof(MonoBehaviourT4EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,>), typeof(MonoBehaviourT5EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,,>), typeof(MonoBehaviourT6EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,,,>), typeof(MonoBehaviourT7EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,,,,>), typeof(MonoBehaviourT8EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,,,,,>), typeof(MonoBehaviourT9EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,,,,,,>), typeof(MonoBehaviourT10EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,,,,,,,>), typeof(MonoBehaviourT11EditorDecorator) },
+			{ typeof(MonoBehaviour<,,,,,,,,,,,>), typeof(MonoBehaviourT12EditorDecorator) },
+			{ typeof(StateMachineBehaviour<>), typeof(StateMachineBehaviourT1EditorDecorator) },
+			{ typeof(StateMachineBehaviour<,>), typeof(StateMachineBehaviourT2EditorDecorator) },
+			{ typeof(StateMachineBehaviour<,,>), typeof(StateMachineBehaviourT3EditorDecorator) },
+			{ typeof(StateMachineBehaviour<,,,>), typeof(StateMachineBehaviourT4EditorDecorator) },
+			{ typeof(StateMachineBehaviour<,,,,>), typeof(StateMachineBehaviourT5EditorDecorator) },
+			{ typeof(StateMachineBehaviour<,,,,,>), typeof(StateMachineBehaviourT6EditorDecorator) },
+			{ typeof(Wrapper<>), typeof(WrapperEditorDecorator) },
+			{ typeof(Animator), typeof(AnimatorEditorDecorator) }
 		};
 
 		private static readonly Dictionary<int, string[]> propertyNamesByArgumentCount = new(12)
 		{
-			{ 1, new string[] {"argument"} },
-			{ 2, new string[] {"firstArgument", "secondArgument"} },
-			{ 3, new string[] {"firstArgument", "secondArgument", "thirdArgument"} },
-			{ 4, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument"} },
-			{ 5, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument"} },
-			{ 6, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument"} },
-			{ 7, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument" } },
-			{ 8, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument" } },
-			{ 9, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument" } },
-			{ 10, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument" } },
-			{ 11, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument" } },
-			{ 12, new string[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument", "twelfthArgument" } }
+			{ 1, new[] {"argument"} },
+			{ 2, new[] {"firstArgument", "secondArgument"} },
+			{ 3, new[] {"firstArgument", "secondArgument", "thirdArgument"} },
+			{ 4, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument"} },
+			{ 5, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument"} },
+			{ 6, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument"} },
+			{ 7, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument" } },
+			{ 8, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument" } },
+			{ 9, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument" } },
+			{ 10, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument" } },
+			{ 11, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument" } },
+			{ 12, new[] {"firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument", "twelfthArgument" } }
 		};
 
 		/// <summary>
@@ -171,7 +151,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			foreach(var editorDecoratorType in TypeCache.GetTypesWithAttribute<CustomEditorDecoratorAttribute>())
 			{
 				var attribute = editorDecoratorType.GetCustomAttribute<CustomEditorDecoratorAttribute>();
-				targetEditorDecoratorTypes[attribute.TargetType] = editorDecoratorType;
+				editorDecoratorTypes[attribute.TargetType] = editorDecoratorType;
 			}
 		}
 
@@ -220,91 +200,12 @@ namespace Sisus.Init.EditorOnly.Internal
 						return interfaceType.GetGenericArguments().Skip(1).ToArray();
 					}
 				}
-			}			
-
-			return Array.Empty<Type>();
-		}
-
-		/// <returns> Init parameter types if was able to determine them; otherwise, an empty array. </returns>
-		internal static Type[] GetInitParameterTypes([AllowNull] Type initializerType, [AllowNull] Type clientType)
-		{
-			if(clientType is not null)
-			{
-				if(typeof(IWrapper).IsAssignableFrom(clientType))
-				{
-					foreach((Type wrappedType, Type[] wrapperTypes) in Find.typeToWrapperTypes)
-					{
-						if(Array.IndexOf(wrapperTypes, clientType) != -1)
-						{
-							clientType = wrappedType;
-							break;
-						}
-					}
-				}
-
-				if(Find.typeToWrapperTypes.ContainsKey(clientType))
-				{
-					foreach(var constructor in clientType.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
-					{
-						var parameters = constructor.GetParameters();
-						if(parameters.Length > 0)
-						{
-							return parameters.Select(p => p.ParameterType).ToArray();
-						}
-					}
-				}
-			}
-
-
-			if(initializerType is not null)
-			{
-				foreach(Type interfaceType in initializerType.GetInterfaces())
-				{
-					if(interfaceType.IsGenericType && argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition()))
-					{
-						return interfaceType.GetGenericArguments().Skip(1).ToArray();
-					}
-				}
-			}
-
-			if(clientType is not null)
-			{
-				foreach(Type interfaceType in clientType.GetInterfaces())
-				{
-					if(interfaceType.IsGenericType && argumentCountsByIInitializableTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition()))
-					{
-						return interfaceType.GetGenericArguments();
-					}
-				}
-
-				foreach(Type possibleInitializerType in GetInitializerTypes(clientType))
-				{
-					foreach(Type interfaceType in possibleInitializerType.GetInterfaces())
-					{
-						if(interfaceType.IsGenericType && argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition()))
-						{
-							return interfaceType.GetGenericArguments().Skip(1).ToArray();
-						}
-					}
-				}
-
-				if(!typeof(Object).IsAssignableFrom(clientType))
-				{
-					foreach(var constructor in clientType.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
-					{
-						var parameters = constructor.GetParameters();
-						if(parameters.Length > 0)
-						{
-							return parameters.Select(p => p.ParameterType).ToArray();
-						}
-					}
-				}
 			}
 
 			return Array.Empty<Type>();
 		}
 
-		internal static Type GetClientType([AllowNull] Type initializerType)
+		internal static Type GetClientType([DisallowNull] Type initializerType)
 		{
 			foreach(Type interfaceType in initializerType.GetInterfaces())
 			{
@@ -317,55 +218,67 @@ namespace Sisus.Init.EditorOnly.Internal
 			return null;
 		}
 
-		//internal static bool IsGenericIInitializerType(Type interfaceType) => argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition());
-
 		internal static bool IsGenericIInitializableType(Type interfaceType) => interfaceType.IsGenericType && argumentCountsByIInitializableTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition());
 
-		internal static bool TryGetEditorOverrideType(Type inspectedType, out Type editorType)
+		internal static bool TryGetEditorDecoratorType(Type inspectedType, out Type editorDecoratorType)
 		{
-			if(typeof(MonoBehaviour).IsAssignableFrom(inspectedType)
-			|| typeof(ScriptableObject).IsAssignableFrom(inspectedType)
-			|| typeof(StateMachineBehaviour).IsAssignableFrom(inspectedType))
+			if(editorDecoratorTypes.TryGetValue(inspectedType, out editorDecoratorType))
 			{
-				// Don't use InitializableEditor for value providers that are drawn inlined
+				return editorDecoratorType is not null;
+			}
+
+			const int OtherType = 0;
+			const int ComponentType = 1;
+			const int ScriptableObjectType = 2;
+			const int StateMachineBehaviourType = 3;
+			var type = typeof(MonoBehaviour).IsAssignableFrom(inspectedType) ? ComponentType
+						: typeof(ScriptableObject).IsAssignableFrom(inspectedType) ? ScriptableObjectType
+						: typeof(StateMachineBehaviour).IsAssignableFrom(inspectedType) ? StateMachineBehaviourType
+						: OtherType;
+
+			if(type is not OtherType)
+			{
+				// Don't use an EditorDecorator for value providers that are drawn inlined
 				// within the AnyPropertyDrawer - we don't want the Init section to appear for those.
-				if(typeof(ScriptableObject).IsAssignableFrom(inspectedType) && inspectedType.IsDefined(typeof(ValueProviderMenuAttribute)))
+				if(type is ScriptableObjectType && inspectedType.IsDefined(typeof(ValueProviderMenuAttribute)))
 				{
-					editorType = null;
+					editorDecoratorTypes.Add(inspectedType, null);
 					return false;
 				}
 
 				for(var typeOrBaseType = inspectedType; typeOrBaseType != null; typeOrBaseType = typeOrBaseType.BaseType)
 				{
 					if(typeOrBaseType.IsGenericType
-					? targetEditorDecoratorTypes.TryGetValue(typeOrBaseType.GetGenericTypeDefinition(), out editorType)
-					: targetEditorDecoratorTypes.TryGetValue(typeOrBaseType, out editorType))
+					? editorDecoratorTypes.TryGetValue(typeOrBaseType.GetGenericTypeDefinition(), out editorDecoratorType)
+					: editorDecoratorTypes.TryGetValue(typeOrBaseType, out editorDecoratorType))
 					{
+						editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
 						return true;
 					}
 				}
 
 				int initArgumentCount = GetClientInitArgumentCount(inspectedType);
-				if(initializableEditorsByArgumentCount.TryGetValue(initArgumentCount, out editorType))
+				if(initializableEditorDecoratorsByArgumentCount.TryGetValue(initArgumentCount, out editorDecoratorType))
 				{
+					editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
 					return true;
 				}
 			}
-			else if(targetEditorDecoratorTypes.TryGetValue(inspectedType, out editorType))
+			else if(editorDecoratorTypes.TryGetValue(inspectedType, out editorDecoratorType))
 			{
+				editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
 				return true;
 			}
 
-			bool hasAnyInitilizer = false;
-
-			foreach(var initializerType in TypeCache.GetTypesDerivedFrom<IInitializer>())
+			bool hasAnyInitializer = false;
+			foreach(var initializerType in type is ComponentType ? Find.typesToComponentTypes[typeof(IInitializer)] : Find.typesToFindableTypes[typeof(IInitializer)])
 			{
 				if(initializerType.IsAbstract)
 				{
 					continue;
 				}
 
-				foreach(Type interfaceType in initializerType.GetInterfaces())
+				foreach(var interfaceType in initializerType.GetInterfaces())
 				{
 					if(!interfaceType.IsGenericType)
 					{
@@ -381,40 +294,38 @@ namespace Sisus.Init.EditorOnly.Internal
 					if(initializerClientType.IsAssignableFrom(inspectedType)
 						&& (initializerClientType != typeof(object) || inspectedType == typeof(object)))
 					{
-						if(initializableEditorsByArgumentCount.TryGetValue(argumentCount, out editorType))
+						if(initializableEditorDecoratorsByArgumentCount.TryGetValue(argumentCount, out editorDecoratorType))
 						{
+							editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
 							return true;
 						}
 
-						hasAnyInitilizer = true;
+						hasAnyInitializer = true;
 					}
 
 					if(Find.typeToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
 						&& Array.IndexOf(wrapperTypes, inspectedType) != -1)
 					{
-						if(initializableEditorsByArgumentCount.TryGetValue(argumentCount, out editorType))
+						if(initializableEditorDecoratorsByArgumentCount.TryGetValue(argumentCount, out editorDecoratorType))
 						{
+							editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
 							return true;
 						}
 
-						hasAnyInitilizer = true;
+						hasAnyInitializer = true;
 					}
 				}
 			}
 
-			if(hasAnyInitilizer)
+			if(hasAnyInitializer)
 			{
-				editorType = typeof(InitializableEditor);
+				editorDecoratorType = typeof(InitializableEditorDecorator);
+				editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
 				return true;
 			}
 
+			editorDecoratorTypes.Add(inspectedType, null);
 			return false;
-		}
-
-		internal static int GetArgumentCountFromIInitializerType(Type genericIInitializerType)
-		{
-			var genericTypeDefinition = genericIInitializerType.GetGenericTypeDefinition();
-			return argumentCountsByIInitializerTypeDefinition.TryGetValue(genericTypeDefinition, out int argumentCount) ? argumentCount : genericTypeDefinition.GetGenericArguments().Length - 1;
 		}
 
 		internal static void AddInitializer(Object[] clients, Type initializerType)
@@ -427,9 +338,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				for(int i = 0; i < count; i++)
 				{
 					var component = clients[i] as Component;
-					if(component != null)
+					if(component)
 					{
-						IInitializer initializer = Undo.AddComponent(component.gameObject, initializerType) as IInitializer;
+						IInitializer initializer = (IInitializer)Undo.AddComponent(component.gameObject, initializerType);
 						initializer.Target = component;
 					}
 				}
@@ -444,7 +355,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				for(int i = 0; i < count; i++)
 				{
 					var scriptableObjectClient = clients[i] as ScriptableObject;
-					if(scriptableObjectClient != null)
+					if(scriptableObjectClient)
 					{
 						const string UNDO_NAME = "Add Initializer";
 						Undo.RecordObject(scriptableObjectClient, UNDO_NAME);
@@ -453,14 +364,14 @@ namespace Sisus.Init.EditorOnly.Internal
 						initializerInstance.name = "Initializer";
 						Undo.RegisterCreatedObjectUndo(initializerInstance, UNDO_NAME);
 
-						(initializerInstance as IInitializer).Target = scriptableObjectClient;
+						((IInitializer)initializerInstance).Target = scriptableObjectClient;
 						AssetDatabase.StartAssetEditing();
 						string path = AssetDatabase.GetAssetPath(scriptableObjectClient);
 						EditorUtility.SetDirty(scriptableObjectClient);
 						AssetDatabase.AddObjectToAsset(initializerInstance, path);
 						AssetDatabase.StopAssetEditing();
 						AssetDatabase.ImportAsset(path);
-						
+
 						foreach(var asset in AssetDatabase.LoadAllAssetsAtPath(path))
 						{
 							if(asset.GetType() == initializerType)
@@ -490,9 +401,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			string initializerPath = ScriptGenerator.CreateInitializer(client);
 			var initializerScript = AssetDatabase.LoadAssetAtPath<MonoScript>(initializerPath);
-			
+
 			Debug.Log($"Initializer class created at \"{initializerPath}\".", initializerScript);
-			
+
 			var initializerGuid = AssetDatabase.AssetPathToGUID(initializerPath);
 			EditorPrefs.SetString(InitializerGUI.SetInitializerTargetOnScriptsReloadedEditorPrefsKey, initializerGuid + ":" + string.Join(";", targets.Select(t => t.GetInstanceID())));
 
@@ -512,7 +423,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			foreach(var target in targets)
 			{
-				if(client is Component component)
+				if(target is Component component)
 				{
 					addScriptMethod.Invoke(null, new Object[] { component.gameObject, initializerScript });
 				}
@@ -528,48 +439,24 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			foreach(Type interfaceType in initializerType.GetInterfaces())
 			{
-				if(!interfaceType.IsGenericType)
-				{
-					continue;
-				}
-
-				var genericTypeDefinition = interfaceType.GetGenericTypeDefinition();
-				if(!argumentCountsByIInitializerTypeDefinition.ContainsKey(genericTypeDefinition))
+				if(!interfaceType.IsGenericType || interfaceType.GetGenericTypeDefinition() != typeof(IInitializer<>))
 				{
 					continue;
 				}
 
 				var initializerClientType = interfaceType.GetGenericArguments()[0];
-				if(initializerClientType.IsAssignableFrom(clientType) && (initializerClientType != typeof(object) || clientType == typeof(object)))
+				if(initializerClientType == clientType)
 				{
 					return true;
 				}
-				
+
+				if(initializerClientType.IsAssignableFrom(clientType) && !TypeUtility.IsBaseType(initializerClientType))
+				{
+					return true;
+				}
+
 				if(Find.typeToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
 					&& Array.IndexOf(wrapperTypes, clientType) != -1)
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		internal static bool CanAssignUnityObjectToField(Type type)
-		{
-			if(typeof(Object).IsAssignableFrom(type))
-			{
-				return true;
-			}
-
-			if(!type.IsInterface)
-			{
-				return false;
-			}
-
-			foreach(var derivedType in TypeCache.GetTypesDerivedFrom(type))
-			{
-				if(typeof(Object).IsAssignableFrom(derivedType) && !derivedType.IsAbstract)
 				{
 					return true;
 				}
@@ -588,22 +475,20 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			var reference = client.objectReferenceValue;
-
 			EditorGUI.ObjectField(fieldRect, client, GUIContent.none);
 
-			bool mouseovered = rect.Contains(Event.current.mousePosition) && DragAndDrop.visualMode != DragAndDropVisualMode.None;
-
 			fieldRect.x += 2f;
-			fieldRect.width -= 21f;
 			fieldRect.y += 2f;
+			fieldRect.width -= 21f;
 			fieldRect.height -= 3f;
 
+			bool mouseovered = rect.Contains(Event.current.mousePosition) && DragAndDrop.visualMode != DragAndDropVisualMode.None;
 			if(!isInitializable && !mouseovered && TryGetTintForNullGuardResult(NullGuardResult.ClientNotSupported, out Color setGuiColor))
 			{
 				GUI.color = setGuiColor;
 			}
 
-			if(reference == null)
+			if(!reference)
 			{
 				if(mouseovered)
 				{
@@ -618,9 +503,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			else
 			{
 				Component component = reference as Component;
-				var gameObject = component != null ? component.gameObject : null;
-				bool isPrefab = gameObject != null && !gameObject.scene.IsValid();
-				bool isSceneObject = gameObject != null && gameObject.scene.IsValid();
+				var gameObject = component ? component.gameObject : null;
+				bool isPrefab = gameObject && !gameObject.scene.IsValid();
+				bool isSceneObject = gameObject && gameObject.scene.IsValid();
 				bool isScriptableObject = reference is ScriptableObject;
 
 				GUIContent icon;
@@ -683,7 +568,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				var iconSize = EditorGUIUtility.GetIconSize();
 				EditorGUIUtility.SetIconSize(new Vector2(15f, 15f));
-				
+
 				var iconRect = fieldRect;
 				iconRect.y -= 4f;
 				iconRect.x -= 22f;
@@ -691,7 +576,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				iconRect.height = 20f;
 				if(GUI.Button(iconRect, icon, EditorStyles.label))
 				{
-					EditorGUIUtility.PingObject(gameObject != null ? gameObject : reference);
+					EditorGUIUtility.PingObject(gameObject ? gameObject : reference);
 				}
 
 				GUI.Label(iconRect, instantiateOverlayIcon);
@@ -709,25 +594,25 @@ namespace Sisus.Init.EditorOnly.Internal
 				return clientNotInitializableTooltip;
 			}
 
-			if(reference == null)
+			if(!reference)
 			{
 				return clientNullTooltip;
 			}
 
 			Component component = reference as Component;
-			if(component == null)
+			if(!component)
 			{
 				return GUIContent.none;
 			}
 
 			var gameObject = component.gameObject;
-			if(gameObject == null)
+			if(!gameObject)
 			{
 				return GUIContent.none;
 			}
 
 			var gameObjectWithField = objectWithField is Component componentWithField ? componentWithField.gameObject : null;
-			if(gameObjectWithField == null || gameObjectWithField == gameObject)
+			if(!gameObjectWithField || gameObjectWithField == gameObject)
 			{
 				return GUIContent.none;
 			}
@@ -736,9 +621,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			return isPrefab ? clientPrefabTooltip : clientInstantiateTooltip;
 		}
 
-		internal static GUIContent GetLabel([DisallowNull] Type type)
+		private static string GetLabel([DisallowNull] Type type)
 		{
-			if(!(type.GetCustomAttribute<AddComponentMenu>() is AddComponentMenu addComponentMenu))
+			if(type.GetCustomAttribute<AddComponentMenu>() is not AddComponentMenu addComponentMenu)
 			{
 				return GetLabel(TypeUtility.ToString(type));
 			}
@@ -750,10 +635,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			int nameStart = menuPath.LastIndexOf('/') + 1;
-			return new GUIContent(nameStart <= 0 ? menuPath : menuPath.Substring(nameStart));
+			return nameStart <= 0 ? menuPath : menuPath.Substring(nameStart);
 		}
 
-		internal static GUIContent GetLabel(string unnicifiedTypeOrFieldName)
+		internal static string GetLabel(string unnicifiedTypeOrFieldName)
 		{
 			unnicifiedTypeOrFieldName = ObjectNames.NicifyVariableName(unnicifiedTypeOrFieldName);
 
@@ -762,10 +647,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				unnicifiedTypeOrFieldName = unnicifiedTypeOrFieldName.Substring(2);
 			}
 
-			return new GUIContent(unnicifiedTypeOrFieldName);
+			return unnicifiedTypeOrFieldName;
 		}
 
-		[return: MaybeNull]
 		public static bool TryGetInitParameterAttributesFromMetadata(string initializerPropertyName, Type parameterType, Type metadataClass, [NotNullWhen(true)][MaybeNullWhen(false)] out Attribute[] results)
 		{
 			// "firstArgument" => 0, "secondArgument" => 1 etc.
@@ -778,7 +662,13 @@ namespace Sisus.Init.EditorOnly.Internal
 					if(fieldAtIndex.FieldType == parameterType)
 					{
 						results = Attribute.GetCustomAttributes(fieldAtIndex, typeof(Attribute));
-						return results.Length > 0;
+						if(results.Length == 0)
+						{
+							results = null;
+							return false;
+						}
+
+						return true;
 					}
 				}
 			}
@@ -791,49 +681,19 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			var field = metadataClass.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			results = Attribute.GetCustomAttributes(field, typeof(Attribute));
-			return results.Length > 0;
-		}
-
-		#if ODIN_INSPECTOR
-		internal static bool TryGetOdinDrawer(GUIContent label, [DisallowNull] SerializedProperty anyProperty, [DisallowNull] Type argumentType, PropertyTree odinPropertyTree, out InspectorProperty odinDrawer)
-		{
-			SerializedProperty valueProperty;
-			if(typeof(Object).IsAssignableFrom(argumentType))
+			if(results.Length == 0)
 			{
-				valueProperty = anyProperty.FindPropertyRelative(nameof(Any<object>.reference));
-			}
-			else
-			{
-				valueProperty = anyProperty.FindPropertyRelative(nameof(Any<object>.value));
-				if(valueProperty is null)
-				{
-					valueProperty = anyProperty.FindPropertyRelative(nameof(Any<object>.reference));
-				}
-			}
-
-			odinDrawer = odinPropertyTree.GetPropertyAtUnityPath(valueProperty.propertyPath);
-			if(odinDrawer is null)
-			{
-				#if DEV_MODE
-				Debug.LogWarning($"Failed to get InspectorProperty from {odinPropertyTree.TargetType.Name} path {valueProperty.propertyPath}.");
-				#endif
-
+				results = null;
 				return false;
 			}
 
-			odinDrawer.Label = label;
-			odinDrawer.AnimateVisibility = false;
-		  	return true;
+			return true;
 		}
-		#endif
 
 		public static InitParameterGUI[] CreateParameterGUIs(SerializedObject serializedObject, Type clientType, Type[] argumentTypes)
 			=> GetPropertyDrawerData(serializedObject, clientType, argumentTypes, GetAnyFieldSerializedProperties(serializedObject, argumentTypes));
 
-		public static SerializedProperty[] GetAnyFieldSerializedProperties(SerializedObject serializedObject)
-			=> GetAnyFieldSerializedProperties(serializedObject, GetInitParameterTypes(serializedObject.targetObject));
-
-		public static SerializedProperty[] GetAnyFieldSerializedProperties(SerializedObject serializedObject, Type[] argumentTypes)
+		private static SerializedProperty[] GetAnyFieldSerializedProperties(SerializedObject serializedObject, Type[] argumentTypes)
 		{
 			int count = argumentTypes.Length;
 			var results = new SerializedProperty[count];
@@ -871,36 +731,13 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 				}
 			}
-			
+
 			return results;
 		}
 
 		internal static Type GetMetaDataClassType(Type initializerType) => initializerType.GetNestedType(InitializerEditor.InitArgumentMetadataClassName, BindingFlags.Public | BindingFlags.NonPublic);
 
-		internal static string GetMemberNameInInitializer([DisallowNull] Type metadataClass, string nameInMetadata)
-		{
-			var members = GetArgumentMetadata(metadataClass);
-			if(!propertyNamesByArgumentCount.TryGetValue(members.Length - 1, out var namesInInitializer))
-			{
-				return nameInMetadata;
-			}
-
-			for(int i = 0; i < members.Length; i++)
-			{
-				if(string.Equals(members[i].Name, nameInMetadata, StringComparison.OrdinalIgnoreCase))
-				{
-					return namesInInitializer[i];
-				}
-			}
-
-			#if DEV_MODE
-			Debug.Log($"\"{nameInMetadata}\" not found among options: {string.Join(", ", members.Select(m => m.Name))}.");
-			#endif
-
-			return namesInInitializer.Length == 1 ? namesInInitializer[0] : nameInMetadata;
-		}
-
-		private static MemberInfo[] GetArgumentMetadata([DisallowNull] Type metadataClass)
+		private static MemberInfo[] GetParameterInfosFromMetadata([DisallowNull] Type metadataClass)
 		{ 
 			var members = metadataClass.GetMembers(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
 			Array.Sort(members, CompareOrderOfDefinition);
@@ -916,11 +753,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			int argumentCount = argumentTypes.Length;
 			var results = new InitParameterGUI[argumentCount];
-
-			var members = metadataClass is null ? Array.Empty<MemberInfo>() : GetArgumentMetadata(metadataClass);
+			var members = metadataClass is null ? Array.Empty<MemberInfo>() : GetParameterInfosFromMetadata(metadataClass);
 
 			// If the Init class has one member per init argument + constructor, then we can try extracting
-			// attributes and labels from the non-contructor members defined in it and use them when visualizing
+			// attributes and labels from the non-constructor members defined in it and use them when visualizing
 			// the Init arguments in the Inspector.
 			if(members.Length == argumentCount + 1)
 			{
@@ -944,8 +780,14 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					var argumentType = argumentTypes[i];
-					TryGetInitParameterAttributesFromMetadata(serializedProperty.name, argumentType, metadataClass, out Attribute[] attributes);
-					var label = GetLabel(members[i]);
+					var member = members[i];
+					var attributes = member.GetCustomAttributes().ToArray();
+					var label = new GUIContent
+					(
+						GetLabel(member.Name),
+						TryGetTooltip(attributes, out var tooltip) ? tooltip : serializedProperty.tooltip
+					);
+
 					results[i] = new InitParameterGUI
 					(
 						label,
@@ -971,8 +813,8 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							Array.Copy(results, i + 1, newResults, i, newResults.Length - i);
 						}
-						results = newResults;
 
+						results = newResults;
 						continue;
 					}
 
@@ -1006,7 +848,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return false;
 		}
 
-		internal static bool TryGetAttributeBasedPropertyDrawer([DisallowNull] SerializedProperty serializedProperty, [AllowNull] PropertyAttribute propertyAttribute, out PropertyDrawer propertyDrawer)
+		private static bool TryGetAttributeBasedPropertyDrawer([DisallowNull] SerializedProperty serializedProperty, [DisallowNull] PropertyAttribute propertyAttribute, out PropertyDrawer propertyDrawer)
 		{
 			if(!TryGetDrawerType(propertyAttribute, out Type drawerType))
 			{
@@ -1015,24 +857,15 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			propertyDrawer = CreateInstance(drawerType) as PropertyDrawer;
-
 			if(propertyDrawer == null)
 			{
 				return false;
 			}
 
-			if(propertyAttribute != null)
-			{
-				var attributeField = typeof(PropertyDrawer).GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic);
-				#if UNITY_2019_1_OR_NEWER && ENABLE_UI_SUPPORT
-				//var element = propertyDrawer.CreatePropertyGUI(serializedProperty);
-				#endif
-				attributeField.SetValue(propertyDrawer, propertyAttribute);
-			}
-
+			PropertyDrawerUtility.SetAttribute(propertyDrawer, propertyAttribute);
 			if(serializedProperty.GetMemberInfo() is FieldInfo fieldInfo)
 			{
-				typeof(PropertyDrawer).GetField("m_FieldInfo", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(propertyDrawer, fieldInfo);
+				PropertyDrawerUtility.SetFieldInfo(propertyDrawer, fieldInfo);
 			}
 
 			return true;
@@ -1041,22 +874,20 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static bool TryGetDrawerType([DisallowNull] PropertyAttribute propertyAttribute, out Type drawerType)
 		{
 			var propertyAttributeType = propertyAttribute.GetType();
-			var typeField = typeof(CustomPropertyDrawer).GetField("m_Type", BindingFlags.NonPublic | BindingFlags.Instance);
-			var useForChildrenField = typeof(CustomPropertyDrawer).GetField("m_UseForChildren", BindingFlags.NonPublic | BindingFlags.Instance);
 			drawerType = null;
 
 			foreach(var propertyDrawerType in TypeCache.GetTypesWithAttribute<CustomPropertyDrawer>())
 			{
 				foreach(var attribute in propertyDrawerType.GetCustomAttributes<CustomPropertyDrawer>())
 				{
-					var targetType = typeField.GetValue(attribute) as Type;
+					var targetType = PropertyDrawerUtility.GetTargetType(attribute);
 					if(targetType == propertyAttributeType)
 					{
 						drawerType = propertyDrawerType;
 						return true;
 					}
 
-					if(targetType.IsAssignableFrom(propertyAttributeType) && (bool)useForChildrenField.GetValue(attribute))
+					if(targetType.IsAssignableFrom(propertyAttributeType) && PropertyDrawerUtility.GetUseForChildren(attribute))
 					{
 						drawerType = propertyDrawerType;
 					}
@@ -1078,7 +909,32 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		internal static GUIContent GetArgumentLabel(Type clientType, Type parameterType, int parameterIndex)
+		internal static GUIContent GetLabel(SerializedProperty anyProperty, Type argumentType, FieldInfo fieldInfo)
+		{
+			var initializerType = fieldInfo.DeclaringType;
+			if(!typeof(IInitializer).IsAssignableFrom(initializerType))
+			{
+				return new(anyProperty.displayName, anyProperty.tooltip);
+			}
+
+			if(GetMetaDataClassType(initializerType) is { } metadataClass)
+			{
+				var memberInfos = GetParameterInfosFromMetadata(metadataClass);
+				if(propertyNameToInitParameterIndex.TryGetValue(fieldInfo.Name, out int parameterIndex) && memberInfos.Length < parameterIndex)
+				{
+					var memberInfo = memberInfos[parameterIndex];
+					return new(GetLabel(memberInfo.Name), TryGetTooltip(memberInfo, out string tooltip) ? tooltip : anyProperty.tooltip);
+				}
+
+				#if DEV_MODE
+				Debug.Log($"\"{fieldInfo.Name}\" propertyNameToInitParameterIndex result {parameterIndex} not valid index between 0...{memberInfos.Length}.");
+				#endif
+			}
+
+			return new(GetLabel(argumentType), anyProperty.tooltip);
+		}
+
+		private static GUIContent GetArgumentLabel(Type clientType, Type parameterType, int parameterIndex)
 		{
 			if(TryGetArgumentTargetMember(clientType, parameterType, parameterIndex, false, out var member))
 			{
@@ -1090,22 +946,41 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				return label;
 			}
-			
-			return GetLabel(parameterType);
+
+			return new(GetLabel(parameterType));
 		}
 
-		internal static GUIContent GetLabel([DisallowNull] MemberInfo member)
+		private static GUIContent GetLabel([DisallowNull] MemberInfo member) => new(GetLabel(member.Name), GetTooltip(member));
+
+		private static string GetTooltip(MemberInfo member) => member.GetCustomAttribute<TooltipAttribute>() is TooltipAttribute tooltip ? tooltip.tooltip : "";
+
+		private static bool TryGetTooltip(MemberInfo member, out string tooltip)
 		{
-			var label = GetLabel(member.Name);
-			label.tooltip = GetTooltip(member);
-			return label;
+			if(member.GetCustomAttribute<TooltipAttribute>() is TooltipAttribute tooltipAttribute)
+			{
+				tooltip = tooltipAttribute.tooltip;
+				return true;
+			}
+
+			tooltip = null;
+			return false;
 		}
 
-		internal static string GetTooltip(MemberInfo member) => member.GetCustomAttribute<TooltipAttribute>() is TooltipAttribute tooltip ? tooltip.tooltip : "";
+		private static bool TryGetTooltip(Attribute[] attributes, out string tooltip)
+		{
+			foreach(var attribute in attributes)
+			{
+				if(attribute is TooltipAttribute tooltipAttribute)
+				{
+					tooltip = tooltipAttribute.tooltip;
+					return true;
+				}
+			}
 
-		/// <summary>
-		/// Pr
-		/// </summary>
+			tooltip = null;
+			return false;
+		}
+
 		/// <param name="clientType"></param>
 		/// <param name="parameterType">
 		/// Type which returned member must be assignable from.
@@ -1117,14 +992,11 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// then that will be returned.
 		/// </para>
 		/// </param>
-		/// <param name="member">
-		/// 
-		/// </param>
 		/// <returns></returns>
 		internal static bool TryGetArgumentTargetMember(Type clientType, Type parameterType, int argumentIndex, bool requirePublicSetter, out MemberInfo member)
 			=> InjectionUtility.TryGetInitArgumentTargetMember(clientType, parameterType, argumentIndex, requirePublicSetter, out member);
 
-		internal static bool TryGetArgumentTargetFieldName(Type clientType, Type parameterType, int argumentIndex, out string targetFieldName)
+		private static bool TryGetArgumentTargetFieldName(Type clientType, Type parameterType, int argumentIndex, out string targetFieldName)
 		{
 			if(InjectionUtility.TryGetInitArgumentTargetMember(clientType, parameterType, argumentIndex, false, out var member))
 			{

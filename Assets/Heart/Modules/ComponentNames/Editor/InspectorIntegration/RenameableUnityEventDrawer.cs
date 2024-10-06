@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 using System.Text;
-using Sisus.Init.EditorOnly.Internal;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;

@@ -1,4 +1,4 @@
-﻿//#define DEBUG_DISPOSE
+﻿#define DEBUG_DISPOSE
 
 using System;
 using System.ComponentModel;
@@ -28,7 +28,7 @@ namespace Sisus.Init.EditorOnly.Internal
 	[InitializeOnLoad]
 	public sealed class InitializerGUI : IDisposable
 	{
-		const float ICON_WIDTH = 20f;
+		const float IconWidth = 20f;
 
 		public static bool ServicesShown
 		{
@@ -50,13 +50,17 @@ namespace Sisus.Init.EditorOnly.Internal
 		private const string AddInitializerTooltip = "Attach an Initializer.\n\nThis can be used to customize the arguments received by this client during initialization.";
 		private const string AddStateMachineInitializerTooltip = "Attach a State Machine Behaviour Initializer.\n\nThis can be used to customize the arguments received by the state machine behaviour during initialization.";
 		private static readonly GUIContent useAwakeButtonLabel = new(" Use Awake", "Initialize target later during the Awake event when the game object becomes active?");
-		private static readonly GUIContent useOnAfterDeserializeButtonLabel = new(" Use OnAfterDeserialize", "Initialize target ealier during the OnAfterDeserialize event before the game object becomes active?");
+		private static readonly GUIContent useOnAfterDeserializeButtonLabel = new(" Use OnAfterDeserialize", "Initialize target earlier during the OnAfterDeserialize event before the game object becomes active?");
 
 		public static InitializerGUI NowDrawing { get; private set; }
 
 		public event Action<InitializerGUI> Changed;
 		public event AfterHeaderGUIHandler AfterHeaderGUI;
 
+		/// <summary>
+		/// Scriptable object of the editor that owns this InitializerGUI (e.g. InitializerEditor, InitializableEditor, MultiInitializableEditor).
+		/// </summary>
+		private readonly SerializedObject ownerSerializedObject;
 		private readonly Object[] targets; // E.g. Initializer, Animator
 		private readonly object[] initializables; // E.g. MonoBehaviour<T...>, StateMachineBehaviour<T...>
 		private bool isResponsibleForInitializerEditorLifetime;
@@ -73,31 +77,46 @@ namespace Sisus.Init.EditorOnly.Internal
 		private readonly GUIContent nullGuardPassedWithValueProviderValueMissing = new();
 		private readonly GUIContent nullGuardPassedIcon = new();
 		private readonly GUIContent nullGuardFailedIcon = new();
+		//private readonly GUIContent nullGuardStillInitializingIcon = new();
+		private readonly GUIContent initStateUninitializedIcon = new();
+		private readonly GUIContent initStateInitializedIcon = new();
+		private readonly GUIContent initStateFailedIcon = new();
+		private readonly GUIContent initStateInitializingIcon = new();
 		private readonly GUIContent servicesHiddenIcon = new();
 		private readonly GUIContent servicesShownIcon = new();
 		private readonly GUIContent headerLabel = new(DefaultHeaderText);
-		private GUIStyle initializerBackgroundStyle = null;
-		private GUIStyle noInitializerBackgroundStyle = null;
+		private GUIStyle initializerBackgroundStyle;
+		private GUIStyle noInitializerBackgroundStyle;
 		private readonly Type[] initParameterTypes;
 		private readonly bool[] initParametersAreServices;
 		private bool hasServiceParameters;
 		private bool allParametersAreServices;
-		private bool targetCanForSureSelfInitialize;
-		private bool targetCanMaybeSelfInitialize;
+		private bool targetImplementsIArgs;
+		private bool targetDerivesFromGenericBaseType;
+		//private bool targetCanMaybeSelfInitialize; // allParametersAreServices && targetImplementsIArgs
+		//private bool targetCanForSureSelfInitialize; // allParametersAreServices && targetDerivesFromGenericBaseType
 		private bool? hadInitializerLastFrame;
 		private NullGuardResult? nullGuardResultLastFrame;
 		private Object[] initializers = new Object[1];
 		private Editor initializerEditor;
+		//private Action drawArguments;
+		//private InitializerEditorWrapper drawArguments;
+		//private InitializerEditor initializerEditor;
 		private bool lockInitializers;
 		private bool shouldUpdateInitArgumentDependentState;
 
 		#if ODIN_INSPECTOR
 		private PropertyTree odinPropertyTree;
-		public PropertyTree OdinPropertyTree => odinPropertyTree ??= PropertyTree.Create(initializerEditor.serializedObject);
+		internal PropertyTree OdinPropertyTree => odinPropertyTree ??= PropertyTree.Create(ownerSerializedObject);
 		#endif
+
+		internal Editor InitializerEditor => initializerEditor;
 
 		[MaybeNull]
 		private Object Target => targets[0];
+
+		[MaybeNull]
+		private GameObject FirstGameObject => gameObjects.Length > 0 ? gameObjects[0] : null;
 
 		public Action<Rect> OnAddInitializerButtonPressedOverride { get; set; }
 
@@ -120,6 +139,12 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		static InitializerGUI() => InitializerUtility.requestNullArgumentGuardFlags = GetNullArgumentGuardFlags;
 
+		/// <param name="ownerSerializedObject">
+		/// Scriptable object of the editor that owns this InitializerGUI (e.g. InitializerEditor, InitializableEditor, MultiInitializableEditor).
+		/// </param>
+		/// <param name="ownerSerializedObject">
+		/// Scriptable object of the InitializerEditor that owns this InitializerGUI.
+		/// </param>
 		/// <param name="targets">
 		/// The components or scriptable objects that are the targets of the top-level Editor.
 		/// <para>
@@ -133,9 +158,11 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// </para>
 		/// </param>
 		/// <param name="initParameterTypes"> Types of all init parameter, if known; otherwise an empty array. </param>
-		/// <param name="initializerEditor"> InitializerEditor, or some other Editor, to use for drawing the Init arguments. </param>
+		/// <param name="initializerEditor"> (Optional) Delegate for drawing the arguments inside the Init section. </param>
 		/// <param name="gameObjects"> GamesObjects for all component type clients. If null, then the array  will be automatically generated. </param>
-		public InitializerGUI(Object[] targets, object[] initializables, Type[] initParameterTypes, Editor initializerEditor = null, GameObject[] gameObjects = null)
+		//public InitializerGUI(SerializedObject ownerSerializedObject, object[] initializables, Type[] initParameterTypes, Editor initializerEditor = null, GameObject[] gameObjects = null)
+		//public InitializerGUI(SerializedObject ownerSerializedObject, object[] initializables, Type[] initParameterTypes, Action drawArguments = null, GameObject[] gameObjects = null)
+		public InitializerGUI(SerializedObject ownerSerializedObject, object[] initializables, Type[] initParameterTypes, InitializerEditor initializerEditor = null, GameObject[] gameObjects = null)
 		{
 			NowDrawing = this;
 
@@ -143,15 +170,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			Profiler.BeginSample("InitializerGUI.Ctr");
 			#endif
 
-			this.targets = targets;
+			this.ownerSerializedObject = ownerSerializedObject;
+			this.targets = ownerSerializedObject.targetObjects;
 			this.initializables = initializables;
 
-			if(gameObjects is null)
+			int count = targets.Length;
+			if(count > 0)
 			{
-				int count = targets.Length;
-				if(count > 0)
+				var target = targets[0];
+				if(gameObjects is null)
 				{
-					if(targets[0] is Component)
+					if(target is Component)
 					{
 						gameObjects = new GameObject[count];
 
@@ -166,6 +195,9 @@ namespace Sisus.Init.EditorOnly.Internal
 						gameObjects = Array.Empty<GameObject>();
 					}
 				}
+
+				targetDerivesFromGenericBaseType = InitializableUtility.CanSelfInitializeWithoutInitializer(target);
+				targetImplementsIArgs = targetDerivesFromGenericBaseType || InitializableUtility.TryGetIArgsInterface(target.GetType(), out _);
 			}
 
 			this.initParameterTypes = initParameterTypes;
@@ -174,7 +206,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			this.gameObjects = gameObjects;
 			rootObjects = gameObjects.Length > 0 ? gameObjects : targets;
 
-			isResponsibleForInitializerEditorLifetime = initializerEditor == null;
+			isResponsibleForInitializerEditorLifetime = initializerEditor is null;
+			//this.initializerEditor = initializerEditor;
 			this.initializerEditor = initializerEditor;
 
 			GetInitializersOnTargets(out bool hasInitializers, out Object firstInitializer);
@@ -193,12 +226,11 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			Setup();
 			UpdateInitArgumentDependentState(hasInitializers);
+			NowDrawing = null;
 
 			#if DEV_MODE
 			Profiler.EndSample();
 			#endif
-
-			NowDrawing = null;
 		}
 
 		public bool IsValid()
@@ -246,9 +278,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			targetCanMaybeSelfInitialize = allParametersAreServices;
-			
-			targetCanForSureSelfInitialize = allParametersAreServices && InitializableUtility.CanSelfInitializeWithoutInitializer(Target);
+			// targetCanMaybeSelfInitialize = allParametersAreServices && targetImplementsIArgs;
+			// targetCanForSureSelfInitialize = allParametersAreServices && targetDerivesFromGenericBaseType;
 
 			UpdateTooltips(hasInitializers);
 		}
@@ -256,7 +287,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		private void OnInitArgumentServiceChanged() => shouldUpdateInitArgumentDependentState = true;
 
 		/// <summary>
-		/// Gets a value indicating whether the user has hidden the Init section for the target.
+		/// Gets a value indicating whether or not the user has hidden the Init section for the target.
 		/// </summary>
 		/// <param name="target">
 		/// Components or scriptable object that is the target of the top-level Editor.
@@ -304,7 +335,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			MonoScript initializableScript;
 			if(target is MonoBehaviour monoBehaviour)
 			{
-				if(InitializerUtility.TryGetInitializer(monoBehaviour, out var initializer)
+				if(InitializerUtility.TryGetInitializer(monoBehaviour, out IInitializer initializer)
 					&& initializer is IInitializerEditorOnly initializerEditorOnly)
 				{
 					return initializerEditorOnly.NullArgumentGuard;
@@ -342,7 +373,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			else
 			{
 				initializableScript = target as MonoScript;
-				initializableType = initializableScript != null ? initializableScript.GetClass() : target.GetType();
+				initializableType = initializableScript ? initializableScript.GetClass() : target.GetType();
 			}
 
 			ToggleNullArgumentGuardFlag(initializableScript, initializableType, flag);
@@ -472,7 +503,6 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			if(!initializableScript || !initializableScript.TrySetUserData(userDataKey, value, defaultValue))
 			{
-				// Use EditorPrefs as fallback, in cases where type is inside a DLL etc.
 				EditorPrefsUtility.SetUserData(initializableType, userDataKey, value, defaultValue);
 			}
 		}
@@ -485,11 +515,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		private bool IsService(Type parameterType) => ServiceUtility.IsServiceDefiningType(parameterType) || (Target != null && ServiceUtility.ExistsFor(Target, parameterType));
+		private bool IsService(Type parameterType) => ServiceUtility.IsServiceDefiningType(parameterType) || (Target && ServiceUtility.ExistsFor(Target, parameterType));
 
 		private static bool TryGetCustomHeaderLabel(bool hasInitializers, Object firstInitializer, out string customHeaderText)
 		{
-			if(hasInitializers && firstInitializer.GetType().GetNestedType(InitializerEditor.InitArgumentMetadataClassName, BindingFlags.Public | BindingFlags.NonPublic) is Type metadata && metadata.GetCustomAttributes<DisplayNameAttribute>().FirstOrDefault() is DisplayNameAttribute displayName)
+			if(hasInitializers && firstInitializer.GetType().GetNestedType(EditorOnly.InitializerEditor.InitArgumentMetadataClassName, BindingFlags.Public | BindingFlags.NonPublic) is Type metadata && metadata.GetCustomAttributes<DisplayNameAttribute>().FirstOrDefault() is DisplayNameAttribute displayName)
 			{
 				customHeaderText = displayName.DisplayName;
 				return true;
@@ -525,9 +555,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			addInitializerIcon.image = EditorGUIUtility.TrIconContent("Toolbar Plus").image;
 			contextMenuIcon.image = EditorGUIUtility.IconContent("_Menu").image;
 			nullGuardDisabledIcon.image = EditorGUIUtility.IconContent("DebuggerDisabled").image;
-			nullGuardPassedIcon.image = EditorGUIUtility.IconContent("Installed@2x").image;
+			nullGuardPassedIcon.image = PancakeEditor.Common.EditorResources.IconNullGuardPassed(PancakeEditor.Common.Uniform.Theme);
 			nullGuardPassedWithValueProviderValueMissing.image = EditorGUIUtility.IconContent("DebuggerAttached").image;
 			nullGuardFailedIcon.image = EditorGUIUtility.IconContent("DebuggerEnabled").image;
+			initStateUninitializedIcon.image = EditorGUIUtility.IconContent("TestIgnored").image;
+			initStateInitializingIcon.image = EditorGUIUtility.IconContent("Loading").image;
+			initStateInitializedIcon.image = PancakeEditor.Common.EditorResources.IconNullGuardPassed(PancakeEditor.Common.Uniform.Theme);
+			initStateFailedIcon.image = EditorGUIUtility.IconContent("TestFailed").image;
 
 			if(hasServiceParameters)
 			{
@@ -540,7 +574,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				servicesShownIcon.image = null;
 			}
 
-			if(LayoutUtility.NowDrawing != null)
+			if(LayoutUtility.NowDrawing)
 			{
 				LayoutUtility.NowDrawing.Repaint();
 			}
@@ -567,471 +601,536 @@ namespace Sisus.Init.EditorOnly.Internal
 			headerLabel.tooltip = GetInitArgumentsTooltip(initParameterTypes, initParametersAreServices, hasInitializers);
 		}
 
-		public static void OnAssemblyCompilationStarted(ref InitializerGUI initializerGUI, string compilingAssemblyName)
-		{
-			if(initializerGUI is null || initializerGUI.initializerEditor == null)
-			{
-				return;
-			}
-
-			string initializerAssemblyName = Path.GetFileName(initializerGUI.initializerEditor.GetType().Assembly.Location);
-			if(string.Equals(compilingAssemblyName, initializerAssemblyName))
-			{
-				initializerGUI.Dispose();
-				initializerGUI = null;
-			}
-		}
-
 		public void OnInspectorGUI()
 		{
+			#if DEV_MODE
+			Profiler.BeginSample("InitializerDrawer.OnInspectorGUI");
+			#endif
+
 			if(initializerBackgroundStyle is null)
 			{
 				Setup();
 			}
 
 			NowDrawing = this;
-
-			#if DEV_MODE
-			Profiler.BeginSample("InitializerDrawer.OnInspectorGUI");
-			#endif
-
-			GetInitializersOnTargets(out bool hasInitializers, out Object firstInitializer);
-
-			if(shouldUpdateInitArgumentDependentState)
-			{
-				UpdateInitArgumentDependentState(hasInitializers);
-			}
-
-			bool mixedInitializers = false;
-			if(hasInitializers)
-			{
-				for(int i = 0, initializerCount = initializers.Length; i < initializerCount; i++)
-				{
-					if(!initializers[i])
-					{
-						mixedInitializers = true;
-						break;
-					}
-				}
-			}
-			// Don't draw Init GUI in play mode unless the target has an Initializer
-			// (possible if the GameObject is inactive).
-			else if(Application.isPlaying)
-			{
-				#if DEV_MODE
-				Profiler.EndSample();
-				#endif
-				NowDrawing = null;
-				return;
-			}
-
-			if(!hadInitializerLastFrame.HasValue || hadInitializerLastFrame.Value != hasInitializers)
-			{
-				hadInitializerLastFrame = hasInitializers;
-				UpdateInitArgumentDependentState(hasInitializers);
-			}
-
 			bool hierarchyModeWas = EditorGUIUtility.hierarchyMode;
-			EditorGUIUtility.hierarchyMode = true;
-			EditorGUI.indentLevel = 0;
 
-			var firstInitializerEditorOnly = firstInitializer as IInitializerEditorOnly;
-			
-			HelpBoxMessageType helpBoxMessage;
-			if(mixedInitializers)
+			ownerSerializedObject.Update();
+
+			try
 			{
-				helpBoxMessage = HelpBoxMessageType.None;
-			}
-			else if(IsGameObjectInactive())
-			{
-				if(hasInitializers)
+				GetInitializersOnTargets(out bool hasInitializers, out Object firstInitializer);
+
+				if(shouldUpdateInitArgumentDependentState)
 				{
-					helpBoxMessage = CanInitializerInitInactiveTarget(firstInitializerEditorOnly)
-								? HelpBoxMessageType.TargetInitializedWhenDeserialized
-								: HelpBoxMessageType.TargetInitializedWhenBecomesActive;
-				}
-				else
-				{
-					helpBoxMessage = IsInitializableUnableToInitSelfWhenInactive()
-								? HelpBoxMessageType.TargetInitializedWhenBecomesActive
-								: HelpBoxMessageType.TargetInitializedWhenDeserialized;
-				}
-			}
-			// Also show the help box if an InactiveInitializer is attached to a component on an active GameObject.
-			else if(CanInitializerInitInactiveTarget(firstInitializerEditorOnly))
-			{
-				helpBoxMessage = HelpBoxMessageType.TargetInitializedWhenDeserialized;
-			}
-			else
-			{
-				helpBoxMessage = HelpBoxMessageType.None;
-			}
-
-			bool drawInitHeader = !string.IsNullOrEmpty(headerLabel.text);
-			bool isCollapsible = drawInitHeader && (hasInitializers || helpBoxMessage != HelpBoxMessageType.None);
-
-			if(drawInitHeader)
-			{
-				var backgroundStyle = isCollapsible ? initializerBackgroundStyle : noInitializerBackgroundStyle;
-				EditorGUILayout.BeginVertical(backgroundStyle);
-			}
-
-			var labelStyle = isCollapsible ? initArgsFoldoutStyle : noInitArgsLabelStyle;
-			var headerRect = EditorGUILayout.GetControlRect(false, 20f, labelStyle);
-
-			bool isUnfolded;
-			// if there is no control for toggling collapsed state, then always draw contents
-			if(!isCollapsible)
-			{
-				isUnfolded = true;
-			}
-			else if(CanUseInitializersToStoreUnfoldedState(hasInitializers))
-			{
-				isUnfolded = InternalEditorUtility.GetIsInspectorExpanded(firstInitializer);
-			}
-			else
-			{
-				isUnfolded = EditorPrefsUtility.GetBoolUserData(GetIsUnfoldedUserDataType(), IsUnfoldedUserDataKey);
-			}
-
-			var foldoutRect = headerRect;
-			bool drawAddInitializerButton = !hasInitializers;
-			bool drawContextMenuButton = !drawAddInitializerButton && isResponsibleForInitializerEditorLifetime;
-			SerializedProperty targetProperty = initializerEditor != null ? initializerEditor.serializedObject.FindProperty("target") : null;
-
-			// When initializer has no target, or target is on another GameObject, then draw target field on the Initializer.
-			// Otherwise, Initializer will be drawn embedded inside the client's editor, and we don't want to draw the target field.
-			bool drawTargetField = targetProperty != null && firstInitializer is Component initializerComponent && firstInitializer is IInitializer init
-				&& (init.Target == null || (init.Target is Component clientComponent && clientComponent.gameObject != initializerComponent.gameObject));
-
-			if(drawTargetField)
-			{
-				if(isResponsibleForInitializerEditorLifetime)
-				{
-					foldoutRect.x -= 12f;
-				}
-
-				foldoutRect.width = EditorGUIUtility.labelWidth - foldoutRect.x;
-			}
-			else if(!isResponsibleForInitializerEditorLifetime)
-			{
-				foldoutRect.x -= 12f;
-				foldoutRect.width -= 38f + ICON_WIDTH;
-			}
-			else
-			{
-				foldoutRect.width = EditorGUIUtility.labelWidth - foldoutRect.x - ICON_WIDTH;
-			}
-
-			foldoutRect.y -= 1f;
-
-			var addInitializerOrContextMenuRect = headerRect;
-			addInitializerOrContextMenuRect.x += addInitializerOrContextMenuRect.width - ICON_WIDTH;
-			addInitializerOrContextMenuRect.width = ICON_WIDTH;
-
-			if(drawAddInitializerButton)
-			{
-				if(drawInitHeader)
-				{
-					if(isUnfolded && helpBoxMessage == HelpBoxMessageType.TargetInitializedWhenBecomesActive)
-					{
-						DrawInactiveInitializerHelpBox(helpBoxMessage);
-					}
-
-					DrawInitHeader(headerRect, ref foldoutRect, labelStyle, isUnfolded, isCollapsible, hasInitializers, mixedInitializers, firstInitializer);
-				}
-
-				if(GUI.Button(addInitializerOrContextMenuRect, addInitializerIcon, Styles.AddButtonStyle))
-				{
-					if(OnAddInitializerButtonPressedOverride != null)
-					{
-						OnAddInitializerButtonPressedOverride.Invoke(addInitializerOrContextMenuRect);
-
-						#if DEV_MODE
-						Profiler.EndSample();
-						#endif
-						NowDrawing = null;
-						return;
-					}
-
-					AddInitializer(addInitializerOrContextMenuRect);
-				}
-
-				var nullGuardIconRect = addInitializerOrContextMenuRect;
-				nullGuardIconRect.y -= 1f;
-				nullGuardIconRect.x -= addInitializerOrContextMenuRect.width;
-
-				var nullArgumentGuard = GetNullArgumentGuardFlags(Target);
-
-				if(GUI.Button(nullGuardIconRect, GUIContent.none, EditorStyles.label))
-				{
-					OnInitializerNullGuardButtonPressed(nullArgumentGuard, nullGuardIconRect, CanThrowRuntimeExceptions(hasInitializers));
-				}
-
-				if(targetCanMaybeSelfInitialize)
-				{
-					// passed
-					var guiColorWas = GUI.color;
-					GUI.color = Color.yellow;
-					nullGuardPassedIcon.tooltip
-						= targetCanForSureSelfInitialize
-						? "All arguments are available.\n\nThe client will receive them automatically via its Init method during initialization.\n\nAdding an Initializer is not necessary - unless there is a need to override some of the services for this particular client."
-						: "All arguments are available.\n\nThe client can use InitArgs.TryGet to receive the arguments during initialization, in which case adding an Initializer is not necessary - unless there is a need to override some of the services for this particular client";
-					GUI.Label(nullGuardIconRect, nullGuardPassedIcon);
-					GUI.color = guiColorWas;
-				}
-				else if(nullArgumentGuard.HasFlag(NullArgumentGuard.EditModeWarning))
-				{
-					nullGuardFailedIcon.tooltip = "All arguments are not services available to the client at this time.\n\nThe client will not receive any services via its Init method automatically during initialization, unless either the services become available at runtime, or an Initializer is attached.";
-					GUI.Label(nullGuardIconRect, nullGuardFailedIcon);
-				}
-				else
-				{
-					nullGuardDisabledIcon.tooltip = "All arguments are not services available to the client at this time.\n\nThe client will not receive any services via its Init method automatically during initialization, unless either the services become available at runtime, or an Initializer is attached.";
-					nullGuardIconRect.width -= 1f;
-					nullGuardIconRect.height -= 1f;
-					GUI.Label(nullGuardIconRect, nullGuardDisabledIcon);
-				}
-			}
-			else
-			{
-				if(!isResponsibleForInitializerEditorLifetime)
-				{
-					addInitializerOrContextMenuRect.x += addInitializerOrContextMenuRect.width;
-				}
-				else if(GUI.Button(addInitializerOrContextMenuRect, GUIContent.none, EditorStyles.label))
-				{
-					OnInitializerContextMenuButtonPressed(firstInitializer, mixedInitializers, addInitializerOrContextMenuRect);
-				}
-
-				var nullGuardIconRect = addInitializerOrContextMenuRect;
-				nullGuardIconRect.y -= 1f;
-				nullGuardIconRect.x -= addInitializerOrContextMenuRect.width;
-
-				bool drawNullGuard = firstInitializerEditorOnly != null && firstInitializerEditorOnly.ShowNullArgumentGuard;
-				NullGuardResult nullGuardResult = NullGuardResult.Passed;
-				if(!allParametersAreServices && firstInitializerEditorOnly != null)
-				{
-					try
-					{
-						for(int i = 0, initializerCount = initializers.Length; i < initializerCount; i++)
-						{
-							if(initializers[i] is IInitializerEditorOnly initializerEditorOnly)
-							{
-								nullGuardResult = initializerEditorOnly.EvaluateNullGuard();
-								if(nullGuardResult != NullGuardResult.Passed)
-								{
-									break;
-								}
-							}
-						}
-					}
-					catch
-					{
-						nullGuardResult = NullGuardResult.ValueProviderException;
-					}
-				}
-
-				if(!nullGuardResultLastFrame.HasValue || nullGuardResultLastFrame.Value != nullGuardResult)
-				{
-					nullGuardResultLastFrame = nullGuardResult;
 					UpdateInitArgumentDependentState(hasInitializers);
 				}
 
-				var nullGuard = drawNullGuard ? firstInitializerEditorOnly.NullArgumentGuard : NullArgumentGuard.None;
-
-				if(drawNullGuard && GUI.Button(nullGuardIconRect, GUIContent.none, EditorStyles.label))
+				bool mixedInitializers = false;
+				if(hasInitializers)
 				{
-					OnInitializerNullGuardButtonPressed(nullGuard, nullGuardIconRect, CanThrowRuntimeExceptions(hasInitializers));
-				}
-
-				bool servicesShown = ServicesShown;
-				var serviceVisibilityIconRect = nullGuardIconRect;
-				if(drawNullGuard)
-				{
-					serviceVisibilityIconRect.x -= nullGuardIconRect.width;
-				}
-
-				if(hasServiceParameters && GUI.Button(serviceVisibilityIconRect, GUIContent.none, EditorStyles.label))
-				{
-					servicesShown = !servicesShown;
-					ServicesShown = servicesShown;
-					EditorPrefs.SetBool(ServiceVisibilityEditorPrefsKey, servicesShown);
-				}
-
-				if(isUnfolded)
-				{
-					if(helpBoxMessage == HelpBoxMessageType.TargetInitializedWhenDeserialized)
+					for(int i = 0, initializerCount = initializers.Length; i < initializerCount; i++)
 					{
-						DrawInactiveInitializerHelpBox(helpBoxMessage);
+						if(!initializers[i])
+						{
+							mixedInitializers = true;
+							break;
+						}
 					}
-					else if(helpBoxMessage != HelpBoxMessageType.None)
+				}
+				// Don't draw Init GUI in play mode unless the target has an Initializer
+				// (possible if the GameObject is inactive).
+				else if(Application.isPlaying)
+				{
+					return;
+				}
+
+				if(!hadInitializerLastFrame.HasValue || hadInitializerLastFrame.Value != hasInitializers)
+				{
+					hadInitializerLastFrame = hasInitializers;
+					UpdateInitArgumentDependentState(hasInitializers);
+				}
+
+				EditorGUIUtility.hierarchyMode = true;
+				EditorGUI.indentLevel = 0;
+
+				var firstInitializerEditorOnly = firstInitializer as IInitializerEditorOnly;
+
+				HelpBoxMessageType helpBoxMessage;
+				if(mixedInitializers)
+				{
+					helpBoxMessage = HelpBoxMessageType.None;
+				}
+				else if(IsGameObjectInactive())
+				{
+					if(hasInitializers)
 					{
-						DrawHelpBox(helpBoxMessage);
+						helpBoxMessage = CanInitializerInitInactiveTarget(firstInitializerEditorOnly)
+									? HelpBoxMessageType.TargetInitializedWhenDeserialized
+									: HelpBoxMessageType.TargetInitializedWhenBecomesActive;
+					}
+					else
+					{
+						helpBoxMessage = IsInitializableUnableToInitSelfWhenInactive()
+									? HelpBoxMessageType.TargetInitializedWhenBecomesActive
+									: HelpBoxMessageType.TargetInitializedWhenDeserialized;
+					}
+				}
+				// Also show the help box if an InactiveInitializer is attached to a component on an active GameObject.
+				else if(CanInitializerInitInactiveTarget(firstInitializerEditorOnly))
+				{
+					helpBoxMessage = HelpBoxMessageType.TargetInitializedWhenDeserialized;
+				}
+				else
+				{
+					helpBoxMessage = HelpBoxMessageType.None;
+				}
+
+				bool drawInitHeader = !string.IsNullOrEmpty(headerLabel.text);
+				bool isCollapsible = drawInitHeader && (hasInitializers || helpBoxMessage != HelpBoxMessageType.None);
+
+				if(drawInitHeader)
+				{
+					var backgroundStyle = isCollapsible ? initializerBackgroundStyle : noInitializerBackgroundStyle;
+					EditorGUILayout.BeginVertical(backgroundStyle);
+				}
+
+				var labelStyle = isCollapsible ? initArgsFoldoutStyle : noInitArgsLabelStyle;
+				var headerRect = EditorGUILayout.GetControlRect(false, 20f, labelStyle);
+
+				bool isUnfolded;
+				// if there is no control for toggling collapsed state, then always draw contents
+				if(!isCollapsible)
+				{
+					isUnfolded = true;
+				}
+				else if(CanUseInitializersToStoreUnfoldedState(hasInitializers))
+				{
+					isUnfolded = InternalEditorUtility.GetIsInspectorExpanded(firstInitializer);
+				}
+				else
+				{
+					isUnfolded = EditorPrefsUtility.GetBoolUserData(GetIsUnfoldedUserDataType(), IsUnfoldedUserDataKey);
+				}
+
+				if(isCollapsible)
+				{
+					headerRect.y -= 2f;
+				}
+
+				var foldoutRect = headerRect;
+				bool drawAddInitializerButton = !hasInitializers;
+				bool drawContextMenuButton = !drawAddInitializerButton && isResponsibleForInitializerEditorLifetime;
+				var targetProperty = ownerSerializedObject?.FindProperty("target");
+
+				// When initializer has no target, or target is on another GameObject, then draw target field on the Initializer.
+				// Otherwise, Initializer will be drawn embedded inside the client's editor, and we don't want to draw the target field.
+				bool drawTargetField = targetProperty != null && firstInitializer is Component initializerComponent and IInitializer init
+					&& (!init.Target || (init.Target is Component clientComponent && clientComponent.gameObject != initializerComponent.gameObject));
+
+				if(drawTargetField)
+				{
+					if(isResponsibleForInitializerEditorLifetime)
+					{
+						foldoutRect.x -= 12f;
 					}
 
-					DrawInitializerArguments();
+					foldoutRect.width = EditorGUIUtility.labelWidth - foldoutRect.x;
+				}
+				else if(!isResponsibleForInitializerEditorLifetime)
+				{
+					foldoutRect.x -= 12f;
+					foldoutRect.width -= 38f + IconWidth;
+				}
+				else
+				{
+					foldoutRect.width = EditorGUIUtility.labelWidth - foldoutRect.x - IconWidth;
+				}
+
+				foldoutRect.y -= 1f;
+
+				var addInitializerOrContextMenuRect = headerRect;
+				addInitializerOrContextMenuRect.x += addInitializerOrContextMenuRect.width - IconWidth;
+				addInitializerOrContextMenuRect.width = IconWidth;
+				addInitializerOrContextMenuRect.height = IconWidth;
+				if(hasInitializers)
+				{
+					addInitializerOrContextMenuRect.y -= 1f;
+				}
+
+				if(drawAddInitializerButton)
+				{
+					if(drawInitHeader)
+					{
+						if(isUnfolded && helpBoxMessage == HelpBoxMessageType.TargetInitializedWhenBecomesActive)
+						{
+							DrawInactiveInitializerHelpBox(helpBoxMessage);
+						}
+
+						DrawInitHeader(headerRect, ref foldoutRect, labelStyle, isUnfolded, isCollapsible, hasInitializers, mixedInitializers, firstInitializer);
+					}
+
+					if(GUI.Button(addInitializerOrContextMenuRect, addInitializerIcon, Styles.AddButtonStyle))
+					{
+						if(OnAddInitializerButtonPressedOverride != null)
+						{
+							OnAddInitializerButtonPressedOverride.Invoke(addInitializerOrContextMenuRect);
+							return;
+						}
+
+						AddInitializer(addInitializerOrContextMenuRect);
+					}
+
+					// Don't draw null argument guard unless target implements interface that is necessary for using InitArgs.TryGet.
+					bool drawNullGuard = targetImplementsIArgs;
+					if(drawNullGuard)
+					{
+						var nullGuard = GetNullArgumentGuardFlags(Target);
+
+						var nullGuardIconRect = addInitializerOrContextMenuRect;
+						nullGuardIconRect.x -= addInitializerOrContextMenuRect.width;
+						nullGuardIconRect.y -= 2f;
+
+						if(GUI.Button(nullGuardIconRect, GUIContent.none, EditorStyles.label))
+						{
+							OnInitializerNullGuardButtonPressed(nullGuard, nullGuardIconRect, CanThrowRuntimeExceptions(hasInitializers));
+						}
+
+						var guiColorWas = GUI.color;
+						GUIContent nullGuardIcon;
+						if((FirstGameObject?.IsAsset(true) ?? !Application.isPlaying) == false && Target is IInitializableEditorOnly initializable)
+						{
+							switch (initializable.InitState)
+							{
+								case InitState.Uninitialized:
+									if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
+									{
+										nullGuardIcon = initStateFailedIcon;
+										nullGuardIcon.tooltip = "❌ Target has not been initialized.";
+									}
+									else
+									{
+										nullGuardIcon = initStateUninitializedIcon;
+										nullGuardIcon.tooltip = "Target has not been initialized.";
+									}
+									break;
+								case InitState.Initializing:
+									nullGuardIcon = initStateInitializingIcon;
+									nullGuardIcon.tooltip = "Target initialization is in progress...";
+									break;
+								case InitState.Initialized:
+									nullGuardIcon = initStateInitializedIcon;
+									nullGuardIcon.tooltip = "✔️ Target has been initialized.";
+									break;
+								case InitState.Failed:
+									nullGuardIcon = initStateFailedIcon;
+									nullGuardIcon.tooltip = "❌ Target initialization has failed.";
+									break;
+								default:
+									throw new ArgumentOutOfRangeException(initializable.InitState.ToString());
+							}
+						}
+						else if( (!nullGuard.HasFlag(NullArgumentGuard.EnabledForPrefabs) && (gameObjects.FirstOrDefault()?.IsAsset(false) ?? true))
+						 || (!nullGuard.HasFlag(NullArgumentGuard.EditModeWarning) && !Application.isPlaying) )
+						{
+							nullGuardIcon = nullGuardDisabledIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, false) + "\n\nNull argument guard is off.";
+						}
+						else if(allParametersAreServices)
+						{
+							nullGuardIcon = nullGuardPassedIcon;
+							nullGuardIcon.tooltip
+								= GetTooltip(nullGuard, false) +
+								(targetDerivesFromGenericBaseType
+								? "\n\nAll arguments are services.\n\nThe client will receive them automatically during initialization.\n\nAdding an Initializer is not necessary - unless there is a need to override some of the services for this particular client."
+								: "\n\nAll arguments are services.\n\nThe client can use InitArgs.TryGet to acquire them during initialization, in which case adding an Initializer is not necessary - unless there is a need to override some of the services for this particular client");
+						}
+						else
+						{
+							nullGuardIcon = nullGuardFailedIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) +"\n\nMissing argument detected.\n\nIf the argument should be allowed to be null, then set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime select 'Service (Local)' from the dropdown.";
+						}
+
+						GUI.Label(nullGuardIconRect, nullGuardIcon);
+						GUI.color = guiColorWas;
+					}
+				}
+				else
+				{
+					if(!isResponsibleForInitializerEditorLifetime)
+					{
+						addInitializerOrContextMenuRect.x += addInitializerOrContextMenuRect.width;
+					}
+					else if(GUI.Button(addInitializerOrContextMenuRect, GUIContent.none, EditorStyles.label))
+					{
+						OnInitializerContextMenuButtonPressed(firstInitializer, mixedInitializers, addInitializerOrContextMenuRect);
+					}
+
+					var nullGuardIconRect = addInitializerOrContextMenuRect;
+					nullGuardIconRect.x -= addInitializerOrContextMenuRect.width;
+
+					bool drawNullGuard = firstInitializerEditorOnly is { ShowNullArgumentGuard: true };
+					NullGuardResult nullGuardResult = NullGuardResult.Passed;
+					if(!allParametersAreServices && firstInitializerEditorOnly != null)
+					{
+						try
+						{
+							for(int i = 0, initializerCount = initializers.Length; i < initializerCount; i++)
+							{
+								if(initializers[i] is IInitializerEditorOnly initializerEditorOnly)
+								{
+									nullGuardResult = initializerEditorOnly.EvaluateNullGuard();
+									if(nullGuardResult != NullGuardResult.Passed)
+									{
+										break;
+									}
+								}
+							}
+						}
+						catch
+						{
+							nullGuardResult = NullGuardResult.ValueProviderException;
+						}
+					}
+
+					if(!nullGuardResultLastFrame.HasValue || nullGuardResultLastFrame.Value != nullGuardResult)
+					{
+						nullGuardResultLastFrame = nullGuardResult;
+						UpdateInitArgumentDependentState(hasInitializers);
+					}
+
+					var nullGuard = drawNullGuard ? firstInitializerEditorOnly.NullArgumentGuard : NullArgumentGuard.None;
+
+					if(drawNullGuard && GUI.Button(nullGuardIconRect, GUIContent.none, EditorStyles.label))
+					{
+						OnInitializerNullGuardButtonPressed(nullGuard, nullGuardIconRect, CanThrowRuntimeExceptions(hasInitializers));
+					}
+
+					bool servicesShown = ServicesShown;
+					var serviceVisibilityIconRect = nullGuardIconRect;
+					if(drawNullGuard)
+					{
+						serviceVisibilityIconRect.x -= nullGuardIconRect.width;
+					}
+
+					if(hasServiceParameters && GUI.Button(serviceVisibilityIconRect, GUIContent.none, EditorStyles.label))
+					{
+						servicesShown = !servicesShown;
+						ServicesShown = servicesShown;
+						EditorPrefs.SetBool(ServiceVisibilityEditorPrefsKey, servicesShown);
+					}
+
+					if(isUnfolded)
+					{
+						if(helpBoxMessage == HelpBoxMessageType.TargetInitializedWhenDeserialized)
+						{
+							DrawInactiveInitializerHelpBox(helpBoxMessage);
+						}
+						else if(helpBoxMessage != HelpBoxMessageType.None)
+						{
+							DrawHelpBox(helpBoxMessage);
+						}
+
+						GUILayout.Space(3f);
+
+						DrawInitializerArguments();
+					}
+
+					if(drawInitHeader)
+					{
+						DrawInitHeader(headerRect, ref foldoutRect, labelStyle, isUnfolded, isCollapsible, hasInitializers, mixedInitializers, firstInitializer);
+					}
+
+					GUI.Label(addInitializerOrContextMenuRect, contextMenuIcon);
+
+					var iconSizeWas = EditorGUIUtility.GetIconSize();
+					EditorGUIUtility.SetIconSize(new Vector2(16f, 16f));
+
+					if(drawNullGuard)
+					{
+						GUIContent nullGuardIcon;
+
+						bool nullGuardDisabled;
+						nullGuardDisabled =
+							!nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning)
+							|| (!nullGuard.IsEnabled(NullArgumentGuard.EnabledForPrefabs) && PrefabUtility.IsPartOfPrefabAsset(firstInitializer));
+
+						var guiColorWas = GUI.color;
+
+						if((FirstGameObject?.IsAsset(true) ?? !Application.isPlaying) == false && Target is IInitializableEditorOnly initializable)
+						{
+							switch (initializable.InitState)
+							{
+								case InitState.Uninitialized:
+									if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
+									{
+										nullGuardIcon = initStateFailedIcon;
+										nullGuardIcon.tooltip = "❌ Target has not been initialized.";
+									}
+									else
+									{
+										nullGuardIcon = initStateUninitializedIcon;
+										nullGuardIcon.tooltip = "Target has not been initialized.";
+									}
+									break;
+								case InitState.Initializing:
+									nullGuardIcon = initStateInitializingIcon;
+									nullGuardIcon.tooltip = "Target initialization is in progress...";
+									break;
+								case InitState.Initialized:
+									nullGuardIcon = initStateInitializedIcon;
+									nullGuardIcon.tooltip = "✔️ Target has been initialized.";
+									break;
+								case InitState.Failed:
+									nullGuardIcon = initStateFailedIcon;
+									nullGuardIcon.tooltip = "❌ Target initialization has failed.";
+									break;
+								default:
+									throw new ArgumentOutOfRangeException(initializable.InitState.ToString());
+							}
+						}
+						else if(nullGuardDisabled)
+						{
+							nullGuardIcon = nullGuardDisabledIcon;
+							nullGuardIconRect.width -= 1f;
+							nullGuardIconRect.height -= 1f;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nNull argument guard is off.";
+						}
+						else if(nullGuardResult == NullGuardResult.ValueMissing)
+						{
+							nullGuardIcon = nullGuardFailedIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) +"\n\nMissing argument detected.\n\nIf the argument should be allowed to be null, then set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime select 'Service (Local)' from the dropdown.";
+						}
+						else if(nullGuardResult == NullGuardResult.InvalidValueProviderState)
+						{
+							nullGuardIcon = nullGuardFailedIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nSome value providers have been configured invalidly and will not be able to provide a value at runtime.";
+						}
+						else if(nullGuardResult == NullGuardResult.ClientNotSupported)
+						{
+							nullGuardIcon = nullGuardFailedIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nSome value providers do not support the client and will not be able to provide a value at runtime.";
+						}
+						else if(nullGuardResult == NullGuardResult.TypeNotSupported)
+						{
+							nullGuardIcon = nullGuardFailedIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nSome value providers do not support the client's type and will not be able to provide a value at runtime.";
+						}
+						else if(nullGuardResult == NullGuardResult.ValueProviderException)
+						{
+							nullGuardIcon = nullGuardFailedIcon;
+							if(string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage))
+							{
+								nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nAn exception was encountered while trying to retrieve a value from one of the value providers.";
+							}
+							else
+							{
+								nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nAn exception was encountered while trying to retrieve a value from one of the value providers:\n" + firstInitializerEditorOnly.NullGuardFailedMessage;
+							}
+						}
+						else if(nullGuardResult == NullGuardResult.ClientException)
+	                    {
+                    		nullGuardIcon = nullGuardFailedIcon;
+                    		if(string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage))
+                    		{
+                    			nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nAn exception was thrown by the client during its initialization.";
+                    		}
+                    		else
+                    		{
+                    			nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nAn exception was thrown by the client during its initialization:\n" + firstInitializerEditorOnly.NullGuardFailedMessage;
+                    		}
+	                    }
+						else if(nullGuardResult == NullGuardResult.ValueProviderValueMissing)
+						{
+							nullGuardIcon = nullGuardFailedIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nSome value providers will not be able to provide a value at runtime.";
+						}
+						else if(nullGuardResult == NullGuardResult.ValueProviderValueNullInEditMode)
+						{
+							if(!string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage) && !Application.isPlaying)
+							{
+								firstInitializerEditorOnly.NullGuardFailedMessage = "";
+							}
+
+							nullGuardIcon = nullGuardPassedWithValueProviderValueMissing;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nSome value providers are not able to provide a value at this moment, but may be able to do so at runtime.";
+							GUI.color = new Color(0.6f, 0.6f, 1f, 1f);
+						}
+						else
+						{
+							if(!string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage))
+							{
+								firstInitializerEditorOnly.NullGuardFailedMessage = "";
+							}
+
+							nullGuardIcon = nullGuardPassedIcon;
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + "\n\nAll arguments provided.";
+						}
+
+						GUI.Label(nullGuardIconRect, nullGuardIcon);
+
+						GUI.color = guiColorWas;
+					}
+
+					if(hasServiceParameters)
+					{
+						var serviceVisibilityIcon = servicesShown ? servicesShownIcon : servicesHiddenIcon;
+						GUI.Label(serviceVisibilityIconRect, serviceVisibilityIcon);
+					}
+
+					EditorGUIUtility.SetIconSize(iconSizeWas);
+
+					if(drawTargetField)
+					{
+						var targetFieldRect = headerRect;
+						targetFieldRect.height = EditorGUIUtility.singleLineHeight;
+						if(drawNullGuard)
+						{
+							targetFieldRect.width -= nullGuardIconRect.width;
+						}
+
+						if(drawAddInitializerButton || drawContextMenuButton)
+						{
+							targetFieldRect.width -= addInitializerOrContextMenuRect.width;
+						}
+
+						if(targetFieldRect.width > EditorGUIUtility.singleLineHeight)
+						{
+							bool isInitializable;
+							if(initializables.Length > 0)
+							{
+								isInitializable = initializables.Length > 0 && InitializerEditorUtility.IsInitializable(initializables[0]);
+							}
+							else if(targets.Length > 0 && targets[0] is IInitializer initializer)
+							{
+								Type clientType = InitializerEditorUtility.GetClientType(initializer.GetType());
+								isInitializable = Find.typeToWrapperTypes.ContainsKey(clientType) || InitializerEditorUtility.IsInitializable(clientType);
+							}
+							else
+							{
+								isInitializable = false;
+							}
+
+							InitializerEditorUtility.DrawClientField(targetFieldRect, targetProperty, GUIContent.none, isInitializable);
+						}
+					}
 				}
 
 				if(drawInitHeader)
 				{
-					DrawInitHeader(headerRect, ref foldoutRect, labelStyle, isUnfolded, isCollapsible, hasInitializers, mixedInitializers, firstInitializer);
-				}
-
-				GUI.Label(addInitializerOrContextMenuRect, contextMenuIcon);
-
-				var iconSizeWas = EditorGUIUtility.GetIconSize();
-				EditorGUIUtility.SetIconSize(new Vector2(15f, 15f));
-
-				if(drawNullGuard)
-				{
-					GUIContent nullGuardIcon;
-
-					bool nullGuardDisabled;
-					nullGuardDisabled =
-						!nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning)
-						|| (!nullGuard.IsEnabled(NullArgumentGuard.EnabledForPrefabs) && PrefabUtility.IsPartOfPrefabAsset(firstInitializer));
-
-					var guiColorWas = GUI.color;
-
-					if(nullGuardDisabled)
-					{
-						nullGuardIcon = nullGuardDisabledIcon;
-						nullGuardIconRect.width -= 1f;
-						nullGuardIconRect.height -= 1f;
-						nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nNull argument guard is off.";
-					}
-					else if(nullGuardResult == NullGuardResult.ValueMissing)
-					{
-						nullGuardIcon = nullGuardFailedIcon;
-						nullGuardIcon.tooltip = "Missing argument detected.\n\nIf the argument is allowed to be null set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime set the option to 'Runtime Exception'.";
-					}
-					else if(nullGuardResult == NullGuardResult.InvalidValueProviderState)
-					{
-						nullGuardIcon = nullGuardFailedIcon;
-						nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nSome value providers have been configured invalidly and will not be able to provide a value at runtime.";
-					}
-					else if(nullGuardResult == NullGuardResult.ClientNotSupported)
-					{
-						nullGuardIcon = nullGuardFailedIcon;
-						nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nSome value providers do not support the client and will not be able to provide a value at runtime.";
-					}
-					else if(nullGuardResult == NullGuardResult.TypeNotSupported)
-					{
-						nullGuardIcon = nullGuardFailedIcon;
-						nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nSome value providers do not support the client's type and will not be able to provide a value at runtime.";
-					}
-					else if(nullGuardResult == NullGuardResult.ValueProviderException)
-					{
-						nullGuardIcon = nullGuardFailedIcon;
-						if(string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage))
-						{
-							nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nAn exception was encountered while trying to retrieve a value from one of the value providers.";
-						}
-						else
-						{
-							nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nAn exception was encountered while trying to retrieve a value from one of the value providers:\n" + firstInitializerEditorOnly.NullGuardFailedMessage;
-						}
-					}
-					else if(nullGuardResult == NullGuardResult.ClientException)
-                    {
-                    	nullGuardIcon = nullGuardFailedIcon;
-                    	if(string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage))
-                    	{
-                    		nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nAn exception was thrown by the client during its initialization.";
-                    	}
-                    	else
-                    	{
-                    		nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nAn exception was thrown by the client during its initialization:\n" + firstInitializerEditorOnly.NullGuardFailedMessage;
-                    	}
-                    }
-					else if(nullGuardResult == NullGuardResult.ValueProviderValueMissing)
-					{
-						nullGuardIcon = nullGuardFailedIcon;
-						nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nSome value providers will not be able to provide a value at runtime.";
-					}
-					else if(nullGuardResult == NullGuardResult.ValueProviderValueNullInEditMode)
-					{
-						if(!string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage) && !Application.isPlaying)
-						{
-							firstInitializerEditorOnly.NullGuardFailedMessage = "";
-						}
-
-						nullGuardIcon = nullGuardPassedWithValueProviderValueMissing;
-						nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nAll arguments assigned.\n\nSome value providers are not able to provide a value at this very moment, but may be able to do so at runtime.";
-						GUI.color = new Color(0.6f, 0.6f, 1f, 1f);
-					}
-					else
-					{
-						if(!string.IsNullOrEmpty(firstInitializerEditorOnly.NullGuardFailedMessage))
-						{
-							firstInitializerEditorOnly.NullGuardFailedMessage = "";
-						}
-
-						nullGuardIcon = nullGuardPassedIcon;
-						nullGuardIcon.tooltip = GetTooltip(nullGuard) + "\n\nAll arguments provided.";
-					}
-
-					GUI.Label(nullGuardIconRect, nullGuardIcon);
-					
-					GUI.color = guiColorWas;
-				}
-
-				if(hasServiceParameters)
-				{
-					var serviceVisibilityIcon = servicesShown ? servicesShownIcon : servicesHiddenIcon;
-					GUI.Label(serviceVisibilityIconRect, serviceVisibilityIcon);
-				}
-
-				EditorGUIUtility.SetIconSize(iconSizeWas);
-
-				if(drawTargetField)
-				{
-					var targetFieldRect = headerRect;
-					if(drawNullGuard)
-					{
-						targetFieldRect.width -= nullGuardIconRect.width;
-					}
-					
-					if(drawAddInitializerButton || drawContextMenuButton)
-					{
-						targetFieldRect.width -= addInitializerOrContextMenuRect.width;
-					}
-
-					if(targetFieldRect.width > EditorGUIUtility.singleLineHeight)
-					{
-						bool isInitializable;
-						if(initializables.Length > 0)
-						{
-							isInitializable = initializables.Length > 0 && InitializerEditorUtility.IsInitializable(initializables[0]);
-						}
-						else if(targets.Length > 0 && targets[0] is IInitializer initializer)
-						{
-							Type clientType = InitializerEditorUtility.GetClientType(initializer.GetType());
-							isInitializable = Find.typeToWrapperTypes.ContainsKey(clientType) || InitializerEditorUtility.IsInitializable(clientType);
-						}
-						else
-						{
-							isInitializable = false;
-						}
-
-						InitializerEditorUtility.DrawClientField(targetFieldRect, targetProperty, GUIContent.none, isInitializable);
-					}
+					EditorGUILayout.EndVertical();
 				}
 			}
-
-			if(drawInitHeader)
+			finally
 			{
-				EditorGUILayout.EndVertical();
+				ownerSerializedObject.ApplyModifiedProperties();
+				EditorGUIUtility.hierarchyMode = hierarchyModeWas;
+				NowDrawing = null;
+
+				#if DEV_MODE
+				Profiler.EndSample();
+				#endif
 			}
-
-			#if DEV_MODE
-			Profiler.EndSample();
-			#endif
-
-			EditorGUIUtility.hierarchyMode = hierarchyModeWas;
-
-			NowDrawing = null;
 
 			bool CanThrowRuntimeExceptions(bool hasInitializers) => hasInitializers || TypeUtility.DerivesFromGenericBaseType(Target.GetType());
 		}
@@ -1094,7 +1193,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			// activeInHierarchy is always false for prefab assets, using activeSelf is more reliable.
-			for(var transform = gameObjects[0].transform; transform != null; transform = transform.transform.parent)
+			for(var transform = gameObjects[0].transform; transform; transform = transform.transform.parent)
 			{
 				if(!transform.gameObject.activeSelf)
 				{
@@ -1127,21 +1226,20 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			var remainingRect = headerRect;
-			float xMax = headerRect.xMax - ICON_WIDTH - 3f;
+			float xMax = headerRect.xMax - IconWidth - 3f;
 			if(hasServiceParameters)
 			{
-				xMax -= ICON_WIDTH;
+				xMax -= IconWidth;
 			}
-			
+
 			if(isResponsibleForInitializerEditorLifetime)
 			{
-				xMax -= ICON_WIDTH;
+				xMax -= IconWidth;
 			}
 
 			remainingRect.x += EditorStyles.label.CalcSize(headerLabel).x + 15f;
 			remainingRect.xMax = xMax;
 			AfterHeaderGUI?.Invoke(remainingRect, initializerEditor);
-
 
 			bool guiWasEnabled = GUI.enabled;
 			if(!isCollapsible)
@@ -1183,7 +1281,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					for(int i = 0, count = initializers.Length; i < count; i++)
 					{
 						var initializer = initializers[i];
-						if(initializer != null)
+						if(initializer)
 						{
 							#if DEV_MODE && DEBUG_ENABLED
 							Debug.Log($"SetIsInspectorExpanded({initializer.GetType().Name}, {setUnfolded})");
@@ -1191,7 +1289,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 							LayoutUtility.ApplyWhenSafe(() =>
 							{
-								if(initializer != null)
+								if(initializer)
 								{
 									InternalEditorUtility.SetIsInspectorExpanded(initializer, setUnfolded);
 								}
@@ -1213,18 +1311,16 @@ namespace Sisus.Init.EditorOnly.Internal
 					});
 				}
 
-				LayoutUtility.ExitGUI(null);
+				LayoutUtility.ExitGUI();
 			}
 		}
 
 		private void DrawInitializerArguments()
 		{
-			if(initializerEditor == null)
+			if(!initializerEditor)
 			{
 				isResponsibleForInitializerEditorLifetime = true;
-
 				Editor.CreateCachedEditor(initializers, null, ref initializerEditor);
-
 				if(initializerEditor is InitializerEditor setup)
 				{
 					setup.Setup(this);
@@ -1233,10 +1329,8 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(initializerEditor is InitializerEditor internalInitializerEditor)
 			{
-				GUILayout.Space(3f);
-
 				var nowDrawing = LayoutUtility.NowDrawing;
-				internalInitializerEditor.OnBeforeNestedInspectorGUI(false);
+				internalInitializerEditor.OnBeforeNestedInspectorGUI();
 				internalInitializerEditor.DrawArgumentFields();
 				internalInitializerEditor.OnAfterNestedInspectorGUI(nowDrawing);
 			}
@@ -1252,7 +1346,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			var sb = new StringBuilder();
 
-			if(targetCanForSureSelfInitialize || (hasInitializers && nullGuardResultLastFrame.GetValueOrDefault(NullGuardResult.Passed) == NullGuardResult.Passed))
+			if((allParametersAreServices && targetDerivesFromGenericBaseType) || (hasInitializers && nullGuardResultLastFrame.GetValueOrDefault(NullGuardResult.Passed) == NullGuardResult.Passed))
 			{
 				sb.Append("The client will receive ");
 				sb.Append(count switch
@@ -1274,26 +1368,26 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				sb.Append(" during initialization:");
 			}
-			else if(targetCanMaybeSelfInitialize && !hasInitializers)
+			else if(allParametersAreServices && targetImplementsIArgs && !hasInitializers)
 			{
 				sb.Append(count switch
 				{
 					1 => "One argument is",
-					2 => "Two arguments are",
-					3 => "Three arguments are",
-					4 => "Four arguments are",
-					5 => "Five arguments are",
-					6 => "Six arguments are",
-					7 => "Seven arguments are",
-					8 => "Eight arguments are",
-					9 => "Nine arguments are",
-					10 => "Ten arguments are",
-					11 => "Eleven arguments are",
-					12 => "Twelve arguments are",
-					_ => $"{count} arguments are"
+					2 => "Both arguments are",
+					3 => "All three arguments are",
+					4 => "All four arguments are",
+					5 => "All five arguments are",
+					6 => "All six arguments are",
+					7 => "All seven arguments are",
+					8 => "All eight arguments are",
+					9 => "All nine arguments are",
+					10 => "All ten arguments are",
+					11 => "All eleven arguments are",
+					12 => "All twelve arguments are",
+					_ => $"All {count} arguments are"
 				});
 
-				sb.Append(" available for the client to receive during initialization:");
+				sb.Append(" available for the client:");
 			}
 			else
 			{
@@ -1375,27 +1469,25 @@ namespace Sisus.Init.EditorOnly.Internal
 			return sb.ToString();
 		}
 
-		private static string GetTooltip(NullArgumentGuard guard)
+		private static string GetTooltip(NullArgumentGuard guard, bool hasInitializer)
 		{
-			switch(guard)
+			return hasInitializer ?
+			(guard switch
 			{
-				default:
-					return "Null Argument Guard:\n❌ Edit Mode Warning\n❌ Runtime Exception\n❌ Enabled For Prefabs";
-				case NullArgumentGuard.EditModeWarning:
-					return "Null Argument Guard:\n✔ Edit Mode Warning\n❌ Runtime Exception\n❌ Enabled For Prefabs";
-				case NullArgumentGuard.RuntimeException:
-					return "Null Argument Guard:\n❌ Edit Mode Warning\n✔ Runtime Exception\n❌ Enabled For Prefabs";
-				case NullArgumentGuard.EnabledForPrefabs:
-					return "Null Argument Guard:\n❌ Edit Mode Warning\n❌ Runtime Exception\n✔ Enabled For Prefabs";
-				case NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException:
-					return "Null Argument Guard:\n✔ Edit Mode Warning\n✔ Runtime Exception\n❌ Enabled For Prefabs";
-				case NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs:
-					return "Null Argument Guard:\n❌ Edit Mode Warning\n✔ Runtime Exception\n✔ Enabled For Prefabs";
-				case NullArgumentGuard.EditModeWarning | NullArgumentGuard.EnabledForPrefabs:
-					return "Null Argument Guard:\n✔ Edit Mode Warning\n✔ Runtime Exception\n❌ Enabled For Prefabs";
-				case NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs:
-					return "Null Argument Guard:\n✔ Edit Mode Warning\n✔ Runtime Exception\n✔ Enabled For Prefabs";
-			}
+				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n✔️ Edit Mode Warning\n❌ Runtime Exception\n❌ Enabled For Prefabs",
+				NullArgumentGuard.RuntimeException => "Null Argument Guard:\n❌ Edit Mode Warning\n✔️ Runtime Exception\n❌ Enabled For Prefabs",
+				NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n❌ Edit Mode Warning\n❌ Runtime Exception\n✔️ Enabled For Prefabs",
+				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException => "Null Argument Guard:\n✔️ Edit Mode Warning\n✔️ Runtime Exception\n❌ Enabled For Prefabs",
+				NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n❌ Edit Mode Warning\n✔️ Runtime Exception\n✔️ Enabled For Prefabs",
+				NullArgumentGuard.EditModeWarning | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n✔️ Edit Mode Warning\n✔️ Runtime Exception\n❌ Enabled For Prefabs",
+				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n✔️ Edit Mode Warning\n✔️ Runtime Exception\n✔️ Enabled For Prefabs",
+				_ => "Null Argument Guard:\n❌ Edit Mode Warning\n❌ Runtime Exception\n❌ Enabled For Prefabs"
+			})
+			:  guard switch
+			{
+				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n✔️ Edit Mode Warning",
+				_ => "Null Argument Guard:\n❌ Edit Mode Warning"
+			};
 		}
 
 		private void OnInitializerNullGuardButtonPressed(NullArgumentGuard nullGuard, Rect nullGuardIconRect, bool canThrowRuntimeExceptions)
@@ -1478,7 +1570,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(Event.current != null)
 			{
-				LayoutUtility.ExitGUI(null);
+				LayoutUtility.ExitGUI();
 			}
 		}
 
@@ -1591,45 +1683,41 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(firstInitializer is Component)
 				{
-					ForEachInitializer("", (i)=> ComponentUtility.PasteComponentValues(i));
+					ForEachInitializer("", i => ComponentUtility.PasteComponentValues(i));
 				}
 				else if(!string.IsNullOrEmpty(EditorGUIUtility.systemCopyBuffer))
 				{
-					ForEachInitializer("", (Object i)=> JsonUtility.FromJsonOverwrite(EditorGUIUtility.systemCopyBuffer, i));
+					ForEachInitializer("",  i => JsonUtility.FromJsonOverwrite(EditorGUIUtility.systemCopyBuffer, i));
 				}
 			}
 		}
 
 		private void RemoveInitializerFromAllTargets()
 		{
-			if(initializerEditor != null)
+			if(initializerEditor)
 			{
 				AnyPropertyDrawer.Dispose(initializerEditor.serializedObject);
 			}
 
 			ForEachInitializer("Remove Initializer", RemoveInitializer);
 
-			if(isResponsibleForInitializerEditorLifetime && initializerEditor != null)
+			if(isResponsibleForInitializerEditorLifetime && initializerEditor)
 			{
 				Object.DestroyImmediate(initializerEditor);
 				initializerEditor = null;
 			}
 
-			if(targets[0] is ScriptableObject scriptableObject && TypeUtility.DerivesFromGenericBaseType(scriptableObject.GetType()))
+			if(targets[0] is ScriptableObject scriptableObject
+				&& TypeUtility.DerivesFromGenericBaseType(scriptableObject.GetType())
+				&& ownerSerializedObject.FindProperty("initializer") is SerializedProperty initializerProperty)
 			{
-				using(var serializedObject = new SerializedObject(targets))
-				{
-					if(serializedObject.FindProperty("initializer") is SerializedProperty initializerProperty)
-					{
-						initializerProperty.objectReferenceValue = null;
-						serializedObject.ApplyModifiedProperties();
-					}
-				}
+				initializerProperty.objectReferenceValue = null;
+				ownerSerializedObject.ApplyModifiedProperties();
 			}
 
 			foreach(var target in targets)
 			{
-				string path = target != null ? AssetDatabase.GetAssetPath(target) : null;
+				string path = target ? AssetDatabase.GetAssetPath(target) : null;
 				if(!string.IsNullOrEmpty(path))
 				{
 					AssetDatabase.ImportAsset(path);
@@ -1646,7 +1734,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				AssetDatabase.RemoveObjectFromAsset(initializer);
 			}
 
-			if(initializer != null)
+			if(initializer)
 			{
 				Undo.DestroyObjectImmediate(initializer);
 			}
@@ -1668,7 +1756,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			if(initializerEditor != null && initializerEditor.serializedObject != null)
+			if(initializerEditor)
 			{
 				initializerEditor.serializedObject.Update();
 				initializerEditor.Repaint();
@@ -1685,13 +1773,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			for(int i = 0, count = initializers.Length; i < count; i++)
 			{
 				var initializer = initializers[i] as Component;
-				if(initializer != null)
+				if(initializer)
 				{
 					action(initializer);
 				}
 			}
 
-			if(initializerEditor != null && initializerEditor.serializedObject != null)
+			if(initializerEditor)
 			{
 				initializerEditor.serializedObject.Update();
 				initializerEditor.Repaint();
@@ -1708,13 +1796,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			for(int i = 0, count = initializers.Length; i < count; i++)
 			{
 				var initializer = initializers[i];
-				if(initializer != null)
+				if(initializer)
 				{
 					action(initializer);
 				}
 			}
 
-			if(initializerEditor != null && initializerEditor.serializedObject != null && initializerEditor.target != null)
+			if(initializerEditor && initializerEditor.target)
 			{
 				initializerEditor.serializedObject.Update();
 				initializerEditor.Repaint();
@@ -1736,13 +1824,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			ServiceChangedListener.DisposeAll(ref serviceChangedListeners);
 
-			if(initializerEditor != null)
+			if(initializerEditor && isResponsibleForInitializerEditorLifetime)
 			{
-				if(isResponsibleForInitializerEditorLifetime)
-				{
-					Object.DestroyImmediate(initializerEditor);
-					initializerEditor = null;
-				}
+				Object.DestroyImmediate(initializerEditor);
+				initializerEditor = null;
 			}
 
 			#if ODIN_INSPECTOR
@@ -1754,24 +1839,23 @@ namespace Sisus.Init.EditorOnly.Internal
 			#endif
 
 			AfterHeaderGUI = null;
-
 			NowDrawing = null;
 		}
 
 		private void GetInitializersOnTargets(out bool hasInitializers, out Object firstInitializer)
 		{
-			if(initializerEditor != null)
+			if(initializerEditor)
 			{
 				initializers = initializerEditor.targets;
 				firstInitializer = initializers[0];
-				hasInitializers = firstInitializer != null;
+				hasInitializers = firstInitializer;
 				return;
 			}
 
 			if(lockInitializers)
 			{
 				firstInitializer = initializers.Length == 0 ? null : initializers[0];
-				hasInitializers = firstInitializer != null;
+				hasInitializers = firstInitializer;
 				if(!hasInitializers && headerLabel.text != DefaultHeaderText)
 				{
 					headerLabel.text = DefaultHeaderText;
@@ -1803,7 +1887,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					var initializerAsObject = initializer as Object;
-					if(initializerAsObject == null)
+					if(!initializerAsObject)
 					{
 						continue;
 					}
@@ -1811,7 +1895,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					initializers[i] = initializerAsObject;
 					hasInitializers = true;
 
-					if(firstInitializer == null)
+					if(!firstInitializer)
 					{
 						firstInitializer = initializerAsObject;
 					}
@@ -1827,7 +1911,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			var initializerTarget = initializer.Target;
-			if(initializerTarget == null)
+			if(!initializerTarget)
 			{
 				return false;
 			}

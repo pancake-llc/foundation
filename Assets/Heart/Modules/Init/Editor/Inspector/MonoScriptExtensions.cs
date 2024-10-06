@@ -50,7 +50,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
 					continue;
 				}
-				
+
 				if(string.Equals(userDataLine, setUserDataLine))
 				{
 					return true;

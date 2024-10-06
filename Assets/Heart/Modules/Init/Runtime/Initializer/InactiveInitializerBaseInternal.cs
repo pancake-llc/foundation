@@ -12,8 +12,6 @@ using Object = UnityEngine.Object;
 using Sisus.Init.EditorOnly;
 #endif
 
-[assembly: InternalsVisibleTo("InitArgs.UIToolkit")]
-
 namespace Sisus.Init.Internal
 {
 	/// <summary>

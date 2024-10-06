@@ -6,7 +6,7 @@ namespace Sisus.Init
 {
 	/// <summary>
 	/// Represents a class responsible for providing <see cref="ServiceAttribute">service</see>
-	/// objects on request to any to any clients that need them.
+	/// objects on request to any clients that need them.
 	/// <para>
 	/// A benefit of using <see cref="IServiceProvider"/> instead of a concrete class directly,
 	/// is that it makes possible to create mock implementations of the interface for unit tests.
@@ -14,6 +14,7 @@ namespace Sisus.Init
 	/// <para>
 	/// Additionally, it makes it easier to swap your service provider with another implementation at a later time.
 	/// </para>
+	/// <para>
 	/// A third benefit is that it makes your code less coupled with other classes, making it easier
 	/// to do things such as port the code over to another project.
 	/// </para>

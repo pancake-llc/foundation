@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Sisus.Init.Internal;
+using Sisus.Init.ValueProviders;
+using UnityEngine;
 
 namespace Sisus.Init
 {
@@ -37,10 +39,11 @@ namespace Sisus.Init
 	/// Represents an object which can be <see cref="Init">initialized</see> using an argument of type <typeparamref name="TArgument"/>.
 	/// <para>
 	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TArgument}"> function.
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TArgument}(TObject, TArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TArgument}(GameObject, TArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions will pass the argument to the <see cref="IInitializable{TArgument}.Init"/> function at the end of the
@@ -71,8 +74,8 @@ namespace Sisus.Init
 		/// </para>
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TArgument}"/> <see cref="Init"/> gets called the end of initialization
-		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TArgument}"/>
-		/// or <see cref="AddComponentExtensions.AddComponent{TComponent, TArgument}"/>.
+		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TArgument}(TObject, TArgument)"/>
+		/// or <see cref="AddComponentExtensions.AddComponent{TComponent, TArgument}(GameObject, TArgument)"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the object to receive the argument at an earlier stage of its initialization process,
@@ -86,11 +89,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using two arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument}(TObject, TFirstArgument, TSecondArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument}(GameObject, TFirstArgument, TSecondArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init"/> function at the end of the
@@ -124,7 +128,7 @@ namespace Sisus.Init
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
@@ -139,11 +143,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using three arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init"/> function at the end of the
@@ -178,7 +183,7 @@ namespace Sisus.Init
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
@@ -194,11 +199,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using four arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init"/>
@@ -234,7 +240,7 @@ namespace Sisus.Init
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
@@ -251,11 +257,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using five arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init"/>
@@ -293,7 +300,7 @@ namespace Sisus.Init
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
@@ -311,11 +318,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using six arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}.Init"/>
@@ -354,7 +362,7 @@ namespace Sisus.Init
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
@@ -373,11 +381,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using seven arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}.Init"/>
@@ -417,7 +426,7 @@ namespace Sisus.Init
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is being created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
@@ -437,11 +446,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using eight arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}.Init"/>
@@ -482,7 +492,7 @@ namespace Sisus.Init
 		/// <para>
 		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
@@ -503,11 +513,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using nine arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}.Init"/>
@@ -538,11 +549,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using ten arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}.Init"/>
@@ -574,11 +586,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using eleven arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}.Init"/>
@@ -611,11 +624,12 @@ namespace Sisus.Init
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using twelve arguments.
 	/// <para>
-	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with arguments using the 
-	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"> function.
+	/// <see cref="Object"/>-derived classes that implement this interface can be instantiated with an argument using the
+	/// <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}(TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument)"/> method.
+	/// </para>
 	/// <para>
 	/// <see cref="MonoBehaviour"/>-derived classes that implement this interface can also be added to a <see cref="GameObject"/>
-	/// with arguments using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/>.
+	/// with an argument using the <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}(GameObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument)"/> method.
 	/// </para>
 	/// <para>
 	/// These functions can automatically inject the arguments using the <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}.Init"/>

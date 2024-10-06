@@ -7,10 +7,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Sisus.Init.Internal;
+using Sisus.Init.ValueProviders;
 using UnityEngine;
 using static Sisus.NullExtensions;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+using UnityEngine.ResourceManagement.ResourceLocations;
+#endif
 
 namespace Sisus.Init
 {
@@ -28,8 +32,18 @@ namespace Sisus.Init
 
 		#if UNITY_EDITOR
 		internal static event Action AnyChangedEditorOnly;
-		internal static readonly List<ServiceInfo> activeInstancesEditorOnly = new(64); // TODO: Split to edit and runtime modes???
+		private static readonly List<ServiceInfo> activeInstancesEditorOnlyEditMode = new(64);
+		private static readonly List<ServiceInfo> activeInstancesEditorOnlyPlayMode = new(64);
 		private static readonly ServiceInfoOrderer serviceInfoOrdererEditorOnly = new();
+		private static List<ServiceInfo> ActiveInstancesEditorOnly => Application.isPlaying ? activeInstancesEditorOnlyPlayMode : activeInstancesEditorOnlyEditMode;
+
+		internal static void UsingActiveInstancesEditorOnly(Action<List<ServiceInfo>> action)
+		{
+			lock(ActiveInstancesEditorOnly)
+			{
+				action(ActiveInstancesEditorOnly);
+			}
+		}
 		#endif
 
 		/// <summary>
@@ -97,7 +111,6 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TService"> The defining type of the service. </typeparam>
-		/// <param name="client"> The client that needs the service. </param>
 		/// <returns>
 		/// <see langword="true"/> if service exists for the client; otherwise, <see langword="false"/>.
 		/// </returns>
@@ -109,7 +122,7 @@ namespace Sisus.Init
 		/// Services are components that have the <see cref="ServiceTag"/> attached to them,
 		/// have been defined as a service in a <see cref="Services"/> component,
 		/// have the <see cref="ServiceAttribute"/> on their class,
-		/// or have been <see cref="SetInstance">manually registered</see> as a service in code.
+		/// or have been <see cref="Set{TService}">manually registered</see> as a service in code.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -257,7 +270,7 @@ namespace Sisus.Init
 					}
 
 					#if UNITY_EDITOR
-					// Prioritize scene objects over uinstantiated prefabs
+					// Prioritize scene objects over uninstantiated prefabs
 					var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
 					if(!instance.Scene.IsValid() || (prefabStage && instance.Scene == prefabStage.scene))
 					{
@@ -348,12 +361,32 @@ namespace Sisus.Init
 
 			if(!typeof(TService).IsValueType)
 			{
-				#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
-				// Usually we can rely on static constructor of Service<T> to handle lazily initializing the service when necessary.
-				// However with Enter Play Mode Options enabled this might not work, so we should handle that here instead.
-				if(ServiceInjector.uninitializedServices.TryGetValue(typeof(TService), out var uninitializedService) && uninitializedService.LazyInit && EditorOnly.ThreadSafe.Application.IsPlaying)
+				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
+				if(ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo))
 				{
-					_ = ServiceInjector.LazyInit(uninitializedService, typeof(TService));
+					if(serviceInfo.LazyInit
+					#if UNITY_EDITOR
+					&& Application.isPlaying
+					#endif
+					)
+					{
+						var task = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
+						if(task.IsCompleted)
+						{
+							if(task.Result is TService result)
+							{
+								service = result;
+								return service is not null;
+							}
+
+							#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+							if(task.IsFaulted)
+							{
+								throw task.Exception;
+							}
+							#endif
+						}
+					}
 				}
 				#endif
 
@@ -379,8 +412,7 @@ namespace Sisus.Init
 				return service != Null;
 			}
 
-			service = default;
-			return false;
+			return ServiceProvider<TService>.TryGetValue(client, out service);
 		}
 
 		/// <summary>
@@ -441,7 +473,7 @@ namespace Sisus.Init
 				#if DEBUG || INIT_ARGS_SAFE_MODE && !INIT_ARGS_DISABLE_WARNINGS
 
 				#if UNITY_EDITOR
-				// Prioritize scene objects over uinstantiated prefabs
+				// Prioritize scene objects over uninstantiated prefabs
 				var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
 				if(!instance.Scene.IsValid() || (prefabStage && instance.Scene == prefabStage.scene))
 				{
@@ -484,12 +516,10 @@ namespace Sisus.Init
 
 			if(!typeof(TService).IsValueType)
 			{
-				#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
-				// Usually we can rely on static constructor of Service<T> to handle lazily initializing the service when necessary.
-				// However, with Enter Play Mode Options enabled this might not work, so we should handle that here instead.
-				if(ServiceInjector.uninitializedServices.TryGetValue(typeof(TService), out var definition) && EditorOnly.ThreadSafe.Application.IsPlaying)
+				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
+				if(ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo) && EditorOnly.ThreadSafe.Application.IsPlaying)
 				{
-					_ = ServiceInjector.LazyInit(definition, typeof(TService));
+					_ = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
 				}
 				#endif
 
@@ -515,8 +545,7 @@ namespace Sisus.Init
 				return service != Null;
 			}
 
-			service = default;
-			return false;
+			return ServiceProvider<TService>.TryGetValue(null, out service);
 		}
 
 		/// <summary>
@@ -614,7 +643,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <typeparam name="TService"> The defining type of the service. </typeparam>
 		/// <param name="newInstance"> The new instance of the service. </param>
-		public static void SetInstance<TService>([DisallowNull] TService newInstance)
+		public static void Set<TService>([DisallowNull] TService newInstance)
 		{
 			Debug.Assert(newInstance != null, typeof(TService).Name);
 
@@ -635,7 +664,210 @@ namespace Sisus.Init
 			HandleInstanceChanged(Clients.Everywhere, oldInstance, newInstance);
 		}
 
-		internal static void SetInstanceSilently<TService>([AllowNull] TService newInstance)
+		public static TService Unset<TService>()
+		{
+			nowSettingInstance = typeof(TService);
+
+			var currentInstance = Service<TService>.Instance;
+
+			if(currentInstance == Null)
+			{
+				nowSettingInstance = null;
+				return currentInstance;
+			}
+
+			Service<TService>.Instance = default;
+
+			nowSettingInstance = null;
+
+			HandleInstanceChanged(Clients.Everywhere, currentInstance, default);
+			return currentInstance;
+		}
+
+		public static bool Unset<TService>(TService instance)
+		{
+			var currentInstance = Service<TService>.Instance;
+
+			if(!ReferenceEquals(currentInstance, instance) || currentInstance == Null)
+			{
+				return false;
+			}
+
+			nowSettingInstance = typeof(TService);
+			Service<TService>.Instance = default;
+			nowSettingInstance = null;
+
+			HandleInstanceChanged(Clients.Everywhere, currentInstance, default);
+			return true;
+		}
+
+		public static void Dispose<TService>()
+		{
+			nowSettingInstance = typeof(TService);
+
+			var oldInstance = Service<TService>.Instance;
+
+			if(oldInstance is null)
+			{
+				nowSettingInstance = null;
+				return;
+			}
+
+			Service<TService>.Instance = default;
+
+			if(oldInstance is Object unityObject)
+			{
+				if(unityObject)
+				{
+					Object.Destroy(unityObject);
+				}
+			}
+			else if(oldInstance is IDisposable disposable)
+			{
+				disposable.Dispose();
+			}
+
+			nowSettingInstance = null;
+
+			HandleInstanceChanged(Clients.Everywhere, oldInstance, default);
+		}
+
+		// #if DEV_MODE
+		// // Limitation: can only have a single defining type!
+		// public static void Set<TService, TInstance>
+		// (
+		// 	bool findFromScene = false,
+		// 	bool lazyInit = false
+		// )
+		// 	where TInstance : TService
+		// {
+		// 	Debug.Assert(!typeof(TInstance).IsAbstract, $"{nameof(Service)}.{nameof(Set)}<{TypeUtility.ToString(typeof(TService))}, {TypeUtility.ToString(typeof(TInstance))}> an abstract instance type: {TypeUtility.ToString(typeof(TInstance))}.");
+		// 	Debug.Assert(!typeof(TInstance).IsValueType, $"{nameof(Service)}.{nameof(Set)}<{TypeUtility.ToString(typeof(TService))}, {TypeUtility.ToString(typeof(TInstance))}> was with a instance type that was a struct: {TypeUtility.ToString(typeof(TInstance))}.");
+		//
+		// 	var attribute = new ServiceAttribute
+		// 	{
+		// 		FindFromScene = findFromScene,
+		// 		LazyInit = lazyInit
+		// 	};
+		//
+		// 	var concreteType = typeof(TService);
+		// 	var definingType = typeof(TInstance);
+		// 	var serviceInfo = new GlobalServiceInfo(concreteType, new[] { attribute }, concreteType, new [] { definingType });
+		// 	ServiceInjector.Register(serviceInfo);
+		// }
+		// #endif
+
+		#if DEV_MODE // TODO: Finish these up + add unit tests
+
+		public static TService CreateInstance<TInstance, TService>(bool lazyInit = false) where TInstance : class, TService => Register(typeof(TService), concreteType:typeof(TInstance), lazyInit:lazyInit, instantiate:true) as TInstance;
+		public static TService CreateInstance<TService>(bool lazyInit = false) where TService : class => Register(typeof(TService), concreteType:typeof(TService), lazyInit:lazyInit, instantiate:true) as TService;
+		//public static TService CreateInstance<TService>(IValueProvider<TService> valueProvider, bool lazyInit = false) where TService : class => Register(typeof(TService), concreteType:typeof(TService), lazyInit:lazyInit, instantiate:true) as TService;
+
+		private static object Register
+		(
+			Type definingType,
+			Type concreteType = null,
+			bool findFromScene = false,
+			bool lazyInit = false,
+			bool? instantiate = default,
+			bool loadAsync = false,
+			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+			string addressableKey = null,
+			#endif
+			string resourcePath = null
+		)
+		{
+			Debug.Assert(definingType is not null, $"{nameof(Service)} registration was attempted with a null defining type: {TypeUtility.ToString(definingType)}.");
+			Debug.Assert(!definingType.IsAbstract, $"{nameof(Service)}.registration was attempted with an abstract defining type: {TypeUtility.ToString(definingType)}.");
+			Debug.Assert(!definingType.IsValueType, $"{nameof(Service)}.registration was attempted with a defining type that was a struct: {TypeUtility.ToString(definingType)}.\nYou should register struct type services via a IValueProvider<{TypeUtility.ToString(definingType)}> instead.");
+			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+			Debug.Assert(string.IsNullOrEmpty(resourcePath) || string.IsNullOrEmpty(addressableKey), $"{nameof(Service)}. registration was attempted with both a {nameof(resourcePath)} (\"{resourcePath}\") and an {nameof(addressableKey)} (\"{addressableKey}\") provided. A service can't be loaded using two different methods simultaneously.");
+			#endif
+
+			var attribute = new ServiceAttribute
+			{
+				FindFromScene = findFromScene,
+				LazyInit = lazyInit,
+				Instantiate = instantiate,
+				LoadAsync = loadAsync,
+				#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+				AddressableKey = addressableKey,
+				#endif
+				ResourcePath = resourcePath
+			};
+
+			var serviceInfo = new GlobalServiceInfo(concreteType ?? definingType, new[] { attribute }, concreteType, new [] { definingType });
+			var task = ServiceInjector.Register(serviceInfo);
+			return task.IsCompleted ? task.Result : default;
+		}
+
+		public static TService Instantiate<TService>(TService prefab, bool lazyInit = false) where TService : Object => throw new NotImplementedException();
+		public static Task<TService> InstantiateAsync<TService, TInstance>(TInstance prefab, bool lazyInit = false) => throw new NotImplementedException();
+		public static TService FindFromScene<TService>(bool lazyInit = false) => throw new NotImplementedException();
+		public static TService LoadResource<TService>(string resourcePath, bool lazyInit = false) => throw new NotImplementedException();
+		public static Task<TService> LoadResourceAsync<TService>(string resourcePath, bool lazyInit = false) => throw new NotImplementedException();
+		public static TService InstantiateResource<TService>(string resourcePath, bool lazyInit = false) => throw new NotImplementedException();
+		public static Task<TService> InstantiateResourceAsync<TService>(string resourcePath, bool lazyInit = false) => throw new NotImplementedException();
+		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+		public static TService LoadAsset<TService>(string addressableKey, bool lazyInit = false) => throw new NotImplementedException();
+		public static Task<TService> LoadAssetAsync<TService>(string addressableKey, bool lazyInit = false) => throw new NotImplementedException();
+		public static TService LoadAsset<TService>(IResourceLocation resourceLocation, bool lazyInit = false) => LoadAsset<TService>(resourceLocation.PrimaryKey);
+		public static Task<TService> LoadAssetAsync<TService>(IResourceLocation resourceLocation, bool lazyInit = false) => LoadAssetAsync<TService>(resourceLocation.PrimaryKey);
+		public static TService InstantiateAsset<TService>(string addressableKey, bool lazyInit = false) => throw new NotImplementedException();
+		public static Task<TService> InstantiateAssetAsync<TService>(string addressableKey, bool lazyInit = false) => throw new NotImplementedException();
+		public static TService InstantiateAsset<TService>(IResourceLocation resourceLocation, bool lazyInit = false) => LoadAsset<TService>(resourceLocation.PrimaryKey);
+		public static Task<TService> InstantiateAssetAsync<TService>(IResourceLocation resourceLocation, bool lazyInit = false) => LoadAssetAsync<TService>(resourceLocation.PrimaryKey);
+		#endif
+
+		#endif
+
+		#if DEV_MODE
+		// Limitation: can only have a single defining type!
+		internal static void Set<TService, TInstance>
+		(
+			string resourcePath,
+			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+			string addressableKey = null,
+			#endif
+			bool lazyInit = false,
+			bool loadAsync = false,
+			bool? instantiate = null
+		)
+			where TInstance : TService
+		{
+			Debug.Assert(!typeof(TInstance).IsAbstract, $"{nameof(Service)}.{nameof(Set)}<{TypeUtility.ToString(typeof(TService))}, {TypeUtility.ToString(typeof(TInstance))}> an abstract instance type: {TypeUtility.ToString(typeof(TInstance))}.");
+			Debug.Assert(!typeof(TInstance).IsValueType, $"{nameof(Service)}.{nameof(Set)}<{TypeUtility.ToString(typeof(TService))}, {TypeUtility.ToString(typeof(TInstance))}> was with a instance type that was a struct: {TypeUtility.ToString(typeof(TInstance))}.");
+			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+			Debug.Assert(string.IsNullOrEmpty(resourcePath) || string.IsNullOrEmpty(addressableKey), $"{nameof(Service)}.{nameof(Set)} was called with both a {nameof(resourcePath)} (\"{resourcePath}\") and an {nameof(addressableKey)} (\"{addressableKey}\"). A service can't be loaded using two different methods simultaneously.");
+			#endif
+
+			var attribute = new ServiceAttribute
+			{
+				LazyInit = lazyInit,
+				LoadAsync = loadAsync,
+				Instantiate = instantiate,
+				ResourcePath = resourcePath,
+				#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+				AddressableKey = addressableKey
+				#endif
+			};
+
+			var concreteType = typeof(TService);
+			var definingType = typeof(TInstance);
+			var serviceInfo = new GlobalServiceInfo(concreteType, new[] { attribute }, concreteType, new [] { definingType });
+			ServiceInjector.Register(serviceInfo);
+		}
+		#endif
+
+		/// <summary>
+		/// Obsolete.
+		/// <para>
+		/// Use <see cref="Set{TService}"/> instead.
+		/// </para>
+		/// </summary>
+		public static void SetInstance<TService>([DisallowNull] TService newInstance) => Set(newInstance);
+
+		internal static void SetSilently<TService>([AllowNull] TService newInstance)
 		{
 			Debug.Assert(newInstance != null, typeof(TService).Name);
 
@@ -649,8 +881,6 @@ namespace Sisus.Init
 				return;
 			}
 
-			ServiceInjector.uninitializedServices.Remove(typeof(TService));
-			ServiceInjector.services[typeof(TService)] = newInstance;
 			Service<TService>.Instance = newInstance;
 
 			nowSettingInstance = null;
@@ -668,22 +898,29 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			AnyChangedEditorOnly?.Invoke();
 
+			var activeInstances = ActiveInstancesEditorOnly;
 			if(oldInstance is not null)
 			{
-				activeInstancesEditorOnly.Remove(new(typeof(TService), clients, oldInstance));
+				lock(activeInstances)
+				{
+					activeInstances.Remove(new(typeof(TService), clients, oldInstance));
+				}
 			}
 
 			if(newInstance is not null)
 			{
 				var serviceInfo = new ServiceInfo(typeof(TService), clients, newInstance);
-				int index = activeInstancesEditorOnly.BinarySearch(serviceInfo, serviceInfoOrdererEditorOnly);
-				if(index >= 0)
+				lock(activeInstances)
 				{
-					activeInstancesEditorOnly[index] = serviceInfo;
-				}
-				else
-				{
-					activeInstancesEditorOnly.Insert(~index, serviceInfo);
+					int index = activeInstances.BinarySearch(serviceInfo, serviceInfoOrdererEditorOnly);
+					if(index >= 0)
+					{
+						activeInstances[index] = serviceInfo;
+					}
+					else
+					{
+						activeInstances.Insert(~index, serviceInfo);
+					}
 				}
 			}
 			#endif
@@ -694,14 +931,19 @@ namespace Sisus.Init
 		{
 			#if UNITY_EDITOR
 			var serviceInfo = new ServiceInfo(globalServiceInfo.definingTypes.FirstOrDefault() ?? concreteType, Clients.Everywhere, sceneObject ?? asset ?? initializerOrWrapper, exception.Message, reason);
-			int index = activeInstancesEditorOnly.BinarySearch(serviceInfo, serviceInfoOrdererEditorOnly);
-			if(index >= 0)
+
+			var activeInstances = ActiveInstancesEditorOnly;
+			lock(activeInstances)
 			{
-				activeInstancesEditorOnly[index] = serviceInfo;
-			}
-			else
-			{
-				activeInstancesEditorOnly.Insert(~index, serviceInfo);
+				int index = activeInstances.BinarySearch(serviceInfo, serviceInfoOrdererEditorOnly);
+				if(index >= 0)
+				{
+					activeInstances[index] = serviceInfo;
+				}
+				else
+				{
+					activeInstances.Insert(~index, serviceInfo);
+				}
 			}
 			#endif
 		}
@@ -730,13 +972,13 @@ namespace Sisus.Init
 		/// <param name="container">
 		/// Component that is registering the service. This can also be the service itself, if it is a component.
 		/// <para>
-		/// This same argument should be passed when <see cref="RemoveFrom">removing the instance</see>.
+		/// This same argument should be passed when <see cref="RemoveFrom{TService}">removing the instance</see>.
 		/// </para>
 		/// </param>
 		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component container)
 		{
-			Debug.Assert(service != null);
 			#if DEV_MODE
+			Debug.Assert(service != null);
 			Debug.Assert(container);
 			#endif
 
@@ -747,7 +989,7 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// Deregisters a service with the defining type <typeparamref name="TService"/>
+		/// Unregisters a service with the defining type <typeparamref name="TService"/>
 		/// that has been available to a limited set of clients.
 		/// <para>
 		/// If the provided instance is available to clients <see cref="Clients.Everywhere"/>
@@ -794,10 +1036,12 @@ namespace Sisus.Init
 		/// </param>
 		public static void RemoveInstanceChangedListener<TService>(ServiceChangedHandler<TService> method) => ServiceChanged<TService>.listeners -= method;
 
-		public static bool IsServiceFor<TService>([DisallowNull] Component client, [DisallowNull] TService test)
+		internal static bool IsServiceFor<TService>([DisallowNull] Component client, [DisallowNull] TService test)
 		{
+			#if DEV_MODE
 			Debug.Assert(client is not null, "Service.IsServiceFor called with null client");
 			Debug.Assert(test is not null, "Service.IsServiceFor called with null object to test");
+			#endif
 
 			foreach(var instance in ScopedService<TService>.Instances)
 			{
@@ -816,12 +1060,13 @@ namespace Sisus.Init
 
 			if(!typeof(TService).IsValueType)
 			{
-				#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
-				// Usually we can rely on static constructor of Service<T> to handle lazily initializing the service when necessary.
-				// However, with Enter Play Mode Options enabled this might not work, so we should handle that here instead.
-				if(ServiceInjector.uninitializedServices.TryGetValue(typeof(TService), out var definition) && EditorOnly.ThreadSafe.Application.IsPlaying)
+				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
+				if(ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo))
 				{
-					_ = ServiceInjector.LazyInit(definition, typeof(TService));
+					#if UNITY_EDITOR
+					if(EditorOnly.ThreadSafe.Application.IsPlaying)
+					#endif
+						_ = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
 				}
 				#endif
 
@@ -848,14 +1093,14 @@ namespace Sisus.Init
 				&& ReferenceEquals(test, service);
 		}
 
-		public static bool IsServiceOrServiceProvider<TService>([DisallowNull] object test)
+		internal static bool IsServiceOrServiceProvider<TService>([DisallowNull] TService test)
 		{
 			if(TryGet(out TService globalService) && ReferenceEquals(test, globalService))
 			{
 				return true;
 			}
 
-			if(test is IValueProvider<TService> serviceProvider && IsServiceProvider(serviceProvider))
+			if(IsServiceProvider(test))
 			{
 				return true;
 			}
@@ -863,55 +1108,14 @@ namespace Sisus.Init
 			return false;
 		}
 
-		public static bool IsServiceProvider<TService>([DisallowNull] IValueProvider<TService> test)
+		internal static bool IsServiceProvider<TService>([DisallowNull] TService test)
 		{
-			Debug.Assert(test != null);
-
-			if(test.Value is not object providedValue)
+			if(!ValueProviderUtility.TryGetValueProviderValue(test, out TService value))
 			{
 				return false;
 			}
 
-			foreach(var instance in ScopedService<TService>.Instances)
-			{
-				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
-				{
-					continue;
-				}
-				#endif
-
-				if(ReferenceEquals(providedValue, instance.service))
-				{
-					return true;
-				}
-			}
-
-			if(!typeof(TService).IsValueType)
-			{
-				#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
-				// Usually we can rely on static constructor of Service<T> to handle lazily initializing the service when necessary.
-				// However, with Enter Play Mode Options enabled this might not work, so we should handle that here instead.
-				if(ServiceInjector.uninitializedServices.TryGetValue(typeof(IValueProvider<TService>), out var definition) && EditorOnly.ThreadSafe.Application.IsPlaying)
-				{
-					_ = ServiceInjector.LazyInit(definition, typeof(IValueProvider<TService>));
-				}
-				#endif
-
-				#if UNITY_EDITOR
-				if(ServiceAttributeUtility.definingTypes.ContainsKey(typeof(IValueProvider<TService>)))
-				{
-					return true;
-				}
-				#endif
-
-				if(ReferenceEquals(test, Service<IValueProvider<TService>>.Instance))
-				{
-					return true;
-				}
-			}
-
-			return false;
+			return ScopedService<TService>.IsService(value) || ReferenceEquals(Service<TService>.Instance, value);
 		}
 
 		public static bool IsServiceOrServiceProviderFor<TService>([DisallowNull] Component client, [DisallowNull] object test)
@@ -921,7 +1125,7 @@ namespace Sisus.Init
 				return true;
 			}
 
-			if(test is IValueProvider<TService> serviceProvider && IsServiceProviderFor(client, serviceProvider))
+			if(IsServiceProviderFor<TService>(client, test))
 			{
 				return true;
 			}
@@ -929,62 +1133,71 @@ namespace Sisus.Init
 			return false;
 		}
 
-		public static bool IsServiceProviderFor<TService>([DisallowNull] Component client, [DisallowNull] IValueProvider<TService> test)
+		/// <summary>
+		/// Gets a value indicating whether <see cref="test"/> is a value provider service which is accessible to client.
+		/// <para>
+		/// NOTE: Does not consider whether <see cref="test"/> is the closest service provider for the client. It's
+		/// possible that even if this method returns <see langword="true"/>, there are other services with the same
+		/// defining type at a closer proximity to the client, which would be prioritized over this one when
+		/// initializing the client.
+		/// </para>
+		/// </summary>
+		/// <param name="client"> Type of the client. </param>
+		/// <param name="test"> Type of the object to test. </param>
+		/// <typeparam name="TService"> Type of the client's dependency. </typeparam>
+		/// <returns>
+		/// <see cref="test"/> if <see langword="true"/> is a value provider service accessible to the client; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool IsServiceProviderFor<TService>([DisallowNull] Component client, [DisallowNull] object test)
 		{
+			#if DEV_MODE
 			Debug.Assert(client);
 			Debug.Assert(test != null);
+			#endif
 
-			if(test.Value is not object providedValue)
+			if(!ValueProviderUtility.TryGetValueProviderValue(test, out TService providedValue))
 			{
 				return false;
 			}
 
-			foreach(var instance in ScopedService<TService>.Instances)
+			if(ScopedService<TService>.IsServiceFor(client, providedValue))
 			{
-				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
-				{
-					continue;
-				}
-				#endif
-
-				if(ReferenceEquals(providedValue, instance.service))
-				{
-					return IsAccessibleTo(instance, client.transform);
-				}
+				return true;
 			}
 
-			if(!typeof(TService).IsValueType)
+			if(typeof(TService).IsValueType)
 			{
-				#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
-				// Usually we can rely on static constructor of Service<T> to handle lazily initializing the service when necessary.
-				// However, with Enter Play Mode Options enabled this might not work, so we should handle that here instead.
-				if(ServiceInjector.uninitializedServices.TryGetValue(typeof(IValueProvider<TService>), out var definition) && EditorOnly.ThreadSafe.Application.IsPlaying)
-				{
-					_ = ServiceInjector.LazyInit(definition, typeof(IValueProvider<TService>));
-				}
-				#endif
+				return false;
+			}
 
-				#if UNITY_EDITOR
-				if(ServiceAttributeUtility.definingTypes.ContainsKey(typeof(IValueProvider<TService>)))
-				{
-					return true;
-				}
-				#endif
+			#if UNITY_EDITOR
+			if(ServiceAttributeUtility.definingTypes.ContainsKey(typeof(IValueProvider<TService>)))
+			{
+				return true;
+			}
+			#endif
 
-				if(ReferenceEquals(test, Service<IValueProvider<TService>>.Instance))
-				{
-					return true;
-				}
+			#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
+			if(ServiceInjector.TryGetServiceInfo(typeof(IValueProvider<TService>), out _))
+			{
+				return true;
+			}
+			#endif
+
+			if(ReferenceEquals(test, Service<IValueProvider<TService>>.Instance))
+			{
+				return true;
 			}
 
 			return false;
 		}
 
-		private static bool IsAccessibleTo<TService>([DisallowNull] ScopedService<TService>.Instance instance, [DisallowNull] Transform clientTransform)
+		internal static bool IsAccessibleTo<TService>(ScopedService<TService>.Instance instance, [DisallowNull] Transform clientTransform)
 		{
+			#if DEV_MODE
 			Debug.Assert(clientTransform);
 			Debug.Assert(instance.serviceProvider);
+			#endif
 
 			#if UNITY_EDITOR
 			// Skip services from prefabs - this can help avoid AmbiguousMatchWarning issues.

@@ -363,7 +363,7 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// Determines whether or not <paramref name="initializerA"/>'s client depends on
+		/// Determines whether <paramref name="initializerA"/>'s client depends on
 		/// <paramref name="initializerB"/>'s client.
 		/// <para>
 		/// If true then <paramref name="initializerB"/> should be initialized before

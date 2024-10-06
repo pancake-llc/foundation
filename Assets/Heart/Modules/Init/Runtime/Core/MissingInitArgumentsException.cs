@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Sisus.Init.Internal;
+using Object = UnityEngine.Object;
 
 namespace Sisus.Init
 {
@@ -14,20 +15,35 @@ namespace Sisus.Init
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
 		/// </summary>
-		/// <param name="clientType"> Type of the client that was initialized without the necessary arguments. </param>
-		public MissingInitArgumentsException([DisallowNull] Type clientType, params Type[] missingDependencies) : base(GenerateMessage(clientType, false, missingDependencies)) { }
+		internal MissingInitArgumentsException([DisallowNull] Type clientType, Object context = null) : base(GenerateMessage(clientType, false, Array.Empty<Type>()), context) { }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
 		/// </summary>
 		/// <param name="client"> The client object that was initialized without the necessary arguments. </param>
-		public MissingInitArgumentsException([DisallowNull] object client, params Type[] missingDependencies) : this(client.GetType(), missingDependencies) { }
+		internal MissingInitArgumentsException([DisallowNull] object client, [DisallowNull] Type missingDependency, Object context = null) : this(client.GetType(), missingDependency, context ? context : client as Object) { }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
+		/// </summary>
+		internal MissingInitArgumentsException([DisallowNull] Object client) : this(client.GetType(), client) { }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
+		/// </summary>
+		internal MissingInitArgumentsException([DisallowNull] object client, Object context = null) : this(client.GetType(), context) { }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
 		/// </summary>
 		/// <param name="message"> The error message that explains the reason for the exception. </param>
-		public MissingInitArgumentsException(string message) : base(message) { }
+		internal MissingInitArgumentsException(string message, Object context = null) : base(message, context) { }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MissingInitArgumentsException"/> class.
+		/// </summary>
+		/// <param name="clientType"> Type of the client that was initialized without the necessary arguments. </param>
+		private MissingInitArgumentsException([DisallowNull] Type clientType, [DisallowNull] Type missingDependency, Object context = null) : base(GenerateMessage(clientType, false, AsArray(missingDependency)), context) { }
 
 		internal static MissingInitArgumentsException ForService([DisallowNull] Type serviceType, params Type[] missingDependencies) => new(GenerateMessage(serviceType, true, missingDependencies));
 
@@ -132,5 +148,7 @@ namespace Sisus.Init
 			sb.Append(" was loaded without it having access to all the services that it depends on.");
 			return sb.ToString();
 		}
+
+		private static Type[] AsArray(Type type) => type is null ? null : Array.Empty<Type>();
 	}
 }

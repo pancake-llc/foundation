@@ -32,6 +32,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -54,6 +55,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -78,6 +80,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -102,6 +105,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -126,6 +130,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -150,6 +155,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -174,6 +180,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -198,6 +205,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -222,6 +230,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -246,6 +255,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -270,6 +280,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>
@@ -294,6 +305,7 @@ namespace Sisus.Init.Reflection
 		/// Init only fields and properties are supported, however properties that are
 		/// not auto-implemented and do not have a set accessor are not supported.
 		/// </para>
+		/// </summary>
 		/// <param name="client"> The client that contains the field or property. </param>
 		/// <param name="memberName"> Name of the field or property to which to assign the value. </param>
 		/// <param name="value"> The value to assign to the field or property. </param>

@@ -37,8 +37,6 @@ namespace Sisus.Init
 
 		public ServiceAttribute[] Attributes => ServiceInfo.attributes;
 
-		public Object Context { get; }
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ServiceInitFailedException"/> class.
 		/// </summary>
@@ -65,11 +63,10 @@ namespace Sisus.Init
 			Reason = reason;
 		}
 
-		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType, Exception exception) : base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, concreteType, exception), exception)
+		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType, Exception exception) : base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, concreteType, exception), exception, sceneObject ? sceneObject : asset ? asset : initializerOrWrapper is Object obj && obj ? obj : Find.Script(serviceInfo.ConcreteOrDefiningType))
 		{
 			ServiceInfo = serviceInfo;
 			Reason = reason;
-			Context = sceneObject ? sceneObject : asset ? asset : initializerOrWrapper as Object;
 		}
 
 		internal static InitArgsException Create([DisallowNull] GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Exception exception = null)
@@ -95,8 +92,6 @@ namespace Sisus.Init
 			Service.HandleInitializationFailed(result, serviceInfo, reason, asset, sceneObject, initializerOrWrapper, concreteType);
 			return result;
 		}
-
-		public void LogAsError() => Debug.Log(Message, Context);
 
 		private static bool TryGetCircularDependencyChain(List<GlobalServiceInfo> dependencyChain, GlobalServiceInfo currentServiceInfo)
 		{
@@ -157,6 +152,7 @@ namespace Sisus.Init
 				#endif
 				ServiceInitFailReason.MissingResource => $"No asset was found at the resource path 'Resources/{serviceInfo.ResourcePath}', but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.ResourcePath)} set to the aforementioned path. Either make sure an asset exists in the project at the specified path, or don't specify a {nameof(ServiceAttribute.ResourcePath)}, to have a new instance be created automatically instead.",
 				ServiceInitFailReason.MissingComponent => $"No component matching all specified service defining types was found on '{(sceneObject ?? asset).name}'.",
+				ServiceInitFailReason.AssetNotConvertible => $"Asset '{(sceneObject ?? asset).name}' of type {TypeUtility.ToString((sceneObject ?? asset)?.GetType())} was not convertible to all the defining types specified for the service.",
 				ServiceInitFailReason.ServiceInitializerThrewException => $"An exception was thrown by {TypeUtility.ToString(initializerOrWrapper.GetType())}:\n{exception}",
 				ServiceInitFailReason.ServiceInitializerReturnedNull => $"Service initializer {TypeUtility.ToString(initializerOrWrapper.GetType())}.{nameof(ServiceInitializer<object>.InitTarget)} returned a Null result.",
 				ServiceInitFailReason.InitializerThrewException => $"An exception was thrown by {TypeUtility.ToString(initializerOrWrapper.GetType())}:\n{exception}",

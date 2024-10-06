@@ -35,6 +35,22 @@ namespace Sisus.Init.Internal
 			{ typeof(IInitializable<,,,,,,,,,,,>), 12 }
 		};
 
+		internal static readonly Dictionary<Type, int> argumentCountsByIArgsTypeDefinition = new(12)
+		{
+			{ typeof(IArgs<>), 1 },
+			{ typeof(IArgs<,>), 2 },
+			{ typeof(IArgs<,,>), 3 },
+			{ typeof(IArgs<,,,>), 4 },
+			{ typeof(IArgs<,,,,>), 5 },
+			{ typeof(IArgs<,,,,,>), 6 },
+			{ typeof(IArgs<,,,,,,>), 7 },
+			{ typeof(IArgs<,,,,,,,>), 8 },
+			{ typeof(IArgs<,,,,,,,,>), 9 },
+			{ typeof(IArgs<,,,,,,,,,>), 10 },
+			{ typeof(IArgs<,,,,,,,,,,>), 11 },
+			{ typeof(IArgs<,,,,,,,,,,,>), 12 }
+		};
+
 		internal static bool TryGetParameterTypes([DisallowNull] Type clientType, [MaybeNullWhen(false), NotNullWhen(true)] out Type[] parameterTypes)
 		{
 			foreach(var interfaceType in clientType.GetInterfaces())
@@ -56,21 +72,26 @@ namespace Sisus.Init.Internal
 			return false;
 		}
 
-		internal static readonly Dictionary<Type, int> argumentCountsByIArgsTypeDefinition = new(12)
+		internal static bool TryGetIArgsInterface([DisallowNull] Type clientType, [MaybeNullWhen(false), NotNullWhen(true)] out Type iargsInterface)
 		{
-			{ typeof(IArgs<>), 1 },
-			{ typeof(IArgs<,>), 2 },
-			{ typeof(IArgs<,,>), 3 },
-			{ typeof(IArgs<,,,>), 4 },
-			{ typeof(IArgs<,,,,>), 5 },
-			{ typeof(IArgs<,,,,,>), 6 },
-			{ typeof(IArgs<,,,,,,>), 7 },
-			{ typeof(IArgs<,,,,,,,>), 8 },
-			{ typeof(IArgs<,,,,,,,,>), 9 },
-			{ typeof(IArgs<,,,,,,,,,>), 10 },
-			{ typeof(IArgs<,,,,,,,,,,>), 11 },
-			{ typeof(IArgs<,,,,,,,,,,,>), 12 }
-		};
+			foreach(var interfaceType in clientType.GetInterfaces())
+			{
+				if(!interfaceType.IsGenericType)
+				{
+					continue;
+				}
+
+				var genericTypeDefinition = interfaceType.IsGenericTypeDefinition ? interfaceType : interfaceType.GetGenericTypeDefinition();
+				if(InitializableUtility.argumentCountsByIArgsTypeDefinition.ContainsKey(genericTypeDefinition))
+				{
+					iargsInterface = interfaceType;
+					return true;
+				}
+			}
+
+			iargsInterface = null;
+			return false;
+		}
 
 		public static Type GetIInitializableType(int argumentCount)
 		{

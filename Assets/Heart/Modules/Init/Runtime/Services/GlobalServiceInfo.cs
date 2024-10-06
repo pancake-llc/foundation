@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,6 +39,8 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		[NotNull] public Type ConcreteOrDefiningType => concreteType ?? definingTypes.FirstOrDefault();
+
+		public bool IsTransient => ConcreteOrDefiningType?.IsGenericTypeDefinition ?? false;
 
 		public bool LazyInit
 		{
@@ -138,12 +141,177 @@ namespace Sisus.Init
 		}
 		#endif
 
-		public GlobalServiceInfo([DisallowNull] Type classWithAttribute, [DisallowNull] ServiceAttribute[] attributes)
+		public static IEnumerable<GlobalServiceInfo> From([DisallowNull] Type typeWithAttribute, [DisallowNull] ServiceAttribute[] attributes)
+		{
+			if (!typeWithAttribute.IsAbstract)
+			{
+				yield return new GlobalServiceInfo(typeWithAttribute, attributes);
+				yield break;
+			}
+
+			var registeredDefiningTypes = new Dictionary<Type, bool>(8);
+			var concreteToDefiningTypes = new Dictionary<Type, HashSet<Type>>(8);
+
+			foreach(var attribute in attributes)
+			{
+				if(attribute.definingType is not Type serviceType)
+				{
+					continue;
+				}
+
+				// Support
+				// [Service(typeof(Logger<>))]
+				// public interface ILogger<T> { }
+				// registering the concrete class Logger<> as ILogger<>
+				if(!serviceType.IsAbstract)
+				{
+					yield return new(typeWithAttribute, attributes, concreteType:serviceType, definingTypes:new[] { typeWithAttribute });
+					registeredDefiningTypes[serviceType] = false;
+					continue;
+				}
+
+				// Support
+				// [Service(typeof(ISingleton<>))]
+				// public interface ISingleton<T> { }
+				// registering all types that implement ISingleton<TService> and ISingleton<TService>
+				if(serviceType.IsGenericTypeDefinition)
+				{
+					foreach(var derivedType in TypeUtility.GetOpenGenericTypeDerivedTypes(serviceType, publicOnly:false, concreteOnly:true, 8))
+					{
+						AddConcreteDerivedAndImplementedTypes(concreteToDefiningTypes, registeredDefiningTypes, derivedType);
+					}
+
+					continue;
+				}
+
+				// Support
+				// [Service(typeof(Logger))]
+				// public interface ILogger { }
+				// registering all Logger<T> as ILogger<TService>
+				foreach(var derivedType in TypeUtility.GetDerivedTypes(typeWithAttribute, typeWithAttribute.Assembly, publicOnly:false, 8))
+				{
+					if(!derivedType.IsAbstract)
+					{
+						AddConcreteDerivedAndImplementedTypes(concreteToDefiningTypes, registeredDefiningTypes, derivedType);
+					}
+				}
+			}
+
+			if (attributes.Length != 1 || attributes[0].definingType is not null)
+			{
+				goto RegisterAll;
+			}
+
+			if(typeWithAttribute.IsGenericTypeDefinition)
+			{
+				// Support
+				// [Service]
+				// public interface ISingleton<TSingleton> { }
+				// registering all implementing types as services, with their concrete type, all base types and all the interfaces types
+				// as the defining types of the service, which fulfill these requirements:
+				// 1. None other of the types that derive from Manager may also derive from or implement that same type.
+				// 2. The type can't be a common built-in type, such as System.Object, UnityEngine.Object or IEnumerable.
+				foreach(var derivedType in TypeUtility.GetOpenGenericTypeDerivedTypes(typeWithAttribute, publicOnly:false, concreteOnly:true, 8))
+				{
+					AddConcreteDerivedAndImplementedTypes(concreteToDefiningTypes, registeredDefiningTypes, derivedType);
+				}
+
+				goto RegisterAll;
+			}
+
+			// Support:
+			// [Service]
+			// public abstract class Manager { }
+			// registering all derived types as services, with their concrete type, all base types and all the interfaces types
+			// as the defining types of the service, which fulfill these requirements:
+			// 1. None other of the types that derive from Manager may also derive from or implement that same type.
+			// 2. The type can't be a common built-in type, such as System.Object, UnityEngine.Object or IEnumerable.
+			foreach(var serviceType in TypeUtility.GetDerivedTypes(typeWithAttribute, typeWithAttribute.Assembly, publicOnly:false, 8))
+			{
+				if(!serviceType.IsAbstract)
+				{
+					AddConcreteDerivedAndImplementedTypes(concreteToDefiningTypes, registeredDefiningTypes, serviceType);
+				}
+			}
+
+			RegisterAll:
+
+			foreach(var (concreteType, definingTypes) in concreteToDefiningTypes)
+			{
+				yield return new GlobalServiceInfo(typeWithAttribute, attributes, concreteType, definingTypes.ToArray());
+			}
+
+			static void AddConcreteDerivedAndImplementedTypes(Dictionary<Type, HashSet<Type>> concreteToDefiningTypes, Dictionary<Type, bool> registeredDefiningTypes, Type serviceType)
+			{
+				// Registering service serviceType as it's concrete type, and as its defines types the following:
+				// its own type, all the types it derives from, and all the interface types it implements, which fulfill these requirements:
+				// 1. None other of the types that derive from serviceType may also derive from/implement that same type.
+				// 2. The type can't be a common built-in type, such as System.Object, UnityEngine.Object or IEnumerable.
+
+				Add(concreteToDefiningTypes, registeredDefiningTypes, concreteType:serviceType, definingType:serviceType);
+
+				foreach(var baseType in serviceType.GetBaseTypes())
+				{
+					Add(concreteToDefiningTypes, registeredDefiningTypes, concreteType:serviceType, definingType:baseType);
+				}
+
+				foreach(var interfaceType in serviceType.GetInterfaces())
+				{
+					const int SystemLength = 6;
+					if(interfaceType.Namespace is string @namespace
+					&& @namespace.StartsWith("System")
+					&& (@namespace.Length == SystemLength || @namespace[SystemLength] is '.'))
+					{
+						continue;
+					}
+
+					Add(concreteToDefiningTypes, registeredDefiningTypes, serviceType, interfaceType);
+				}
+			}
+
+			static void Add(Dictionary<Type, HashSet<Type>> concreteToDefiningTypes, Dictionary<Type, bool> registeredDefiningTypes, Type concreteType, Type definingType)
+			{
+				if(registeredDefiningTypes.TryGetValue(definingType, out var isFirst))
+				{
+					if(isFirst)
+					{
+						foreach(var removeFrom in concreteToDefiningTypes.Values)
+						{
+							removeFrom.Remove(definingType);
+						}
+
+						registeredDefiningTypes[definingType] = false;
+					}
+
+					return;
+				}
+
+				registeredDefiningTypes.Add(definingType, true);
+
+				if(!concreteToDefiningTypes.TryGetValue(concreteType, out var addTo))
+				{
+					addTo = new();
+					concreteToDefiningTypes.Add(concreteType, addTo);
+				}
+
+				addTo.Add(definingType);
+			}
+		}
+
+		private GlobalServiceInfo([DisallowNull] Type classWithAttribute, [DisallowNull] ServiceAttribute[] attributes)
 		{
 			this.classWithAttribute = classWithAttribute;
 			this.attributes = attributes;
 			concreteType = GetConcreteType(classWithAttribute, attributes);
 			definingTypes = GetDefiningTypes(concreteType, attributes);
+		}
+
+		internal GlobalServiceInfo([DisallowNull] Type classWithAttribute, [DisallowNull] ServiceAttribute[] attributes, Type concreteType, Type[] definingTypes)
+		{
+			this.classWithAttribute = classWithAttribute;
+			this.attributes = attributes;
+			this.concreteType = concreteType;
+			this.definingTypes = definingTypes;
 		}
 
 		[return: MaybeNull]
@@ -198,11 +366,12 @@ namespace Sisus.Init
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				for(int i = attributes.Length - 1; i >= 0; i--)
 				{
-					if(attributes[i].definingType is Type definingType && !definingType.IsAssignableFrom(classWithAttribute))
+					if(attributes[i].definingType is Type definingType
+						&& !ServiceUtility.IsValidDefiningTypeFor(definingType, classWithAttribute))
 					{
 						string classWithAttributeName = TypeUtility.ToString(classWithAttribute);
 						string definingTypeName = TypeUtility.ToString(definingType);
-						Debug.LogAssertion($"Invalid {nameof(ServiceAttribute)} detected on {classWithAttributeName}. {classWithAttributeName} is not assignable from service defining type {definingTypeName}, and does not implement {nameof(IInitializer)}<{definingTypeName}> or {nameof(IWrapper)}<{definingTypeName}>. Unable to determine concrete type of the service.");
+						Debug.LogAssertion($"Invalid {nameof(ServiceAttribute)} detected on {classWithAttributeName}. {classWithAttributeName} is not assignable to service defining type {definingTypeName}, and does not implement {nameof(IInitializer)}<{definingTypeName}> or {nameof(IWrapper)}<{definingTypeName}>, IServiceInitializer<{definingTypeName}> or IValueProvider<{definingTypeName}>. Unable to determine concrete type of the service.");
 					}
 				}
 				#endif
@@ -344,7 +513,7 @@ namespace Sisus.Init
 				if(!definingType.IsInstanceOfType(instance))
 				{
 					// Needed here?
-					if(!definingType.IsGenericTypeDefinition || instance.GetType() is not Type instanceType || !instanceType.IsGenericType || instanceType.GetGenericTypeDefinition() != definingType)
+					if(!definingType.IsGenericTypeDefinition || instance.GetType() is not { IsGenericType: true } instanceType || instanceType.GetGenericTypeDefinition() != definingType)
 					{
 						return false;
 					}

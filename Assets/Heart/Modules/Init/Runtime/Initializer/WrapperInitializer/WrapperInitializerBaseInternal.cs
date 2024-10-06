@@ -29,7 +29,7 @@ namespace Sisus.Init.Internal
 	/// </summary>
 	/// <typeparam name="TWrapper"> Type of the initialized wrapper component. </typeparam>
 	/// <typeparam name="TWrapped"> Type of the object wrapped by the wrapper. </typeparam>
-	public abstract class WrapperInitializerBaseInternal<TWrapper, TWrapped> : MonoBehaviour, IInitializer<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
+	public abstract class WrapperInitializerBaseInternal<TWrapper, TWrapped> : InitializerBaseInternal, IInitializer<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly<TWrapped>
 		#endif

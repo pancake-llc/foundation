@@ -142,7 +142,7 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TArgument"> Type of the dependency of the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires <typeparamref name="TArgument"/>, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentForAutoInit<TClient, TArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentForAutoInit<TClient, TArgument>([DisallowNull] TClient client, Context context)
 		{
 			var clientType = client.GetType();
 
@@ -150,8 +150,12 @@ namespace Sisus.Init.EditorOnly
 			{
 				// If the client has an initializer attached to it, never have it auto-initialize itself,
 				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
-				if(result && HasInitializer(client))
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
 				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
 					return false;
 				}
 
@@ -186,27 +190,16 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TSecondArgument"> Type of the second argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
-				#if DEV_MODE
-				Debug.Log($"shouldAutoInit cached result for {typeof(TClient).Name}: {result}...");
-				#endif
-
 				// If the client has an initializer attached to it, never have it auto-initialize itself,
 				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
-				if(result && HasInitializer(client))
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
 				{
 					#if DEV_MODE
 					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
@@ -252,20 +245,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TThirdArgument"> Type of the third argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -303,20 +300,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TFourthArgument"> Type of the fourth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -357,20 +358,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TFifthArgument"> Type of the fifth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -413,20 +418,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TSixthArgument"> Type of the sixth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -470,20 +479,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TSeventhArgument"> Type of the seventh argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -530,20 +543,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TEighthArgument"> Type of the eighth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -591,20 +608,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TNinthArgument"> Type of the ninth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -654,20 +675,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TTenthArgument"> Type of the tenth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -719,20 +744,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 
@@ -786,20 +815,24 @@ namespace Sisus.Init.EditorOnly
 		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>([DisallowNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>([DisallowNull] TClient client, Context context)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
 		{
-			// When a client has an initializer attached, the initializer takes over the responsibility
-			// of determining the initialization arguments -  even if the client has the InitInEditModeAttribute.
-			if(HasInitializer(client))
-			{
-				return false;
-			}
-
 			var clientType = client.GetType();
 
 			if(shouldAutoInit.TryGetValue(clientType, out bool result))
 			{
+				// If the client has an initializer attached to it, never have it auto-initialize itself,
+				// even if it has the InitOnReset or InitInEditMode attributes. The initializer will take over that job.
+				if(result && context.IsUnitySafeContext() && HasInitializer(client))
+				{
+					#if DEV_MODE
+					Debug.Log($"Ignoring cached result, because client has an initializer attached to it.");
+					#endif
+
+					return false;
+				}
+
 				return result;
 			}
 

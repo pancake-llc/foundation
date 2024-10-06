@@ -2,12 +2,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Serialization;
-using System.Runtime.CompilerServices;
-
-#if UNITY_EDITOR
-[assembly: InternalsVisibleTo("InitArgs.Editor")]
-[assembly: InternalsVisibleTo("InitArgs.Search")]
-#endif
 
 namespace Sisus.Init.Internal
 {
@@ -85,7 +79,7 @@ namespace Sisus.Init.Internal
 				return false;
 			}
 
-			foreach(var definition in providesServices)
+			foreach(ServiceDefinition definition in providesServices)
 			{
 				if(definition.definingType.Value != typeof(TValue))
 				{
@@ -110,7 +104,7 @@ namespace Sisus.Init.Internal
 				return false;
 			}
 
-			foreach(var definition in providesServices)
+			foreach(ServiceDefinition definition in providesServices)
 			{
 				if(definition.definingType.Value != typeof(TValue))
 				{
@@ -240,7 +234,7 @@ namespace Sisus.Init.Internal
 			{
 				for(int i = 0, count = providesServices.Length; i < count; i++)
 				{
-					if(providesServices[i].service == null)
+					if(!providesServices[i].service)
 					{
 						Debug.LogWarning($"Service #{i} on \"{name}\" is missing.", this);
 					}

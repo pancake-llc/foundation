@@ -40,7 +40,7 @@ namespace Sisus.Init
 		bool ProvidesCustomInitArguments => true;
 
 		/// <summary>
-		/// Gets a value indicating whether or not an object of the given <paramref name="type"/>
+		/// Gets a value indicating whether an object of the given <paramref name="type"/>
 		/// can be assigned to the <see cref="Target"/> property directly,
 		/// or if <paramref name="type"/> implements <see cref="IValueProvider{T}"/>,
 		/// <see cref="IValueByTypeProvider"/> or <see cref="IValueByTypeProviderAsync"/>.
@@ -131,9 +131,6 @@ namespace Sisus.Init
 		/// <returns> The initialized object of type <see cref="TClient"/>. </returns>
 		[return: NotNull]
 		new TClient InitTarget();
-
-		/// <inheritdoc/>
-		public new bool TargetIsAssignableOrConvertibleToType(Type type) => typeof(TClient).IsAssignableFrom(type);
 
 		/// <summary>
 		/// Initializes the client object of type <see cref="TClient"/> asynchronously with the arguments specified by this initializer.

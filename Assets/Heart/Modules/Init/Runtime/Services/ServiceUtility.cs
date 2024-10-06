@@ -38,7 +38,7 @@ namespace Sisus.Init
 		/// (<see cref="EditorServiceAttribute"/> in Edit Mode).
 		/// Services set up in scenes and prefabs using <see cref="ServiceTag"/> and <see cref="Services"/>
 		/// components are not guaranteed to be yet loaded even if this is <see langword="true"/>.
-		/// Services that are registered manually using <see cref="Service.SetInstance"/> are also not
+		/// Services that are registered manually using <see cref="Service.Set{TService}"/> are also not
 		/// guaranteed to be loaded even if this is <see langword="true"/>.
 		/// </para>
 		/// </summary>
@@ -73,7 +73,7 @@ namespace Sisus.Init
 		/// <para>
 		/// Services set up in scenes and prefabs using <see cref="ServiceTag"/> and <see cref="Services"/>
 		/// components are not guaranteed to be yet loaded even if this is <see langword="true"/>.
-		/// Services that are registered manually using <see cref="Service.SetInstance"/> are also not
+		/// Services that are registered manually using <see cref="Service.Set{TService}"/> are also not
 		/// guaranteed to be loaded even if this is <see langword="true"/>.
 		/// </para>
 		/// </summary>
@@ -175,7 +175,7 @@ namespace Sisus.Init
 				getter = new GlobalServiceGetter(definingType);
 				globalServiceGetters.Add(definingType, getter);
 			}
-			
+
 			return getter.TryGet(out service);
 		}
 
@@ -206,7 +206,7 @@ namespace Sisus.Init
 				getter = new ScopedServiceGetter(definingType);
 				scopedServiceGetters.Add(definingType, getter);
 			}
-			
+
 			return getter.TryGetFor(client, out var service) ? service : throw new NullReferenceException($"No service of type {definingType.Name} was found that was accessible to client {(client is null ? "null" : client.GetType().Name)} during context {context}.");
 		}
 
@@ -245,7 +245,7 @@ namespace Sisus.Init
 				getter = new ScopedServiceGetter(definingType);
 				scopedServiceGetters.Add(definingType, getter);
 			}
-			
+
 			return getter.TryGetFor(client, out service);
 		}
 
@@ -256,7 +256,7 @@ namespace Sisus.Init
 				resolver = new IsServiceOrServiceProviderForResolver(definingType);
 				isServiceOrServiceProviderForResolvers.Add(definingType, resolver);
 			}
-			
+
 			return resolver.IsServiceOrServiceProviderFor(client, test);
 		}
 
@@ -269,6 +269,36 @@ namespace Sisus.Init
 			}
 			
 			return resolver.IsServiceOrServiceProvider(test);
+		}
+
+		internal static bool IsValidDefiningTypeFor(Type definingType, Type concreteType)
+		{
+			if(definingType.IsAssignableFrom(concreteType))
+			{
+				return true;
+			}
+
+			if(!concreteType.IsGenericTypeDefinition || !definingType.IsGenericTypeDefinition)
+			{
+				return false;
+			}
+
+			foreach(var interfaceType in concreteType.GetInterfaces())
+			{
+				if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == definingType)
+				{
+					return true;
+				}
+			}
+
+			for(var type = concreteType; type is not null; type = type.BaseType)
+			{
+				if(type.IsGenericType && type.GetGenericTypeDefinition() == definingType)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -328,7 +358,7 @@ namespace Sisus.Init
 				getter = new ServiceClientsGetter(definingType);
 				serviceClientsGetters.Add(definingType, getter);
 			}
-			
+
 			return getter.TryGetFor(null, out clients);
 		}
 
@@ -370,7 +400,7 @@ namespace Sisus.Init
 				serviceSetter = new GlobalServiceSilentSetter(definingType);
 				globalServiceSilentSetters.Add(definingType, serviceSetter);
 			}
-			
+
 			serviceSetter.SetInstanceSilently(instance);
 		}
 
@@ -397,28 +427,30 @@ namespace Sisus.Init
 		#endif
 		public static void SetInstance([DisallowNull] Type definingType, [AllowNull] object instance)
 		{
+			#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
 			Debug.Assert(definingType != null);
 
 			if(instance is not null && !definingType.IsInstanceOfType(instance))
 			{
 				if(definingType.IsInterface)
 				{
-					Debug.LogAssertion($"Invalid Service Definition: Class of the registered instance '{instance.GetType().Name}' does not implement the defining interface type of the service '{definingType.Name}'.");
+					Debug.LogAssertion($"Invalid Service Definition: Class of the registered instance '{TypeUtility.ToString(instance.GetType())}' does not implement the defining interface type of the service '{TypeUtility.ToString(definingType)}'.");
 				}
 				else
 				{
-					Debug.LogAssertion($"Invalid Service Definition: Class of the registered instance '{instance.GetType().Name}' does not derive from the defining type of the service '{definingType.Name}'.");
+					Debug.LogAssertion($"Invalid Service Definition: Class of the registered instance '{TypeUtility.ToString(instance.GetType())}' does not derive from the defining type of the service '{TypeUtility.ToString(definingType)}'.");
 				}
 
 				return;
 			}
+			#endif
 
 			if(!globalServiceSetters.TryGetValue(definingType, out var serviceSetter))
 			{
 				serviceSetter = new GlobalServiceSetter(definingType);
 				globalServiceSetters.Add(definingType, serviceSetter);
 			}
-			
+
 			serviceSetter.SetInstance(instance);
 		}
 
@@ -467,7 +499,7 @@ namespace Sisus.Init
 				adder = new ScopedServiceAdder(definingType);
 				scopedServiceAdders.Add(definingType, adder);
 			}
-			
+
 			adder.AddFor(service, clients, container);
 
 			static bool TryExtractServiceFrom(object provider, Type definingType, Clients clients, Component container, out object result)
@@ -494,8 +526,6 @@ namespace Sisus.Init
 					}
 				}
 
-				// TODO: Register service as Task<T> immediately?
-				// Just ContinueWith to register when ready?
 				if(provider is IValueProviderAsync valueProviderAsync)
 				{
 					var serviceGetter = valueProviderAsync.GetForAsync(container);
@@ -549,7 +579,7 @@ namespace Sisus.Init
 
 				if(provider is IWrapper and Object unityObject)
 				{
-					if(!Application.isPlaying && typeof(IWrapper<>).MakeGenericType(definingType).IsInstanceOfType(provider))
+					if(!Application.isPlaying)
 					{
 						#if DEV_MODE && DEBUG_ENABLED
 						Debug.Log("Can't register wrapper {TypeUtility.ToString(service.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because the wrapper could have an initializer, and this is edit mode");
@@ -644,7 +674,7 @@ namespace Sisus.Init
 					Debug.LogWarning($"Invalid Service Definition: {concreteType.Name} has been configured as a service with the defining type {definingType.Name}, but {concreteType.Name} does not implement {definingType.Name}.");
 					return;
 				}
-				
+
 				Debug.LogWarning($"Invalid Service Definition: {concreteType.Name} has been configured as a service with the defining type {definingType.Name}, but {concreteType.Name} does not derive from {definingType.Name}.");
 			}
 		}
@@ -689,7 +719,7 @@ namespace Sisus.Init
 				remover = new ScopedServiceRemover(definingType);
 				scopedServiceRemovers.Add(definingType, remover);
 			}
-			
+
 			remover.RemoveFrom(service, clients, container);
 		}
 
@@ -705,7 +735,7 @@ namespace Sisus.Init
 		{
 			#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
 			return (!typeof(T).IsValueType && Service<T>.Instance != null)
-					|| ScopedService<T>.ExistsForAnyClients()
+					|| ScopedService<T>.ExistsForAllClients()
 					|| ServiceAttributeUtility.definingTypes.ContainsKey(typeof(T))
 					|| (!ServicesAreReady && EditorServiceInjector.IsServiceDefiningType<T>());
 			#else
@@ -764,7 +794,7 @@ namespace Sisus.Init
 		#if !ENABLE_BURST_AOT && !ENABLE_IL2CPP
 		[System.Diagnostics.Conditional("FALSE")]
 		#endif
-		public static void EnsureAOTPlatformSupportForService<TService>() 
+		public static void EnsureAOTPlatformSupportForService<TService>()
 		{
 			#if (ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT
 			if(Application.isEditor || !Application.isEditor)
@@ -773,9 +803,10 @@ namespace Sisus.Init
 			}
 
 			_ = Service<TService>.Instance;
+			_ = ServiceProvider<TService>.GetValue(null);
 			_ = ScopedService<TService>.Instances;
-			Service.SetInstance<TService>(default);
-			Service.SetInstanceSilently<TService>(default);
+			Service.Set<TService>(default);
+			Service.SetSilently<TService>(default);
 			ServiceChanged<TService>.listeners += (_, _, _) => { };
 			Service.AddFor(Clients.Everywhere, new GameObject().GetComponent<TService>(), new GameObject().GetComponent<Transform>());
 			Service.RemoveFrom(Clients.Everywhere, new GameObject().GetComponent<TService>(), new GameObject().GetComponent<Transform>());

@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Sisus.Init.Internal;
 using Sisus.Init.Serialization;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 using static Sisus.NullExtensions;
@@ -24,7 +25,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			public TypeDropdownButton definingTypeButton;
 		}
 
-		private const float asLabelWidth = 25f;
+		private const float AsLabelWidth = 25f;
 
 		private static readonly string definingTypeTooltip = "The defining type for the service, which can be used to retrieve the service.\n\nThis must be an interface that {0} implements, a base type that the it derives from, or its exact type.";
 		private static readonly GUIContent asLabel = new(" as ");
@@ -45,7 +46,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			var serviceRect = position;
 			bool hasValue = state.serviceProperty.objectReferenceValue;
-			float controlWidth = hasValue ? (position.width - asLabelWidth) * 0.5f : position.width;
+			float controlWidth = hasValue ? (position.width - AsLabelWidth) * 0.5f : position.width;
 			serviceRect.width = controlWidth;
 
 			EditorGUI.BeginChangeCheck();
@@ -76,10 +77,10 @@ namespace Sisus.Init.EditorOnly.Internal
 						states.Remove(serviceDefinitionProperty.propertyPath);
 					});
 
-					HashSet<string> addedItems = new HashSet<string>() { "GameObject" };
+					var addedItems = new HashSet<string>() { "GameObject" };
 
-                    for(int i = 0, count = components.Count; i < count; i++)
-                    {
+					for(int i = 0, count = components.Count; i < count; i++)
+					{
 						var component = components[i];
 						if(!component)
                         {
@@ -154,11 +155,11 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			var asLabelRect = serviceRect;
 			asLabelRect.x += serviceRect.width;
-			asLabelRect.width = asLabelWidth;
+			asLabelRect.width = AsLabelWidth;
 			GUI.Label(asLabelRect, asLabel);
 
 			var dropdownRect = asLabelRect;
-			dropdownRect.x += asLabelWidth;
+			dropdownRect.x += AsLabelWidth;
 			dropdownRect.width = controlWidth;
 
 			bool showMixedValueWas = EditorGUI.showMixedValue;
@@ -340,7 +341,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			return results;
 		}
-		
+
 		private static void AddIfDoesNotContain(List<Type> addToList, Type wrappedValueType)
 		{
 			if(!addToList.Contains(wrappedValueType))
@@ -369,13 +370,13 @@ namespace Sisus.Init.EditorOnly.Internal
 				AddIfDoesNotContain(addToList, derivedType);
 			}
 		}
-		
+
 		private static void AddInterfaces(List<Type> addToList, Type type)
 		{
 			addToList.AddRange(type.GetInterfaces().Where(ShouldNotIgnoreInterface));
 
 			static bool ShouldNotIgnoreInterface(Type type) => !ShouldIgnoreInterface(type);
-			
+
 			static bool ShouldIgnoreInterface(Type type) => type == typeof(ISerializationCallbackReceiver)
 			|| type == typeof(IOneArgument) || type == typeof(ITwoArguments) || type == typeof(IThreeArguments) || type == typeof(IFourArguments) || type == typeof(IFiveArguments) || type == typeof(ISixArguments)
 			|| type == typeof(IWrapper)

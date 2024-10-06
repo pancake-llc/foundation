@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Sisus.Init.Internal;
+﻿using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 
