@@ -824,7 +824,7 @@ PlayerSettings:
     WebGL: TextMeshPro;PANCAKE_ADVERTISING
     Windows Store Apps: PANCAKE_ADVERTISING
     XboxOne: TextMeshPro;PANCAKE_ADVERTISING
-    iPhone: TextMeshPro;PANCAKE_ADVERTISING
+    iPhone: TextMeshPro;PANCAKE_ADVERTISING;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;ODIN_INSPECTOR_3_2;ODIN_INSPECTOR_3_3
     tvOS: TextMeshPro;PANCAKE_ADVERTISING
   additionalCompilerArguments: {}
   platformArchitecture: {}

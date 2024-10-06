@@ -29,12 +29,12 @@ namespace Sisus.Init
 		: CustomInitializerBase<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 			where TClient : Component
 	{
-		[SerializeField] private Any<TFirstArgument> firstArgument = default;
-		[SerializeField] private Any<TSecondArgument> secondArgument = default;
-		[SerializeField] private Any<TThirdArgument> thirdArgument = default;
-		[SerializeField] private Any<TFourthArgument> fourthArgument = default;
-		[SerializeField] private Any<TFifthArgument> fifthArgument = default;
-		[SerializeField] private Any<TSixthArgument> sixthArgument = default;
+		[SerializeField] private protected Any<TFirstArgument> firstArgument = default;
+		[SerializeField] private protected Any<TSecondArgument> secondArgument = default;
+		[SerializeField] private protected Any<TThirdArgument> thirdArgument = default;
+		[SerializeField] private protected Any<TFourthArgument> fourthArgument = default;
+		[SerializeField] private protected Any<TFifthArgument> fifthArgument = default;
+		[SerializeField] private protected Any<TSixthArgument> sixthArgument = default;
 
 		[SerializeField, HideInInspector] private Arguments disposeArgumentsOnDestroy = Arguments.None;
 		[SerializeField, HideInInspector] private Arguments asyncValueProviderArguments = Arguments.None;

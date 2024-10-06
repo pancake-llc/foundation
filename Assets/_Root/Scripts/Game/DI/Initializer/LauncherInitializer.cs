@@ -6,6 +6,7 @@ namespace Pancake.Game
 	/// <summary>
 	/// Initializer for the <see cref="Launcher"/> component.
 	/// </summary>
+	[EditorIcon("icon_initializer")]
 	internal sealed class LauncherInitializer : Initializer<Launcher, ILoading>
 	{
 		#if UNITY_EDITOR

@@ -6,6 +6,7 @@ namespace Pancake.Game
 	/// <summary>
 	/// Initializer for the <see cref="Collectable"/> component.
 	/// </summary>
+	[EditorIcon("icon_initializer")]
 	internal sealed class CollectableInitializer : Initializer<Collectable, IEventTrigger>
 	{
 		#if UNITY_EDITOR

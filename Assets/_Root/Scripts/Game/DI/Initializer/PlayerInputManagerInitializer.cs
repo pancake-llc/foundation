@@ -6,6 +6,7 @@ namespace Pancake.Game
 	/// <summary>
 	/// Initializer for the <see cref="PlayerInputManager"/> component.
 	/// </summary>
+	[EditorIcon("icon_initializer")]
 	internal sealed class PlayerInputManagerInitializer : Initializer<PlayerInputManager, IJoystick, MoveInputChangedEvent>
 	{
 		#if UNITY_EDITOR

@@ -161,7 +161,7 @@ namespace Pancake.SafeArea
             };
         }
 
-        [Button, DisableIf(nameof(Application.isPlaying))]
+        [Button, DisableInEditorMode]
         private void ForceUpdateRect()
         {
             UpdateRect();

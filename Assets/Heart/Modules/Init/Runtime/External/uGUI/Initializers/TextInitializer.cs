@@ -1,3 +1,4 @@
+#if UNITY_UGUI
 using Pancake.Localization;
 using TMPro;
 using UnityEngine;
@@ -69,3 +70,4 @@ namespace Sisus.Init.Internal.TMPro
         }
     }
 }
+#endif

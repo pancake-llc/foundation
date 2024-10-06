@@ -6,6 +6,7 @@ namespace Pancake.Game
 	/// <summary>
 	/// Initializer for the <see cref="Moveable"/> component.
 	/// </summary>
+	[EditorIcon("icon_initializer")]
 	internal sealed class MoveableInitializer : Initializer<Moveable, IPlayerStat, ITimeProvider>
 	{
 		#if UNITY_EDITOR
