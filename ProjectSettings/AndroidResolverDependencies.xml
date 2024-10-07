@@ -1,9 +1,7 @@
 <dependencies>
   <packages>
-    <package>androidx.constraintlayout:constraintlayout:2.1.4</package>
-    <package>androidx.lifecycle:lifecycle-process:2.7.0</package>
-    <package>com.google.android.gms:play-services-ads:23.0.0</package>
-    <package>com.google.android.ump:user-messaging-platform:2.2.0</package>
+    <package>com.adjust.sdk:adjust-android:5.0.0</package>
+    <package>com.android.installreferrer:installreferrer:2.2</package>
   </packages>
   <files />
   <settings>

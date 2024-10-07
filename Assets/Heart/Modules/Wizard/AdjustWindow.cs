@@ -59,7 +59,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Adjust Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.adjust.sdk", "https://github.com/pancake-llc/adjust.git?path=Assets/Adjust#5.0.3");
+                RegistryManager.Add("com.adjust.sdk", "https://github.com/adjust/unity_sdk.git?path=Assets/Adjust#v5.0.3");
                 RegistryManager.Resolve();
             }
 
