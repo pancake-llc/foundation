@@ -33,11 +33,11 @@
       "hash": "7c0f199fe0d3fc528024488ccd671e6c7b27745b"
     },
     "com.google.external-dependency-manager": {
-      "version": "https://github.com/google-unity/external-dependency-manager.git#1.2.179",
+      "version": "https://github.com/google-unity/external-dependency-manager.git#1.2.183",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "66fd0c1b84d72ec9ac32e2eece65f2630b4b262e"
+      "hash": "d5ff67d7b8fe2aea1ae801aaba2d6f2dbad39917"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
