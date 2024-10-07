@@ -34,14 +34,12 @@ namespace Pancake.Monetization
         [SerializeField] private ApplovinReward applovinReward = new();
         [SerializeField] private ApplovinRewardInter applovinRewardInter = new();
         [SerializeField] private ApplovinAppOpen applovinAppOpen = new();
-        [SerializeField] private bool applovinEnableAgeRestrictedUser;
 
         public static AdUnit ApplovinBanner => Instance.applovinBanner;
         public static AdUnit ApplovinInter => Instance.applovinInter;
         public static AdUnit ApplovinReward => Instance.applovinReward;
         public static AdUnit ApplovinRewardInter => Instance.applovinRewardInter;
         public static AdUnit ApplovinAppOpen => Instance.applovinAppOpen;
-        public static bool ApplovinEnableAgeRestrictedUser => Instance.applovinEnableAgeRestrictedUser;
         public static float AdCheckingInterval => Instance.adCheckingInterval;
         public static float AdLoadingInterval => Instance.adLoadingInterval;
         public static EAdNetwork CurrentNetwork { get => Instance.currentNetwork; set => Instance.currentNetwork = value; }

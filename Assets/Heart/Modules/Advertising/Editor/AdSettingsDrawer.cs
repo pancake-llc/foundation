@@ -29,7 +29,6 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _applovinRewardProperty;
         private SerializedProperty _applovinRewardInterProperty;
         private SerializedProperty _applovinAppOpenProperty;
-        private SerializedProperty _applovinEnableAgeRestrictedUserProperty;
 
 
         private void Init()
@@ -52,7 +51,6 @@ namespace Pancake.MonetizationEditor
             _applovinRewardProperty = serializedObject.FindProperty("applovinReward");
             _applovinRewardInterProperty = serializedObject.FindProperty("applovinRewardInter");
             _applovinAppOpenProperty = serializedObject.FindProperty("applovinAppOpen");
-            _applovinEnableAgeRestrictedUserProperty = serializedObject.FindProperty("applovinEnableAgeRestrictedUser");
         }
 
 
@@ -298,7 +296,6 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.PropertyField(_applovinEnableAgeRestrictedUserProperty, new GUIContent("Age Restricted"));
                 EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
                 EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
                 EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
@@ -312,11 +309,11 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
                 bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
-                var contentInstallLabel = "Install Applovin v6.6.1 (1)";
+                var contentInstallLabel = "Install Applovin v7.0.0 (1)";
                 if (applovinInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Applovin SDK v6.6.1 Installed (1)";
+                    contentInstallLabel = "Applovin SDK v7.0.0 Installed (1)";
                 }
                 else
                 {
