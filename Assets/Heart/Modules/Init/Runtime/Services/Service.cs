@@ -516,7 +516,7 @@ namespace Sisus.Init
 
 			if(!typeof(TService).IsValueType)
 			{
-				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
+				#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
 				if(ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo) && EditorOnly.ThreadSafe.Application.IsPlaying)
 				{
 					_ = ServiceInjector.LazyInit(serviceInfo, typeof(TService));

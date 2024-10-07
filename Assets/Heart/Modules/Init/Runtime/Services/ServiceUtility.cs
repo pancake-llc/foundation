@@ -739,7 +739,7 @@ namespace Sisus.Init
 					|| ServiceAttributeUtility.definingTypes.ContainsKey(typeof(T))
 					|| (!ServicesAreReady && EditorServiceInjector.IsServiceDefiningType<T>());
 			#else
-			return (!typeof(T).IsValueType && Service<T>.Instance != null) || ScopedService<T>.ExistsForAnyClients();
+			return (!typeof(T).IsValueType && Service<T>.Instance != null) || ScopedService<T>.ExistsForAllClients();
 			#endif
 		}
 

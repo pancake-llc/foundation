@@ -576,6 +576,8 @@ namespace Sisus.Init.Internal
 
 			#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
 			throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.UnresolveableConcreteType);
+			#else
+			return null;
 			#endif
 		}
 
