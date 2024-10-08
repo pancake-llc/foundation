@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Runtime.CompilerServices;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Search;
 using Component = UnityEngine.Component;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -16,32 +18,32 @@ namespace Sisus.Init.Internal
 		#endif
 	{
 		[SerializeField, HideInInspector]
-		private Id guid = default;
+		private Id guid;
 
 		[SerializeField]
-		internal bool isCrossScene = false;
+		internal bool isCrossScene;
 
 		#if DEBUG || INIT_ARGS_SAFE_MODE // To make this persist through builds, could store in a separate ScriptableObject asset instead? Or just take the hit in increased build size.
 		#pragma warning disable CS0414
+		[SerializeField, SearchContext("", SearchViewFlags.TableView | SearchViewFlags.Borderless)]
+		private Object target;
 		[SerializeField]
-		private Object target = null;
+		private string targetName;
 		[SerializeField]
-		private string targetName = null;
+		private string globalObjectIdSlow;
 		[SerializeField]
-		private string globalObjectIdSlow = null;
+		private string sceneName;
 		[SerializeField]
-		private string sceneName = null;
+		private string sceneOrAssetGuid;
 		[SerializeField]
-		private string sceneOrAssetGuid = null;
-		[SerializeField]
-		private Texture icon = null;
+		private Texture icon;
 		#pragma warning restore CS0414
 		#endif
 
 		#if UNITY_EDITOR
 		#pragma warning disable CS0414
 		[SerializeField]
-		private SceneAsset sceneAsset = null;
+		private SceneAsset sceneAsset;
 		#pragma warning restore CS0414
 		#endif
 
@@ -107,13 +109,13 @@ namespace Sisus.Init.Internal
 			sceneAsset = default;
 			#endif
 
-			if(value == null)
+			if(!value)
 			{
 				return;
 			}
 
 			GameObject targetGameObject = GetGameObject(value);
-			if(targetGameObject == null)
+			if(!targetGameObject)
 			{
 				return;
 			}
@@ -144,13 +146,13 @@ namespace Sisus.Init.Internal
 
 			guid = refTag.guid;
 			isCrossScene = containingObject.scene != targetGameObject.scene;
-			
+
 			#if UNITY_EDITOR
 			sceneName = targetGameObject.scene.IsValid() ? targetGameObject.scene.name : "";
-			sceneOrAssetGuid = targetScene.IsValid() ? AssetDatabase.AssetPathToGUID(targetScene.path) : "";
+			sceneOrAssetGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetOrScenePath(targetGameObject));
 			#endif
 
-			static GameObject GetGameObject(object target) => target is Component component && component != null ? component.gameObject : target as GameObject;
+			static GameObject GetGameObject(object target) => target is Component component && component ? component.gameObject : target as GameObject;
 		}
 
 		public bool TryGetFor<TValue>(Component client, out TValue value)
@@ -158,7 +160,7 @@ namespace Sisus.Init.Internal
 			#if UNITY_EDITOR
 			target = RefTag.GetInstance(guid);
 			
-			if(target == null)
+			if(!target)
 			{
 				#if UNITY_EDITOR
 				if(EditorOnly.ThreadSafe.Application.IsPlaying
@@ -175,7 +177,7 @@ namespace Sisus.Init.Internal
 				target = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
 				#endif
 
-				if(target == null)
+				if(!target)
 				{
 					value = default;
 					return false;
@@ -215,7 +217,16 @@ namespace Sisus.Init.Internal
 			#endif
 		}
 
-		bool IValueByTypeProvider.CanProvideValue<TValue>(Component client) => guid != Id.Empty && Find.typesToFindableTypes.ContainsKey(typeof(TValue)) || typeof(TValue) == typeof(GameObject);
+		public static bool Detect(Object owner, Object reference)
+		{
+			var referenceScene = GetScene(reference);
+			return referenceScene.IsValid() && GetScene(owner) != referenceScene;
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			static Scene GetScene(Object target) => target is Component component && component ? component.gameObject.scene : target is GameObject gameObject && gameObject ? gameObject.scene : default;
+		}
+
+		bool IValueByTypeProvider.CanProvideValue<TValue>(Component client) => guid != Id.Empty && (Find.typesToFindableTypes.ContainsKey(typeof(TValue)) || typeof(TValue) == typeof(GameObject));
 
 		#if UNITY_EDITOR
 		void ISerializationCallbackReceiver.OnAfterDeserialize() { }

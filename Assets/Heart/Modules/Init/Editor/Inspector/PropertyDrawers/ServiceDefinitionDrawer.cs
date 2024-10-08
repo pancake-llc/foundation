@@ -73,8 +73,10 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						Undo.RecordObjects(state.serviceProperty.serializedObject.targetObjects, "Set Service");
 						state.serviceProperty.objectReferenceValue = gameObject;
+						state.definingTypeProperty.SetValue(new _Type(typeof(GameObject)));
 						state.serviceProperty.serializedObject.ApplyModifiedProperties();
 						states.Remove(serviceDefinitionProperty.propertyPath);
+						serviceDefinitionProperty.serializedObject.Update();
 					});
 
 					var addedItems = new HashSet<string>() { "GameObject" };
@@ -106,14 +108,13 @@ namespace Sisus.Init.EditorOnly.Internal
 							Undo.RecordObjects(state.serviceProperty.serializedObject.targetObjects, "Set Service");
 							state.serviceProperty.objectReferenceValue = component;
 							state.serviceProperty.serializedObject.ApplyModifiedProperties();
+							state.definingTypeProperty.SetValue(new _Type(component.GetType()));
 							states.Remove(serviceDefinitionProperty.propertyPath);
+							serviceDefinitionProperty.serializedObject.Update();
 						});
 					}
 
-					var openMenuBelowRect = GUILayoutUtility.GetLastRect();
-					openMenuBelowRect.x += 100f;
-					openMenuBelowRect.y += 105f;
-					menu.DropDown(openMenuBelowRect);
+					menu.DropDown(serviceRect);
 				}
 				// If a user tries to register a class by dragging its script to the services component,
 				// inform the user that this is not supported.
@@ -203,7 +204,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					GUI.changed = true;
 				},
 				"Service Defining Type",
-				type => (TypeUtility.ToStringNicified(type), null)
+				type => (type is null ? "Null" : TypeUtility.ToStringNicified(type), null)
 			);
 		}
 

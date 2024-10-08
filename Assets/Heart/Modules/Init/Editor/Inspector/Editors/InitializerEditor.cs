@@ -18,22 +18,21 @@ namespace Sisus.Init.EditorOnly
 	{
 		protected internal const string InitArgumentMetadataClassName = InitializerUtility.InitArgumentMetadataClassName;
 
-		private static readonly Dictionary<int, string[]> fieldsToExcludeByArgumentCount = new(14)
+		private static readonly Dictionary<int, string[]> fieldsToExcludeByArgumentCount = new(13)
 		{
 			{ 0, new[] { "m_Script" } },
 			{ 1, new[] { "m_Script", "argument" } },
-			{ 2, new[] { "m_Script", "argument", "firstArgument" } },
-			{ 3, new[] { "m_Script", "argument", "firstArgument", "secondArgument" } },
-			{ 4, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument" } },
-			{ 5, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument" } },
-			{ 6, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument" } },
-			{ 7, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument" } },
-			{ 8, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument" } },
-			{ 9, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument" } },
-			{ 10, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument" } },
-			{ 11, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument"} },
-			{ 12, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument" } },
-			{ 13, new[] { "m_Script", "argument", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument", "twelfthArgument" } }
+			{ 2, new[] { "m_Script", "firstArgument", "secondArgument" } },
+			{ 3, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument" } },
+			{ 4, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument" } },
+			{ 5, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument" } },
+			{ 6, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument" } },
+			{ 7, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument" } },
+			{ 8, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument" } },
+			{ 9, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument" } },
+			{ 10, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument" } },
+			{ 11, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument" } },
+			{ 12, new[] { "m_Script", "firstArgument", "secondArgument", "thirdArgument", "fourthArgument", "fifthArgument", "sixthArgument", "seventhArgument", "eighthArgument", "ninthArgument", "tenthArgument", "eleventhArgument", "twelfthArgument" } }
 		};
 
 		private bool setupDone;
@@ -226,7 +225,7 @@ namespace Sisus.Init.EditorOnly
 				parameterGUIs[i].DrawArgumentField(IsNullAllowed, ServicesShown);
 			}
 
-			Editor.DrawPropertiesExcluding(serializedObject, fieldsToExcludeByArgumentCount[parameterGUIs.Length + 1]);
+			Editor.DrawPropertiesExcluding(serializedObject, fieldsToExcludeByArgumentCount[parameterGUIs.Length]);
 		}
 
 		private void OnDisable()

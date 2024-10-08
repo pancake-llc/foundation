@@ -1,10 +1,11 @@
-﻿#define SHOW_REF_TAGS_IN_INSPECTOR
+﻿//#define SHOW_REF_TAGS_IN_INSPECTOR
 
 using System.Collections.Generic;
 using UnityEngine;
 using Id = Sisus.Init.Internal.Id;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
+using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
@@ -50,7 +51,7 @@ namespace Sisus.Init
 			this.target = target;
 
 			#if UNITY_EDITOR
-			if(target == null)
+			if(!target)
 			{
 				scene = null;
 				globalObjectIdSlow = null;
@@ -103,7 +104,6 @@ namespace Sisus.Init
 					{
 						clones = new List<Object>();
 						activeClones[guid] = clones;
-						activeClones.Add(Guid, clones);
 					}
 
 					clones.Add(target);
@@ -146,7 +146,7 @@ namespace Sisus.Init
 		}
 
 		#if UNITY_EDITOR
-		private bool IsPrefabAssetOrOpenInPrefabStage() => PrefabUtility.IsPartOfPrefabAsset(this) || PrefabStageUtility.GetPrefabStage(gameObject) != null;
+		private bool IsPrefabAssetOrOpenInPrefabStage() => PrefabUtility.IsPartOfPrefabAsset(this) || PrefabStageUtility.GetPrefabStage(gameObject);
 		#endif
 
 		private void Deregister()
@@ -182,21 +182,30 @@ namespace Sisus.Init
 			#endif
 		}
 		
-		private void OnValidate()
+		private async void OnValidate()
 		{
-			#if DEV_MODE && SHOW_REF_TAGS_IN_INSPECTOR
-			hideFlags = HideFlags.None;
-			#endif
+			await Until.UnitySafeContext();
+
+			if(!this)
+			{
+				return;
+			}
 
 			if(!TargetExistsOnSameGameObject())
 			{
-				#if DEV_MODE
-				Debug.LogWarning($"Cross-scene reference target of '{name}' exist on another GameObject '{(target == null ? "null" : target.name)}'. Destroying RefTag...", target);
+				#if DEV_MODE && UNITY_EDITOR
+				Debug.LogWarning($"Cross-scene reference target of '{AssetDatabase.GetAssetOrScenePath(this)}/{name}' exist on another GameObject '{AssetDatabase.GetAssetOrScenePath(this)}/{(target ? target.name : "null")}'. Destroying RefTag...", target);
 				#endif
 
-				DestroySelfDelayed();
+				DestroySelf();
 				return;
 			}
+
+			#if DEV_MODE && SHOW_REF_TAGS_IN_INSPECTOR
+			hideFlags = HideFlags.None;
+			#else
+			hideFlags = HideFlags.HideInInspector;
+			#endif
 
 			bool dirty = false;
 
@@ -229,13 +238,17 @@ namespace Sisus.Init
 			if(!setGlobalObjectIdSlow.Equals(globalObjectIdSlow))
 			{
 				#if DEV_MODE
-				if(isPrefab)
+				if(!target)
 				{
-					Debug.LogWarning($"GlobalObjectId of '{AssetDatabase.GetAssetOrScenePath(target)}' has changed from {globalObjectIdSlow} to {setGlobalObjectIdSlow}. GameObject has potentially been duplicated. Updating Id...", this);
+					Debug.LogWarning($"GlobalObjectId of {target.GetType().Name} on game object '{name}' in '{AssetDatabase.GetAssetOrScenePath(target)}' has changed from {globalObjectIdSlow} to {setGlobalObjectIdSlow}. GameObject has potentially been duplicated. Updating Id...", this);
+				}
+				else if(!scene)
+				{
+					Debug.LogWarning($"GlobalObjectId of target on game object '{name}' in scene '{scene}' has changed from {globalObjectIdSlow} to {setGlobalObjectIdSlow}. GameObject has potentially been duplicated. Updating Id...", this);
 				}
 				else
 				{
-					Debug.LogWarning($"GlobalObjectId of '{name}' in scene '{scene.name}' has changed from {globalObjectIdSlow} to {setGlobalObjectIdSlow}. GameObject has potentially been duplicated. Updating Id...", this);
+					Debug.LogWarning($"GlobalObjectId of '{name}' in scene '{guid}' has changed from {globalObjectIdSlow} to {setGlobalObjectIdSlow}. GameObject has potentially been duplicated. Updating Id...", this);
 				}
 				#endif
 
@@ -273,6 +286,18 @@ namespace Sisus.Init
 			}
 
 			Register();
+
+			void DestroySelf()
+			{
+				if(Application.isPlaying)
+				{
+					Destroy(this);
+				}
+				else
+				{
+					DestroyImmediate(this);
+				}
+			}
 		}
 
 		private bool HasValidId()
@@ -325,34 +350,6 @@ namespace Sisus.Init
 
 			// Prefab instances can share their id with a prefab asset and an object being edited in prefab stage.
 			return otherIsPrefabAsset || otherIsOpenInPrefabStage;
-		}
-
-		private void DestroySelfDelayed()
-		{
-			EditorApplication.delayCall += DestroySelf;
-
-			void DestroySelf()
-			{
-				if(!this)
-				{
-					return;
-				}
-
-				if(target != null)
-				{
-					OnValidate();
-					return;
-				}
-
-				if(Application.isPlaying)
-				{
-					Destroy(this);
-				}
-				else
-				{
-					DestroyImmediate(this);
-				}
-			}
 		}
 
 		private void GenerateNewId() => guid = Id.NewId();

@@ -38,7 +38,7 @@ namespace Sisus.Init.Internal
 	/// </description></item>
 	/// <item><term> In All Scenes </term>
 	/// <description>
-	/// All clients beloning to any scene have access to the services in the <see cref="Services"/> component.
+	/// All clients belonging to any scene have access to the services in the <see cref="Services"/> component.
 	/// <para>
 	/// Clients that don't belong to any scene, such as <see cref="UnityEngine.ScriptableObject">ScriptableObjects</see>
 	/// and plain old classes that are not attached to a <see cref="UnityEngine.GameObject"/> via a <see cref="Wrapper{}"/> component,
@@ -166,8 +166,8 @@ namespace Sisus.Init.Internal
 
 		internal virtual bool AreAvailableToClient([DisallowNull] GameObject client)
 		{
-			Debug.Assert(client != null);
-			Debug.Assert(this != null);
+			Debug.Assert(client);
+			Debug.Assert(this);
 
 			switch(toClients)
 			{

@@ -1,13 +1,13 @@
-﻿#define DEBUG_DISPOSE
+﻿//#define DEBUG_DISPOSE
 
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Sisus.Init.Internal;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditor.Presets;
 using UnityEditorInternal;
@@ -422,22 +422,64 @@ namespace Sisus.Init.EditorOnly.Internal
 			ToggleNullArgumentGuardFlag(initializableScript, initializableType, flag);
 		}
 
-		private static void SetNullArgumentGuardFlags([DisallowNull]Object[] targets, NullArgumentGuard value)
+		private void SetNullArgumentGuardFlags(NullArgumentGuard value)
 		{
 			bool alltargetsHandled = true;
 
-			foreach(Object target in targets)
+			if(Target is IInitializer)
 			{
-				if(target is MonoBehaviour monoBehaviour
-					&& InitializerUtility.TryGetInitializer(monoBehaviour, out IInitializer initializer)
-					&& initializer is IInitializerEditorOnly initializerEditorOnly)
+				if(ownerSerializedObject.FindProperty("nullArgumentGuard") is { } nullArgumentGuardProperty)
 				{
-					Undo.RecordObject(target, "Set Null Argument Guard");
-					initializerEditorOnly.NullArgumentGuard = value;
-					continue;
+					nullArgumentGuardProperty.intValue = (int)value;
+					ownerSerializedObject.ApplyModifiedProperties();
 				}
+				else
+				{
+					Undo.RecordObjects(targets, "Set Null Argument Guard");
 
-				alltargetsHandled = false;
+					foreach(Object target in targets)
+					{
+						if (target is not IInitializerEditorOnly initializerEditorOnly)
+						{
+							alltargetsHandled = false;
+							continue;
+						}
+
+						initializerEditorOnly.NullArgumentGuard = value;
+					}
+
+					ownerSerializedObject.Update();
+					ownerSerializedObject.ApplyModifiedProperties();
+				}
+			}
+			else
+			{
+				var initializers = targets.Select(t => t is MonoBehaviour monoBehaviour && InitializerUtility.TryGetInitializer(monoBehaviour, out IInitializer initializer) ? initializer as Object : null).Where(i => i).ToArray();
+				//bool done = false;
+				using var tempSerializedObject = new SerializedObject(initializers);
+				if(tempSerializedObject.FindProperty("nullArgumentGuard") is { } nullArgumentGuardProperty)
+				{
+					nullArgumentGuardProperty.enumValueIndex = (int)value;
+					tempSerializedObject.ApplyModifiedProperties();
+				}
+				else
+				{
+					Undo.RecordObjects(initializers, "Set Null Argument Guard");
+
+					foreach(Object initializer in initializers)
+					{
+						if (initializer is not IInitializerEditorOnly initializerEditorOnly)
+						{
+							alltargetsHandled = false;
+							continue;
+						}
+
+						initializerEditorOnly.NullArgumentGuard = value;
+					}
+
+					tempSerializedObject.Update();
+					tempSerializedObject.ApplyModifiedProperties();
+				}
 			}
 
 			if(alltargetsHandled)
@@ -1123,7 +1165,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 			finally
 			{
-				ownerSerializedObject.ApplyModifiedProperties();
+				if(ownerSerializedObject.IsValid())
+				{
+					ownerSerializedObject.ApplyModifiedProperties();
+				}
+
 				EditorGUIUtility.hierarchyMode = hierarchyModeWas;
 				NowDrawing = null;
 
@@ -1519,8 +1565,8 @@ namespace Sisus.Init.EditorOnly.Internal
 					return;
 			}
 
-			void Set(NullArgumentGuard flags) => SetNullArgumentGuardFlags(targets, flags);
-			void Toggle(NullArgumentGuard flag) => SetNullArgumentGuardFlags(targets, nullGuard.WithFlagToggled(flag));
+			void Set(NullArgumentGuard flags) => SetNullArgumentGuardFlags(flags);
+			void Toggle(NullArgumentGuard flag) => SetNullArgumentGuardFlags(nullGuard.WithFlagToggled(flag));
 
 			menu.DropDown(nullGuardIconRect);
 		}

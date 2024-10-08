@@ -574,11 +574,7 @@ namespace Sisus.Init.Internal
 				}
 			}
 
-			#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
 			throw ServiceInitFailedException.Create(serviceInfo, ServiceInitFailReason.UnresolveableConcreteType);
-			#else
-			return null;
-			#endif
 		}
 
 		private static async Task<object> GetOrInitializeService(GlobalServiceInfo serviceInfo, HashSet<Type> initialized, [DisallowNull] Dictionary<Type, ScopedServiceInfo> servicesInScene, [DisallowNull] List<IInitializer> initializersInScene, [AllowNull] Type overrideConcreteType)
@@ -1294,6 +1290,7 @@ namespace Sisus.Init.Internal
 			}
 		}
 
+		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
 		private static async Task<Object> LoadAddressableAsset(string addressableKey, GlobalServiceInfo serviceInfo)
 		{
 			var asyncOperation = Addressables.LoadAssetAsync<Object>(addressableKey);
@@ -1317,7 +1314,9 @@ namespace Sisus.Init.Internal
 
 			return asset;
 		}
+		#endif
 
+		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
 		private static async Task<object> InitializeAddressableAsset(string addressableKey, GlobalServiceInfo serviceInfo, HashSet<Type> initialized, Dictionary<Type, ScopedServiceInfo> servicesInScene, List<IInitializer> initializersInScene)
 		{
 			var asset = await LoadAddressableAsset(addressableKey, serviceInfo);
@@ -1398,6 +1397,7 @@ namespace Sisus.Init.Internal
 
 			return asset;
 		}
+		#endif
 
 		private static Exception CreateAggregateException(Exception exiting, Exception addition)
 		{

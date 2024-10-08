@@ -1,6 +1,7 @@
-﻿#define DEBUG_ENABLED
+﻿//#define DEBUG_ENABLED
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Sisus.Shared.EditorOnly;
@@ -11,18 +12,37 @@ using static Sisus.Shared.EditorOnly.InspectorContents;
 namespace Sisus.Init.EditorOnly.Internal
 {
 	[InitializeOnLoad]
-	internal static class InitializableEditorDecoratorInjector
+	internal static class EditorDecoratorInjector
 	{
 		private static readonly Assembly sisusEditorAssembly = typeof(InitializableEditorDecorator).Assembly;
+		private static readonly List<EditorDecorator> activeDecorators = new();
 
-		static InitializableEditorDecoratorInjector()
+		static EditorDecoratorInjector()
 		{
 			Editor.finishedDefaultHeaderGUI -= AfterInspectorRootEditorHeaderGUI;
 			Editor.finishedDefaultHeaderGUI += AfterInspectorRootEditorHeaderGUI;
+			AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
+			AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+		}
+
+		private static void OnBeforeAssemblyReload()
+		{
+			// Dispose all decorators to avoid memory leaks.
+			for(int i = activeDecorators.Count - 1; i >= 0; i--)
+			{
+				activeDecorators[i].Dispose();
+			}
+
+			activeDecorators.Clear();
 		}
 
 		private static void AfterInspectorRootEditorHeaderGUI(Editor rootEditor)
 		{
+			if(EditorApplication.isCompiling)
+			{
+				return;
+			}
+
 			if(Event.current.type != EventType.Repaint)
 			{
 				rootEditor.Repaint();
@@ -43,6 +63,16 @@ namespace Sisus.Init.EditorOnly.Internal
 					continue;
 				}
 
+				// Dispose decorators that are no longer being used.
+				for(int i = activeDecorators.Count - 1; i >= 0; i--)
+				{
+					if(activeDecorators[i].panel is null)
+					{
+						activeDecorators[i].Dispose();
+						activeDecorators.RemoveAt(i);
+					}
+				}
+
 				for(int i = inspectorElement.childCount - 1; i >= 0; i--)
 				{
 					if(inspectorElement[i] is not EditorDecorator decorator)
@@ -61,10 +91,14 @@ namespace Sisus.Init.EditorOnly.Internal
 					#endif
 
 					inspectorElement.RemoveAt(i);
+					activeDecorators.Remove(decorator);
+					decorator.Dispose();
 				}
 
 				if(EditorDecorator.CreateBeforeInspectorGUI(editorWrapperType, editor, out var beforeInspectorGUI))
 				{
+					activeDecorators.Add(beforeInspectorGUI);
+
 					#if DEV_MODE && DEBUG_ENABLED
 					Debug.Log($"Injecting {editorWrapperType.Name}.{nameof(EditorDecorator.OnBeforeInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
 					#endif
@@ -75,6 +109,8 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(EditorDecorator.CreateAfterInspectorGUI(editorWrapperType, editor, out var afterInspectorGUI))
 				{
+					activeDecorators.Add(afterInspectorGUI);
+
 					#if DEV_MODE && DEBUG_ENABLED
 					Debug.Log($"Injecting {editorWrapperType.Name}.{nameof(EditorDecorator.OnAfterInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
 					#endif

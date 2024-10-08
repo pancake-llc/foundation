@@ -1,10 +1,18 @@
-﻿using Sisus.Init.Internal;
+﻿#define DEBUG_ENABLED
+
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Sisus.Init.EditorOnly.Internal;
+using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
+using Debug = UnityEngine.Debug;
 
 namespace Sisus.Init.EditorOnly
 {
@@ -13,6 +21,7 @@ namespace Sisus.Init.EditorOnly
 		private static GUIContent sceneIcon;
 
 		private readonly Type objectType;
+		private readonly Type anyType;
 		private SerializedObject serializedObject;
 		private SerializedProperty guidProperty;
 		private SerializedProperty targetProperty;
@@ -24,14 +33,18 @@ namespace Sisus.Init.EditorOnly
 		private SerializedProperty isCrossSceneProperty;
 		private SerializedProperty iconProperty;
 
-		public CrossSceneReferenceGUI(Type objectType) => this.objectType = objectType;
+		public CrossSceneReferenceGUI(Type objectType)
+		{
+			this.objectType = objectType;
+			anyType = typeof(Any<>).MakeGenericType(objectType);
+		}
 
 		public void OnGUI(Rect position, SerializedProperty referenceProperty, GUIContent label)
 		{
 			referenceProperty.serializedObject.Update();
 
 			var crossSceneReference = referenceProperty.objectReferenceValue;
-			if(crossSceneReference == null)
+			if(!crossSceneReference)
 			{
 				EditorGUI.PropertyField(position, referenceProperty, label);
 				return;
@@ -75,17 +88,14 @@ namespace Sisus.Init.EditorOnly
 			isCrossScene = isCrossSceneProperty.boolValue;
 			icon = iconProperty.objectReferenceValue as Texture;
 
-			if(sceneIcon == null)
-			{
-				sceneIcon = new GUIContent(EditorGUIUtility.IconContent("SceneAsset Icon"));
-			}
+			sceneIcon ??= new GUIContent(EditorGUIUtility.IconContent("SceneAsset Icon"));
 
 			EditorGUI.BeginProperty(position, label, targetProperty);
 
 			// In older versions of Unity an error will occur if GlobalObjectId.GlobalObjectIdentifierToObjectSlow
 			// is called and the target object is in an unloaded scene.
 			bool isSceneLoaded = IsSceneLoaded();
-			if(isSceneLoaded && target == null && !string.IsNullOrEmpty(globalObjectIdSlow)
+			if(isSceneLoaded && !target && !string.IsNullOrEmpty(globalObjectIdSlow)
 				&& GlobalObjectId.TryParse(globalObjectIdSlow, out GlobalObjectId globalObjectId))
 			{
 				target = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
@@ -123,9 +133,38 @@ namespace Sisus.Init.EditorOnly
 			bool isContainingSceneMissing = !string.IsNullOrEmpty(sceneOrAssetGuid) && string.IsNullOrEmpty(AssetDatabase.GUIDToAssetPath(sceneOrAssetGuid));
 
 			var targetWas = target;
-			if(target != null || AssignableObjectIsBeingDraggedOver(position, objectType) || !isCrossScene)
+
+			bool draggedObjectIsAssignable;
+			Type objectFieldConstraint;
+
+			bool dragging = DragAndDrop.objectReferences.Length > 0;
+			if(dragging && InitializerEditorUtility.TryGetAssignableType(DragAndDrop.objectReferences[0], referenceProperty.serializedObject.targetObject, anyType, objectType, out Type assignableType))
 			{
-				target = EditorGUI.ObjectField(position, label, target, objectType, true);
+				draggedObjectIsAssignable = true;
+				objectFieldConstraint = assignableType;
+			}
+			else
+			{
+				draggedObjectIsAssignable = false;
+				var objectReferenceValue = referenceProperty.objectReferenceValue;
+				bool hasObjectReferenceValue = objectReferenceValue;
+				var objectReferenceValueType = hasObjectReferenceValue ? objectReferenceValue.GetType() : null;
+
+				if(typeof(Object).IsAssignableFrom(objectType) || objectType.IsInterface)
+				{
+					objectFieldConstraint = !hasObjectReferenceValue || objectType.IsAssignableFrom(objectReferenceValueType) ? objectType : typeof(Object);
+				}
+				else
+				{
+					var valueProviderType = typeof(IValueProvider<>).MakeGenericType(objectType);
+					objectFieldConstraint = !hasObjectReferenceValue || valueProviderType.IsAssignableFrom(objectReferenceValueType) ? valueProviderType : typeof(Object);
+				}
+			}
+
+			if(target || draggedObjectIsAssignable || !isCrossScene)
+			{
+				OverrideObjectPicker(position, referenceProperty, objectType);
+				target = EditorGUI.ObjectField(position, label, target, objectFieldConstraint, true);
 			}
 			else
 			{
@@ -140,10 +179,7 @@ namespace Sisus.Init.EditorOnly
 					Event.current.Use();
 				}
 
-				// How to allow assigning null? Pass in a fake reference of some sort?
-				// But then can't pass in objectType? Need to just use typeof(Object).
-				// I guess it's still the best route, since "null" is such a common choice?
-				// Or do something like PI's ObjectPicker class and ObjectReferenceDrawer?
+				OverrideObjectPicker(position, referenceProperty, objectType);
 				target = EditorGUI.ObjectField(position, label, target, objectType, true);
 
 				var targetLabel = new GUIContent(targetName);
@@ -161,7 +197,7 @@ namespace Sisus.Init.EditorOnly
 				GUI.BeginClip(clipRect);
 				overlayRect.x = -2f;
 				overlayRect.y = -2f;
-				if(isCrossScene && icon != null)
+				if(isCrossScene && icon)
 				{
 					EditorGUI.LabelField(overlayRect, GUIContent.none, GUIContent.none, EditorStyles.objectField);
 					float roomForIcon = 14f + 1f;
@@ -177,7 +213,7 @@ namespace Sisus.Init.EditorOnly
 				GUI.EndClip();
 			}
 
-			if(isCrossScene && icon != null)
+			if(isCrossScene && icon)
 			{
 				iconRect.x += iconWidth + iconOffset;
 				iconRect.x += 2f;
@@ -194,11 +230,12 @@ namespace Sisus.Init.EditorOnly
 
 			if(valueChanged)
 			{
-				#if DEV_MODE
-				Debug.LogWarning($"Value changed from {targetWas} to {target}.");
+				#if DEV_MODE && DEBUG_ENABLED
+				Debug.Log($"CrossSceneReferenceGUI: value changed from {targetWas} to {target}.");
 				#endif
 
 				targetProperty.objectReferenceValue = target;
+				targetProperty.serializedObject.ApplyModifiedProperties();
 			}
 
 			EditorGUI.EndProperty();
@@ -210,34 +247,19 @@ namespace Sisus.Init.EditorOnly
 				return;
 			}
 
-			if(target == null)
+			if(!target)
 			{
 				#if DEV_MODE
-				Debug.LogWarning("Object reference is null. Resetting Ref...");
+				Debug.LogWarning($"Object reference has changed from {targetWas} to Null. targetName: '{targetName}'.");
 				#endif
 
-				guidProperty.FindPropertyRelative("a").intValue = default;
-				guidProperty.FindPropertyRelative("b").intValue = default;
-				guidProperty.FindPropertyRelative("c").intValue = default;
-				guidProperty.FindPropertyRelative("d").intValue = default;
-				guidProperty.FindPropertyRelative("e").intValue = default;
-				guidProperty.FindPropertyRelative("f").intValue = default;
-				guidProperty.FindPropertyRelative("g").intValue = default;
-				guidProperty.FindPropertyRelative("h").intValue = default;
-				guidProperty.FindPropertyRelative("i").intValue = default;
-				guidProperty.FindPropertyRelative("j").intValue = default;
-				guidProperty.FindPropertyRelative("k").intValue = default;
-				targetNameProperty.stringValue = "";
-				globalObjectIdSlowProperty.stringValue = new GlobalObjectId().ToString();
-				isCrossSceneProperty.boolValue = false;
-				sceneOrAssetGuidProperty.stringValue = "";
-				sceneNameProperty.stringValue = "";
-				iconProperty.objectReferenceValue = null;
+				referenceProperty.objectReferenceValue = null;
+				referenceProperty.serializedObject.ApplyModifiedProperties();
 			}
 			else
 			{
 				var targetGameObject = GetGameObject(target);
-				var targetScene = targetGameObject == null ? default : targetGameObject.scene;
+				var targetScene = !targetGameObject ? default : targetGameObject.scene;
 				targetName = target.name;
 				if(referenceProperty.type != "GameObject")
 				{
@@ -273,11 +295,11 @@ namespace Sisus.Init.EditorOnly
 					return true;
 				}
 
-				string scenePath = AssetDatabase.GetAssetPath(sceneAsset);
+				string assetPath = AssetDatabase.GetAssetPath(sceneAsset);
 				for(int i = 0, count = SceneManager.sceneCount; i < count; i++)
 				{
 					var scene = SceneManager.GetSceneAt(i);
-					if(scene.isLoaded && string.Equals(scene.path, scenePath))
+					if(scene.isLoaded && string.Equals(scene.path, assetPath))
 					{
 						return true;
 					}
@@ -287,9 +309,144 @@ namespace Sisus.Init.EditorOnly
 			}
 		}
 
+		[Conditional("UNITY_2022_3"), Conditional("UNITY_2023_2_OR_NEWER")]
+		public static void OverrideObjectPicker(Rect objectFieldRect, SerializedProperty referenceProperty, Type objectType)
+		{
+			#if UNITY_2022_3 || UNITY_2023_2_OR_NEWER
+			var objectPickerRect = objectFieldRect;
+			objectPickerRect.width = 19f;
+			objectPickerRect.x += objectFieldRect.width - objectPickerRect.width;
+			if(GUI.Button(objectPickerRect, GUIContent.none, EditorStyles.label))
+			{
+				ShowObjectPicker(type:objectType, referenceProperty:referenceProperty);
+			}
+			#endif
+		}
+
+		#if UNITY_2022_3 || UNITY_2023_2_OR_NEWER
+		private static void ShowObjectPicker
+		(
+			Type type,
+			SerializedProperty referenceProperty,
+			//Action<Object> selectHandler,
+			SearchFlags flags = SearchFlags.None,
+			string searchText = "",
+			float defaultWidth = 850f,
+			float defaultHeight = 539f
+		)
+		{
+			#if DEV_MODE
+			Debug.Log(TypeUtility.ToString(type));
+			#endif
+
+			var filterTypes = Find.typesToFindableTypes.TryGetValue(type, out var types) ? types : new []{ typeof(Object) };
+			var providers = new List<SearchProvider>();
+			if(filterTypes.Any(t => typeof(Component).IsAssignableFrom(t) || t == typeof(GameObject)))
+			{
+				providers.Add(SearchService.GetProvider("scene"));
+			}
+
+			if(filterTypes.Any(t => !typeof(Component).IsAssignableFrom(t) && t != typeof(GameObject)))
+			{
+				providers.Add(SearchService.GetProvider("asset"));
+			}
+
+			var context = SearchService.CreateContext(providers, searchText, flags | SearchFlags.FocusContext);
+			var typeName = TypeUtility.ToStringNicified(type);
+			var pickerState = SearchViewState.CreatePickerState
+			(
+				title:"Select " + typeName,
+				context:context,
+				selectObjectHandler:OnSelectionConfirmed,
+				trackingObjectHandler:OnSelectionChanged,
+				typeName:typeName,
+				filterType:GetSharedBaseType(filterTypes)
+			);
+
+			pickerState.position = new(0f, 0f, defaultWidth, defaultHeight);
+			SearchService.ShowPicker(pickerState);
+
+			void OnSelectionConfirmed(Object target, bool flag) => OnSelectionChanged(target);
+
+			void OnSelectionChanged(Object target)
+			{
+				if(target is not null && !type.IsInstanceOfType(target))
+				{
+					if(!Find.In(GetGameObject(target), type, out var obj))
+					{
+						#if DEV_MODE
+						Debug.LogWarning($"ObjectPicker selected object of type {target.GetType().Name} which is not assignable to {type.Name}. Setting target to null.");
+						#endif
+						target = null;
+					}
+					else if(obj is Object unityObject)
+					{
+						#if DEV_MODE
+						Debug.Log($"Converting selection from {target.GetType().Name} to {unityObject.GetType().Name}.");
+						#endif
+						target = unityObject;
+					}
+					else if(Find.WrapperOf(obj) is Object wrapper)
+					{
+						#if DEV_MODE
+						Debug.Log($"Converting selection from {target.GetType().Name} to {wrapper.GetType().Name}.");
+						#endif
+						target = wrapper;
+					}
+					else
+					{
+						#if DEV_MODE
+						Debug.LogWarning($"ObjectPicker selected object of type {target.GetType().Name} which is not an Object. Setting target to null.");
+						#endif
+						target = null;
+					}
+				}
+
+				if(target == referenceProperty.objectReferenceValue)
+				{
+					return;
+				}
+
+				#if DEV_MODE
+				Debug.Log($"Value changed from {referenceProperty.objectReferenceValue} to {target}.");
+				#endif
+
+				referenceProperty.objectReferenceValue = target;
+				referenceProperty.serializedObject.ApplyModifiedProperties();
+			}
+
+			static Type GetSharedBaseType(Type[] types)
+			{
+				int count = types.Length;
+				if(count == 0)
+				{
+					return typeof(Object);
+				}
+
+				var result = types[0];
+
+				for(int i = count - 1; i >= 1; i--)
+				{
+					if(types[i].IsAssignableFrom(result))
+					{
+						result = types[i];
+						continue;
+					}
+
+					while(!result.IsAssignableFrom(types[i]))
+					{
+						result = result.BaseType;
+					}
+				}
+
+				return result == typeof(object) ? typeof(Object) : result;
+			}
+		}
+		#endif
+
 		private void OnSceneIconClicked(SceneAsset sceneAsset, bool isSceneLoaded)
 		{
-			if(sceneAsset == null)
+			if(!sceneAsset)
 			{
 				return;
 			}
@@ -318,51 +475,12 @@ namespace Sisus.Init.EditorOnly
 			}
 
 			void OpenScene() => EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(sceneAsset), OpenSceneMode.Additive);
-			void SelectTarget() => Selection.activeGameObject = this == null ? null : GetGameObject(targetProperty?.objectReferenceValue);
+			void SelectTarget() => Selection.activeGameObject = GetGameObject(targetProperty?.objectReferenceValue);
 		}
-
-		private static bool AssignableObjectIsBeingDraggedOver(Rect position, Type requiredType)
-        {
-			if(!position.Contains(Event.current.mousePosition) || DragAndDrop.visualMode == DragAndDropVisualMode.None)
-			{
-				return false;
-			}
-
-			if(DragAndDrop.objectReferences.Length <= 0)
-			{
-				return false;
-			}
-
-			var draggedObject = DragAndDrop.objectReferences[0];
-			if(draggedObject == null)
-			{
-				return false;
-			}
-
-			if(requiredType.IsInstanceOfType(draggedObject))
-			{
-				return true;
-			}
-
-			if(draggedObject is GameObject gameObject && requiredType != typeof(GameObject) && requiredType != typeof(Object) && requiredType != typeof(object))
-			{
-				foreach(var component in gameObject.GetComponentsNonAlloc<Component>())
-                {
-					if(requiredType.IsInstanceOfType(component))
-                    {
-						return true;
-                    }
-                }
-
-				return false;
-            }
-
-			return false;
-        }
 
 		public void Dispose() => serializedObject.Dispose();
 
-		private static Scene GetScene(Object target) => target is Component component && component != null ? component.gameObject.scene : target is GameObject gameObject && gameObject != null ? gameObject.scene : default;
-		private static GameObject GetGameObject(Object target) => target is Component component && component != null ? component.gameObject : target as GameObject;
+		private static Scene GetScene(Object target) => target is Component component && component ? component.gameObject.scene : target is GameObject gameObject && gameObject ? gameObject.scene : default;
+		private static GameObject GetGameObject(Object target) => target is Component component && component ? component.gameObject : target as GameObject;
 	}
 }

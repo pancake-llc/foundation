@@ -1094,5 +1094,67 @@ namespace Sisus.Init.EditorOnly.Internal
 			color = NullGuardFailedColor;
 			return true;
 		}
+
+		private static readonly Dictionary<Type, Dictionary<Type, bool>> isAssignableCaches = new();
+
+		internal static bool TryGetAssignableType(Object reference, Object owner, Type anyType, Type valueType, out Type assignableType)
+		{
+			if(!reference)
+			{
+				assignableType = null;
+				return false;
+			}
+
+			if(valueType == typeof(Object) || valueType == typeof(object))
+			{
+				assignableType = reference.GetType();
+				return true;
+			}
+
+			if(reference is GameObject gameObject && valueType != typeof(GameObject))
+			{
+				Type bestMatch = null;
+				foreach(var component in gameObject.GetComponentsNonAlloc<Component>())
+				{
+					if(TryGetAssignableType(component, owner, anyType, valueType, out assignableType))
+					{
+						if(assignableType == valueType)
+						{
+							return true;
+						}
+
+						bestMatch = assignableType;
+					}
+				}
+
+				if(bestMatch is null)
+				{
+					assignableType = null;
+					return false;
+				}
+
+				assignableType = bestMatch;
+				return true;
+			}
+
+			if(!isAssignableCaches.TryGetValue(anyType, out var isAssignableCache))
+			{
+				isAssignableCache = new Dictionary<Type, bool>();
+				isAssignableCaches.Add(anyType, isAssignableCache);
+			}
+
+			var draggedType = reference.GetType();
+			if(isAssignableCache.TryGetValue(draggedType, out bool isAssignable))
+			{
+				assignableType = isAssignable ? reference.GetType() : null;
+				return isAssignable;
+			}
+
+			MethodInfo isCreatableFromMethod = anyType.GetMethod(nameof(Any<object>.IsCreatableFrom), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+			isAssignable = (bool)isCreatableFromMethod.Invoke(null, new object[] { reference, owner });
+			isAssignableCache.Add(draggedType, isAssignable);
+			assignableType = isAssignable ? reference.GetType() : null;
+			return isAssignable;
+		}
 	}
 }

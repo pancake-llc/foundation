@@ -63,14 +63,13 @@ namespace Sisus.Init
 			Reason = reason;
 		}
 
-		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType, Exception exception) 
-			: base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, concreteType, exception), exception, sceneObject ? sceneObject : asset ? asset : initializerOrWrapper is Object obj && obj ? obj
-#if UNITY_EDITOR
-				: Find.Script(serviceInfo.ConcreteOrDefiningType)
-#else
-				: null
-#endif
-				)
+		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType, Exception exception) : base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, concreteType, exception), exception, sceneObject ? sceneObject : asset ? asset : initializerOrWrapper is Object obj && obj ? obj :
+		#if UNITY_EDITOR
+		Find.Script(serviceInfo.ConcreteOrDefiningType)
+		#else
+		default
+		#endif
+		)
 		{
 			ServiceInfo = serviceInfo;
 			Reason = reason;

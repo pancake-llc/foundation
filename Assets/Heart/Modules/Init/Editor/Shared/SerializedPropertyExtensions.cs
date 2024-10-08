@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
+using UnityEngine;
 
 namespace Sisus.Shared.EditorOnly
 {
@@ -131,7 +132,8 @@ namespace Sisus.Shared.EditorOnly
 
             if(obj.GetType().IsValueType)
             {
-                throw new InvalidOperationException($"Cannot use SerializedObject.SetValue on a struct object. Either change {obj.GetType().Name} to a class, or use SetValue with a parent SerializedProperty.");
+                Debug.LogError($"Cannot use SerializedObject.SetValue on a struct object. Either change {obj.GetType().Name} to a class, or use SetValue with a parent SerializedProperty.");
+                return;
             }
 
             Undo.RecordObject(serializedObject.targetObject, $"Set {nextPropertyOrDefault.name}");

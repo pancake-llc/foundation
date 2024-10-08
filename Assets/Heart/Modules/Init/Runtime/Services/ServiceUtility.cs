@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using Sisus.Init.Internal;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -568,7 +567,7 @@ namespace Sisus.Init
 					object initialized = initializer.InitTarget();
 					if(!definingType.IsInstanceOfType(initialized))
 					{
-						LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+						LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
 						result = null;
 						return false;
 					}
@@ -597,13 +596,13 @@ namespace Sisus.Init
 					}
 				}
 
-				LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+				LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
 				result = null;
 				return false;
 			}
 
 			#if !UNITY_2023_1_OR_NEWER
-			static async Task AddForAsync(object provider, [AllowNull] Task<object> serviceGetter, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
+			static async System.Threading.Tasks.Task AddForAsync(object provider, [AllowNull] System.Threading.Tasks.Task<object> serviceGetter, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
 			{
 				try
 				{
@@ -628,7 +627,7 @@ namespace Sisus.Init
 				&& valueProviderAsyncGenericType.IsInstanceOfType(provider))
 				{
 					var getForAsyncMethod = valueProviderAsyncGenericType.GetMethod(nameof(IValueProviderAsync<object>.GetForAsync));
-					serviceGetter = getForAsyncMethod.Invoke(provider, new object[] { container }) as Task<object>;
+					serviceGetter = getForAsyncMethod.Invoke(provider, new object[] { container }) as System.Threading.Tasks.Task<object>;
 					object service = await serviceGetter;
 					if(service is not null)
 					{
@@ -636,7 +635,7 @@ namespace Sisus.Init
 					}
 				}
 
-				LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+				LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
 			}
 			#endif
 
@@ -662,13 +661,21 @@ namespace Sisus.Init
 				#endif
 				}
 
-				LogInvalidServiceDefinitionError(provider.GetType(), definingType);
+				LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
 				return null;
 			}
 			#endif
 
-			static void LogInvalidServiceDefinitionError(Type concreteType, Type definingType)
+			static void LogInvalidServiceDefinitionError(Type concreteType, Type definingType, Component container)
 			{
+				#if UNITY_EDITOR
+				// Don't log warnings if the container is a selected asset, as that probably means it's still being actively configured.
+				if(Array.IndexOf(UnityEditor.Selection.gameObjects, container.gameObject) != -1 && container.gameObject.IsAsset(true))
+				{
+					return;
+				}
+				#endif
+
 				if(definingType.IsInterface)
 				{
 					Debug.LogWarning($"Invalid Service Definition: {concreteType.Name} has been configured as a service with the defining type {definingType.Name}, but {concreteType.Name} does not implement {definingType.Name}.");
@@ -744,9 +751,9 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether or not the provided <paramref name="type"/> is the defining type of a service.
+		/// Gets a value indicating whether the provided <paramref name="type"/> is the defining type of a service.
 		/// <para>
-		/// By default the defining type of a class that has the <see cref="ServiceAttribute"/> is the type of the class itself,
+		/// By default, the defining type of a class that has the <see cref="ServiceAttribute"/> is the type of the class itself,
 		/// however it is possible provide a different defining type, which can be any type as long as it is assignable from the
 		/// type of the class with the attribute.
 		/// </para>

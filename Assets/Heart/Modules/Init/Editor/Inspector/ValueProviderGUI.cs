@@ -22,12 +22,14 @@ namespace Sisus.Init.EditorOnly.Internal
 		private readonly bool isControlless;
 		private readonly Action onDiscardButtonPressed;
 		private static readonly GUILayoutOption[] discardButtonLayoutOptions = { GUILayout.Height(10f), GUILayout.Width(10f) };
+		private readonly MethodInfo evaluateNullGuard;
+		private readonly object[] evaluateNullGuardArgs;
 
 		private static Color ObjectFieldBackgroundColor => InitializerGUI.NowDrawing is not null ? HelpBoxBackgroundColor : InspectorBackgroundColor;
 		private static Color HelpBoxBackgroundColor => EditorGUIUtility.isProSkin ? new Color32(64, 64, 64, 255) : new Color32(208, 208, 208, 255);
 		private static Color InspectorBackgroundColor => EditorGUIUtility.isProSkin ? new Color32(56, 56, 56, 255) : new Color32(200, 200, 200, 255);
 
-		public ValueProviderGUI(Editor editor, GUIContent prefixLabel, SerializedProperty anyProperty, SerializedProperty referenceProperty, Type valueType, Action onDiscardButtonPressed)
+		public ValueProviderGUI(Editor editor, GUIContent prefixLabel, SerializedProperty anyProperty, SerializedProperty referenceProperty, Type anyType, Type valueType, Action onDiscardButtonPressed)
 		{
 			this.editor = editor;
 			this.prefixLabel = prefixLabel;
@@ -35,6 +37,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			this.referenceProperty = referenceProperty;
 			this.valueType = valueType;
 			this.onDiscardButtonPressed = onDiscardButtonPressed;
+
+			evaluateNullGuard = anyType.GetMethod(nameof(Any<object>.EvaluateNullGuard), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			evaluateNullGuardArgs = new object[] { anyProperty.serializedObject.targetObject as Component, Context.MainThread };
 
 			var valueProvider = editor.target;
 			if(valueProvider?.GetType() is Type valueProviderType)
@@ -269,11 +274,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			var nullGuardResult = referenceProperty.objectReferenceValue is INullGuard nullGuard ? nullGuard.EvaluateNullGuard(referenceProperty.serializedObject.targetObject as Component)
-								: referenceProperty.objectReferenceValue is INullGuardByType ? (NullGuardResult)typeof(INullGuardByType).GetMethod(nameof(INullGuardByType.EvaluateNullGuard))
-																							   .MakeGenericMethod(valueType)
-																							   .Invoke(referenceProperty.objectReferenceValue, new object[] { referenceProperty.serializedObject.targetObject as Component })
-								: NullGuardResult.Passed;
+			var nullGuardResult = (NullGuardResult)evaluateNullGuard.Invoke(anyProperty.GetValue(), evaluateNullGuardArgs);
 
 			// Tint label green if value exists at this moment
 			var backgroundColorWas = GUI.backgroundColor;

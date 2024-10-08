@@ -337,6 +337,8 @@ namespace Sisus.Init.EditorOnly
 				initializerGUI.OnInspectorGUI();
 			}
 
+			LayoutUtility.EndGUI(DecoratedEditor);
+
 			#if DEV_MODE
 			Profiler.EndSample();
 			#endif
@@ -344,6 +346,11 @@ namespace Sisus.Init.EditorOnly
 
 		public override void OnAfterInspectorGUI()
 		{
+			if(!OnBeginGUI())
+			{
+				return;
+			}
+
 			if(ShowRuntimeFields)
 			{
 				#if DEV_MODE

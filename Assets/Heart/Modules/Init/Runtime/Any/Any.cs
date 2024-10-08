@@ -7,6 +7,7 @@ using Sisus.Init.Internal;
 using Sisus.Init.Serialization;
 using Sisus.Init.ValueProviders;
 using UnityEngine;
+using UnityEngine.Search;
 using Component = UnityEngine.Component;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -49,7 +50,7 @@ namespace Sisus.Init
 		, INullGuard
 		#endif
 	{
-		[SerializeField]
+		[SerializeField, SearchContext("", SearchViewFlags.TableView | SearchViewFlags.Borderless)]
 		internal Object reference;
 
 		[SerializeReference]
@@ -904,26 +905,14 @@ namespace Sisus.Init
 				value = default;
 			}
 
-			if(reference is CrossSceneReference crossSceneReference && !crossSceneReference.isCrossScene)
+			if(reference is CrossSceneReference { isCrossScene: false } crossSceneReference)
 			{
-				var crossSceneReferenceValue = crossSceneReference.Value;
-				if(crossSceneReferenceValue)
-				{
-					#if DEV_MODE
-					Debug.Log($"CrossSceneReference {crossSceneReferenceValue.name} ({crossSceneReferenceValue.GetType().Name}) isCrossScene was false. Changing into a direct reference.");
-					#endif
+				var crossSceneTarget = crossSceneReference.Value;
+				#if DEV_MODE
+				Debug.Log($"CrossSceneReference {crossSceneTarget.name} ({crossSceneTarget.GetType().Name}) isCrossScene was false. Changing into a direct reference.");
+				#endif
 
-					if(crossSceneReference.Value is T directReference)
-					{
-						value = directReference;
-					}
-					#if DEV_MODE
-					else
-					{
-						Debug.LogWarning($"CrossSceneReference {crossSceneReferenceValue.name} of type {crossSceneReferenceValue.GetType().Name} not convertible to {typeof(T).Name}.");
-					}
-					#endif
-				}
+				reference = crossSceneTarget;
 			}
 
 			AssertSerializedReferenceIsValid(ref reference);

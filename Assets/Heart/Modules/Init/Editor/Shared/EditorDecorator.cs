@@ -1,4 +1,4 @@
-﻿#define DEBUG_DISPOSE
+﻿//#define DEBUG_DISPOSE
 
 using System;
 using System.Linq;
@@ -30,14 +30,10 @@ namespace Sisus.Shared.EditorOnly
 		{
 			this.decoratedEditor = decoratedEditor;
 			this.isResponsibleForDecoratedEditorLifetime = false;
-			var decoratedEditorType = decoratedEditor.GetType();
-			DecoratingDefaultOrOdinEditor = CustomEditorUtility.IsDefaultOrOdinEditor(decoratedEditorType);
+			DecoratingDefaultOrOdinEditor = CustomEditorUtility.IsDefaultOrOdinEditor(decoratedEditor.GetType());
 			targets = decoratedEditor.targets;
 			target = targets.FirstOrDefault();
-			RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
 		}
-
-		private void OnDetachFromPanel(DetachFromPanelEvent _) => Dispose();
 
 		~EditorDecorator() => Dispose(false);
 
@@ -144,8 +140,6 @@ namespace Sisus.Shared.EditorOnly
 			{
 				DestroyIfNotNull(ref decoratedEditor);
 			}
-
-			UnregisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
 
 			base.Dispose(disposeManaged);
 		}
