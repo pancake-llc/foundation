@@ -4,7 +4,7 @@ using Firebase.Analytics;
 #endif
 
 #if PANCAKE_ADJUST
-using com.adjust.sdk;
+using AdjustSdk;
 #endif
 
 namespace Pancake.Monetization
@@ -15,12 +15,14 @@ namespace Pancake.Monetization
         internal static void TrackingRevenue(MaxSdkBase.AdInfo adInfo)
         {
 #if PANCAKE_ADJUST
-            var adRevenue = new AdjustAdRevenue(AdjustConfig.AdjustAdRevenueSourceAppLovinMAX);
-            adRevenue.setRevenue(adInfo.Revenue, "USD");
-            adRevenue.setAdRevenueNetwork(adInfo.NetworkName);
-            adRevenue.setAdRevenuePlacement(adInfo.Placement);
-            adRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
-            Adjust.trackAdRevenue(adRevenue);
+            
+            var adRevenue = new AdjustAdRevenue("applovin_max_sdk");
+            adRevenue.SetRevenue(adInfo.Revenue, "USD");
+            adRevenue.AdRevenueNetwork = adInfo.NetworkName;
+            adRevenue.AdRevenuePlacement = adInfo.Placement;
+            adRevenue.AdRevenueUnit = adInfo.AdUnitIdentifier;
+
+            Adjust.TrackAdRevenue(adRevenue);
 #endif
 
 #if PANCAKE_ANALYTIC
@@ -47,10 +49,11 @@ namespace Pancake.Monetization
         {
             double revenue = e.AdValue.Value / 1000000f;
 #if PANCAKE_ADJUST
-            var adRevenue = new AdjustAdRevenue(AdjustConfig.AdjustAdRevenueSourceAdMob);
-            adRevenue.setRevenue(revenue, e.AdValue.CurrencyCode);
-            adRevenue.setAdRevenueUnit(unitId);
-            Adjust.trackAdRevenue(adRevenue);
+            var adRevenue = new AdjustAdRevenue("admob_sdk");
+            adRevenue.SetRevenue(revenue, "USD");
+            adRevenue.AdRevenueUnit = unitId;
+
+            Adjust.TrackAdRevenue(adRevenue);
 #endif
 
             // google admob auto tracking ad_impression when using admob ad

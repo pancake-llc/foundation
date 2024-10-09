@@ -28,7 +28,8 @@
         "GUID:69448af7b92c7f342b298e06a37122aa",
         "GUID:f06555f75b070af458a003d92f9efb00",
         "GUID:fe25561d224ed4743af4c60938a59d0b",
-        "GUID:70ea675efa2644cef98c7ece24158333"
+        "GUID:70ea675efa2644cef98c7ece24158333",
+        "GUID:7d8924c6e6beb44e18f19e8c0b5068cd"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -104,7 +105,7 @@
             "define": "PANCAKE_PLAYFAB"
         },
         {
-            "name": "com.pancake.adjust",
+            "name": "com.adjust.sdk",
             "expression": "",
             "define": "PANCAKE_ADJUST"
         },
