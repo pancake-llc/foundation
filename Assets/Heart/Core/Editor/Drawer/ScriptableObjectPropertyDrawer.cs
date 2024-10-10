@@ -171,12 +171,22 @@ namespace PancakeEditor
 
             var t = property.serializedObject.targetObject.GetType();
 #if ODIN_INSPECTOR
-            const string emittedPrefix = "Sirenix.OdinInspector.EmittedUnityProperties.EmittedSOProperty_Key_";
-            if (t.FullName != null && t.FullName.StartsWith(emittedPrefix))
+            const string emittedKeyPrefix = "Sirenix.OdinInspector.EmittedUnityProperties.EmittedSOProperty_Key_";
+            const string emittedValuePrefix = "Sirenix.OdinInspector.EmittedUnityProperties.EmittedSOProperty_Value_";
+            if (t.FullName != null)
             {
-                string typePart = t.FullName[emittedPrefix.Length..];
-                TypeExtensions.FindTypeByFullName(typePart, out var type);
-                t = type;
+                if (t.FullName.StartsWith(emittedKeyPrefix))
+                {
+                    string typePart = t.FullName[emittedKeyPrefix.Length..];
+                    TypeExtensions.FindTypeByFullName(typePart, out var type);
+                    t = type;
+                }
+                else if (t.FullName.StartsWith(emittedValuePrefix))
+                {
+                    string typePart = t.FullName[emittedValuePrefix.Length..];
+                    TypeExtensions.FindTypeByFullName(typePart, out var type);
+                    t = type;
+                }
             }
 #endif
 
