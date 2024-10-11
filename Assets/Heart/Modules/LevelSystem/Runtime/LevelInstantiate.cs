@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Pancake.Common;
 using Pancake.Tracking;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Pancake.LevelSystem
@@ -17,7 +18,7 @@ namespace Pancake.LevelSystem
     {
         [SerializeField] private StringConstant type;
         [SerializeField] private Transform root;
-        [SerializeField] private InterfaceHelper<ScriptableTracking>[] trackingStartLevels;
+        [OdinSerialize] private ITracking[] trackingStartLevels;
 
         private static readonly Dictionary<string, LevelInstantiateDimension> Dimensions = new();
 
@@ -26,10 +27,10 @@ namespace Pancake.LevelSystem
             Dimensions[type.Value] = new LevelInstantiateDimension();
             foreach (var t in trackingStartLevels)
             {
-                t.Value.Track();
+                t.Track();
             }
 
-            LevelComponent levelComponent = null;
+            LevelComponent levelComponent;
 #if UNITY_EDITOR
             levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type.Value);
 #else
@@ -57,7 +58,7 @@ namespace Pancake.LevelSystem
 #endif
             foreach (var t in trackingStartLevels)
             {
-                t.Value.Track();
+                t.Track();
             }
 
             Instantiate(levelComponent, root, false);
