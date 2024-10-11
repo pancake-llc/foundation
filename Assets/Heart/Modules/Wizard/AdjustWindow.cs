@@ -20,7 +20,7 @@ namespace PancakeEditor
             if (adjustSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                GUI.backgroundColor = Uniform.Pink;
+                GUI.backgroundColor = Uniform.Pink_500;
                 if (GUILayout.Button("Create Adjust Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdjustConfig>();
@@ -43,7 +43,7 @@ namespace PancakeEditor
             GUILayout.FlexibleSpace();
 
             var previousColor = GUI.backgroundColor;
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Adjust", "Are you sure you want to uninstall adjust package ?", "Yes", "No");

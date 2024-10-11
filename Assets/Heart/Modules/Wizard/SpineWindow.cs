@@ -25,7 +25,7 @@ namespace PancakeEditor
             {
                 GUILayout.FlexibleSpace();
                 EditorGUILayout.Space();
-                GUI.backgroundColor = Uniform.Red;
+                GUI.backgroundColor = Uniform.Red_500;
                 if (GUILayout.Button("Uninstall Spine", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Spine", "Are you sure you want to uninstall spine package ?", "Yes", "No");

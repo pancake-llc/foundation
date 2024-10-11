@@ -119,7 +119,7 @@ namespace PancakeEditor
 
         #endregion
 
-        private readonly Color[] _colors = {Uniform.RaisinBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
+        private readonly Color[] _colors = {Uniform.Zinc_600, Uniform.Zinc_600, Uniform.Zinc_600, Uniform.Zinc_600};
         public const float TAB_WIDTH = 50f;
 
         [SerializeField] private int tabIndex = -1;

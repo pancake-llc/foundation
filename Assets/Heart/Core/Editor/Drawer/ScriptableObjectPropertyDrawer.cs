@@ -94,7 +94,7 @@ namespace PancakeEditor
                     rect.width = position.width;
                     EditorGUI.PropertyField(rect, property, label);
                     var cacheBgColor = GUI.backgroundColor;
-                    GUI.backgroundColor = EditorGUIUtility.isProSkin ? Uniform.BabyBlueEyes : Uniform.ChinesePink;
+                    GUI.backgroundColor = EditorGUIUtility.isProSkin ? Uniform.Sky_300 : Uniform.Pink_300;
                     GUILayout.BeginVertical(GUI.skin.box);
                     if (_editor == null) Editor.CreateCachedEditor(targetObject, null, ref _editor);
                     _editor.OnInspectorGUI();

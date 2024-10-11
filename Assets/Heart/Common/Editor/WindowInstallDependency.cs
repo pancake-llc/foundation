@@ -36,7 +36,7 @@ namespace PancakeEditor.Common
 
             GUI.enabled = true;
             GUILayout.Space(4);
-            Uniform.DrawLine(Uniform.Jet, 2);
+            Uniform.DrawLine(Uniform.Stone_400, 2);
             GUILayout.Space(2);
             GUILayout.Label(!isStillMissingPackage
                     ? "All dependencies was installed.\nPlease turn off `Show Window On Reload` to not show again".ToItalic().SetColor("FFB76B")

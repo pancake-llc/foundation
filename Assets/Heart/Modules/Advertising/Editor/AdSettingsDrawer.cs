@@ -80,19 +80,19 @@ namespace Pancake.MonetizationEditor
             if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Admob)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
                 GUI.backgroundColor = Color.white;
 
                 EditorGUILayout.BeginHorizontal();
 
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 if (GUILayout.Button("Open GoogleAdmobSetting", GUILayout.Height(24)))
                 {
                     EditorApplication.ExecuteMenuItem("Assets/Google Mobile Ads/Settings...");
                 }
 
-                GUI.backgroundColor = Uniform.Red;
+                GUI.backgroundColor = Uniform.Red_500;
                 if (GUILayout.Button("Uninstall Admob SDK", GUILayout.Height(24)))
                 {
                     if (ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB")) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
@@ -218,7 +218,7 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.PropertyField(_admobRewardInterProperty, new GUIContent("Inter Rewarded"));
                 EditorGUILayout.PropertyField(_admobAppOpenProperty, new GUIContent("App Open"));
 #else
-                GUI.backgroundColor = Uniform.Orange;
+                GUI.backgroundColor = Uniform.Warning;
                 EditorGUILayout.HelpBox("Admob plugin not found", MessageType.Warning);
                 GUI.backgroundColor = Color.white;
 
@@ -229,7 +229,7 @@ namespace Pancake.MonetizationEditor
                 var contentInstallLabel = "Install Admob SDK v9.2.0 (1)";
                 if (googleMobileAdsInstalled)
                 {
-                    GUI.backgroundColor = Uniform.Green;
+                    GUI.backgroundColor = Uniform.Green_500;
                     contentInstallLabel = "Admob SDK v9.2.0 Installed (1)";
                 }
                 else
@@ -244,7 +244,7 @@ namespace Pancake.MonetizationEditor
                 }
 
                 var previousColor = GUI.color;
-                if (googleMobileAdsInstalled) GUI.color = Uniform.Green;
+                if (googleMobileAdsInstalled) GUI.color = Uniform.Green_500;
 
                 GUI.enabled = googleMobileAdsInstalled;
                 GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
@@ -269,19 +269,19 @@ namespace Pancake.MonetizationEditor
             else if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Applovin)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 EditorGUILayout.HelpBox("Applovin plugin was imported. Please click Open AppLovin Integration and enter SDK key", MessageType.Info);
                 GUI.backgroundColor = Color.white;
 
                 EditorGUILayout.BeginHorizontal();
 
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
                 {
                     EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
                 }
 
-                GUI.backgroundColor = Uniform.Red;
+                GUI.backgroundColor = Uniform.Red_500;
                 if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
                 {
                     if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN")) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
@@ -302,7 +302,7 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.PropertyField(_applovinRewardInterProperty, new GUIContent("Inter Rewarded"));
                 EditorGUILayout.PropertyField(_applovinAppOpenProperty, new GUIContent("App Open"));
 #else
-                GUI.backgroundColor = Uniform.Orange;
+                GUI.backgroundColor = Uniform.Warning;
                 EditorGUILayout.HelpBox("Applovin plugin not found", MessageType.Warning);
                 GUI.backgroundColor = Color.white;
 
@@ -312,7 +312,7 @@ namespace Pancake.MonetizationEditor
                 var contentInstallLabel = "Install Applovin v7.0.0 (1)";
                 if (applovinInstalled)
                 {
-                    GUI.backgroundColor = Uniform.Green;
+                    GUI.backgroundColor = Uniform.Green_500;
                     contentInstallLabel = "Applovin SDK v7.0.0 Installed (1)";
                 }
                 else
@@ -327,7 +327,7 @@ namespace Pancake.MonetizationEditor
                 }
 
                 var previousColor = GUI.color;
-                if (applovinInstalled) GUI.color = Uniform.Green;
+                if (applovinInstalled) GUI.color = Uniform.Green_500;
                 GUI.enabled = applovinInstalled;
                 GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
                 GUI.color = previousColor;

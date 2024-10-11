@@ -29,16 +29,16 @@ namespace PancakeEditor
             _typeText = EditorGUILayout.TextField(_typeText, EditorStyles.textField);
             if (EditorGUI.EndChangeCheck()) _invalidTypeName = !IsTypeNameValid();
 
-            var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.SunsetOrange : Color.white}, fontStyle = FontStyle.Bold};
+            var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.Rose_400 : Color.white}, fontStyle = FontStyle.Bold};
             if (_invalidTypeName) EditorGUILayout.LabelField("Invalid type name.", guiStyle);
-            else EditorGUILayout.LabelField("Result: " + GetResultNameClass().ToBold().SetColor(Uniform.Green), Uniform.RichLabel);
+            else EditorGUILayout.LabelField("Result: " + GetResultNameClass().ToBold().SetColor(Uniform.Green_500), Uniform.RichLabel);
 
             GUILayout.Label("Type".ToBold(), Uniform.CenterRichLabel);
             DrawTypeToggles();
 
             GUILayout.Space(10);
             GUILayout.Label("Output".ToBold(), Uniform.CenterRichLabel);
-            EditorGUILayout.LabelField(ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED.ToItalic().SetColor(Uniform.Orange), Uniform.CenterRichLabel);
+            EditorGUILayout.LabelField(ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED.ToItalic().SetColor(Uniform.Warning), Uniform.CenterRichLabel);
 
             GUILayout.FlexibleSpace();
             DrawButtons();

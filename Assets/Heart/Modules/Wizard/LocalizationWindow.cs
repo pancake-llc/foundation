@@ -84,7 +84,7 @@ namespace PancakeEditor
             if (setting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                GUI.backgroundColor = Uniform.Pink;
+                GUI.backgroundColor = Uniform.Pink_500;
                 if (GUILayout.Button("Create Localization Settings", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     setting = ScriptableObject.CreateInstance<LocaleSettings>();
@@ -108,10 +108,10 @@ namespace PancakeEditor
                 GUILayout.Space(20);
 
                 EditorGUILayout.BeginHorizontal();
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 if (GUILayout.Button("Ping", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) setting.SelectAndPing();
 
-                GUI.backgroundColor = Uniform.Red;
+                GUI.backgroundColor = Uniform.Red_500;
                 if (GUILayout.Button("Delete Locale Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     bool confirmDelete = EditorUtility.DisplayDialog("Delete Locale Setting", "Are you sure you want to delete locale setting?", "Yes", "No");
@@ -124,7 +124,7 @@ namespace PancakeEditor
             }
 
             GUILayout.Space(4);
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Remove All Locale Component", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirm = EditorUtility.DisplayDialog("Remove All Locale Component",

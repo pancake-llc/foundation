@@ -20,7 +20,7 @@ namespace PancakeEditor
             if (adSettings == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                GUI.backgroundColor = Uniform.Pink;
+                GUI.backgroundColor = Uniform.Pink_500;
                 if (GUILayout.Button("Create Adverisement Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdSettings>();

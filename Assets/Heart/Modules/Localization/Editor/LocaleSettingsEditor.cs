@@ -224,7 +224,7 @@ namespace PancakeEditor.Localization
                     Application.OpenURL($"https://docs.google.com/spreadsheets/d/{_spreadsheetKeyProperty.stringValue}");
                 }
 
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 GUI.enabled = !EditorApplication.isCompiling && !SessionState.GetBool("spreasheet_importing", false);
                 if (GUILayout.Button("Import", GUILayout.Width(65)))
                 {

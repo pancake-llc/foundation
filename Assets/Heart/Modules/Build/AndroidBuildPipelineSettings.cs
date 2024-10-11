@@ -141,8 +141,8 @@ namespace PancakeEditor
 
             var color = _environmentProperty.intValue switch
             {
-                (int) AndroidBuildPipelineSettings.Environment.Production => Uniform.FluorescentBlue,
-                (int) AndroidBuildPipelineSettings.Environment.Development => Uniform.Yellow,
+                (int) AndroidBuildPipelineSettings.Environment.Production => Uniform.Emerald_500,
+                (int) AndroidBuildPipelineSettings.Environment.Development => Uniform.Yellow_500,
                 _ => Color.white
             };
             GUILayout.Label(("BUILD ".SetColor(Color.white) +
@@ -223,7 +223,7 @@ namespace PancakeEditor
             var previousColor = GUI.color;
             if (status)
             {
-                GUI.color = Uniform.Green;
+                GUI.color = Uniform.Green_500;
                 content = "Verify Success";
             }
 
@@ -250,7 +250,7 @@ namespace PancakeEditor
             }
 
             GUI.enabled = status;
-            if (status) GUI.color = Uniform.Green;
+            if (status) GUI.color = Uniform.Green_500;
             GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(30));
             GUI.color = previousColor;
             GUI.backgroundColor = Color.white;

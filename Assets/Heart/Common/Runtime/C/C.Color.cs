@@ -144,11 +144,7 @@ namespace Pancake.Common
         public static bool TryParseHtmlString(this string htmlString, out Color color)
         {
             string stringColor = htmlString;
-            if (!stringColor[0].Equals('#'))
-            {
-                stringColor = stringColor.Insert(0, "#");
-            }
-
+            if (!stringColor[0].Equals('#')) stringColor = stringColor.Insert(0, "#");
             return ColorUtility.TryParseHtmlString(stringColor, out color);
         }
     }

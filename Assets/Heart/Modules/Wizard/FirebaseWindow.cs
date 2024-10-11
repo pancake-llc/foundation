@@ -141,7 +141,7 @@ namespace PancakeEditor
 #if PANCAKE_FIREBASE_ANALYTIC || PANCAKE_FIREBASE_REMOTECONFIG || PANCAKE_FIREBASE_MESSAGING || PANCAKE_FIREBASE_CRASHLYTIC
             GUILayout.FlexibleSpace();
             var previousColor = GUI.backgroundColor;
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall All Firebase Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Firebase", "Are you sure you want to uninstall all firebase package ?", "Yes", "No");

@@ -45,7 +45,7 @@ namespace PancakeEditor
             if (gameServiceSettings == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                GUI.backgroundColor = Uniform.Pink;
+                GUI.backgroundColor = Uniform.Pink_500;
                 if (GUILayout.Button("Create Game Service Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<GameServiceSettings>();
@@ -69,7 +69,7 @@ namespace PancakeEditor
 
             GUILayout.FlexibleSpace();
 #if PANCAKE_LEADERBOARD
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall Leaderboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Leaderboard", "Are you sure you want to uninstall leaderboard package ?", "Yes", "No");
@@ -84,7 +84,7 @@ namespace PancakeEditor
 #endif
 
 #if PANCAKE_CLOUDSAVE
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall CloudSave", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall CloudSave", "Are you sure you want to uninstall cloud save package ?", "Yes", "No");
@@ -104,7 +104,7 @@ namespace PancakeEditor
             var contentInstallLabel = "Install GPGS v11.01 (1)";
             if (gpgsInstalled)
             {
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 contentInstallLabel = "GPGS v11.01 Installed (1)";
             }
             else
@@ -119,7 +119,7 @@ namespace PancakeEditor
             }
 
             var previousColor = GUI.color;
-            if (gpgsInstalled) GUI.color = Uniform.Green;
+            if (gpgsInstalled) GUI.color = Uniform.Green_500;
 
             GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT));
             GUI.color = previousColor;
@@ -136,7 +136,7 @@ namespace PancakeEditor
 
             EditorGUILayout.EndHorizontal();
 #else
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
 
             if (GUILayout.Button("Uninstall GPGS v11.01", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
@@ -170,7 +170,7 @@ namespace PancakeEditor
                 RegistryManager.Resolve();
             }
 #else
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall Apple SignIn", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Apple SignIn", "Are you sure you want to uninstall apple signin package ?", "Yes", "No");

@@ -15,7 +15,7 @@ namespace PancakeEditor
             if (defaultPopupSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                GUI.backgroundColor = Uniform.Pink;
+                GUI.backgroundColor = Uniform.Pink_500;
                 if (GUILayout.Button("Create Default Naviagtor Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<DefaultNavigatorSetting>();
@@ -37,7 +37,7 @@ namespace PancakeEditor
                 editor.OnInspectorGUI();
 
                 GUILayout.FlexibleSpace();
-                GUI.backgroundColor = Uniform.Green;
+                GUI.backgroundColor = Uniform.Green_500;
                 if (GUILayout.Button("Create Type", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypeScreenWindow(position));
 
                 GUI.backgroundColor = Color.white;

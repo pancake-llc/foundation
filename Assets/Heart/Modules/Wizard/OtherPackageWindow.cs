@@ -132,7 +132,7 @@ namespace PancakeEditor
             }
 
             GUILayout.Space(8);
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Profile Analyzer",
@@ -192,7 +192,7 @@ namespace PancakeEditor
                 Application.OpenURL("https://github.com/pancake-llc/heart/wiki/notification");
             }
 
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Notification", $"Are you sure you want to uninstall Notification package ?", "Yes", "No");
@@ -228,7 +228,7 @@ namespace PancakeEditor
             EditorGUILayout.BeginHorizontal();
             Uniform.DrawInstalled("In-App-Review 1.8.2");
 
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
             {
@@ -271,7 +271,7 @@ namespace PancakeEditor
             Uniform.DrawInstalled("R3 1.1.14", new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall R3", "Are you sure you want to uninstall R3 package ?", "Yes", "No");
@@ -297,7 +297,7 @@ namespace PancakeEditor
             EditorGUILayout.BeginHorizontal();
             Uniform.DrawInstalled(namePackage, new RectOffset(0, 0, 6, 0));
 
-            GUI.backgroundColor = Uniform.Red;
+            GUI.backgroundColor = Uniform.Red_500;
             GUILayout.FlexibleSpace();
 
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))

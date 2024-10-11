@@ -266,14 +266,14 @@ namespace Pancake.MobileInputEditor
             bool isBoundaryYValid = boundaryMax.y >= boundaryMin.y;
             bool isBoundaryXValid = boundaryMax.x >= boundaryMin.x;
 
-            if (!isBoundaryYValid) GUI.color = Uniform.SunsetOrange;
+            if (!isBoundaryYValid) GUI.color = Uniform.Rose_400;
             boundaryMax.y = EditorGUILayout.FloatField(boundaryMax.y, GUILayout.Width(70));
             GUI.color = Color.white;
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
-            if (!isBoundaryXValid) GUI.color = Uniform.SunsetOrange;
+            if (!isBoundaryXValid) GUI.color = Uniform.Rose_400;
             Draw2FloatFields("Left/Right", ref boundaryMin.x, ref boundaryMax.x);
             GUI.color = Color.white;
 
@@ -282,7 +282,7 @@ namespace Pancake.MobileInputEditor
             GUILayout.Label("Bottom", GUILayout.Width(SIZE_LABEL));
             GUILayout.FlexibleSpace();
             GUILayout.FlexibleSpace();
-            if (!isBoundaryYValid) GUI.color = Uniform.SunsetOrange;
+            if (!isBoundaryYValid) GUI.color = Uniform.Rose_400;
             boundaryMin.y = EditorGUILayout.FloatField(boundaryMin.y, GUILayout.Width(70));
             GUI.color = Color.white;
             GUILayout.FlexibleSpace();
