@@ -6,6 +6,8 @@ namespace Pancake.Localization
 {
     [CreateAssetMenu(menuName = "Pancake/Localization/TextAsset", fileName = "textasset_localizevalue", order = 5)]
     [EditorIcon("so_yellow_textasset")]
+    [Searchable]
+    [Serializable]
     public class LocaleTextAsset : LocaleVariable<TextAsset>
     {
         [Serializable]

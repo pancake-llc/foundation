@@ -29,6 +29,8 @@ namespace PancakeEditor
                 if (!SubTrees.ContainsKey(path[idx])) SubTrees.Add(path[idx], new StringTree<T>());
                 SubTrees[path[idx]].InternalInsert(path, idx + 1, value);
             }
+
+            public IEnumerable<KeyValuePair<string, StringTree<T>>> GetSortedSubTrees() { return SubTrees.OrderBy(pair => pair.Key); }
         }
 
         private class SearchTypeDropdown : AdvancedDropdown
@@ -36,7 +38,7 @@ namespace PancakeEditor
             private readonly StringTree<Type> _list;
             private readonly Action<Type> _func;
 
-            private readonly List<Type> _lookup = new List<Type>();
+            private readonly List<Type> _lookup = new();
 
             public Vector2 MinimumSize { get => minimumSize; set => minimumSize = value; }
 
@@ -63,7 +65,7 @@ namespace PancakeEditor
                 else
                 {
                     var self = new AdvancedDropdownItem(key);
-                    foreach (var subtree in tree.SubTrees)
+                    foreach (var subtree in tree.GetSortedSubTrees())
                     {
                         Render(subtree.Value, subtree.Key, self);
                     }
@@ -76,7 +78,7 @@ namespace PancakeEditor
             {
                 var root = new AdvancedDropdownItem("Scriptable Search");
 
-                foreach (var subtree in _list.SubTrees)
+                foreach (var subtree in _list.GetSortedSubTrees())
                 {
                     Render(subtree.Value, subtree.Key, root);
                 }
@@ -95,7 +97,7 @@ namespace PancakeEditor
                 typeTree.Insert(name, type, 1);
             }
 
-            var projectBrowserType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.ProjectBrowser");
+            var projectBrowserType = typeof(Editor).Assembly.GetType("UnityEditor.ProjectBrowser");
             var projectBrowser = EditorWindow.GetWindow(projectBrowserType);
 
             var xy = new Vector2(projectBrowser.position.x + 10, projectBrowser.position.y + 60);
@@ -103,7 +105,7 @@ namespace PancakeEditor
             var dropdown =
                 new SearchTypeDropdown(new AdvancedDropdownState(),
                     typeTree,
-                    s => { EditorApplication.ExecuteMenuItem("Assets/Create/" + s.GetCustomAttribute<CreateAssetMenuAttribute>().menuName); })
+                    s => EditorApplication.ExecuteMenuItem("Assets/Create/" + s.GetCustomAttribute<CreateAssetMenuAttribute>().menuName))
                 {
                     MinimumSize = new Vector2(projectBrowser.position.width - 20, projectBrowser.position.height - 80)
                 };
@@ -114,7 +116,7 @@ namespace PancakeEditor
             var window = typeof(SearchTypeDropdown).GetField("m_WindowInstance", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(dropdown) as EditorWindow;
             if (window != null) window.position = rect;
         }
-        
+
         [MenuItem("Assets/Export Sub-Sprites")]
         public static void DoExportSubSprites()
         {

@@ -6,6 +6,8 @@ namespace Pancake.Localization
 
     [CreateAssetMenu(menuName = "Pancake/Localization/Material", fileName = "material_localizevalue", order = 1)]
     [EditorIcon("so_yellow_material")]
+    [Searchable]
+    [Serializable]
     public class LocaleMaterial : LocaleVariable<Material>
     {
         [Serializable]

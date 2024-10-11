@@ -8,6 +8,7 @@ namespace Pancake.UI
 {
     [CreateAssetMenu(menuName = "Pancake/Misc/Simple UI Transition Asset", fileName = "simple_ui_transition_asset.asset")]
     [EditorIcon("so_blue_setting")]
+    [Searchable]
     // ReSharper disable once InconsistentNaming
     public class SimpleUITransitionAnimationSO : UITransitionAnimationSO
     {

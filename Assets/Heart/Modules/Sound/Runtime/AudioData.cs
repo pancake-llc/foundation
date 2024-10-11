@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Pancake.Sound
 {
+    [Searchable]
     [EditorIcon("so_blue_audioclip")]
     [CreateAssetMenu(fileName = "Audio", menuName = "Pancake/Audio Data")]
     public class AudioData : ScriptableObject, ISerializationCallbackReceiver

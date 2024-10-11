@@ -5,6 +5,7 @@ namespace Pancake.AssetLoader
 {
     [CreateAssetMenu(fileName = "AddressableAssetLoader", menuName = "Pancake/Asset Loader/Addressable Asset Loader")]
     [EditorIcon("so_blue_loader")]
+    [Searchable]
     public sealed class AddressableAssetLoaderObject : AssetLoaderObject, IAssetLoader
     {
         private readonly AddressableAssetLoader _loader = new();

@@ -4,6 +4,7 @@ namespace Pancake.AssetLoader
 {
     [CreateAssetMenu(fileName = "ResourcesAssetLoader", menuName = "Pancake/Asset Loader/Resources Asset Loader")]
     [EditorIcon("so_blue_loader")]
+    [Searchable]
     public sealed class ResourcesAssetLoaderObject : AssetLoaderObject, IAssetLoader
     {
         private readonly ResourcesAssetLoader _loader = new();

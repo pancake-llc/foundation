@@ -6,6 +6,8 @@ namespace Pancake.Localization
 {
     [CreateAssetMenu(menuName = "Pancake/Localization/Sprite", fileName = "sprite_localizevalue", order = 3)]
     [EditorIcon("so_yellow_sprite")]
+    [Searchable]
+    [Serializable]
     public class LocaleSprite : LocaleVariable<Sprite>
     {
         [Serializable]

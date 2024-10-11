@@ -5,6 +5,8 @@ namespace Pancake.Localization
 {
     [CreateAssetMenu(menuName = "Pancake/Localization/GameObject", fileName = "gameobject_localizevalue", order = 2)]
     [EditorIcon("so_yellow_gameobject")]
+    [Searchable]
+    [Serializable]
     public class LocalePrefab : LocaleVariable<GameObject>
     {
         [Serializable]

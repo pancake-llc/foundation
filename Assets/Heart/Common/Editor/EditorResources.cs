@@ -82,8 +82,6 @@ namespace PancakeEditor.Common
             }
         }
 
-        public static Texture2D IconTrim => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_trim.png", RELATIVE_PATH);
-
         public static Texture2D IconCopyComponent(string theme)
         {
             TextureCached.TryGetValue($"{nameof(IconCopyComponent)}{theme}", out var tex);
@@ -124,16 +122,6 @@ namespace PancakeEditor.Common
             return tex;
         }
 
-        public static Texture2D IconCopiedComponent(string theme)
-        {
-            TextureCached.TryGetValue($"{nameof(IconCopiedComponent)}{theme}", out var tex);
-
-            if (tex != null) return tex;
-            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_copied.png" : "icon_copied_dark.png", RELATIVE_PATH);
-            TextureCached[$"{nameof(IconCopiedComponent)}{theme}"] = tex;
-            return tex;
-        }
-        
         public static Texture2D IconNullGuardPassed(string theme)
         {
             TextureCached.TryGetValue($"{nameof(IconNullGuardPassed)}{theme}", out var tex);

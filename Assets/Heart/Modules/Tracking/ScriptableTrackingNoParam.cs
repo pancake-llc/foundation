@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.Tracking
 {
     [Searchable]
-    [CreateAssetMenu(fileName = "scriptable_tracking_noparam", menuName = "Pancake/Tracking/No Param", order = 1)]
+    [CreateAssetMenu(fileName = "scriptable_tracking_noparam", menuName = "Pancake/Tracking/WrapperNo Param", order = 1)]
     [EditorIcon("so_blue_tracking")]
     public class ScriptableTrackingNoParam : ScriptableObject
     {

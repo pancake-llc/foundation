@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Linq;
 using UnityEngine;
 
 namespace Pancake.Localization
 {
     [CreateAssetMenu(menuName = "Pancake/Localization/Texture", fileName = "texture_localizevalue", order = 6)]
     [EditorIcon("so_yellow_texture")]
+    [Searchable]
+    [Serializable]
     public class LocaleTexture : LocaleVariable<Texture>
     {
         [Serializable]

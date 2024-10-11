@@ -214,20 +214,14 @@ namespace PancakeEditor.Common
                     if (minLength - 1 == i)
                     {
                         int compareDepth = rhsLength.CompareTo(lhsLength);
-                        if (compareDepth != 0)
-                        {
-                            return compareDepth;
-                        }
+                        if (compareDepth != 0) return compareDepth;
                     }
                 }
 
                 if ((_sortType & SortType.Alphabet) != 0)
                 {
                     int compareText = lhsPaths[i].CompareTo(rhsPaths[i]);
-                    if (compareText != 0)
-                    {
-                        return compareText;
-                    }
+                    if (compareText != 0) return compareText;
                 }
             }
 

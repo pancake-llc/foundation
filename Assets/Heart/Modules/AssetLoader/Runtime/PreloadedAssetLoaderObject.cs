@@ -7,6 +7,7 @@ namespace Pancake.AssetLoader
 {
     [CreateAssetMenu(fileName = "PreloadedAssetLoader", menuName = "Pancake/Asset Loader/Preloaded Asset Loader")]
     [EditorIcon("so_blue_loader")]
+    [Searchable]
     public sealed class PreloadedAssetLoaderObject : AssetLoaderObject, IAssetLoader
     {
         [SerializeField] private List<KeyAssetPair> preloadedObjects = new();

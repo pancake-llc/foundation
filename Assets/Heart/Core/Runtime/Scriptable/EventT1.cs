@@ -16,7 +16,6 @@ namespace Pancake
     /// <typeparam name="TArgument">
     /// Type of the argument that gets passed to all listener methods when the event occurs.
     /// </typeparam>
-    [EditorIcon("so_blue_event")]
     public abstract class Event<TArgument> : ScriptableObject, IEvent<TArgument>, IEventTrigger<TArgument>
     {
         protected const string CREATE_ASSET_MENU = "Pancake/Scriptable/Events/";
