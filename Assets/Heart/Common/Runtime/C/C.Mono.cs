@@ -1769,5 +1769,14 @@ namespace Pancake.Common
 
             scroll.normalizedPosition = new Vector2(1 - (scroll.content.rect.width / 2 - target.localPosition.x) / scroll.content.rect.width, 0);
         }
+
+        /// <summary>
+        /// m_MyGameObject is not truly null, but rather a sort of “null simulator” <br/>
+        /// Then you can call: <br/>gameObject.OrNull()?.DoSomething();
+        /// </summary>
+        /// <param name="source"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T OrNull<T>(this T source) where T : Object { return source == null ? null : source; }
     }
 }

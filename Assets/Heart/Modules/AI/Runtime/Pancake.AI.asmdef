@@ -1,0 +1,28 @@
+{
+    "name": "Pancake.AI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8c4dd21966739024fbd72155091d199e",
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
+        "GUID:2bb2982fd552689428d4c3ae8bb26fb7",
+        "GUID:1955df3fec9b6433d9d8aa0ad47c1767"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Sirenix.OdinInspector.Attributes.dll",
+        "Sirenix.Serialization.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.ai.navigation",
+            "expression": "2.0.0",
+            "define": "PANCAKE_AI"
+        }
+    ],
+    "noEngineReferences": false
+}

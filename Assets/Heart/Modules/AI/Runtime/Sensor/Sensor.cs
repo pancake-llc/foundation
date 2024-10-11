@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Pancake.Component
+namespace Pancake.AI
 {
     public abstract class Sensor : GameComponent
     {

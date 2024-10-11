@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 namespace Pancake.AI
 {
-    public static class Nav
+    public static class NavMeshExtension
     {
         public static bool RandomPositionNavInsideUnitSphere(Vector3 center, float range, out Vector3 result, int numberQuery = 3, float maxDistance = 1f)
         {

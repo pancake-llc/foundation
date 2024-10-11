@@ -3,25 +3,23 @@ using Pancake.Common;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Pancake.Component
+namespace Pancake.AI
 {
-    public class RangeSensor : Sensor
+    public class RangeSensor2D : Sensor
     {
         [Space(8)] [SerializeField] private float radius = 1f;
-
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
         [SerializeField] private bool detectOnStart = true;
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
         [Space(8), SerializeField, Required] private Transform center;
-
         [SerializeField, Required] private Transform source;
 
         [SerializeField] private GameObjectUnityEvent detectedEvent;
 
-        private readonly Collider[] _hits = new Collider[16];
-        private readonly HashSet<Collider> _hitObjects = new();
+        private readonly Collider2D[] _hits = new Collider2D[16];
+        private readonly HashSet<Collider2D> _hitObjects = new();
         private int _frames;
 
         private void Awake()
@@ -50,18 +48,41 @@ namespace Pancake.Component
             Raycast(currentPosition);
         }
 
-        private void Raycast(Vector3 center)
+
+        private void Raycast(Vector2 center)
         {
-            int count = Physics.OverlapSphereNonAlloc(center, radius, _hits, layer);
+#if UNITY_EDITOR
+#pragma warning disable 0219
+            var hitDetected = false;
+#pragma warning restore 0219
+#endif
+            int count = Physics2D.OverlapCircle(center, radius, new ContactFilter2D {layerMask = layer}, _hits);
             if (count <= 0) return;
+
             for (var i = 0; i < count; i++)
             {
                 var hit = _hits[i];
-                if (hit != null && hit.transform != source) HandleHit(hit);
+                if (hit != null && hit.transform != source)
+                {
+#if UNITY_EDITOR
+                    hitDetected = true;
+#endif
+                    HandleHit(hit);
+                }
             }
+
+#if UNITY_EDITOR
+            if (showGizmos)
+                DebugEditor.DrawCircle(center,
+                    radius,
+                    32,
+                    hitDetected ? Color.red : Color.cyan,
+                    0.4f);
+#endif
         }
 
-        private void HandleHit(Collider hit)
+
+        private void HandleHit(Collider2D hit)
         {
             if (_hitObjects.Contains(hit)) return;
             _hitObjects.Add(hit);
@@ -71,8 +92,8 @@ namespace Pancake.Component
 #if UNITY_EDITOR
             if (showGizmos)
             {
-                Debug.DrawRay(hit.transform.position, Vector2.down * 0.4f, Color.red, 0.6f);
-                Debug.DrawRay(hit.transform.position, Vector2.right * 0.4f, Color.red, 0.6f);
+                Debug.DrawRay((Vector2) hit.transform.position + new Vector2(0, 0.2f), Vector2.down * 0.4f, Color.red, 0.6f);
+                Debug.DrawRay((Vector2) hit.transform.position + new Vector2(-0.2f, 0), Vector2.right * 0.4f, Color.red, 0.6f);
             }
 #endif
         }
@@ -87,7 +108,7 @@ namespace Pancake.Component
 
                 if (showGizmos)
                 {
-                    Gizmos.color = Color.cyan;
+                    Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
                     Gizmos.DrawWireSphere(center.position, radius);
                 }
             }

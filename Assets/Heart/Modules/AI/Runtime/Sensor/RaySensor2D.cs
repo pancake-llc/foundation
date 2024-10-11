@@ -4,7 +4,7 @@ using Pancake.Common;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Pancake.Component
+namespace Pancake.AI
 {
     public class RaySensor2D : Sensor
     {

@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using Pancake.Common;
 using UnityEngine;
 
-namespace Pancake.Component
+namespace Pancake.AI
 {
     public class ScannerSensor2D : Sensor
     {
@@ -39,7 +39,7 @@ namespace Pancake.Component
             Horizontal = 1 << 0,
             Vertical = 1 << 1,
             IntersectionTop = 1 << 2,
-            IntersectionBottom = 1 << 3,
+            IntersectionBottom = 1 << 3
         };
 
         private void Awake()
