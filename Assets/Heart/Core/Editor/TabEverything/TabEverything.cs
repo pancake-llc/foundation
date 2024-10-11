@@ -674,8 +674,7 @@ namespace PancakeEditor
                     folderGuid = AssetDatabase.AssetPathToGUID(folderPath);
                 }
 
-                if (IsPropertyEditor)
-                    globalId = new GlobalID(window.GetMemberValue<string>("m_GlobalObjectId"));
+                if (IsPropertyEditor) globalId = new GlobalID(window.GetMemberValue<string>("m_GlobalObjectId"));
             }
 
             public TabInfo(Object lockTo)

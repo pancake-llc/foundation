@@ -261,28 +261,5 @@ namespace PancakeEditor.Common
                 }
             }
         }
-
-        public static FieldInfo GetFieldInfoFromProperty(SerializedProperty property)
-        {
-            var type = property.serializedObject.targetObject.GetType();
-            string[] fieldNames = property.propertyPath.Split('.');
-            FieldInfo fieldInfo = null;
-
-            foreach (string fieldName in fieldNames)
-            {
-                fieldInfo = type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-                if (fieldInfo == null) return null;
-
-                type = fieldInfo.FieldType;
-
-                // Handle arrays or lists
-                if (type.IsArray || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)))
-                {
-                    type = type.GetElementType() ?? type.GetGenericArguments()[0];
-                }
-            }
-
-            return fieldInfo;
-        }
     }
 }

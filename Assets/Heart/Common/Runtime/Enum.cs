@@ -6,7 +6,7 @@ namespace Pancake.Common
     public enum ETimeMode
     {
         Normal = 0,
-        Unscaled = 1,
+        Unscaled = 1
     }
 
     /// <summary>
@@ -16,6 +16,6 @@ namespace Pancake.Common
     {
         Update = 0,
         FixedUpdate = 1,
-        LateUpdate = 2,
+        LateUpdate = 2
     }
 }

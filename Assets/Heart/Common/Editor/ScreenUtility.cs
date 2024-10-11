@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace PancakeEditor.Common
 {
