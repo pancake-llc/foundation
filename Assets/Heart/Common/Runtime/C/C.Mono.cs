@@ -37,6 +37,20 @@ namespace Pancake.Common
 
         #region Position XY
 
+        public static void GetPositionXY(this Transform transform, out Vector2 v2)
+        {
+            var v3 = transform.position;
+            v2.x = v3.x;
+            v2.y = v3.y;
+        }
+
+
+        public static Vector2 GetPositionXY(this Transform transform)
+        {
+            var v3 = transform.position;
+            return new Vector2(v3.x, v3.y);
+        }
+        
         public static void SetPositionXY(this Transform transform, in Vector2 v2) { transform.position = new Vector3(v2.x, v2.y, transform.position.z); }
 
 

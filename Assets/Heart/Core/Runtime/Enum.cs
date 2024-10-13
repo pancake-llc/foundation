@@ -28,7 +28,7 @@ namespace Pancake
         None = 0,
         Update = 1 << 0,
         FixedUpdate = 1 << 1,
-        LateUpdate = 1 << 2,
+        LateUpdate = 1 << 2
     }
 
     public enum EAlignment
@@ -45,6 +45,6 @@ namespace Pancake
         Left,
         Right,
         Top,
-        Down,
+        Down
     }
 }

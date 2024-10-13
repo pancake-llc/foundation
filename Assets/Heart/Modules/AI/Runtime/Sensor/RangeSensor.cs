@@ -14,10 +14,7 @@ namespace Pancake.AI
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-        [Space(8), SerializeField, Required] private Transform center;
-
-        [SerializeField, Required] private Transform source;
-
+        [Space(8), SerializeField, Required] private Transform source;
         [SerializeField] private GameObjectUnityEvent detectedEvent;
 
         private readonly Collider[] _hits = new Collider[16];
@@ -47,13 +44,13 @@ namespace Pancake.AI
 
         private void Procedure()
         {
-            var currentPosition = source.TransformPoint(center.localPosition);
+            var currentPosition = source.position;
             Raycast(currentPosition);
         }
 
         private void Raycast(Vector3 center)
         {
-            _count = Physics.OverlapSphereNonAlloc(center, radius, _hits, layer);
+            _count = Physics.OverlapSphereNonAlloc(center, radius, _hits, layer.value);
             if (_count <= 0) return;
             for (var i = 0; i < _count; i++)
             {
@@ -78,30 +75,37 @@ namespace Pancake.AI
 #endif
         }
 
-        public Transform GetClosestTarget()
+        public override Transform GetClosestTarget()
         {
             if (_count == 0) return null;
-            
+
             Transform closestTarget = null;
             float closestDistance = Mathf.Infinity;
-            Vector3 currentPosition = source.TransformPoint(center.localPosition);
-            // todo
-            return null;
+            var currentPosition = source.position;
+            for (var i = 0; i < _count; i++)
+            {
+                var direactionToTarget = _hits[i].transform.position - currentPosition;
+                float distanceToTarget = direactionToTarget.sqrMagnitude;
+                if (distanceToTarget < closestDistance)
+                {
+                    closestDistance = distanceToTarget;
+                    closestTarget = _hits[i].transform;
+                }
+            }
+
+            return closestTarget;
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (center != null)
+            if (source != null && showGizmos)
             {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(center.position, 0.1f);
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(source.position, 0.1f);
 
-                if (showGizmos)
-                {
-                    Gizmos.color = Color.cyan;
-                    Gizmos.DrawWireSphere(center.position, radius);
-                }
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(source.position, radius);
             }
         }
 #endif

@@ -13,14 +13,14 @@ namespace Pancake.AI
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-        [Space(8), SerializeField, Required] private Transform center;
-        [SerializeField, Required] private Transform source;
+        [Space(8), SerializeField, Required] private Transform source;
 
         [SerializeField] private GameObjectUnityEvent detectedEvent;
 
         private readonly Collider2D[] _hits = new Collider2D[16];
         private readonly HashSet<Collider2D> _hitObjects = new();
         private int _frames;
+        private int _count;
 
         private void Awake()
         {
@@ -42,43 +42,18 @@ namespace Pancake.AI
             Procedure();
         }
 
-        private void Procedure()
-        {
-            var currentPosition = source.TransformPoint(center.localPosition);
-            Raycast(currentPosition);
-        }
-
+        private void Procedure() { Raycast(source.GetPositionXY()); }
 
         private void Raycast(Vector2 center)
         {
-#if UNITY_EDITOR
-#pragma warning disable 0219
-            var hitDetected = false;
-#pragma warning restore 0219
-#endif
-            int count = Physics2D.OverlapCircle(center, radius, new ContactFilter2D {layerMask = layer}, _hits);
-            if (count <= 0) return;
+            _count = Physics2D.OverlapCircle(center, radius, new ContactFilter2D {layerMask = layer}, _hits);
+            if (_count <= 0) return;
 
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < _count; i++)
             {
                 var hit = _hits[i];
-                if (hit != null && hit.transform != source)
-                {
-#if UNITY_EDITOR
-                    hitDetected = true;
-#endif
-                    HandleHit(hit);
-                }
+                if (hit != null && hit.transform != source) HandleHit(hit);
             }
-
-#if UNITY_EDITOR
-            if (showGizmos)
-                DebugEditor.DrawCircle(center,
-                    radius,
-                    32,
-                    hitDetected ? Color.red : Color.cyan,
-                    0.4f);
-#endif
         }
 
 
@@ -98,19 +73,37 @@ namespace Pancake.AI
 #endif
         }
 
+        public override Transform GetClosestTarget()
+        {
+            if (_count == 0) return null;
+
+            Transform closestTarget = null;
+            float closestDistance = Mathf.Infinity;
+            var currentPosition = source.position;
+            for (var i = 0; i < _count; i++)
+            {
+                var direactionToTarget = _hits[i].transform.position - currentPosition;
+                float distanceToTarget = direactionToTarget.sqrMagnitude;
+                if (distanceToTarget < closestDistance)
+                {
+                    closestDistance = distanceToTarget;
+                    closestTarget = _hits[i].transform;
+                }
+            }
+
+            return closestTarget;
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (center != null)
+            if (source != null && showGizmos)
             {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(center.position, 0.1f);
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(source.position, 0.1f);
 
-                if (showGizmos)
-                {
-                    Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
-                    Gizmos.DrawWireSphere(center.position, radius);
-                }
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(source.position, radius);
             }
         }
 #endif

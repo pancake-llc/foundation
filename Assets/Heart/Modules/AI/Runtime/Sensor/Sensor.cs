@@ -16,5 +16,7 @@ namespace Pancake.AI
         public abstract void Pulse();
 
         public virtual void Stop() { isPlaying = false; }
+
+        public abstract Transform GetClosestTarget();
     }
 }

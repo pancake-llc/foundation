@@ -8,33 +8,23 @@ namespace Pancake.AI
 {
     public class RaySensor2D : Sensor
     {
-        [InfoBox("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate")] [SerializeField]
-        private int sensorNumber = 2;
-
-        [SerializeField] private float radius = 1f;
         [SerializeField] private float range = 1f;
         [SerializeField] private RayDirection direction;
-
+        [SerializeField] private Shape shape;
+        [SerializeField, HideIf(nameof(shape), Shape.Ray), Indent] private float radius = 1f;
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
         [SerializeField] private bool detectOnStart = true;
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-        [Space(8), SerializeField, Required]
-        private Transform start;
-
-        [SerializeField, Required]
-        private Transform source;
-
+        [Space(8), SerializeField, Required] private Transform source;
         [SerializeField] private GameObjectUnityEvent detectedEvent;
 
-        private Vector2[] _sensors;
         private readonly RaycastHit2D[] _hits = new RaycastHit2D[16];
         private readonly HashSet<Collider2D> _hitObjects = new();
-
         private int _frames;
-        private Vector2 _left;
-        private Vector2 _right;
+        private Vector2 _end;
+        private int _count;
 
         private enum RayDirection
         {
@@ -44,45 +34,16 @@ namespace Pancake.AI
             Bottom
         }
 
-        private void Awake()
+        private enum Shape
         {
-            Init();
+            Ray,
+            Circle,
+            Box
+        }
+
+        private void Start()
+        {
             if (detectOnStart) Pulse();
-        }
-
-        private void CalculateRadius()
-        {
-            if (source == null || start == null) return;
-            var startConvert = source.TransformPoint(start.localPosition);
-            switch (direction)
-            {
-                case RayDirection.Left:
-                case RayDirection.Right:
-                    _left = startConvert + Vector3.up * radius;
-                    _right = startConvert + Vector3.down * radius;
-                    break;
-                case RayDirection.Top:
-                case RayDirection.Bottom:
-                    _left = startConvert + Vector3.left * radius;
-                    _right = startConvert + Vector3.right * radius;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void Init()
-        {
-            _sensors = new Vector2[sensorNumber];
-            CalculateRadius();
-
-            float d = 1f / (sensorNumber - 1);
-            var lerpValue = 0f;
-            for (var i = 0; i < sensorNumber; i++)
-            {
-                _sensors[i] = Vector2.Lerp(_left, _right, lerpValue);
-                lerpValue += d;
-            }
         }
 
         public override void Pulse()
@@ -103,45 +64,74 @@ namespace Pancake.AI
 
         private void Procedure()
         {
-            foreach (var point in _sensors)
+            var currentPoint = source.GetPositionXY();
+            var endPosition = CalculateEndPosition(currentPoint);
+            Raycast(currentPoint, endPosition);
+        }
+
+        private Vector2 CalculateEndPosition(Vector2 currentPoint)
+        {
+            var endPosition = direction switch
             {
-                Vector2 currentPoint = source.TransformPoint(point);
-                var endPosition = direction switch
-                {
-                    RayDirection.Left => currentPoint + Vector2.left * range,
-                    RayDirection.Right => currentPoint + Vector2.right * range,
-                    RayDirection.Top => currentPoint + Vector2.up * range,
-                    RayDirection.Bottom => currentPoint + Vector2.down * range,
-                    _ => currentPoint
-                };
-                Raycast(currentPoint, endPosition);
-            }
+                RayDirection.Left => currentPoint + Vector2.left * range,
+                RayDirection.Right => currentPoint + Vector2.right * range,
+                RayDirection.Top => currentPoint + Vector2.up * range,
+                RayDirection.Bottom => currentPoint + Vector2.down * range,
+                _ => currentPoint
+            };
+            return endPosition;
         }
 
         private void Raycast(Vector2 from, Vector2 to)
         {
-#if UNITY_EDITOR
-#pragma warning disable 0219
-            var hitDetected = false;
-#pragma warning restore 0219
-#endif
-            int count = Physics2D.Linecast(from, to, new ContactFilter2D {layerMask = layer}, _hits);
-            if (count <= 0) return;
-            for (var i = 0; i < count; i++)
+            var dir = (to - from).normalized;
+            switch (shape)
+            {
+                case Shape.Ray:
+                    _count = Physics2D.RaycastNonAlloc(from,
+                        dir,
+                        _hits,
+                        range,
+                        layer.value);
+                    break;
+                case Shape.Circle:
+                    var filter = new ContactFilter2D {useTriggers = Physics2D.queriesHitTriggers};
+                    filter.SetLayerMask(layer);
+                    _count = Physics2D.CircleCast(from,
+                        radius,
+                        dir,
+                        filter,
+                        _hits,
+                        range);
+                    break;
+                case Shape.Box:
+                    var boxFilter = new ContactFilter2D {useTriggers = Physics2D.queriesHitTriggers};
+                    boxFilter.SetLayerMask(layer);
+                    _count = Physics2D.BoxCast(from,
+                        Vector2.one * radius,
+                        0f,
+                        dir,
+                        boxFilter,
+                        _hits,
+                        range);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (_count <= 0) return;
+            for (var i = 0; i < _count; i++)
             {
                 var hit = _hits[i];
                 if (hit.collider != null && hit.collider.transform != source)
                 {
-#if UNITY_EDITOR
-                    hitDetected = true;
-#endif
                     HandleHit(hit);
-                }
-            }
 
 #if UNITY_EDITOR
-            if (showGizmos) Debug.DrawLine(from, to, hitDetected ? Color.red : Color.cyan, 0.4f);
+                    if (showGizmos) Debug.DrawLine(from, hit.point, Color.red, 0f);
 #endif
+                }
+            }
         }
 
         private void HandleHit(RaycastHit2D hit)
@@ -154,49 +144,62 @@ namespace Pancake.AI
 #if UNITY_EDITOR
             if (showGizmos)
             {
-                Debug.DrawRay(hit.point + new Vector2(0, 0.2f), Vector2.down * 0.4f, Color.red, 0.6f);
-                Debug.DrawRay(hit.point + new Vector2(-0.2f, 0), Vector2.right * 0.4f, Color.red, 0.6f);
+                Debug.DrawRay(hit.point + new Vector2(0, 0.2f), Vector3.down * 0.4f, Color.red, 0.6f);
+                Debug.DrawRay(hit.point + new Vector2(-0.2f, 0), Vector3.right * 0.4f, Color.red, 0.6f);
             }
 #endif
+        }
+
+        public override Transform GetClosestTarget()
+        {
+            if (_count == 0) return null;
+
+            Transform closestTarget = null;
+            float closestDistance = Mathf.Infinity;
+            var currentPosition = source.GetPositionXY();
+            for (var i = 0; i < _count; i++)
+            {
+                float distanceToTarget = Vector2.Distance(_hits[i].point, currentPosition);
+                if (distanceToTarget < closestDistance)
+                {
+                    closestDistance = distanceToTarget;
+                    closestTarget = _hits[i].transform;
+                }
+            }
+
+            return closestTarget;
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (Application.isPlaying)
+            if (source != null && showGizmos)
             {
-                Gizmos.color = Color.green;
-                foreach (var s in _sensors) Gizmos.DrawWireSphere(source.TransformPoint(s), 0.075f);
-            }
-            else
-            {
-                Gizmos.color = Color.blue;
-                if (start != null)
+                var currentPoint = source.GetPositionXY();
+                var endPosition = CalculateEndPosition(currentPoint);
+                var dir = (endPosition - currentPoint).normalized;
+                switch (shape)
                 {
-                    CalculateRadius();
-                    Gizmos.DrawLine(_left, _right);
-                }
-            }
+                    case Shape.Ray:
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawWireSphere(currentPoint, 0.1f);
+                        Gizmos.DrawWireSphere(endPosition, 0.1f);
 
-            if (start != null && source != null)
-            {
-                Gizmos.color = Color.yellow;
-                var sourceStart = source.TransformPoint(start.localPosition);
-                Gizmos.DrawWireSphere(sourceStart, 0.1f);
-                switch (direction)
-                {
-                    case RayDirection.Left:
-                        Gizmos.DrawWireSphere(sourceStart + Vector3.left * range, 0.1f);
+                        Gizmos.color = Color.yellow;
+                        Gizmos.DrawLine(currentPoint, endPosition);
                         break;
-                    case RayDirection.Right:
-                        Gizmos.DrawWireSphere(sourceStart + Vector3.right * range, 0.1f);
+                    case Shape.Circle:
+                        DebugEditor.DrawCircleCast(currentPoint, radius, dir, range);
                         break;
-                    case RayDirection.Top:
-                        Gizmos.DrawWireSphere(sourceStart + Vector3.up * range, 0.1f);
+                    case Shape.Box:
+                        DebugEditor.DrawBoxCast2D(currentPoint,
+                            Vector3.one * radius,
+                            0f,
+                            dir,
+                            range);
                         break;
-                    case RayDirection.Bottom:
-                        Gizmos.DrawWireSphere(sourceStart + Vector3.down * range, 0.1f);
-                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
