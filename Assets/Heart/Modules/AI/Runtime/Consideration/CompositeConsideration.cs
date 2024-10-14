@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Pancake.AI
 {
     [CreateAssetMenu(menuName = "Pancake/AI/Consideration/Composite")]
+    [EditorIcon("so_blue_consideration")]
     public class CompositeConsideration : Consideration
     {
         public enum OperationType

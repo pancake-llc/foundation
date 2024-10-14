@@ -7,6 +7,7 @@ using UnityEngine.AI;
 namespace Pancake.AI
 {
     [RequireComponent(typeof(NavMeshAgent))]
+    [EditorIcon("icon_controller")]
     public class AIBrain : GameComponent
     {
         public List<AIAction> actions;
