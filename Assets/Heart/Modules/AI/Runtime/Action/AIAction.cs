@@ -10,7 +10,7 @@ namespace Pancake.AI
 
         public virtual void Initialize(AIContext context) { }
 
-        public float CalculateUtility(AIContext context) => consideration.Evaluate(context);
+        public float CalculatePriority(AIContext context) => consideration.Evaluate(context);
 
         public abstract void Execute(AIContext context);
     }

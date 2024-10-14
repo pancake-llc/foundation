@@ -12,8 +12,8 @@ namespace Pancake.AI
         protected int raycastRate = 1;
 
         [SerializeField] protected LayerMask layer;
-        public List<StringConstant> tags = new();
         [SerializeField] private bool detectOnStart = true;
+        public List<StringConstant> tags = new();
 
         protected bool isPlaying;
         protected int frames;
