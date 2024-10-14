@@ -7,6 +7,7 @@ using System.Text;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityObject = UnityEngine.Object;
 
 namespace PancakeEditor.Finder
@@ -69,7 +70,6 @@ namespace PancakeEditor.Finder
             ".flare",
             ".playable",
             ".mat",
-            ".prefab",
             ".physicsmaterial",
             ".fontsettings",
             ".asset",
@@ -109,12 +109,16 @@ namespace PancakeEditor.Finder
 
         [SerializeField] private int mAssetChangeTs; // Realtime when asset changed (trigger by import asset operation)
         [SerializeField] private int mFileInfoReadTs; // Realtime when asset being read
+        [SerializeField] private bool mForceIncludeInBuild;
 
         [SerializeField] private int mFileWriteTs; // file's lastModification (file content + meta)
         [SerializeField] private int mCachefileWriteTs; // file's lastModification at the time the content being read
 
         [SerializeField] internal int refreshStamp; // use to check if asset has been deleted (refreshStamp not updated)
         [SerializeField] private List<Classes> useGUIDsList = new();
+
+        public string DebugUseGUID() => $"{guid} : {AssetPath}\n{string.Join("\n", useGUIDsList.Select(item => item.guid).ToArray())}";
+
 
         private bool _isExcluded;
         private Dictionary<string, HashSet<long>> _useGUIDs;
@@ -148,6 +152,8 @@ namespace PancakeEditor.Finder
             this.guid = guid;
             type = EFinderAssetType.Unknown;
         }
+
+        public bool ForcedIncludedInBuild => mForceIncludeInBuild;
 
         public string AssetName
         {
@@ -546,6 +552,7 @@ namespace PancakeEditor.Finder
         {
             if (!FileContentDirty) return;
             mCachefileWriteTs = mFileWriteTs;
+            mForceIncludeInBuild = false;
 
             if (IsMissing || type == EFinderAssetType.NonReadable) return;
 
@@ -703,11 +710,11 @@ namespace PancakeEditor.Finder
                 GUI.Label(countRect, str, GUI2.MiniLabelAlignRight);
             }
 
-            float pathW = drawPath ? EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(_mAssetFolder)).x : 0;
+            float pathW = drawPath && !string.IsNullOrEmpty(AssetFolder) ? EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(AssetFolder)).x : 0;
             float nameW = drawPath
-                ? EditorStyles.boldLabel.CalcSize(MyGUIContent.FromString(_mAssetName)).x
-                : EditorStyles.label.CalcSize(MyGUIContent.FromString(_mAssetName)).x;
-            float extW = EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(_mExtension)).x;
+                ? EditorStyles.boldLabel.CalcSize(MyGUIContent.FromString(AssetName)).x
+                : EditorStyles.label.CalcSize(MyGUIContent.FromString(AssetName)).x;
+            float extW = string.IsNullOrEmpty(Extension) ? 0f : EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(Extension)).x;
             var cc = FinderWindowBase.SelectedColor;
 
             if (singleLine)
@@ -724,30 +731,36 @@ namespace PancakeEditor.Finder
 
                 if (drawPath)
                 {
-                    var c2 = GUI.color;
-                    GUI.color = new Color(c2.r, c2.g, c2.b, c2.a * 0.5f);
-                    GUI.Label(GUI2.LeftRect(pathW, ref lbRect), MyGUIContent.FromString(_mAssetFolder), EditorStyles.miniLabel);
-                    GUI.color = c2;
+                    if (!string.IsNullOrEmpty(AssetFolder))
+                    {
+                        var c2 = GUI.color;
+                        GUI.color = new Color(c2.r, c2.g, c2.b, c2.a * 0.5f);
+                        GUI.Label(GUI2.LeftRect(pathW, ref lbRect), MyGUIContent.FromString(AssetFolder), EditorStyles.miniLabel);
+                        GUI.color = c2;
+                    }
 
                     lbRect.xMin -= 4f;
-                    GUI.Label(lbRect, MyGUIContent.FromString(_mAssetName), EditorStyles.boldLabel);
+                    GUI.Label(lbRect, MyGUIContent.FromString(AssetName), EditorStyles.boldLabel);
                 }
-                else GUI.Label(lbRect, MyGUIContent.FromString(_mAssetName));
+                else GUI.Label(lbRect, MyGUIContent.FromString(AssetName));
 
                 lbRect.xMin += nameW - 2f;
                 lbRect.y += 1f;
 
-                var c3 = GUI.color;
-                GUI.color = new Color(c3.r, c3.g, c3.b, c3.a * 0.5f);
-                GUI.Label(lbRect, MyGUIContent.FromString(_mExtension), EditorStyles.miniLabel);
-                GUI.color = c3;
+                if (!string.IsNullOrEmpty(Extension))
+                {
+                    var c3 = GUI.color;
+                    GUI.color = new Color(c3.r, c3.g, c3.b, c3.a * 0.5f);
+                    GUI.Label(lbRect, MyGUIContent.FromString(Extension), EditorStyles.miniLabel);
+                    GUI.color = c3;
+                }
             }
             else
             {
                 if (drawPath) GUI.Label(new Rect(r.x, r.y + 16f, r.width, r.height), MyGUIContent.FromString(_mAssetFolder), EditorStyles.miniLabel);
                 var lbRect = GUI2.LeftRect(nameW, ref r);
                 if (selected) GUI2.Rect(lbRect, cc);
-                GUI.Label(lbRect, MyGUIContent.FromString(_mAssetName), EditorStyles.boldLabel);
+                GUI.Label(lbRect, MyGUIContent.FromString(AssetName), EditorStyles.boldLabel);
             }
 
             var rr = GUI2.RightRect(10f, ref r); //margin
@@ -1051,7 +1064,18 @@ namespace PancakeEditor.Finder
                 }
             }
 
-            if (string.IsNullOrEmpty(_mExtension)) Debug.LogWarning($"Something wrong? <{_mExtension}>");
+            if (string.IsNullOrEmpty(Extension)) Debug.LogWarning($"Something wrong? <{_mExtension}>");
+
+            if (Extension == ".spriteatlas") // check for force include in build
+            {
+                var atlasAsset = AssetDatabase.LoadAssetAtPath<UnityObject>(_mAssetPath);
+                if (atlasAsset != null)
+                {
+                    var so = new SerializedObject(atlasAsset);
+                    var prop = so.FindProperty("m_EditorData.bindAsDefault");
+                    mForceIncludeInBuild = prop.boolValue;
+                }
+            }
 
             if (UiToolkit.Contains(_mExtension))
             {

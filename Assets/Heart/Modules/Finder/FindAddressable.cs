@@ -197,10 +197,10 @@ namespace PancakeEditor.Finder
             }
         }
     }
-    
+
     internal class FindAddressableDrawer : IRefDraw
     {
-        const string AUTO_DEPEND_TITLE = "(Auto dependency)";
+        private const string AUTO_DEPEND_TITLE = "(Auto dependency)";
 
         internal readonly FindRefDrawer drawer;
         private bool _dirty;
@@ -228,9 +228,9 @@ namespace PancakeEditor.Finder
         }
 
 
-        string GetGroup(FindRef rf) { return rf.group; }
+        private string GetGroup(FindRef rf) => rf.group;
 
-        void DrawGroupLabel(Rect r, string label, int childCount)
+        private void DrawGroupLabel(Rect r, string label, int childCount)
         {
             var c = GUI.contentColor;
             if (label == AUTO_DEPEND_TITLE)
@@ -244,7 +244,7 @@ namespace PancakeEditor.Finder
             GUI.contentColor = c;
         }
 
-        void BeforeDrawItem(Rect r, FindRef rf)
+        private void BeforeDrawItem(Rect r, FindRef rf)
         {
             string guid = rf.asset.guid;
             if (map.TryGetValue(guid, out var address)) return;
@@ -253,7 +253,7 @@ namespace PancakeEditor.Finder
             GUI.contentColor = c;
         }
 
-        void AfterDrawItem(Rect r, FindRef rf)
+        private void AfterDrawItem(Rect r, FindRef rf)
         {
             string guid = rf.asset.guid;
             if (!map.TryGetValue(guid, out var address))
@@ -356,63 +356,60 @@ namespace PancakeEditor.Finder
             groups = addresses.Keys.ToList();
             map.Clear();
 
-            var maxLengthGroup = string.Empty;
-            foreach (var kvp in addresses)
+            if (addresses.Count > 0)
             {
-                // Debug.Log($"{kvp.Key}:\n" + string.Join("\n", kvp.Value.assetGUIDs));
-                foreach (string guid in kvp.Value.assetGUIDs)
+                var maxLengthGroup = string.Empty;
+                foreach (var kvp in addresses)
                 {
-                    var asset = FinderWindowBase.CacheSetting.Get(guid);
-                    refs.Add(guid,
-                    new FindRef(0,
-                        1,
-                        asset,
-                        null,
-                        null) {isSceneRef = false, group = kvp.Value.bundleGroup});
-
-                    map.Add(guid, kvp.Value);
-                    if (maxLengthGroup.Length < kvp.Value.address.Length)
+                    foreach (string guid in kvp.Value.assetGUIDs)
                     {
-                        maxLengthGroup = kvp.Value.address;
+                        if (refs.ContainsKey(guid)) continue;
+                        var asset = FinderWindowBase.CacheSetting.Get(guid);
+                        refs.Add(guid,
+                        new FindRef(0,
+                            1,
+                            asset,
+                            null,
+                            null) {isSceneRef = false, group = kvp.Value.bundleGroup});
+
+                        map.Add(guid, kvp.Value);
+                        if (maxLengthGroup.Length < kvp.Value.address.Length) maxLengthGroup = kvp.Value.address;
+                    }
+
+                    foreach (string guid in kvp.Value.childGUIDs)
+                    {
+                        if (refs.ContainsKey(guid)) continue;
+
+                        var asset = FinderWindowBase.CacheSetting.Get(guid);
+                        refs.Add(guid,
+                        new FindRef(0,
+                            1,
+                            asset,
+                            null,
+                            null) {isSceneRef = false, group = kvp.Value.bundleGroup});
+
+                        map.Add(guid, kvp.Value);
+                        if (maxLengthGroup.Length < kvp.Value.address.Length) maxLengthGroup = kvp.Value.address;
                     }
                 }
 
-                foreach (string guid in kvp.Value.childGUIDs)
+                maxWidth = EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(maxLengthGroup)).x + 16f;
+
+                // Find usage
+                var usages = FindRef.FindUsage(map.Keys.ToArray());
+                foreach (var kvp in usages)
                 {
-                    var asset = FinderWindowBase.CacheSetting.Get(guid);
-                    if (refs.ContainsKey(guid)) continue;
+                    if (refs.ContainsKey(kvp.Key)) continue;
+                    var v = kvp.Value;
 
-                    refs.Add(guid,
-                    new FindRef(0,
-                        1,
-                        asset,
-                        null,
-                        null) {isSceneRef = false, group = kvp.Value.bundleGroup});
+                    // do not take script
+                    if (v.asset.IsScript) continue;
+                    if (v.asset.IsExcluded) continue;
 
-                    map.Add(guid, kvp.Value);
-                    if (maxLengthGroup.Length < kvp.Value.address.Length)
-                    {
-                        maxLengthGroup = kvp.Value.address;
-                    }
+                    refs.Add(kvp.Key, kvp.Value);
+                    kvp.Value.depth = 1;
+                    kvp.Value.group = AUTO_DEPEND_TITLE;
                 }
-            }
-
-            maxWidth = EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(maxLengthGroup)).x + 16f;
-
-            // Find usage
-            var usages = FindRef.FindUsage(map.Keys.ToArray());
-            foreach (var kvp in usages)
-            {
-                if (refs.ContainsKey(kvp.Key)) continue;
-                var v = kvp.Value;
-
-                // do not take script
-                if (v.asset.IsScript) continue;
-                if (v.asset.IsExcluded) continue;
-
-                refs.Add(kvp.Key, kvp.Value);
-                kvp.Value.depth = 1;
-                kvp.Value.group = AUTO_DEPEND_TITLE;
             }
 
             _dirty = false;

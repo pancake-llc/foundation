@@ -70,7 +70,7 @@ namespace PancakeEditor.Finder
         [NonSerialized] private FindRefDrawer _usesDrawer;
         [NonSerialized] private FindRefDrawer _usedByDrawer;
         [NonSerialized] private FindRefDrawer _sceneToAssetDrawer;
-        [NonSerialized] internal FindAddressableDrawer _addressableDrawer;
+        [NonSerialized] private FindAddressableDrawer _addressableDrawer;
 
         [NonSerialized] private FindRefDrawer _refInScene;
         [NonSerialized] private FindRefDrawer _sceneUsesDrawer;
@@ -938,6 +938,7 @@ namespace PancakeEditor.Finder
             _usedByDrawer.SetDirty();
             _usesDrawer.SetDirty();
             _duplicated.SetDirty();
+            _addressableDrawer.SetDirty();
             _sceneToAssetDrawer.SetDirty();
             _refUnUse.SetDirty();
 

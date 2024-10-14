@@ -79,7 +79,8 @@ namespace PancakeEditor.Finder
                 if (item.IsFolder) continue;
                 if (!item.AssetPath.StartsWith("Assets/", StringComparison.Ordinal)) continue;
 
-                if (item.InResources || item.InStreamingAsset || item.InPlugins || !string.IsNullOrEmpty(item.AssetBundleName) || !string.IsNullOrEmpty(item.AtlasName))
+                if (item.InResources || item.InStreamingAsset || item.InPlugins || item.ForcedIncludedInBuild || !string.IsNullOrEmpty(item.AssetBundleName) ||
+                    !string.IsNullOrEmpty(item.AtlasName))
                 {
                     if (refs.ContainsKey(item.guid)) continue;
                     refs.Add(item.guid, new FindRef(0, 1, item, null));

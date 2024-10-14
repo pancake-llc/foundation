@@ -24,9 +24,13 @@ namespace PancakeEditor.Finder
                     {
                         string line = sr.ReadLine();
                         if (string.IsNullOrEmpty(line)) continue;
-                        if (line.IndexOf("guid", StringComparison.Ordinal) == -1) continue;
+                        int idx1 = line.IndexOf("guid", StringComparison.Ordinal);
+                        int idx2 = line.IndexOf("m_AssetGUID", StringComparison.Ordinal);
+                        if (idx1 == -1 && idx2 == -1) continue;
+
+                        // compact line so that guid: xxxxx, fileID: xxxxx became guid:xxxxx,fileID:xxxxx
                         line = line.Replace(" ", string.Empty);
-                        var (guid, fileId) = lineHandler(line);
+                        (string guid, long fileId) = lineHandler(line);
                         if (guid == null)
                         {
                             if (filePath.Contains("ProjectSettings/EditorBuildSettings.asset")) continue;
@@ -44,7 +48,13 @@ namespace PancakeEditor.Finder
 #pragma warning restore CS0168
         }
 
-        private static (string guid, long fileId) ParseLine_Yaml(string line) { return FindRef(line, "guid:", "fileID:", ","); }
+        private static (string guid, long fileId) ParseLine_Yaml(string line)
+        {
+            // Check for both guid: and m_AssetGUID: patterns
+            var result = FindRef(line, "guid:", "fileID:", ",");
+            if (result.guid != null) return result;
+            return FindRef(line, "m_AssetGUID:", null, null);
+        }
 
         private static (string guid, long fileId) ParseLine_Json(string line)
         {
@@ -71,6 +81,7 @@ namespace PancakeEditor.Finder
             string guid = Find(source, guidPattern, separatorPattern);
             if (string.IsNullOrEmpty(guid)) return (null, -1);
 
+            if (string.IsNullOrEmpty(fileIdPattern)) return (guid, -1);
             string fileIdStr = Find(source, fileIdPattern, separatorPattern);
             if (string.IsNullOrEmpty(fileIdStr)) return (null, -1);
 
@@ -78,12 +89,15 @@ namespace PancakeEditor.Finder
             return (guid, fileId);
         }
 
-        private static string Find(string source, string str_begin, string str_end)
+        private static string Find(string source, string strBegin, string strEnd)
         {
-            int st = source.IndexOf(str_begin, StringComparison.Ordinal);
+            int st = source.IndexOf(strBegin, StringComparison.Ordinal);
             if (st == -1) return null;
-            st += str_begin.Length;
-            int ed = source.IndexOf(str_end, st, StringComparison.Ordinal);
+            st += strBegin.Length;
+            
+            if (string.IsNullOrEmpty(strEnd)) return source.Substring(st);
+
+            int ed = source.IndexOf(strEnd, st, StringComparison.Ordinal);
             return ed == -1 ? null : source.Substring(st, ed - st);
         }
     }

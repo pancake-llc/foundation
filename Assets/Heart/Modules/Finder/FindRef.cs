@@ -42,7 +42,7 @@ namespace PancakeEditor.Finder
             scenePath = FinderUtility.GetGameObjectPath(obj, false);
             if (component == null) return;
 
-            string cName = component.name;
+            string cName = component.name ?? "(empty)"; // some components are hidden
             sceneFullPath = scenePath + cName;
             targetType = component.GetType().Name;
             _assetNameGC = MyGUIContent.FromString(cName);
@@ -51,7 +51,7 @@ namespace PancakeEditor.Finder
         public static IWindow Window { get; set; }
 
         public override bool IsSelected() { return component != null && AssetBookmark.Contains(component); }
-        readonly GUIContent _assetNameGC;
+        private readonly GUIContent _assetNameGC;
 
         public void Draw(Rect r, IWindow window, FindRefDrawer.Mode groupMode, bool showDetails)
         {
@@ -91,7 +91,7 @@ namespace PancakeEditor.Finder
             if (!showDetails) return;
 
             bool drawPath = groupMode != FindRefDrawer.Mode.Folder;
-            float pathW = drawPath ? EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(scenePath)).x : 0;
+            float pathW = drawPath && !string.IsNullOrEmpty(scenePath) ? EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(scenePath)).x : 0;
 
             var cc = FinderWindowBase.SelectedColor;
 
@@ -329,6 +329,8 @@ namespace PancakeEditor.Finder
         public bool isSceneRef;
         public int matchingScore;
         public readonly int type;
+
+        public FindRef() { }
 
         public FindRef(int index, int depth, FindAsset asset, FindAsset by)
         {
@@ -570,9 +572,10 @@ namespace PancakeEditor.Finder
                     AppendUsageScene(dict, item);
                 }
 
-                if (depth)
+                if (!depth) continue;
+
+                foreach (var child in FinderUtility.GetAllChild(objs[i]))
                 {
-                    foreach (var child in FinderUtility.GetAllChild(objs[i]))
                     foreach (var item2 in FinderUtility.GetAllRefObjects(child))
                     {
                         AppendUsageScene(dict, item2);
@@ -937,6 +940,19 @@ namespace PancakeEditor.Finder
             list?.Clear();
 
             return this;
+        }
+
+        public void Reset(Dictionary<string, FindRef> newRefs)
+        {
+            if (refs == null) refs = new Dictionary<string, FindRef>();
+            refs.Clear();
+            foreach (var kvp in newRefs)
+            {
+                refs.Add(kvp.Key, kvp.Value);
+            }
+
+            _dirty = true;
+            if (list != null) list.Clear();
         }
 
         public FindRefDrawer Reset(GameObject[] objs, bool findDept, bool findPrefabInAsset)
