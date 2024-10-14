@@ -5,7 +5,7 @@ namespace Pancake.AI
 
     public abstract class Consideration : ScriptableObject
     {
-        public abstract float Evalute(AIContext context);
+        public abstract float Evaluate(AIContext context);
     }
 }
 #endif

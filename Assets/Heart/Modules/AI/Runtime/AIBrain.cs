@@ -5,7 +5,6 @@ using UnityEngine.AI;
 namespace Pancake.AI
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(Sensor))]
     public class AIBrain : GameComponent
     {
         private NavMeshAgent _agent;

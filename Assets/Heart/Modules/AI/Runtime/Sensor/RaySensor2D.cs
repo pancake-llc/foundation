@@ -8,12 +8,12 @@ namespace Pancake.AI
 {
     public class RaySensor2D : Sensor
     {
-        [SerializeField] private float range = 1f;
+        [Space(8), SerializeField] private float range = 1f;
         [SerializeField] private RayDirection direction;
         [SerializeField] private Shape shape;
         [SerializeField, HideIf(nameof(shape), Shape.Ray), Indent] private float radius = 1f;
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
-        [SerializeField] private bool detectOnStart = true;
+       
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
@@ -41,11 +41,6 @@ namespace Pancake.AI
             Box
         }
 
-        private void Start()
-        {
-            if (detectOnStart) Pulse();
-        }
-
         public override void Pulse()
         {
             _hitObjects.Clear();
@@ -62,7 +57,7 @@ namespace Pancake.AI
             Procedure();
         }
 
-        private void Procedure()
+        protected override void Procedure()
         {
             var currentPoint = source.GetPositionXY();
             var endPosition = CalculateEndPosition(currentPoint);
@@ -136,9 +131,11 @@ namespace Pancake.AI
 
         private void HandleHit(RaycastHit2D hit)
         {
-            if (_hitObjects.Contains(hit.collider)) return;
-            _hitObjects.Add(hit.collider);
-            detectedEvent?.Invoke(hit.collider.gameObject);
+            var col = hit.collider;
+            if (!TagVerify(col)) return;
+            if (_hitObjects.Contains(col)) return;
+            _hitObjects.Add(col);
+            detectedEvent?.Invoke(col.gameObject);
             if (stopAfterFirstHit) Stop();
 
 #if UNITY_EDITOR
@@ -148,6 +145,27 @@ namespace Pancake.AI
                 Debug.DrawRay(hit.point + new Vector2(-0.2f, 0), Vector3.right * 0.4f, Color.red, 0.6f);
             }
 #endif
+        }
+
+        public override Transform GetClosestTarget(StringConstant tag)
+        {
+            if (_count == 0) return null;
+
+            Transform closestTarget = null;
+            float closestDistance = Mathf.Infinity;
+            var currentPosition = source.GetPositionXY();
+            for (var i = 0; i < _count; i++)
+            {
+                if (!_hits[i].collider.CompareTag(tag.Value)) continue; 
+                float distanceToTarget = Vector2.Distance(_hits[i].point, currentPosition);
+                if (distanceToTarget < closestDistance)
+                {
+                    closestDistance = distanceToTarget;
+                    closestTarget = _hits[i].transform;
+                }
+            }
+
+            return closestTarget;
         }
 
         public override Transform GetClosestTarget()

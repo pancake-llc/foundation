@@ -7,9 +7,8 @@ namespace Pancake.AI
 {
     public class RangeSensor2D : Sensor
     {
-        [Space(8)] [SerializeField] private float radius = 1f;
-        [Space(8)] [SerializeField] private bool stopAfterFirstHit;
-        [SerializeField] private bool detectOnStart = true;
+        [Space(8), SerializeField] private float radius = 1f;
+        [SerializeField] private bool stopAfterFirstHit;
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
@@ -19,13 +18,8 @@ namespace Pancake.AI
 
         private readonly Collider2D[] _hits = new Collider2D[16];
         private readonly HashSet<Collider2D> _hitObjects = new();
-        private int _frames;
-        private int _count;
 
-        private void Awake()
-        {
-            if (detectOnStart) Pulse();
-        }
+        private int _count;
 
         public override void Pulse()
         {
@@ -33,20 +27,11 @@ namespace Pancake.AI
             isPlaying = true;
         }
 
-        protected void FixedUpdate()
+        protected override void Procedure()
         {
-            if (!isPlaying) return;
-            _frames++;
-            if (_frames % raycastRate != 0) return;
-            _frames = 0;
-            Procedure();
-        }
-
-        private void Procedure() { Raycast(source.GetPositionXY()); }
-
-        private void Raycast(Vector2 center)
-        {
-            _count = Physics2D.OverlapCircle(center, radius, new ContactFilter2D {layerMask = layer}, _hits);
+            var legacyFilter = new ContactFilter2D {useTriggers = Physics2D.queriesHitTriggers};
+            legacyFilter.SetLayerMask(layer);
+            _count = Physics2D.OverlapCircle(source.GetPositionXY(), radius, legacyFilter, _hits);
             if (_count <= 0) return;
 
             for (var i = 0; i < _count; i++)
@@ -56,9 +41,9 @@ namespace Pancake.AI
             }
         }
 
-
         private void HandleHit(Collider2D hit)
         {
+            if (!TagVerify(hit)) return;
             if (_hitObjects.Contains(hit)) return;
             _hitObjects.Add(hit);
             detectedEvent?.Invoke(hit.gameObject);
@@ -73,6 +58,27 @@ namespace Pancake.AI
 #endif
         }
 
+        public override Transform GetClosestTarget(StringConstant tag)
+        {
+            if (_count == 0) return null;
+
+            Transform closestTarget = null;
+            float closestDistance = Mathf.Infinity;
+            var currentPosition = source.position;
+            for (var i = 0; i < _count; i++)
+            {
+                if (!_hits[i].CompareTag(tag.Value)) continue;
+                float distanceToTarget = Vector3.Distance(_hits[i].transform.position, currentPosition);
+                if (distanceToTarget < closestDistance)
+                {
+                    closestDistance = distanceToTarget;
+                    closestTarget = _hits[i].transform;
+                }
+            }
+
+            return closestTarget;
+        }
+
         public override Transform GetClosestTarget()
         {
             if (_count == 0) return null;
@@ -82,8 +88,7 @@ namespace Pancake.AI
             var currentPosition = source.position;
             for (var i = 0; i < _count; i++)
             {
-                var direactionToTarget = _hits[i].transform.position - currentPosition;
-                float distanceToTarget = direactionToTarget.sqrMagnitude;
+                float distanceToTarget = Vector3.Distance(_hits[i].transform.position, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {
                     closestDistance = distanceToTarget;
