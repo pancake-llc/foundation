@@ -1,0 +1,25 @@
+{
+    "name": "Pancake.AI.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:bba86bf5741f15f42bba605abe4ccf72",
+        "GUID:adac8d59ad7e8504f82d387cded797a7"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.ai.navigation",
+            "expression": "2.0.0",
+            "define": "PANCAKE_AI"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.AI
 {
-    [CreateAssetMenu(menuName = "Pancake/AI/Consideration/Constant")]
+    [CreateAssetMenu(menuName = "Pancake/AI/Considerations/Constant")]
     [EditorIcon("so_blue_consideration")]
     public class ConstantConsideration : Consideration
     {

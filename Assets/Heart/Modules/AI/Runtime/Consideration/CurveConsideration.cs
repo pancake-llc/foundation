@@ -4,7 +4,7 @@ using UnityEngine;
 #if PANCAKE_AI
 namespace Pancake.AI
 {
-    [CreateAssetMenu(menuName = "Pancake/AI/Consideration/Curve")]
+    [CreateAssetMenu(menuName = "Pancake/AI/Considerations/Curve")]
     [EditorIcon("so_blue_consideration")]
     public class CurveConsideration : Consideration
     {

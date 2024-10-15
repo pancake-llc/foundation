@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.AI
 {
-    [CreateAssetMenu(menuName = "Pancake/AI/Consideration/Range")]
+    [CreateAssetMenu(menuName = "Pancake/AI/Considerations/Range")]
     [EditorIcon("so_blue_consideration")]
     public class InRageConsideration : Consideration
     {
