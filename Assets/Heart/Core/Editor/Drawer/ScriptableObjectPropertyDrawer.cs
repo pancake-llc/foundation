@@ -17,14 +17,15 @@ namespace PancakeEditor
             EditorGUI.BeginProperty(position, label, property);
 
             var targetObject = property.objectReferenceValue;
-            if (targetObject == null)
-            {
-                DrawIfNull(position, property, label);
-                return;
-            }
-
             var isInCollection = true;
             if (fieldInfo != null) isInCollection = fieldInfo.FieldType.IsCollectionType();
+            
+            if (targetObject == null)
+            {
+                DrawIfNull(position, property, label, isInCollection);
+                return;
+            }
+            
             DrawIfNotNull(position,
                 property,
                 label,
@@ -34,9 +35,9 @@ namespace PancakeEditor
             EditorGUI.EndProperty();
         }
 
-        private void DrawIfNull(Rect position, SerializedProperty property, GUIContent label)
+        private void DrawIfNull(Rect position, SerializedProperty property, GUIContent label, bool isInCollection)
         {
-            if (fieldInfo != null && fieldInfo.FieldType.IsAbstract)
+            if (fieldInfo != null && (fieldInfo.FieldType.IsAbstract || isInCollection && fieldInfo.FieldType.GetCorrectElementType().IsAbstract))
             {
                 EditorGUI.PropertyField(position, property, label);
                 return;
