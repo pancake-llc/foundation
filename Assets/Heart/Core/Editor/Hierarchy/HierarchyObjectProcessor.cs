@@ -40,14 +40,14 @@ namespace PancakeEditor
             }
         }
 
-        static HierarchyObjectMode GetHierarchyObjectMode(HierarchyObject obj)
+        private static HierarchyObjectMode GetHierarchyObjectMode(HierarchyObject obj)
         {
             return obj.HierarchyObjectMode != HierarchyObject.Mode.UseSettings
                 ? (HierarchyObjectMode) (obj.HierarchyObjectMode - 1)
                 : HierarchySettings.HierarchyObjectMode;
         }
 
-        static int GetDepth(Transform transform)
+        private static int GetDepth(Transform transform)
         {
             var depth = 0;
             var parent = transform.parent;

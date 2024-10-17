@@ -8,7 +8,7 @@ namespace PancakeEditor
     // ReSharper disable once UnusedType.Global
     public sealed class HierarchySeparatorDrawer : HierarchyDrawer
     {
-        static Color SeparatorColor => new(0.5f, 0.5f, 0.5f);
+        private static Color SeparatorColor => new(0.5f, 0.5f, 0.5f);
 
         public override void OnGUI(int instanceID, Rect selectionRect)
         {

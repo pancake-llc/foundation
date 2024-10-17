@@ -7,7 +7,7 @@ namespace PancakeEditor
     internal static class HierarchyDrawerInitializer
     {
         [InitializeOnLoadMethod]
-        static void Init()
+        private static void Init()
         {
             var drawers = TypeCache.GetTypesDerivedFrom<HierarchyDrawer>()
                 .Where(x => !x.IsAbstract)

@@ -69,7 +69,7 @@ namespace PancakeEditor
             }
         }
 
-        static void DrawIcon(ref Rect rect, Texture image, Color color)
+        private static void DrawIcon(ref Rect rect, Texture image, Color color)
         {
             var defaultColor = GUI.color;
             GUI.color = color;
@@ -80,7 +80,7 @@ namespace PancakeEditor
             GUI.color = defaultColor;
         }
 
-        static bool IsEnabled(Component component)
+        private static bool IsEnabled(Component component)
         {
             var property = component.GetType().GetProperty("enabled", typeof(bool));
             return (bool)(property?.GetValue(component, null) ?? true);

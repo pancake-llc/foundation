@@ -8,8 +8,8 @@ namespace PancakeEditor
     // ReSharper disable once UnusedType.Global
     public sealed class HierarchyHeaderDrawer : HierarchyDrawer
     {
-        static Color HeaderColor => EditorGUIUtility.isProSkin ? new Color(0.45f, 0.45f, 0.45f, 0.5f) : new Color(0.55f, 0.55f, 0.55f, 0.5f);
-        static GUIStyle labelStyle;
+        private static Color HeaderColor => EditorGUIUtility.isProSkin ? new Color(0.45f, 0.45f, 0.45f, 0.5f) : new Color(0.55f, 0.55f, 0.55f, 0.5f);
+        private static GUIStyle labelStyle;
 
         public override void OnGUI(int instanceID, Rect selectionRect)
         {
