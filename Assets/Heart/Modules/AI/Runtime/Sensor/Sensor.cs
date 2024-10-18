@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Pancake.ExTag;
 using Pancake.PlayerLoop;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace Pancake.AI
 
         [SerializeField] protected LayerMask layer;
         [SerializeField] private bool detectOnStart = true;
+        [SerializeField] protected bool newTagSystem = true;
         public List<StringConstant> tags = new();
 
         protected bool isPlaying;
@@ -72,7 +74,14 @@ namespace Pancake.AI
             var check = false;
             foreach (var t in tags)
             {
-                if (!hit.CompareTag(t.Value)) continue;
+                if (newTagSystem)
+                {
+                    if (!hit.gameObject.HasTag(t.Value)) continue;
+                }
+                else
+                {
+                    if (!hit.CompareTag(t.Value)) continue;
+                }
 
                 check = true;
                 break;

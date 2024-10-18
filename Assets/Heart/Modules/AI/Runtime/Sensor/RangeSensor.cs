@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Pancake.Common;
+using Pancake.ExTag;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -62,7 +63,15 @@ namespace Pancake.AI
             var currentPosition = source.position;
             for (var i = 0; i < _count; i++)
             {
-                if (!_hits[i].CompareTag(tag.Value)) continue;
+                if (newTagSystem)
+                {
+                    if (!_hits[i].gameObject.HasTag(tag.Value)) continue;
+                }
+                else
+                {
+                    if (!_hits[i].CompareTag(tag.Value)) continue;
+                }
+
                 float distanceToTarget = Vector3.Distance(_hits[i].transform.position, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {

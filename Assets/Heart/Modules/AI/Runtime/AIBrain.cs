@@ -10,21 +10,21 @@ namespace Pancake.AI
     [EditorIcon("icon_controller")]
     public class AIBrain : GameComponent
     {
+        [SerializeField] private Optional<NavMeshAgent> agent = new(false, null);
+        [SerializeField] private Optional<Sensor> sensor = new(false, null);
+
         public List<AIAction> actions;
         public AIContext context;
 
         public Action<AIContext> updateContext;
 
-        private NavMeshAgent _agent;
-        private Sensor _sensor;
-
-        public NavMeshAgent Agent => _agent;
-        public Sensor Sensor => _sensor;
+        public NavMeshAgent Agent => agent.Value;
+        public Sensor Sensor => sensor.Value;
 
         protected virtual void Awake()
         {
-            _agent = GetComponent<NavMeshAgent>();
-            _sensor = GetComponent<Sensor>();
+            if (Agent == null) agent = new Optional<NavMeshAgent>(false, GetComponent<NavMeshAgent>());
+            if (Sensor == null) sensor = new Optional<Sensor>(false, GetComponent<Sensor>());
             context = new AIContext(this);
 
             foreach (var action in actions)

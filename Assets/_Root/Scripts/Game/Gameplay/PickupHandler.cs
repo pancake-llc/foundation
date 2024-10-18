@@ -1,9 +1,21 @@
+using Pancake.Game.Interfaces;
+using Sisus.Init;
+
 namespace Pancake.Game
 {
     using UnityEngine;
 
-    public class PickupHandler : MonoBehaviour
+    public class PickupHandler : MonoBehaviour<IPlayerStat>
     {
-        public void OnItemCollected() { Debug.Log("PickupHandler::OnItemCollected"); }
+        private IPlayerStat _playerStat;
+
+        public void OnItemCollected()
+        {
+            Debug.Log("PickupHandler::OnItemCollected");
+
+            Debug.Log("Now Current Player HP:" + _playerStat.Health);
+        }
+
+        protected override void Init(IPlayerStat argument) { _playerStat = argument; }
     }
 }

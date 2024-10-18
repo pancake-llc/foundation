@@ -6,5 +6,8 @@ namespace Pancake.Game.Interfaces
     public interface IPlayerStat
     {
         float MoveSpeed { get; }
+        int MaxHealth { get; }
+        int Health { get; set; }
+        void IncreaseMaxHeath(int value);
     }
 }

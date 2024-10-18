@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Pancake.Common;
+using Pancake.ExTag;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Pancake.AI
         [SerializeField] private Shape shape;
         [SerializeField, HideIf(nameof(shape), Shape.Ray), Indent] private float radius = 1f;
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
-       
+
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
@@ -156,7 +157,15 @@ namespace Pancake.AI
             var currentPosition = source.GetPositionXY();
             for (var i = 0; i < _count; i++)
             {
-                if (!_hits[i].collider.CompareTag(tag.Value)) continue; 
+                if (newTagSystem)
+                {
+                    if (!_hits[i].collider.gameObject.HasTag(tag.Value)) continue;
+                }
+                else
+                {
+                    if (!_hits[i].collider.CompareTag(tag.Value)) continue;
+                }
+
                 float distanceToTarget = Vector2.Distance(_hits[i].point, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {

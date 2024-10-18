@@ -1,11 +1,17 @@
 #if PANCAKE_AI
+using UnityEngine;
+
 
 namespace Pancake.AI
 {
     [EditorIcon("so_blue_action")]
+    [CreateAssetMenu(menuName = "Pancake/AI/Actions/Move To Target")]
     public class MoveToTargetAIAction : AIAction
     {
-        public override void Initialize(AIContext context) { context.Sensor.tags.Add(tag); }
+        public override void Initialize(AIContext context)
+        {
+            if (!context.Sensor.tags.Contains(tag)) context.Sensor.tags.Add(tag);
+        }
 
         public override void Execute(AIContext context)
         {

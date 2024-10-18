@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Pancake.Common;
+using Pancake.ExTag;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -99,7 +100,7 @@ namespace Pancake.AI
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             if (_count <= 0) return;
 
             for (var i = 0; i < _count; i++)
@@ -132,7 +133,7 @@ namespace Pancake.AI
             }
 #endif
         }
-        
+
         public override Transform GetClosestTarget(StringConstant tag)
         {
             if (_count == 0) return null;
@@ -142,7 +143,15 @@ namespace Pancake.AI
             var currentPosition = source.position;
             for (var i = 0; i < _count; i++)
             {
-                if (!_hits[i].collider.CompareTag(tag.Value)) continue; 
+                if (newTagSystem)
+                {
+                    if (!_hits[i].collider.gameObject.HasTag(tag.Value)) continue;
+                }
+                else
+                {
+                    if (!_hits[i].collider.CompareTag(tag.Value)) continue;
+                }
+
                 float distanceToTarget = Vector3.Distance(_hits[i].point, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {

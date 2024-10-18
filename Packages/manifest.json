@@ -7,6 +7,7 @@
     "com.google.external-dependency-manager": "https://github.com/google-unity/external-dependency-manager.git#1.2.183",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "2.2.2",
+    "com.unity.ai.navigation": "2.0.4",
     "com.unity.burst": "1.8.18",
     "com.unity.collections": "2.4.3",
     "com.unity.ide.rider": "3.0.31",

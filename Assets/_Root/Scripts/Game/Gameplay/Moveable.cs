@@ -23,7 +23,7 @@ namespace Pancake.Game
             if (Direction == Vector2.zero) return;
 
             var result = _timeProvider.DeltaTime * _playerStat.MoveSpeed * Direction;
-            var pos = transform.position + new Vector3(result.x, result.y);
+            var pos = transform.position + new Vector3(result.x, 0, result.y);
             if (transform.position == pos) return;
             transform.position = pos;
             PositionChanged?.Invoke();
@@ -36,6 +36,6 @@ namespace Pancake.Game
         }
 
         public event UnityAction PositionChanged;
-        public Vector2 Position => new(transform.position.x, transform.position.y);
+        public Vector2 Position => new(transform.position.x, transform.position.z);
     }
 }

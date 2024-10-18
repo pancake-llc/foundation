@@ -5,7 +5,7 @@ namespace Pancake.StatModifier
 {
     [Searchable]
     [Serializable]
-    [CreateAssetMenu(menuName = "Pancake/Misc/Base Stat", order = 11)]
+    [CreateAssetMenu(menuName = "Pancake/Misc/[StatModifier] Base Stat", order = 11)]
     public class BaseStat : ScriptableObject
     {
         public float baseValue;

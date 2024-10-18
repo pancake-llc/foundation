@@ -1,6 +1,6 @@
+#if PANCAKE_AI
 using UnityEngine;
 
-#if PANCAKE_AI
 
 namespace Pancake.AI
 {
