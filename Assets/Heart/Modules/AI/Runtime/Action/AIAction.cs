@@ -5,7 +5,7 @@ namespace Pancake.AI
 {
     public abstract class AIAction : ScriptableObject
     {
-        public StringConstant tag;
+        public StringConstant targetTag;
         public Consideration consideration;
 
         public virtual void Initialize(AIContext context) { }

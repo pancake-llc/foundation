@@ -9,31 +9,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5545dd056da645e1a17ce78a22e81cca, type: 3}
-  m_Name: player_move_to_item_hp_curve
+  m_Script: {fileID: 11500000, guid: e4562f414e9541b8a9455285a5833742, type: 3}
+  m_Name: player_in_range_health
   m_EditorClassIdentifier: 
+  maxDistance: 10
+  maxAngle: 360
+  tag: {fileID: 11400000, guid: c9849fdbd206eab46a6a61ba7193fae7, type: 2}
   curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  key: player_hp

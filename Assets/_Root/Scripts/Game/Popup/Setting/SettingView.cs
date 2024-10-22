@@ -249,6 +249,7 @@ namespace Pancake.Game.UI
             var button = _buttonsLanguage[SystemLanguage.English];
             button.image.color = colorTurnOnInGroup;
             button.Label.color = Color.white;
+            UserData.SetCurrentLanguage(Locale.CurrentLanguage);
         }
 
         public void SelectVietnamese()
@@ -258,6 +259,7 @@ namespace Pancake.Game.UI
             var button = _buttonsLanguage[SystemLanguage.Vietnamese];
             button.image.color = colorTurnOnInGroup;
             button.Label.color = Color.white;
+            UserData.SetCurrentLanguage(Locale.CurrentLanguage);
         }
 
         public void SelectLowQuality()

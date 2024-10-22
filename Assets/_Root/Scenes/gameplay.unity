@@ -926,6 +926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fba5561b31440f4db23ae67025a4a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  contextDataKey: {fileID: 11400000, guid: 183f4c545a8d74148ae6afbd73e53a65, type: 2}
 --- !u!114 &849094738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -962,6 +963,7 @@ MonoBehaviour:
   actions:
   - {fileID: 11400000, guid: 227eee77717bdf34a93cab8eef8d1c5f, type: 2}
   - {fileID: 11400000, guid: 95eedd0716fe4074fa64cd9cd9642d56, type: 2}
+  - {fileID: 11400000, guid: d396b520972b90149967d522c1e632fc, type: 2}
 --- !u!195 &849094739
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1048,7 +1050,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 968826691}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1a0fd2efd454db459d6695299417e16, type: 3}
+  m_Script: {fileID: 11500000, guid: d9c22088c6869a34fb586021a092d5e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -1066,8 +1068,9 @@ MonoBehaviour:
     m_Bits: 1
   detectOnStart: 1
   newTagSystem: 1
-  tags: []
-  radius: 2
+  tags:
+  - {fileID: 11400000, guid: c9849fdbd206eab46a6a61ba7193fae7, type: 2}
+  radius: 10
   stopAfterFirstHit: 0
   showGizmos: 1
   source: {fileID: 968826692}
@@ -1814,7 +1817,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1

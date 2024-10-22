@@ -7,6 +7,7 @@ namespace Pancake.Game
 {
     public class Player : MonoBehaviour<IPlayerStat>
     {
+        [SerializeField] private StringConstant contextDataKey;
         private IPlayerStat _stat;
         private AIBrain _brain;
 
@@ -29,7 +30,11 @@ namespace Pancake.Game
 
         private void OnEnable() { Brain.updateContext += UpdateContext; }
 
-        private void UpdateContext(AIContext context) { context.SetData("player_hp", _stat.Health / (float) _stat.MaxHealth); }
+        private void UpdateContext(AIContext context)
+        {
+            float normalized = _stat.Health / (float) _stat.MaxHealth;
+            context.SetData(contextDataKey.Value, normalized);
+        }
 
         private void OnDisable() { Brain.updateContext -= UpdateContext; }
 

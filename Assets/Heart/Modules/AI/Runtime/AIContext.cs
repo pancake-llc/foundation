@@ -18,7 +18,7 @@ namespace Pancake.AI
 
         public T GetData<T>(string key) => data.TryGetValue(key, out object result) ? (T) result : default;
 
-        public void SetData(string key, object value) { data.TryAdd(key, value); }
+        public void SetData(string key, object value) { data[key] = value; }
     }
 }
 #endif
