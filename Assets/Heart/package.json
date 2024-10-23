@@ -18,7 +18,7 @@
     "com.unity.ugui": "2.0.0",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.burst": "1.8.18",
-    "com.unity.collections": "2.4.3",
+    "com.unity.collections": "2.5.1",
     "com.unity.serialization": "3.1.2",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.addressables": "2.2.2",
