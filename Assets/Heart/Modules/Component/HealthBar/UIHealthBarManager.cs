@@ -1,3 +1,5 @@
+using Sirenix.OdinInspector;
+
 namespace Pancake.Component
 {
     using System;
@@ -18,7 +20,7 @@ namespace Pancake.Component
         void ILayoutElement.CalculateLayoutInputHorizontal() { }
         void ILayoutElement.CalculateLayoutInputVertical() { }
 
-        [SerializeField] private Camera cam;
+        [SerializeField, Required] private Camera cam;
         [SerializeField] private int height = 8;
         [SerializeField] private int border = 2;
         [SerializeField] private Color colorBackground;
