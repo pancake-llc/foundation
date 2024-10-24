@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   adCheckingInterval: 8
   adLoadingInterval: 15
-  currentNetwork: 0
+  currentNetwork: 1
   gdpr: 0
   gdprTestMode: 0
   admobEnableTestMode: 0
