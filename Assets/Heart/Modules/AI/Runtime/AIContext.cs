@@ -7,18 +7,19 @@ namespace Pancake.AI
 {
     public class AIContext
     {
-        private AIBrain _brain;
-        public Transform target;
-        public Dictionary<string, object> data = new();
+        private readonly AIBrain _brain;
+        private readonly Dictionary<string, object> _data = new();
 
         public NavMeshAgent Agent => _brain.Agent;
         public Sensor Sensor => _brain.Sensor;
 
+        public Transform Target { get; set; }
+
         public AIContext(AIBrain brain) { _brain = brain; }
 
-        public T GetData<T>(string key) => data.TryGetValue(key, out object result) ? (T) result : default;
+        public T GetData<T>(string key) => _data.TryGetValue(key, out object result) ? (T) result : default;
 
-        public void SetData(string key, object value) { data[key] = value; }
+        public void SetData(string key, object value) { _data[key] = value; }
     }
 }
 #endif

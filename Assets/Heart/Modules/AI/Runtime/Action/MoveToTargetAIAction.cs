@@ -18,7 +18,7 @@ namespace Pancake.AI
             var target = context.Sensor.GetClosestTarget(targetTag);
             if (target == null) return;
 
-            context.target = target;
+            context.Target = target;
             context.Agent.SetDestination(target.position);
         }
     }
