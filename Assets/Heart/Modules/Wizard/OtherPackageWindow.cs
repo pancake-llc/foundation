@@ -212,11 +212,11 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install In-App-Review", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.google.play.review", "https://github.com/google-unity/in-app-review.git#1.8.2");
-                RegistryManager.Add("com.google.play.core", "https://github.com/google-unity/google-play-core.git#1.8.4");
-                RegistryManager.Add("com.google.play.common", "https://github.com/google-unity/google-play-common.git#1.9.1");
+                RegistryManager.Add("com.google.play.review", "https://github.com/google-unity/in-app-review.git#1.8.3");
+                RegistryManager.Add("com.google.play.core", "https://github.com/google-unity/google-play-core.git#1.8.5");
+                RegistryManager.Add("com.google.play.common", "https://github.com/google-unity/google-play-common.git#1.9.2");
                 RegistryManager.Add("com.google.android.appbundle", "https://github.com/google-unity/android-app-bundle.git#1.9.0");
-                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.179");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.183");
                 RegistryManager.Resolve();
             }
 
@@ -226,7 +226,7 @@ namespace PancakeEditor
         private static void UninstallInAppReview()
         {
             EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("In-App-Review 1.8.2");
+            Uniform.DrawInstalled("In-App-Review 1.8.3");
 
             GUI.backgroundColor = Uniform.Red_500;
             GUILayout.FlexibleSpace();
