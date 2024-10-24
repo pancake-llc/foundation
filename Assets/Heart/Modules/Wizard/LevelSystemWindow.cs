@@ -42,7 +42,7 @@ namespace PancakeEditor
                     if (!Directory.Exists(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH);
                     AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
-                    RegistryManager.Add("com.unity.addressables", "1.21.20");
+                    RegistryManager.AddPackage("com.unity.addressables", "1.21.20");
                     RegistryManager.Resolve();
                     AssetDatabase.Refresh();
                     Debug.Log(

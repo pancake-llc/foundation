@@ -32,6 +32,7 @@ MonoBehaviour:
     androidId: 
   admobAppOpen:
     androidId: 
+  enableMaxAdReview: 0
   applovinBanner:
     androidId: 
     size: 0
@@ -44,4 +45,3 @@ MonoBehaviour:
     androidId: 
   applovinAppOpen:
     androidId: 
-  applovinEnableAgeRestrictedUser: 0

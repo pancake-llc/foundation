@@ -22,6 +22,12 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.applovin.mediation.ads",
+            "expression": "8.0.0",
+            "define": "PANCAKE_APPLOVIN"
+        }
+    ],
     "noEngineReferences": false
 }

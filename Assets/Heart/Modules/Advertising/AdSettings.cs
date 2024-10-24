@@ -29,7 +29,8 @@ namespace Pancake.Monetization
         public static AdUnit AdmobRewardInter => Instance.admobRewardInter;
         public static AdUnit AdmobAppOpen => Instance.admobAppOpen;
 
-        [Header("[applovin]")] [SerializeField] private ApplovinBanner applovinBanner = new();
+        [Header("[applovin]")] [SerializeField] private bool enableMaxAdReview;
+        [SerializeField] private ApplovinBanner applovinBanner = new();
         [SerializeField] private ApplovinInter applovinInter = new();
         [SerializeField] private ApplovinReward applovinReward = new();
         [SerializeField] private ApplovinRewardInter applovinRewardInter = new();

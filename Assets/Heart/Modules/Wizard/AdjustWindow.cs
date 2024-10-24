@@ -49,7 +49,7 @@ namespace PancakeEditor
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Adjust", "Are you sure you want to uninstall adjust package ?", "Yes", "No");
                 if (confirmDelete)
                 {
-                    RegistryManager.Remove("com.adjust.sdk");
+                    RegistryManager.RemovePackage("com.adjust.sdk");
                     RegistryManager.Resolve();
                 }
             }
@@ -59,7 +59,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Adjust Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.adjust.sdk", "https://github.com/adjust/unity_sdk.git?path=Assets/Adjust#v5.0.3");
+                RegistryManager.AddPackage("com.adjust.sdk", "https://github.com/adjust/unity_sdk.git?path=Assets/Adjust#v5.0.3");
                 RegistryManager.Resolve();
             }
 

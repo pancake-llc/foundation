@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Pancake.Common;
+using Pancake.Linq;
 using PancakeEditor.Common;
 using Pancake.Monetization;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Pancake.MonetizationEditor
@@ -24,12 +28,19 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _admobRewardInterProperty;
         private SerializedProperty _admobAppOpenProperty;
 
+        private SerializedProperty _applovinEnableMaxAdReviewProperty;
         private SerializedProperty _applovinBannerProperty;
         private SerializedProperty _applovinInterProperty;
         private SerializedProperty _applovinRewardProperty;
         private SerializedProperty _applovinRewardInterProperty;
         private SerializedProperty _applovinAppOpenProperty;
 
+        private const string APPLOVIN_REGISTRY_NAME = "AppLovin MAX Unity";
+        private const string APPLOVIN_REGISTRY_URL = "https://unity.packages.applovin.com/";
+        private const string APPLOVIN_PACKAGE_NAME = "com.applovin.mediation.ads";
+
+        private static readonly List<string> AppLovinRegistryScopes =
+            new() {"com.applovin.mediation.ads", "com.applovin.mediation.adapters", "com.applovin.mediation.dsp"};
 
         private void Init()
         {
@@ -46,6 +57,7 @@ namespace Pancake.MonetizationEditor
             _admobRewardInterProperty = serializedObject.FindProperty("admobRewardInter");
             _admobAppOpenProperty = serializedObject.FindProperty("admobAppOpen");
 
+            _applovinEnableMaxAdReviewProperty = serializedObject.FindProperty("enableMaxAdReview");
             _applovinBannerProperty = serializedObject.FindProperty("applovinBanner");
             _applovinInterProperty = serializedObject.FindProperty("applovinInter");
             _applovinRewardProperty = serializedObject.FindProperty("applovinReward");
@@ -284,18 +296,21 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Uniform.Red_500;
                 if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
                 {
-                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN")) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
-
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
-
                     AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+
+                    RegistryManager.RemoveAllPackagesStartWith("com.applovin.mediation.");
+                    RegistryManager.RemoveScopedRegistry(APPLOVIN_REGISTRY_NAME);
+
+                    RegistryManager.Resolve();
                 }
 
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
+                EditorGUILayout.PropertyField(_applovinEnableMaxAdReviewProperty, new GUIContent("Enable MAX Ad Review"));
+                AppLovinSettings.Instance.QualityServiceEnabled = _applovinEnableMaxAdReviewProperty.boolValue;
                 EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
                 EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
                 EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
@@ -308,39 +323,11 @@ namespace Pancake.MonetizationEditor
 
                 EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
-                bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
-                var contentInstallLabel = "Install Applovin v7.0.0 (1)";
-                if (applovinInstalled)
-                {
-                    GUI.backgroundColor = Uniform.Green_500;
-                    contentInstallLabel = "Applovin SDK v7.0.0 Installed (1)";
-                }
-                else
-                {
-                    GUI.backgroundColor = Color.white;
-                }
 
-                if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
+                GUI.enabled = !EditorApplication.isCompiling;
+                if (GUILayout.Button("Install Applovin", GUILayout.Height(24)))
                 {
-                    DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing <color=#FF77C6>applovin</color> sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/applovin.unitypackage"), false);
-                }
-
-                var previousColor = GUI.color;
-                if (applovinInstalled) GUI.color = Uniform.Green_500;
-                GUI.enabled = applovinInstalled;
-                GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
-                GUI.color = previousColor;
-                GUI.backgroundColor = Color.white;
-
-                if (GUILayout.Button("Add AppLovin Symbol (2)", GUILayout.Height(24)))
-                {
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN"))
-                    {
-                        ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
-                        AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
-                    }
+                    _ = InstallApplovin();
                 }
 
                 GUI.enabled = true;
@@ -352,6 +339,31 @@ namespace Pancake.MonetizationEditor
 
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private static async Task InstallApplovin()
+        {
+            RegistryManager.AddScopedRegistry(APPLOVIN_REGISTRY_NAME, APPLOVIN_REGISTRY_URL, AppLovinRegistryScopes);
+            RegistryManager.Resolve();
+
+            string version = await GetLatestVersionApplovinMediation();
+            if (string.IsNullOrEmpty(version)) return;
+
+            RegistryManager.AddPackage(APPLOVIN_PACKAGE_NAME, version);
+            RegistryManager.Resolve();
+        }
+
+        private static async Task<string> GetLatestVersionApplovinMediation()
+        {
+            var request = Client.Search(APPLOVIN_PACKAGE_NAME);
+            while (!request.IsCompleted)
+            {
+                await Task.Delay(100);
+            }
+
+            if (request.Status != StatusCode.Success) return "";
+
+            return request.Result.First().versions.latestCompatible;
         }
     }
 }

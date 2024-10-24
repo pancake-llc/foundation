@@ -31,9 +31,7 @@ namespace PancakeEditor
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Spine", "Are you sure you want to uninstall spine package ?", "Yes", "No");
                     if (confirmDelete)
                     {
-                        RegistryManager.Remove("com.esotericsoftware.spine.spine-csharp");
-                        RegistryManager.Remove("com.esotericsoftware.spine.spine-unity");
-                        RegistryManager.Remove("com.esotericsoftware.spine.urp-shaders");
+                        RegistryManager.RemoveAllPackagesStartWith("com.esotericsoftware.spine.");
                         RegistryManager.Resolve();
                     }
                 }
@@ -116,14 +114,14 @@ namespace PancakeEditor
 
             if (GUILayout.Button("Install Spine 4.1", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.esotericsoftware.spine.spine-csharp", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1");
-                RegistryManager.Add("com.esotericsoftware.spine.spine-unity", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1");
+                RegistryManager.AddPackage("com.esotericsoftware.spine.spine-csharp", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1");
+                RegistryManager.AddPackage("com.esotericsoftware.spine.spine-unity", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1");
                 RegistryManager.Resolve();
             }
 
             if (GUILayout.Button("Install Spine URP 4.1", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.esotericsoftware.spine.urp-shaders", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Modules/com.esotericsoftware.spine.urp-shaders#4.1");
+                RegistryManager.AddPackage("com.esotericsoftware.spine.urp-shaders", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Modules/com.esotericsoftware.spine.urp-shaders#4.1");
                 RegistryManager.Resolve();
             }
 

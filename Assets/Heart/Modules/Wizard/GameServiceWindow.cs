@@ -27,7 +27,7 @@ namespace PancakeEditor
 #if !PANCAKE_LEADERBOARD
             if (GUILayout.Button("Install Package Leaderboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.services.leaderboards", "2.1.0");
+                RegistryManager.AddPackage("com.unity.services.leaderboards", "2.1.0");
                 RegistryManager.Resolve();
             }
 #endif
@@ -35,7 +35,7 @@ namespace PancakeEditor
 #if !PANCAKE_CLOUDSAVE
             if (GUILayout.Button("Install Package CloudSave", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.services.cloudsave", "3.2.0");
+                RegistryManager.AddPackage("com.unity.services.cloudsave", "3.2.0");
                 RegistryManager.Resolve();
             }
 #endif
@@ -75,7 +75,7 @@ namespace PancakeEditor
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Leaderboard", "Are you sure you want to uninstall leaderboard package ?", "Yes", "No");
                 if (confirmDelete)
                 {
-                    RegistryManager.Remove("com.unity.services.leaderboards");
+                    RegistryManager.RemovePackage("com.unity.services.leaderboards");
                     RegistryManager.Resolve();
                 }
             }
@@ -90,7 +90,7 @@ namespace PancakeEditor
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall CloudSave", "Are you sure you want to uninstall cloud save package ?", "Yes", "No");
                 if (confirmDelete)
                 {
-                    RegistryManager.Remove("com.unity.services.cloudsave");
+                    RegistryManager.RemovePackage("com.unity.services.cloudsave");
                     RegistryManager.Resolve();
                 }
             }
@@ -166,7 +166,7 @@ namespace PancakeEditor
 #if !PANCAKE_APPLE_SIGNIN
             if (GUILayout.Button("Install Apple SignIn 1.4.3", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.lupidan.apple-signin-unity", "https://github.com/lupidan/apple-signin-unity.git#v1.4.3");
+                RegistryManager.AddPackage("com.lupidan.apple-signin-unity", "https://github.com/lupidan/apple-signin-unity.git#v1.4.3");
                 RegistryManager.Resolve();
             }
 #else
@@ -176,7 +176,7 @@ namespace PancakeEditor
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Apple SignIn", "Are you sure you want to uninstall apple signin package ?", "Yes", "No");
                 if (confirmDelete)
                 {
-                    RegistryManager.Remove("com.lupidan.apple-signin-unity");
+                    RegistryManager.RemovePackage("com.lupidan.apple-signin-unity");
                     RegistryManager.Resolve();
                 }
             }

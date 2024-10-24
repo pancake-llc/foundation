@@ -266,7 +266,7 @@ namespace PancakeEditor
                                     if (confirmDelete)
                                     {
                                         AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(so));
-                                        RegistryManager.Remove("com.pancake.adjust");
+                                        RegistryManager.RemovePackage("com.pancake.adjust");
                                         RegistryManager.Resolve();
                                     }
                                 });
@@ -303,7 +303,7 @@ namespace PancakeEditor
                                     if (confirmDelete)
                                     {
                                         AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(so));
-                                        RegistryManager.Remove("com.unity.purchasing");
+                                        RegistryManager.RemovePackage("com.unity.purchasing");
                                         RegistryManager.Resolve();
                                     }
                                 });
