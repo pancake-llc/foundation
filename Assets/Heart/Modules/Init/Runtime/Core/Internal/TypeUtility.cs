@@ -753,7 +753,11 @@ namespace Sisus.Init.Internal
 					return typeof(KeyValuePair<,>).MakeGenericType(collectionType.GetGenericArguments());
 				}
 			}
-
+			else if(collectionType == typeof(IEnumerable) || collectionType == typeof(IList) || collectionType == typeof(ICollection))
+			{
+				return typeof(object);
+			}
+            
 			foreach(var interfaceType in collectionType.GetInterfaces())
 			{
 				if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
@@ -774,7 +778,7 @@ namespace Sisus.Init.Internal
 
 			if(!collectionType.IsGenericType)
 			{
-				return false;
+				return collectionType == typeof(IEnumerable) || collectionType == typeof(IList) || collectionType == typeof(ICollection);
 			}
 
 			Type typeDefinition = collectionType.GetGenericTypeDefinition();

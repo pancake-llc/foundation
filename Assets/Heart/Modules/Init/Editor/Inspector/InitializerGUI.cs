@@ -1,4 +1,5 @@
 ﻿//#define DEBUG_DISPOSE
+#define DEBUG_REPAINT
 
 using System;
 using System.ComponentModel;
@@ -160,14 +161,12 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// <param name="initParameterTypes"> Types of all init parameter, if known; otherwise an empty array. </param>
 		/// <param name="initializerEditor"> (Optional) Delegate for drawing the arguments inside the Init section. </param>
 		/// <param name="gameObjects"> GamesObjects for all component type clients. If null, then the array  will be automatically generated. </param>
-		//public InitializerGUI(SerializedObject ownerSerializedObject, object[] initializables, Type[] initParameterTypes, Editor initializerEditor = null, GameObject[] gameObjects = null)
-		//public InitializerGUI(SerializedObject ownerSerializedObject, object[] initializables, Type[] initParameterTypes, Action drawArguments = null, GameObject[] gameObjects = null)
 		public InitializerGUI(SerializedObject ownerSerializedObject, object[] initializables, Type[] initParameterTypes, InitializerEditor initializerEditor = null, GameObject[] gameObjects = null)
 		{
 			NowDrawing = this;
 
 			#if DEV_MODE
-			Profiler.BeginSample("InitializerGUI.Ctr");
+			using ProfilerScope x = new("InitializerGUI.Ctr");
 			#endif
 
 			this.ownerSerializedObject = ownerSerializedObject;
@@ -227,10 +226,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			Setup();
 			UpdateInitArgumentDependentState(hasInitializers);
 			NowDrawing = null;
-
-			#if DEV_MODE
-			Profiler.EndSample();
-			#endif
 		}
 
 		public bool IsValid()
@@ -574,7 +569,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		private void Setup()
 		{
 			#if DEV_MODE
-			Profiler.BeginSample("InitializerGUI.Setup");
+			using ProfilerScope x = new("InitializerGUI.Setup");
 			#endif
 
 			initializerBackgroundStyle = new GUIStyle(EditorStyles.helpBox);
@@ -620,10 +615,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				LayoutUtility.NowDrawing.Repaint();
 			}
-
-			#if DEV_MODE
-			Profiler.EndSample();
-			#endif
 		}
 
 		private void UpdateTooltips(bool hasInitializers)
@@ -646,7 +637,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		public void OnInspectorGUI()
 		{
 			#if DEV_MODE
-			Profiler.BeginSample("InitializerDrawer.OnInspectorGUI");
+			using ProfilerScope x = new("InitializerGUI.OnInspectorGUI");
 			#endif
 
 			if(initializerBackgroundStyle is null)
@@ -1172,10 +1163,6 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				EditorGUIUtility.hierarchyMode = hierarchyModeWas;
 				NowDrawing = null;
-
-				#if DEV_MODE
-				Profiler.EndSample();
-				#endif
 			}
 
 			bool CanThrowRuntimeExceptions(bool hasInitializers) => hasInitializers || TypeUtility.DerivesFromGenericBaseType(Target.GetType());
@@ -1805,7 +1792,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(initializerEditor)
 			{
 				initializerEditor.serializedObject.Update();
+				
+				#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(initializerEditor.GetType().Name + "Repaint");
+				Profiler.BeginSample("Sisus.Repaint");
+				#endif
+
 				initializerEditor.Repaint();
+
+				#if DEV_MODE && DEBUG_REPAINT
+				Profiler.EndSample();
+				#endif
 			}
 		}
 
@@ -1828,7 +1825,16 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(initializerEditor)
 			{
 				initializerEditor.serializedObject.Update();
+				#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(initializerEditor.GetType().Name + "Repaint");
+				Profiler.BeginSample("Sisus.Repaint");
+				#endif
+
 				initializerEditor.Repaint();
+
+				#if DEV_MODE && DEBUG_REPAINT
+				Profiler.EndSample();
+				#endif
 			}
 		}
 
@@ -1851,7 +1857,16 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(initializerEditor && initializerEditor.target)
 			{
 				initializerEditor.serializedObject.Update();
+				#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(initializerEditor.GetType().Name + "Repaint");
+				Profiler.BeginSample("Sisus.Repaint");
+				#endif
+
 				initializerEditor.Repaint();
+
+				#if DEV_MODE && DEBUG_REPAINT
+				Profiler.EndSample();
+				#endif
 			}
 		}
 

@@ -29,7 +29,6 @@ namespace Sisus.Init
 	/// <see cref="MonoBehaviour{IServiceProvider}"/> or <see cref="ScriptableObject{IServiceProvider}"/>.
 	/// </para>
 	/// </summary>
-	[Service(typeof(IServiceProvider)), Service(typeof(System.IServiceProvider))]
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
 	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Class | Is.Interface, WhereNone = Is.BuiltIn | Is.Service, Order = 100f, Tooltip = "An instance of this dynamic service is expected to become available for the client at runtime.\n\nService can be a component that has the Service Tag, or an Object registered as a service in a Services component, that is located in another scene or prefab.\n\nThe service could also be manually registered in code using " + nameof(Service) + "." + nameof(Service.Set) + ".")]
 	#endif

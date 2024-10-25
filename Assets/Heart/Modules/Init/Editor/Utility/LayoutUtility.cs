@@ -1,4 +1,5 @@
-﻿//#define DEBUG_ENABLED
+﻿//#define DEBUG_REPAINT
+//#define DEBUG_ENABLED
 
 using System;
 using System.Collections.Generic;
@@ -23,13 +24,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			Editor.finishedDefaultHeaderGUI += BeginGUI;
 		}
 
-		//public static void BeginInitSection() => ObjectFieldBackgroundColor = HelpBoxBackgroundColor;
-		//public static void EndInitSection() => ObjectFieldBackgroundColor = InspectorBackgroundColor;
-
 		public static void BeginGUI([DisallowNull] Editor editor)
 		{
 			NowDrawing = editor;
-			//ObjectFieldBackgroundColor = InspectorBackgroundColor;
 
 			if(deferredActions.Count > 0)
 			{
@@ -197,8 +194,17 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(editor)
 			{
+#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(editor.GetType().Name + "Repaint");
+				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+#endif
+				
 				editor.Repaint();
 
+#if DEV_MODE && DEBUG_REPAINT
+				UnityEngine.Profiling.Profiler.EndSample();
+#endif
+				
 				if(NowDrawing != editor && NowDrawing)
 				{
 					NowDrawing.Repaint();
@@ -206,7 +212,16 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 			else if(NowDrawing)
 			{
+#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(NowDrawing.GetType().Name + "Repaint");
+				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+#endif
+
 				NowDrawing.Repaint();
+
+#if DEV_MODE && DEBUG_REPAINT
+				UnityEngine.Profiling.Profiler.EndSample();
+#endif
 			}
 			else
 			{

@@ -62,23 +62,23 @@ namespace Sisus.Init.ValueProviders
 		Awaitable<TValue>
 		#else
 		System.Threading.Tasks.Task<TValue>
-		#endif	
+		#endif
 		GetForAsync<TValue>([AllowNull] Component client)
 		{
 			#if UNITY_EDITOR
 			if(!Application.isPlaying)
 			{
-				if(addressableAsset.editorAsset == null)
+				if(!addressableAsset.editorAsset)
 				{
-					return default(TValue);
+					return default;
 				}
 				
 				if(addressableAsset.editorAsset is SpriteAtlas spriteAtlas)
 				{
-					return spriteAtlas.GetSprite(addressableAsset.SubObjectName) is TValue sprite ? sprite : default(TValue);
+					return spriteAtlas.GetSprite(addressableAsset.SubObjectName) is TValue sprite ? sprite : default;
 				}
 
-				return addressableAsset.editorAsset is TValue result ? result : default(TValue);
+				return addressableAsset.editorAsset is TValue result ? result : default;
 			}
 			#endif
 
@@ -309,7 +309,7 @@ namespace Sisus.Init.ValueProviders
 				return NullGuardResult.ValueProviderException;
 			}
 
-			if(addressableAsset.editorAsset == null)
+			if(!addressableAsset.editorAsset)
 			{
 				return NullGuardResult.ValueProviderValueMissing;
 			}

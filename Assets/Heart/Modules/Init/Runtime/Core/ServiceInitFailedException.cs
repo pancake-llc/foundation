@@ -35,8 +35,6 @@ namespace Sisus.Init
 		/// </summary>
 		public Type[] DefiningTypes => ServiceInfo.definingTypes;
 
-		public ServiceAttribute[] Attributes => ServiceInfo.attributes;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ServiceInitFailedException"/> class.
 		/// </summary>

@@ -139,6 +139,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				GUILayout.Label("No services to list.", EditorStyles.largeLabel);
 			}
 
+			GUIContent label = new();
 			foreach(var serviceInfo in services)
 			{
 				object service = serviceInfo.Service;
@@ -162,8 +163,13 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				GUILayout.BeginHorizontal();
 
-				var label = serviceInfo.Label;
-				label.tooltip ??= "Click to locate service";
+				if(!serviceInfo.IsSetupDone)
+				{
+					serviceInfo.Setup(EditorServiceTagUtility.GetServiceDefiningTypes(service));
+				}
+
+				label.text = serviceInfo.Label.text;
+				label.tooltip = serviceInfo.Label.tooltip ?? "Click to locate service";
 				if(isUnityObject)
 				{
 					label.image = EditorGUIUtility.ObjectContent(unityObject, serviceInfo.ConcreteType).image;
@@ -205,11 +211,11 @@ namespace Sisus.Init.EditorOnly.Internal
 					switch(Event.current.button)
 					{
 						case 0:
-							ServiceTagEditorUtility.SelectAllReferencesInScene(service);
+							EditorServiceTagUtility.SelectAllReferencesInScene(service);
 							break;
 						case 1:
 							var menu = new GenericMenu();
-							menu.AddItem(new("Find Clients In Scenes"), false, () => ServiceTagEditorUtility.SelectAllReferencesInScene(service));
+							menu.AddItem(new("Find Clients In Scenes"), false, () => EditorServiceTagUtility.SelectAllReferencesInScene(service));
 							menu.ShowAsContext();
 							break;
 					}
@@ -296,11 +302,11 @@ namespace Sisus.Init.EditorOnly.Internal
 					switch(Event.current.button)
 					{
 						case 0:
-							ServiceTagEditorUtility.SelectAllReferencesInScene(client);
+							EditorServiceTagUtility.SelectAllReferencesInScene(client);
 							break;
 						case 1:
 							var menu = new GenericMenu();
-							menu.AddItem(new("Find Clients In Scenes"), false, () => ServiceTagEditorUtility.SelectAllReferencesInScene(client));
+							menu.AddItem(new("Find Clients In Scenes"), false, () => EditorServiceTagUtility.SelectAllReferencesInScene(client));
 							menu.ShowAsContext();
 							break;
 					}

@@ -2,28 +2,34 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Sisus.ComponentNames.EditorOnly
+namespace Sisus.ComponentNames.Editor
 {
 #if UNITY_EDITOR
-    internal static class ObjectUtility
+    public static class ObjectUtility
     {
-        internal static void Destroy([AllowNull] Object target, bool undoable)
+        public static void Destroy([AllowNull] Object target, bool undoable)
         {
-            if (!target) return;
+            if(!target)
+            {
+                return;
+            }
 
-            if (Application.isPlaying && !PrefabUtility.IsPartOfPrefabAsset(target))
+            if(Application.isPlaying && !UnityEditor.PrefabUtility.IsPartOfPrefabAsset(target))
             {
                 Object.Destroy(target);
                 return;
             }
 
-            if (undoable)
+            if(undoable)
             {
                 Undo.DestroyObjectImmediate(target);
                 return;
             }
 
-            if (PrefabUtility.IsPartOfPrefabAsset(target)) EditorUtility.SetDirty(target);
+            if(UnityEditor.PrefabUtility.IsPartOfPrefabAsset(target))
+            {
+                EditorUtility.SetDirty(target);
+            }
 
             Object.DestroyImmediate(target, true);
         }

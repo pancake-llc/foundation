@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -28,14 +29,27 @@ namespace Sisus.Init.ValueProviders
 
 		public static bool TryGetValueProviderValue([AllowNull] object potentialValueProvider, [DisallowNull] Type valueType, [NotNullWhen(true), MaybeNullWhen(false)] out object valueOrAwaitableToGetValue)
 		{
-			if(potentialValueProvider is IValueProviderAsync valueProviderAsync)
+			if(potentialValueProvider is IValueByTypeProvider)
 			{
-				valueOrAwaitableToGetValue = valueProviderAsync.GetForAsync(potentialValueProvider as Component);
-				return valueOrAwaitableToGetValue is not null;
+				object[] args = { potentialValueProvider as Component, null };
+				if((bool)typeof(IValueByTypeProvider).GetMethod(nameof(IValueByTypeProvider.TryGetFor)).MakeGenericMethod(valueType).Invoke(potentialValueProvider, args))
+				{
+					valueOrAwaitableToGetValue = args[1];
+					return valueOrAwaitableToGetValue is not null;
+				}
 			}
 
 			if(potentialValueProvider is IValueProvider valueProvider)
 			{
+				var genericValueProviderType = typeof(IValueProvider<>).MakeGenericType(valueType);
+				if(genericValueProviderType.IsInstanceOfType(potentialValueProvider))
+				{
+					object[] args = { potentialValueProvider as Component, null };
+					var result = (bool)genericValueProviderType.GetMethod(nameof(IValueProvider<object>.TryGetFor)).Invoke(valueProvider, args);
+					valueOrAwaitableToGetValue = args[1];
+					return result;
+				}
+
 				return valueProvider.TryGetFor(potentialValueProvider as Component, out valueOrAwaitableToGetValue);
 			}
 
@@ -49,16 +63,12 @@ namespace Sisus.Init.ValueProviders
 				}
 			}
 
-			if(potentialValueProvider is IValueByTypeProvider)
+			if(potentialValueProvider is IValueProviderAsync valueProviderAsync)
 			{
-				object[] args = { potentialValueProvider as Component, null };
-				if((bool)typeof(IValueByTypeProvider).GetMethod(nameof(IValueByTypeProvider.TryGetFor)).MakeGenericMethod(valueType).Invoke(potentialValueProvider, args))
-				{
-					valueOrAwaitableToGetValue = args[1];
-					return valueOrAwaitableToGetValue is not null;
-				}
+				valueOrAwaitableToGetValue = valueProviderAsync.GetForAsync(potentialValueProvider as Component);
+				return valueOrAwaitableToGetValue is not null;
 			}
-			
+
 			valueOrAwaitableToGetValue = null;
 			return false;
 		}

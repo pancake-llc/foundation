@@ -42,7 +42,10 @@ namespace Sisus.Init
 		/// <returns>
 		/// <see langword="true"/> if can provide a value for the client at this time; otherwise, <see langword="false"/>.
 		/// </returns>
-		new bool HasValueFor(Component client) => TryGetFor(client, out _);
+		new bool HasValueFor(Component client)
+			=> this is INullGuard nullGuard
+				? nullGuard.EvaluateNullGuard(client) == NullGuardResult.Passed
+				: TryGetFor(client, out _);
 
 		/// <summary>
 		/// Gets the value of type <typeparamref name="TValue"/> for the <paramref name="client"/>.
@@ -95,6 +98,9 @@ namespace Sisus.Init
 		/// <returns>
 		/// <see langword="true"/> if can provide a value for the client at this time; otherwise, <see langword="false"/>.
 		/// </returns>
-		bool HasValueFor(Component client) => TryGetFor(client, out _);
+		bool HasValueFor(Component client)
+			=> this is INullGuard nullGuard
+				? nullGuard.EvaluateNullGuard(client) == NullGuardResult.Passed
+				: TryGetFor(client, out _);
 	}
 }

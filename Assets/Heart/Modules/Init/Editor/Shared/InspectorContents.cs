@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define DEBUG_REPAINT
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
@@ -25,10 +27,19 @@ namespace Sisus.Shared.EditorOnly
 
 		public static void Repaint()
 		{
+#if DEV_MODE && DEBUG_REPAINT
+			Debug.Log("InitArgs.Repaint");
+			UnityEngine.Profiling.Profiler.BeginSample("InspectorContents.Repaint");
+#endif
+			
 			foreach(var propertyEditor in allPropertyEditors)
 			{
 				propertyEditor.Repaint();
 			}
+			
+#if DEV_MODE && DEBUG_REPAINT
+			UnityEngine.Profiling.Profiler.EndSample();
+#endif
 		}
 
 		public static List<InspectorElement> GetAllInspectorElements(Editor editor)
@@ -56,7 +67,7 @@ namespace Sisus.Shared.EditorOnly
 			return inspectorElementsList;
 		}
 
-		internal static List<(Editor, IMGUIContainer)> GetAllHeaderElements(Editor editor)
+		internal static List<(Editor editor, IMGUIContainer header)> GetAllHeaderElements(Editor editor)
 		{
 			headersList.Clear();
 
@@ -154,21 +165,5 @@ namespace Sisus.Shared.EditorOnly
 				}
 			}
 		}
-
-		// private static void ReplaceAll(IEnumerable<Editor> editors, Editor newEditor)
-		// {
-		// 	if (editors is not IList<Editor> list)
-		// 	{
-		// 		#if DEV_MODE
-		// 		Debug.LogError(editors?.GetType().Name ?? "null");
-		// 		#endif
-		// 		return;
-		// 	}
-		//
-		// 	for(int i = 0; i < list.Count; i++)
-		// 	{
-		// 		list[i] = newEditor;
-		// 	}
-		// }
 	}
 }

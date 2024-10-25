@@ -3,12 +3,12 @@
 //#define DEBUG_DEPENDENCY_WARNING_BOX
 //#define DEBUG_FIELDS
 
-using System.Diagnostics.CodeAnalysis;
-using Sisus.Init.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -25,14 +25,17 @@ namespace Sisus.Init
 	public sealed class RuntimeFieldsDrawer
 	{
 		private const BindingFlags AllDeclaredInstance = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+		private static readonly List<FieldInfo> fieldInfoBuilder = new();
 
-		private static readonly Dictionary<Type, FieldInfo[]> nestedFields = new Dictionary<Type, FieldInfo[]>();
-		private static readonly Dictionary<Type, Dictionary<string, bool>> targetUnfoldedness = new Dictionary<Type, Dictionary<string, bool>>();
+		private static readonly Dictionary<Type, FieldInfo[]> nestedFields = new();
+		private static readonly Dictionary<Type, Dictionary<string, bool>> targetUnfoldedness = new();
 
 		private readonly object target;
 		private readonly Type targetType;
-        
-		private readonly List<FieldInfo> fields;
+
+		private readonly List<FieldInfo> rootFields;
+
+		public string HeaderText { get; set; } = "Runtime State";
 
 		public RuntimeFieldsDrawer([DisallowNull] object target, [AllowNull] Type baseType)
 		{
@@ -44,14 +47,14 @@ namespace Sisus.Init
 				targetUnfoldedness.Add(targetType, new Dictionary<string, bool>());
 			}
 
-			fields = GetRuntimeFields(targetType, baseType);
+			rootFields = GetRuntimeFields(targetType, baseType);
 		}
 
 		private bool GetUnfoldedness(string fieldName) => targetUnfoldedness[targetType].TryGetValue(fieldName, out bool cachedUnfolded) && cachedUnfolded;
 
 		private static List<FieldInfo> GetRuntimeFields(Type type, [AllowNull] Type stopAtBaseType)
 		{
-			List<FieldInfo> fields = new List<FieldInfo>();
+			List<FieldInfo> fields = new();
 
 			do
 			{
@@ -66,6 +69,7 @@ namespace Sisus.Init
 						fields.Add(field);
 					}
 				}
+				
 				type = type.BaseType;
 			}
 			while(type != stopAtBaseType && !TypeUtility.IsNullOrBaseType(type) && (stopAtBaseType == null || !stopAtBaseType.IsGenericTypeDefinition || !type.IsGenericType || type.GetGenericTypeDefinition() != stopAtBaseType));
@@ -75,7 +79,7 @@ namespace Sisus.Init
 
 		private static bool ShouldDrawAsRuntimeField([DisallowNull] FieldInfo field)
 		{
-			if(field.GetCustomAttribute<HideInInspector>() != null || field.GetCustomAttribute<SerializeField>() != null)
+			if(field.IsDefined(typeof(HideInInspector)) || field.IsDefined(typeof(SerializeField)))
 			{
 				return false;
 			}
@@ -109,10 +113,10 @@ namespace Sisus.Init
 			}
 
 			var unityObject = target as Object;
-			if(unityObject == null)
+			if(!unityObject)
 			{
 				unityObject = Find.WrapperOf(target) as Object;
-				if(unityObject == null)
+				if(!unityObject)
 				{
 					return true;
 				}
@@ -124,17 +128,15 @@ namespace Sisus.Init
 			}
 
 			Component component = target as Component;
-			return component == null || PrefabStageUtility.GetPrefabStage(component.gameObject) == null;
+			return !component || !PrefabStageUtility.GetPrefabStage(component.gameObject);
 			#else
 			return true;
 			#endif
 		}
 
-		public string HeaderText { get; set; } = "Runtime State";
-
 		private void DrawRuntimeMembers()
 		{
-			if(fields.Count == 0)
+			if(rootFields.Count == 0)
 			{
 				return;
 			}
@@ -156,7 +158,7 @@ namespace Sisus.Init
 			EditorGUI.DrawRect(rect, lineColor);
 			GUI.enabled = true;
 
-			foreach(var field in fields)
+			foreach(var field in rootFields)
 			{
 				DrawField(target, field, 7);
 			}
@@ -378,6 +380,7 @@ namespace Sisus.Init
 			{
 				return;
 			}
+			
 			EditorGUI.indentLevel++;
 
 			var callsField = typeof(UnityEventBase).GetField("m_Calls", AllDeclaredInstance);
@@ -412,13 +415,14 @@ namespace Sisus.Init
 			{
 				return;
 			}
+			
 			EditorGUI.indentLevel++;
 
 			foreach(Delegate invocationItem in @delegate.GetInvocationList())
 			{
 				var method = invocationItem.Method;
 
-				if(method == null)
+				if(method is null)
 				{
 					EditorGUILayout.LabelField("{ }", "");
 					continue;
@@ -552,19 +556,18 @@ namespace Sisus.Init
 
 		private static FieldInfo[] GetFields(Type type)
 		{
-			if(nestedFields.TryGetValue(type, out FieldInfo[] fields))
+			if(nestedFields.TryGetValue(type, out var fields))
 			{
 				return fields;
 			}
 
-			List<FieldInfo> list = new List<FieldInfo>();
-
 			for(var t = type; t != null; t = t.BaseType)
 			{
-				list.AddRange(t.GetFields(AllDeclaredInstance));
+				fieldInfoBuilder.AddRange(t.GetFields(AllDeclaredInstance));
 			}
 
-			fields = list.ToArray();
+			fields = fieldInfoBuilder.ToArray();
+			fieldInfoBuilder.Clear();
 			nestedFields.Add(type, fields);
 			return fields;
 		}

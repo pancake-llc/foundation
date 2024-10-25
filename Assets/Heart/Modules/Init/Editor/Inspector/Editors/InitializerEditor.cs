@@ -1,4 +1,5 @@
 ﻿//#define DEBUG_ENABLED
+#define DEBUG_REPAINT
 
 using System;
 using System.Collections.Generic;
@@ -290,7 +291,18 @@ namespace Sisus.Init.EditorOnly
 		private void SetupDuringNextOnGUI()
 		{
 			setupDone = false;
+
+			#if DEV_MODE && DEBUG_REPAINT
+			Debug.Log(GetType().Name + "Repaint");
+			UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+			#endif
+
 			Repaint();
+
+			#if DEV_MODE && DEBUG_REPAINT
+			UnityEngine.Profiling.Profiler.EndSample();
+			#endif
+
 			LayoutUtility.ExitGUI();
 		}
 
@@ -301,7 +313,17 @@ namespace Sisus.Init.EditorOnly
 			#endif
 
 			setupDone = false;
+
+			#if DEV_MODE && DEBUG_REPAINT
+			Debug.Log(GetType().Name + "Repaint");
+			UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+			#endif
+
 			Repaint();
+
+			#if DEV_MODE && DEBUG_REPAINT
+			UnityEngine.Profiling.Profiler.EndSample();
+			#endif
 		}
 	}
 }

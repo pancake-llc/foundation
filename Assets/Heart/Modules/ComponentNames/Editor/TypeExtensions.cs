@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Sisus.ComponentNames.EditorOnly
+namespace Sisus.ComponentNames.Editor
 {
     /// <summary>
     /// Extension methods for <see cref="Type"/>.
@@ -190,8 +190,8 @@ namespace Sisus.ComponentNames.EditorOnly
             var name = type.Name;
 
             // If type name doesn't end with `1, `2 etc. then it's not a generic class type
-            // but type of a non-generic class nested inside a generic class.
-            if (name[name.Length - 2] == '`')
+            // but type of non-generic class nested inside a generic class.
+            if(name[^2] is '`')
             {
                 // E.g. TKey, TValue
                 var genericTypes = type.GetGenericArguments();

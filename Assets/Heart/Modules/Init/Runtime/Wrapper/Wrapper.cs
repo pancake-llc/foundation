@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Sisus.Init.Internal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,7 @@ namespace Sisus.Init
 	/// A base class for <see cref="MonoBehaviour">MonoBehaviours</see> that act as simple wrappers for plain old class objects.
 	/// <para>
 	/// A class wrapped by the <see cref="Wrapper{}"/> component can be added to a <see cref="GameObject"/> using the
-	/// <see cref="AddComponentExtensions.AddComponent{TWrapped, TWrapped}"/> method.
+	/// <see cref="AddComponentExtensions.AddComponent{TWrapper, TWrapped}(GameObject, TWrapped)"/> method.
 	/// </para>
 	/// <para>
 	/// Optionally the wrapped class can receive callbacks during select unity event functions from the wrapper
@@ -137,7 +138,7 @@ namespace Sisus.Init
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, during the Awake event when
 		/// the component is created using <see cref="InstantiateExtensions.Instantiate{TWrapped}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TWrapper, TWrapped}">GameObject.AddComponent{TComponent, TArgument}</see>.
+		/// <see cref="AddComponent">GameObject.AddComponent{TComponent, TArgument}</see>.
 		/// </para>
 		/// <para>
 		/// In edit mode <see cref="Init"/> can also get called during the <see cref="Reset"/> event when the script is added to a <see cref="GameObject"/>,
@@ -348,16 +349,26 @@ namespace Sisus.Init
 		/// previously been <see cref="GameObject.activeInHierarchy">active</see>.
 		/// </para>
 		/// </summary>
-		protected virtual void OnDestroy()
+		protected async virtual void OnDestroy()
 		{
-			if(wrapped is not null)
+			if (wrapped is null)
 			{
-				if(wrapped is IOnDestroy onDestroy)
-				{
-					onDestroy.OnDestroy();
-				}
+				return;
+			}
 
-				Find.wrappedInstances.Remove(wrapped);
+			Find.wrappedInstances.Remove(wrapped);
+
+			if(wrapped is IOnDestroy onDestroy)
+			{
+				onDestroy.OnDestroy();
+			}
+			else if(wrapped is IDisposable disposable)
+			{
+				disposable.Dispose();
+			}
+			else if(wrapped is IAsyncDisposable asyncDisposable)
+			{
+				await asyncDisposable.DisposeAsync();
 			}
 		}
 

@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Sisus.ComponentNames.EditorOnly
+namespace Sisus.ComponentNames.Editor
 {
     [CustomPropertyDrawer(typeof(Object), true)]
     public class RenameableObjectPropertyDrawer : PropertyDrawer
@@ -39,7 +39,7 @@ namespace Sisus.ComponentNames.EditorOnly
 
             string componentName = ComponentName.Get(objectFieldValue);
 
-            if (componentWithField != null && objectFieldValue.gameObject == componentWithField.gameObject)
+            if(componentWithField && objectFieldValue.gameObject == componentWithField.gameObject)
             {
                 return string.Concat(componentName, " (this GameObject)");
             }

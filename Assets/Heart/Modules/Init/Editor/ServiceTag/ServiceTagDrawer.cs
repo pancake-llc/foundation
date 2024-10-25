@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Sisus.Init.Internal;
 using Sisus.Shared.EditorOnly;
@@ -42,8 +41,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			// components whose class has the ServiceAttribute
 			// components listed in a Services component,
 			// and wrappers.
-			var definingTypes = ServiceTagUtility.GetServiceDefiningTypes(component);
-			if(!definingTypes.Any() && ServiceTagEditorUtility.openSelectTagsMenuFor != component)
+			var definingTypes = EditorServiceTagUtility.GetServiceDefiningTypes(component);
+			if(definingTypes.Length == 0 && EditorServiceTagUtility.openSelectTagsMenuFor != component)
 			{
 				return 0f;
 			}
@@ -58,10 +57,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			var tagLabel = GetTagLabel(serviceOrServiceProvider, headerRect, definingTypes);
 			var tagRect = GetTagRect(serviceOrServiceProvider, headerRect, tagLabel, Styles.ServiceTag);
 
-			if(ServiceTagEditorUtility.openSelectTagsMenuFor == serviceOrServiceProvider)
+			if(EditorServiceTagUtility.openSelectTagsMenuFor == serviceOrServiceProvider)
 			{
-				ServiceTagEditorUtility.openSelectTagsMenuFor = null;
-				ServiceTagEditorUtility.OpenSelectTagsMenu(serviceOrServiceProvider, tagRect);
+				EditorServiceTagUtility.openSelectTagsMenuFor = null;
+				EditorServiceTagUtility.OpenSelectTagsMenu(serviceOrServiceProvider, tagRect);
 				return 0f;
 			}
 
@@ -70,13 +69,13 @@ namespace Sisus.Init.EditorOnly.Internal
 				switch(Event.current.button)
 				{
 					case 0:
-						ServiceTagEditorUtility.OpenToClientsMenu(serviceOrServiceProvider, tagRect);
+						EditorServiceTagUtility.OpenToClientsMenu(serviceOrServiceProvider, tagRect);
 						break;
 					case 1:
-						ServiceTagEditorUtility.OpenContextMenuForService(serviceOrServiceProvider, tagRect);
+						EditorServiceTagUtility.OpenContextMenuForService(serviceOrServiceProvider, tagRect);
 						break;
 					case 2:
-						ServiceTagEditorUtility.PingServiceDefiningObject(serviceOrServiceProvider);
+						EditorServiceTagUtility.PingServiceDefiningObject(serviceOrServiceProvider);
 						break;
 				}
 			}
@@ -86,8 +85,8 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static float OnAfterHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
-			var definingTypes = ServiceTagUtility.GetServiceDefiningTypes(component);
-			if(!definingTypes.Any())
+			var definingTypes = EditorServiceTagUtility.GetServiceDefiningTypes(component);
+			if(definingTypes.Length == 0)
 			{
 				return 0f;
 			}
@@ -109,7 +108,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return 0f;
 		}
 
-		private static GUIContent GetTagLabel(Component serviceOrServiceProvider, Rect headerRect, IEnumerable<Type> definingTypes)
+		private static GUIContent GetTagLabel(Component serviceOrServiceProvider, Rect headerRect, Span<Type> definingTypes)
 		{
 			var mouseoverRect = GetTagRect(serviceOrServiceProvider, headerRect, tagIdleLabel, Styles.ServiceTag);
 			bool isMouseovered = mouseoverRect.Contains(Event.current.mousePosition);
@@ -119,7 +118,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return label;
 		}
 
-		private static string GetTooltip(IEnumerable<Type> definingTypes, Clients toClients)
+		private static string GetTooltip(Span<Type> definingTypes, Clients toClients)
 		{
 			var enumerator = definingTypes.GetEnumerator();
 			enumerator.MoveNext();
@@ -204,14 +203,14 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(ContainsRefTag(service))
 			{
-				var refTagRect = ServiceTagEditorUtility.GetTagRect(service, headerRect, refLabel, style);
+				var refTagRect = EditorServiceTagUtility.GetTagRect(service, headerRect, refLabel, style);
 				labelRect.x -= refTagRect.width + 5f;
 			}
 
 			return labelRect;
         }
 
-		private static Clients GetClientVisibility(Component serviceOrServiceProvider, IEnumerable<Type> definingTypes)
+		private static Clients GetClientVisibility(Component serviceOrServiceProvider, Span<Type> definingTypes)
 		{
 			Clients? result = null;
 

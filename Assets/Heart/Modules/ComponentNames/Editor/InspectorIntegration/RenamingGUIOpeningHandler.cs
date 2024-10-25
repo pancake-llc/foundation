@@ -1,54 +1,51 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
+using Sisus.Shared.EditorOnly;
 
-namespace Sisus.ComponentNames.EditorOnly
+namespace Sisus.ComponentNames.Editor
 {
     [InitializeOnLoad]
-    internal static class RenamingGUIOpeningHandler
-    {
+	internal static class RenamingGUIOpeningHandler
+	{
         private static readonly GUIContent tooltip = new("", "");
         private static readonly GUIContent label = new("");
 
         static RenamingGUIOpeningHandler()
-        {
+		{
             ComponentHeader.BeforeHeaderGUI -= BeginComponentHeader;
             ComponentHeader.BeforeHeaderGUI += BeginComponentHeader;
             ComponentName.InspectorTitleChanged -= OnInspectorTitleChanged;
             ComponentName.InspectorTitleChanged += OnInspectorTitleChanged;
 
-            static void OnInspectorTitleChanged(Component component, string newName) => UpdateInternalCachedTitleForComponentType(component);
-        }
+            static void OnInspectorTitleChanged(Component component, NameWithSuffix newTitle) => InjectTitleIntoInternalCache(component, ComponentName.GetInspectorTitle(component));
+		}
 
         private static float BeginComponentHeader(Component component, Rect headerRect, bool headerIsSelected, bool headerSupportsRichText)
-        {
+		{
             HandleOpeningRenamingGUI(component, headerRect, headerIsSelected);
 
-            if (headerSupportsRichText)
-            {
-                UpdateInternalCachedTitleForComponentType(component);
+			var inspectorTitle = ComponentName.GetInspectorTitle(component);
+			string titleWithSuffixPlainText = inspectorTitle.ToString(richText:true);
+            if(headerSupportsRichText)
+			{
+                InjectTitleIntoInternalCache(component, inspectorTitle.ToString(richText:true));
             }
             else
             {
-                UpdateInternalCachedTitleForComponentTypeAsPlainText(component);
+				InjectTitleIntoInternalCache(component, titleWithSuffixPlainText);
             }
 
             var tooltipRect = headerRect;
             tooltipRect.x += 60f;
-#if POWER_INSPECTOR
-            tooltipRect.width -= 185f;
-#else
-            tooltipRect.width -= 125f;
-#endif
+            tooltipRect.width -= 125f + 16 * 4 + 3 * 3;
 
-            label.text = ComponentName.GetInspectorTitleAsPlainText(component);
+            label.text = titleWithSuffixPlainText;
             float titleWidth = EditorStyles.boldLabel.CalcSize(label).x;
-            if (titleWidth < tooltipRect.width)
-            {
+            if(titleWidth < tooltipRect.width)
+			{
                 tooltipRect.width = titleWidth;
-            }
-
+			}
 
             tooltip.tooltip = ComponentTooltip.Get(component);
             GUI.Label(tooltipRect, tooltip);
@@ -58,23 +55,22 @@ namespace Sisus.ComponentNames.EditorOnly
 
         private static void HandleOpeningRenamingGUI(Component component, Rect headerRect, bool headerIsSelected)
         {
-            switch (Event.current.rawType)
+            switch(Event.current.rawType)
             {
                 case EventType.ValidateCommand:
-                    if (Event.current.commandName == "Rename" && headerIsSelected)
+                    if(Event.current.commandName == "Rename" && headerIsSelected)
                     {
                         Event.current.Use();
                         BeginRenamingComponent(component, headerRect);
                     }
-
                     break;
                 case EventType.KeyDown:
-                    if (!headerIsSelected)
+                    if(!headerIsSelected)
                     {
                         break;
                     }
 
-                    switch (Event.current.keyCode)
+                    switch(Event.current.keyCode)
                     {
                         case KeyCode.F2:
                         case KeyCode.KeypadEnter:
@@ -83,12 +79,11 @@ namespace Sisus.ComponentNames.EditorOnly
                             BeginRenamingComponent(component, headerRect);
                             break;
                     }
-
                     break;
             }
 
-            if (NameContainer.StartingToRename == component)
-            {
+            if(NameContainer.StartingToRename == component)
+			{
                 NameContainer.StartingToRename = null;
                 BeginRenamingComponent(component, headerRect);
             }
@@ -100,22 +95,12 @@ namespace Sisus.ComponentNames.EditorOnly
             RenameComponentWindow.Open(openAt, component);
         }
 
-        private static void UpdateInternalCachedTitleForComponentType([DisallowNull] Component component)
-        {
-            string title = ComponentName.GetInspectorTitle(component);
-
-            // Make sure default component name and inspector title have been cached
-            // by calling GetDefault before replacing the default name with a custom one.
-            _ = ComponentName.GetDefault(component);
-
-            ObjectNamesUtility.InternalInspectorTitlesCache[component.GetType()] = title;
-        }
-
-        private static void UpdateInternalCachedTitleForComponentTypeAsPlainText(Component component)
-        {
-            string title = ComponentName.GetInspectorTitleAsPlainText(component);
-            ObjectNamesUtility.InternalInspectorTitlesCache[component.GetType()] = title;
-        }
+        private static void InjectTitleIntoInternalCache([DisallowNull] Component component, string title)
+		{
+			var componentType = component.GetType();
+			ComponentName.EnsureOriginalInspectorTitleIsCached(component, componentType);
+			ObjectNamesUtility.InternalInspectorTitlesCache[componentType] = title;
+		}
 
         private static Rect InScreenSpace(Rect rect)
         {
@@ -132,7 +117,7 @@ namespace Sisus.ComponentNames.EditorOnly
             // Fixes Transform header label rect position.
             // For some reason the Transform header rect starts
             // lower and is shorter than all other headers.
-            if (headerLabelRect.height < 22f)
+            if(headerLabelRect.height < 22f)
             {
                 headerLabelRect.y -= 22f - 15f;
             }

@@ -13,12 +13,12 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		[MenuItem(AddServiceTag, priority = 1500)]
 		private static void AddServiceTagMenuItem(MenuCommand command)
-			=> ServiceTagEditorUtility.openSelectTagsMenuFor = command.context as Component;
+			=> EditorServiceTagUtility.openSelectTagsMenuFor = command.context as Component;
 
 		[MenuItem(AddServiceTag, priority = 1500, validate = true)]
 		private static bool IsAddServiceTagMenuItemClickable(MenuCommand command)
 			// If component has the ServiceAttribute disable opening of the service tags selection menu.
-			=> command.context && command.context is Component component && ServiceTagEditorUtility.CanAddServiceTag(component);
+			=> command.context && command.context is Component component && EditorServiceTagUtility.CanAddServiceTag(component);
 
 		[MenuItem(GenerateInitializer, priority = 1501)]
 		private static void GenerateInitializerMenuItem(MenuCommand command) => ScriptGenerator.CreateInitializer(command.context);

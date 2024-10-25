@@ -1,8 +1,8 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using PancakeEditor.Common;
 using UnityEngine;
 
 namespace Sisus.Init
@@ -15,17 +15,8 @@ namespace Sisus.Init
 	/// in unit tests.
 	/// </para>
 	/// </summary>
-	[EditorService(typeof(ICoroutineRunner))]
 	public sealed class EditorCoroutineRunner : ICoroutineRunner, IDisposable
 	{
-		/// <summary>
-		/// A single cached instance of EditorCoroutineRunner that can be shared across multiple client objects.
-		/// <para>
-		/// This same instance can also be accessed via <see cref="Service{ICoroutineRunner}.Instance"/> in edit mode.
-		/// </para>
-		/// </summary>
-		public static EditorCoroutineRunner SharedInstance => Service<EditorCoroutineRunner>.Instance;
-
 		private readonly List<EditorCoroutine> running = new(1);
 
 		/// <summary>
@@ -141,3 +132,4 @@ namespace Sisus.Init
 		}
 	}
 }
+#endif

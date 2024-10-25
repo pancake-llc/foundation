@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -25,18 +26,15 @@ namespace Sisus.Shared.EditorOnly
             wrappedOnGUIHandler = headerElement.onGUIHandler;
         }
 
-        public static void WrapIfNotAlreadyWrapped((Editor editor, IMGUIContainer header) editorAndHeader, bool supportsRichText)
-        {
-            var header = editorAndHeader.header;
-            var onGUIHandler = header.onGUIHandler;
-		    if(string.Equals(onGUIHandler.Method.Name, nameof(DrawWrappedHeaderGUI)))
-		    {
-			    return;
-		    }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsWrapped(IMGUIContainer header) => string.Equals(header.onGUIHandler.Method.Name, nameof(DrawWrappedHeaderGUI));
 
-		    var targetComponent = editorAndHeader.editor.target as Component;
-		    var wrapper = new ComponentHeaderWrapper(header, targetComponent, supportsRichText);
-		    header.onGUIHandler = wrapper.DrawWrappedHeaderGUI;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Wrap(Editor editor, IMGUIContainer header, bool supportsRichText)
+        {
+            var targetComponent = editor.target as Component;
+            var wrapper = new ComponentHeaderWrapper(header, targetComponent, supportsRichText);
+            header.onGUIHandler = wrapper.DrawWrappedHeaderGUI;
         }
 
 		private void DrawWrappedHeaderGUI()

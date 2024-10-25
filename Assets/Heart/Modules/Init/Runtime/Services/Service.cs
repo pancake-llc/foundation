@@ -341,8 +341,13 @@ namespace Sisus.Init
 				{
 					#if UNITY_EDITOR
 					// Don't spam warnings when services are requested in edit mode, for example in Inspector code.
+					if(!Application.isPlaying || !clientScene.IsValid())
+					{
+						continue;
+					}
+					
 					var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-					if(!Application.isPlaying || !clientScene.IsValid() || clientScene == prefabStage.scene)
+					if(prefabStage && clientScene == prefabStage.scene)
 					{
 						continue;
 					}
@@ -982,11 +987,49 @@ namespace Sisus.Init
 		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component container)
 		{
 			#if DEV_MODE
-			Debug.Assert(service != null);
+			Debug.Assert(service != Null);
 			Debug.Assert(container);
 			#endif
 
 			if(ScopedService<TService>.Add(service, clients, container))
+			{
+				HandleInstanceChanged(clients, default, service);
+			}
+		}
+		
+		/// <summary>
+		/// Registers a service with the defining type <typeparamref name="TService"/>
+		/// available to a limited set of clients.
+		/// <para>
+		/// If the provided instance is available to clients <see cref="Clients.Everywhere"/>
+		/// then the <see cref="ServiceChanged{TService}.listeners"/> event will be raised.
+		/// </para>
+		/// </summary>
+		/// <typeparam name="TService">
+		/// The defining type of the service; the class or interface type that uniquely defines
+		/// the service and can be used to retrieve an instance of it.
+		/// <para>
+		/// This must be a base type that the service derives from, or the exact type of the service.
+		/// </para>
+		/// <para>
+		/// This must also be a component type. If you want to register a service that is not a component,
+		/// or want to register a component service using an interface that it implements, you can use
+		/// the <see cref="AddFor{TService}(Clients, TService, Component)"> overload</see> that
+		/// lets you provide a <see cref="Component"/> type reference separately.
+		/// </para>
+		/// </typeparam>
+		/// <param name="clients">
+		/// Specifies which client objects can receive the service instance in their Init function
+		/// during their initialization.
+		/// </param>
+		/// <param name="service"> The service component to add. </param>
+		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service) where TService : Component
+		{
+#if DEV_MODE
+			Debug.Assert(!service);
+#endif
+
+			if(ScopedService<TService>.Add(service, clients, service))
 			{
 				HandleInstanceChanged(clients, default, service);
 			}
@@ -1007,6 +1050,12 @@ namespace Sisus.Init
 		/// This must be an interface that the service implement, a base type that the service derives from,
 		/// or the exact type of the service.
 		/// </para>
+		/// <para>
+		/// This must also be a component type. If you want to unregister a service that is not a component,
+		/// or want to unregister a component service using an interface that it implements, you can use
+		/// the <see cref="RemoveFrom{TService}(Clients, TService, Component)"> overload</see> that
+		/// lets you provide a <see cref="Component"/> type reference separately.
+		/// </para>
 		/// </typeparam>
 		/// <param name="clients"> The availability of the service being removed. </param>
 		/// <param name="service"> The service instance to remove. </param>
@@ -1019,6 +1068,32 @@ namespace Sisus.Init
 			}
 		}
 
+		/// <summary>
+		/// Unregisters a service with the defining type <typeparamref name="TService"/>
+		/// that has been available to a limited set of clients.
+		/// <para>
+		/// If the provided instance is available to clients <see cref="Clients.Everywhere"/>
+		/// then the <see cref="ServiceChanged{TService}.listeners"/> event will be raised.
+		/// </para>
+		/// </summary>
+		/// <typeparam name="TService">
+		/// The defining type of the service; the class or interface type that uniquely defines
+		/// the service and can be used to retrieve an instance of it.
+		/// <para>
+		/// This must be an interface that the service implement, a base type that the service derives from,
+		/// or the exact type of the service.
+		/// </para>
+		/// </typeparam>
+		/// <param name="clients"> The availability of the service being removed. </param>
+		/// <param name="service"> The service component to remove. </param>
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] TService service) where TService : Component
+		{
+			if(ScopedService<TService>.Remove(service, clients, service))
+			{
+				HandleInstanceChanged(clients, service, default);
+			}
+		}
+		
 		/// <summary>
 		/// Subscribes the provided <paramref name="method"/> to listen for changes made to the shared instance of service of type <typeparamref name="TService"/>.
 		/// <para>
@@ -1307,20 +1382,21 @@ namespace Sisus.Init
 			[MaybeNull]
 			public readonly object Service;
 			public readonly string ClientsText;
-			private GUIContent label;
-			private string tooltip;
 			private bool? isAsset;
 			private readonly Type definingType;
 
-			public GUIContent Label => label ??= new GUIContent(GetLabel(), tooltip);
+			public readonly GUIContent Label; // text will be empty until Setup has been called
 			public bool IsAsset => isAsset ??= IsPrefabAsset(Service);
 			public readonly ServiceInitFailReason InitFailReason;
 
+			public bool IsSetupDone => Label.text.Length > 0;
+
 			public ServiceInfo(Type definingType, Clients toClients, [AllowNull] object service, string tooltip = "", ServiceInitFailReason initFailReason = ServiceInitFailReason.None)
 			{
+				Label = new("", tooltip);
 				ToClients = toClients;
 				Service = service;
-				this.tooltip = tooltip;
+				//this.tooltip = tooltip;
 				InitFailReason = initFailReason;
 
 				ConcreteType = service?.GetType();
@@ -1335,14 +1411,12 @@ namespace Sisus.Init
 
 				ClientsText = ToClients.ToString();
 				isAsset = null;
-				label = null;
 				this.definingType = definingType;
 			}
 
-			private string GetLabel()
+			public void Setup(Span<Type> definingTypes)
 			{
 				var sb = new StringBuilder();
-				var definingTypes = GetDefiningTypes();
 				if(ConcreteType is not null)
 				{
 					sb.Append(TypeUtility.ToString(ConcreteType));
@@ -1351,21 +1425,23 @@ namespace Sisus.Init
 					int count = definingTypes.Length;
 					if(count == 0 || (count == 1 && definingTypes[0] == ConcreteType))
 					{
-						return sb.ToString();
+						Label.text = sb.ToString();
+						return;
 					}
 
 					sb.Append(" <color=grey>(");
-					AddDefiningtypes();
+					AddDefiningtypes(sb, definingTypes);
 					sb.Append(")</color>");
 				}
 				else
 				{
-					AddDefiningtypes();
+					AddDefiningtypes(sb, definingTypes);
 				}
 
-				return sb.ToString();
+				Label.text = sb.ToString();
 
-				void AddDefiningtypes()
+				[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				static void AddDefiningtypes(StringBuilder sb, Span<Type> definingTypes)
 				{
 					sb.Append(TypeUtility.ToString(definingTypes[0]));
 					for(int i = 1, count = definingTypes.Length; i < count; i++)
@@ -1376,20 +1452,14 @@ namespace Sisus.Init
 				}
 			}
 
-			private Type[] GetDefiningTypes()
-			{
-				var result = Service == Null ? Array.Empty<Type>() : ServiceTagUtility.GetServiceDefiningTypes(Service).ToArray();
-				return result.Length > 0 ? result : new[] { definingType };
-			}
-
 			public bool Equals(ServiceInfo other) => ReferenceEquals(Service, other.Service);
 			public override bool Equals(object obj) => obj is ServiceInfo serviceInfo && Equals(serviceInfo);
 			public override int GetHashCode() => Service.GetHashCode();
 
-			private static bool IsPrefabAsset([AllowNull] object obj) => obj != Null && Find.In(obj, out Transform transform) && transform.gameObject.IsPartOfPrefabAsset();
+			private static bool IsPrefabAsset([AllowNull] object obj) => obj != NullExtensions.Null && Find.In(obj, out Transform transform) && transform.gameObject.IsPartOfPrefabAsset();
 		}
 
-		private sealed class ServiceInfoOrderer : IComparer<ServiceInfo>
+		internal sealed class ServiceInfoOrderer : IComparer<ServiceInfo>
 		{
 			public int Compare(ServiceInfo x, ServiceInfo y) => x.Label.text.CompareTo(y.Label.text);
 		}

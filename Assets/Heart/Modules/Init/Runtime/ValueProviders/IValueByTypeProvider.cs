@@ -60,7 +60,30 @@ namespace Sisus.Init
 		/// </returns>
 		bool CanProvideValue<TValue>([AllowNull] Component client) => TryGetFor<TValue>(client, out _);
 
-		bool CanProvideValue(Type ofType, Component toClient) => (bool)canProvideValueGeneric.MakeGenericMethod(ofType).Invoke(this, WithArgument(toClient));
+		bool CanProvideValue([DisallowNull] Type ofType, [AllowNull] Component toClient)
+		{
+			if(ofType.ContainsGenericParameters)
+			{
+				var genericArguments = ofType.GetGenericArguments();
+				if(genericArguments.Length != 1 || !toClient || genericArguments[0].GetGenericParameterConstraints().Length > 0)
+				{
+					return false;
+				}
+
+				if(genericArguments[0].GetGenericParameterConstraints().Length > 0)
+				{
+#if DEV_MODE
+					Debug.Log($"{GetType().Name}.CanProvideValue({Internal.TypeUtility.ToString(ofType)}) -> returning false because type contains generic parameters. Could try to construct generic type using client's type as the generic argument type, but that's unsafe due to the generic argument type having constraints, which could result in an exception.");
+#endif
+
+					return false;
+				}
+
+				return (bool)canProvideValueGeneric.MakeGenericMethod(ofType.MakeGenericType(toClient.GetType())).Invoke(this, WithArgument(toClient));
+			}
+
+			return (bool)canProvideValueGeneric.MakeGenericMethod(ofType).Invoke(this, WithArgument(toClient));
+		}
 
 		private static object[] WithArgument(object argument)
 		{

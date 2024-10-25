@@ -11,6 +11,7 @@ using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 #if DEV_MODE
 using UnityEngine.Profiling;
@@ -25,9 +26,10 @@ namespace Sisus.Init.EditorOnly
 	{
 		[NonSerialized] private bool setupDone;
 		[NonSerialized] private bool preOnGUISetupDone;
-		[NonSerialized] private RuntimeFieldsDrawer runtimeFieldsDrawer;
 		[NonSerialized] private InitializerGUI initializerGUI;
+		[NonSerialized] private RuntimeFieldsDrawer runtimeFieldsDrawer;
 		private bool drawInitSection;
+		private IVisualElementScheduledItem scheduledItem;
 
 		protected bool ShowRuntimeFields { get; set; }
 
@@ -37,9 +39,6 @@ namespace Sisus.Init.EditorOnly
 			Profiler.enableAllocationCallstacks = true;
 			Profiler.maxUsedMemory = 1024 * 1024 * 1024;
 			#endif
-
-			EditorApplication.update -= OnUpdate;
-			EditorApplication.update += OnUpdate;
 
 			if(target)
 			{
@@ -286,6 +285,10 @@ namespace Sisus.Init.EditorOnly
 			if(ShowRuntimeFields)
 			{
 				runtimeFieldsDrawer = new RuntimeFieldsDrawer(target, baseType);
+
+				// In Play Mode we need to call Repaint occasionally so that the Runtime Fields GUI
+				// reflects the current state of any values that might be changing.
+				scheduledItem = schedule.Execute(RepaintIfDrawingRuntimeFields).Every(intervalMs: 500);
 			}
 
 			// Always draw the Init section if the client has an initializer attached
@@ -375,7 +378,7 @@ namespace Sisus.Init.EditorOnly
 		protected override void Dispose(bool disposeManaged)
 		{
 			AnyPropertyDrawer.DisposeAllStaticState();
-			EditorApplication.update -= OnUpdate;
+			scheduledItem?.Pause();
 
 			if(initializerGUI != null)
 			{
@@ -386,10 +389,8 @@ namespace Sisus.Init.EditorOnly
 			base.Dispose(disposeManaged);
 		}
 
-		private void OnUpdate()
+		private void RepaintIfDrawingRuntimeFields()
 		{
-			// In play mode repaint every frame, so that runtime fields GUI reflects
-			// the current state of any values that might be changing.
 			if(Application.isPlaying && runtimeFieldsDrawer != null)
 			{
 				Repaint();

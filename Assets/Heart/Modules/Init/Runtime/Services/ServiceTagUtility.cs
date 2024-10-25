@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Profiling;
-using static Sisus.NullExtensions;
 
 namespace Sisus.Init.Internal
 {
 	public static class ServiceTagUtility
 	{
-		private static readonly HashSet<Type> currentDefiningTypes = new();
 		private static readonly HashSet<Type> definingTypeOptions = new();
 		private static readonly List<ServiceTag> serviceTags = new();
 
@@ -103,102 +100,6 @@ namespace Sisus.Init.Internal
 			for(var t = type.BaseType; !TypeUtility.IsNullOrBaseType(t); t = t.BaseType)
 			{
 				definingTypeOptions.Add(t);
-			}
-		}
-
-		internal static IEnumerable<Type> GetServiceDefiningTypes([DisallowNull] object serviceOrServiceProvider)
-		{
-			Profiler.BeginSample("GetServiceDefiningTypes");
-
-			currentDefiningTypes.Clear();
-
-			Transform clientOrNull = Find.In<Transform>(serviceOrServiceProvider);
-			AddServiceDefiningTypes(clientOrNull, serviceOrServiceProvider, currentDefiningTypes);
-
-			if(serviceOrServiceProvider is IValueProvider valueProvider)
-			{
-				AddServiceProviderValueDefiningTypes(clientOrNull, valueProvider, currentDefiningTypes);
-			}
-
-			Profiler.EndSample();
-
-			return currentDefiningTypes;
-
-			static void AddServiceDefiningTypes([AllowNull] Component clientOrNull, [DisallowNull] object service, [DisallowNull] HashSet<Type> currentDefiningTypes)
-			{
-				Type concreteType = service.GetType();
-				foreach(var definingType in ServiceAttributeUtility.GetDefiningTypes(concreteType))
-				{
-					currentDefiningTypes.Add(definingType);
-				}
-
-				for(var typeOrBaseType = concreteType; !TypeUtility.IsNullOrBaseType(typeOrBaseType); typeOrBaseType = typeOrBaseType.BaseType)
-				{
-					if(!currentDefiningTypes.Contains(typeOrBaseType) && (clientOrNull == null ? ServiceUtility.IsServiceOrServiceProvider(typeOrBaseType, service) : ServiceUtility.IsServiceOrServiceProviderFor(clientOrNull, typeOrBaseType, service)))
-					{
-						currentDefiningTypes.Add(typeOrBaseType);
-					}
-				}
-
-				var interfaces = concreteType.GetInterfaces();
-				foreach(var interfaceType in interfaces)
-				{
-					if(!currentDefiningTypes.Contains(interfaceType) && (clientOrNull == null ? ServiceUtility.IsServiceOrServiceProvider(interfaceType, service) : ServiceUtility.IsServiceOrServiceProviderFor(clientOrNull, interfaceType, service)))
-					{
-						currentDefiningTypes.Add(interfaceType);
-					}
-				}
-			}
-
-			static void AddServiceProviderValueDefiningTypes([AllowNull] Component client, [DisallowNull] IValueProvider serviceProvider, [DisallowNull] HashSet<Type> currentDefiningTypes)
-			{
-				Type concreteType;
-				var interfaces = serviceProvider.GetType().GetInterfaces();
-				HashSet<Type> providedValueTypes;
-				object providedValue = serviceProvider.Value;
-				bool hasValue = providedValue != Null;
-				if(hasValue)
-				{
-					concreteType = providedValue.GetType();
-					providedValueTypes = interfaces.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IValueProvider<>)).Select(t => t.GetGenericArguments()[0]).Append(concreteType).ToHashSet();
-				}
-				else
-				{
-					providedValueTypes = interfaces.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IValueProvider<>)).Select(t => t.GetGenericArguments()[0]).ToHashSet();
-				}
-
-				foreach(var providedValueType in providedValueTypes)
-				{
-					foreach(var definingType in ServiceAttributeUtility.GetDefiningTypes(providedValueType))
-					{
-						currentDefiningTypes.Add(definingType);
-					}
-				}
-
-				if(!hasValue)
-				{
-					return;
-				}
-
-				foreach(var providedValueType in providedValueTypes)
-				{
-					for(var typeOrBaseType = providedValueType; !TypeUtility.IsNullOrBaseType(typeOrBaseType); typeOrBaseType = typeOrBaseType.BaseType)
-					{
-						if(!currentDefiningTypes.Contains(typeOrBaseType) && ServiceUtility.IsServiceOrServiceProviderFor(client, typeOrBaseType, providedValue))
-						{
-							currentDefiningTypes.Add(typeOrBaseType);
-						}
-					}
-
-					interfaces = providedValueType.GetInterfaces();
-					foreach(var interfaceType in interfaces)
-					{
-						if(!currentDefiningTypes.Contains(interfaceType) && ServiceUtility.IsServiceOrServiceProviderFor(client, interfaceType, providedValue))
-						{
-							currentDefiningTypes.Add(interfaceType);
-						}
-					}
-				}
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 //#define DEBUG_INIT_SERVICES
 //#define DEBUG_CREATE_SERVICES
 
-#if !INIT_ARGS_DISABLE_SERVICE_INJECTION && UNITY_EDITOR
+#if !INIT_ARGS_DISABLE_EDITOR_SERVICE_INJECTION && UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -11,7 +11,6 @@ using Sisus.Init.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using TypeCollection = UnityEditor.TypeCache.TypeCollection;
 
 #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
 using UnityEngine.AddressableAssets;
@@ -45,41 +44,7 @@ namespace Sisus.Init.Internal
 		static EditorServiceInjector() => CreateAndInjectServices();
 
 		/// <summary>
-		/// Gets a value indicating whether <typeparamref name="T"/> is a service type.
-		/// <para>
-		/// Service types are non-abstract classes that have the <see cref="EditorServiceAttribute"/>.
-		/// </para>
-		/// </summary>
-		/// <typeparam name="T"> Type to test. </typeparam>
-		/// <returns> <see langword="true"/> if <typeparamref name="T"/> is a concrete service type; otherwise, <see langword="false"/>. </returns>
-		public static bool IsServiceDefiningType<T>()
-		{
-			if(typeof(T).IsValueType)
-			{
-				return false;
-			}
-
-			if(!ServicesAreReady)
-			{
-				foreach(var classWithAttribute in GetServiceTypes())
-				{
-					foreach(var attribute in classWithAttribute.GetCustomAttributes<EditorServiceAttribute>())
-					{
-						if(typeof(T) == attribute.definingType)
-						{
-							return !typeof(T).IsAbstract;
-						}
-					}
-				}
-
-				return false;
-			}
-
-			return Service<T>.Instance is not null;
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether or not <typeparamref name="T"/> is an editor service type.
+		/// Gets a value indicating whether <typeparamref name="T"/> is an editor service type.
 		/// <para>
 		/// Service types are non-abstract classes that have the <see cref="EditorServiceAttribute"/>.
 		/// </para>
@@ -145,10 +110,9 @@ namespace Sisus.Init.Internal
 		{
 			ThreadSafe.Application.IsPlaying = false;
 
-			var serviceTypes = GetServiceTypes();
-
+			var serviceInfos = EditorServiceAttributeUtility.concreteTypes;
+			var serviceTypes = serviceInfos.Keys;
 			int count = serviceTypes.Count;
-
 			if(count == 0)
 			{
 				return null;
@@ -157,8 +121,26 @@ namespace Sisus.Init.Internal
 			GameObject servicesContainer = null;
 
 			var services = new Dictionary<Type, object>(count);
-			CreateServices(serviceTypes, services, ref servicesContainer);
-			InjectCrossServiceDependencies(serviceTypes, services);
+
+			foreach(var serviceInfo in serviceInfos)
+			{
+				foreach(var attribute in serviceInfo.Value)
+				{
+					try
+					{
+						CreateService(services, serviceInfo.Key, attribute, ref servicesContainer);
+					}
+					catch(Exception e)
+					{
+						Debug.LogWarning($"Failed to initialize service {serviceInfo.Key.Name} with defining type {attribute.definingType.Name}.\n{e}");
+					}
+				}
+			}
+
+			foreach(var classWithAttribute in serviceTypes)
+			{
+				InjectCrossServiceDependencies(services, classWithAttribute);
+			}
 
 			if(servicesContainer)
 			{
@@ -168,39 +150,6 @@ namespace Sisus.Init.Internal
 			HandleBroadcastingUnityEvents(services);
 
 			return services;
-		}
-
-		private static GameObject CreateServicesContainer()
-		{
-			var container = new GameObject("Services");
-			container.SetActive(false);
-			container.hideFlags = HideFlags.HideAndDontSave;
-			Object.DontDestroyOnLoad(container);
-			return container;
-		}
-
-		private static void CreateServices(TypeCollection serviceTypes, Dictionary<Type, object> services, ref GameObject servicesContainer)
-		{
-			foreach(var classWithAttribute in serviceTypes)
-			{
-				if(classWithAttribute.IsAbstract || classWithAttribute.IsGenericTypeDefinition)
-				{
-					continue;
-				}
-
-
-				foreach(var attribute in classWithAttribute.GetCustomAttributes<EditorServiceAttribute>())
-				{
-					try
-					{
-						CreateService(services, classWithAttribute, attribute, ref servicesContainer);
-					}
-					catch(Exception e)
-					{
-						Debug.LogWarning($"Failed to initialize service {classWithAttribute.Name} with defining type {attribute.definingType.Name}.\n{e}");
-					}
-				}
-			}
 		}
 
 		private static void CreateService(Dictionary<Type, object> services, Type classWithAttribute, EditorServiceAttribute serviceAttribute, ref GameObject containerGameObject)
@@ -333,17 +282,6 @@ namespace Sisus.Init.Internal
 			}
 
 			ServiceUtility.SetInstance(definingType, instance);
-		}
-
-		private static void InjectCrossServiceDependencies(TypeCollection serviceTypes, Dictionary<Type, object> services)
-		{
-			foreach(var classWithAttribute in serviceTypes)
-			{
-				if(!classWithAttribute.IsAbstract && !classWithAttribute.IsGenericTypeDefinition)
-				{
-					InjectCrossServiceDependencies(services, classWithAttribute);
-				}
-			}
 		}
 
 		private static void InjectServiceDependenciesForTypesThatRequireOnlyThem([AllowNull] Dictionary<Type, object> services)
@@ -740,15 +678,8 @@ namespace Sisus.Init.Internal
 			}
 		}
 
-		private static TypeCollection GetServiceTypes()
-		{
-			return TypeUtility.GetTypesWithAttribute<EditorServiceAttribute>(typeof(EditorServiceAttribute).Assembly, false, 8);
-		}
-
-		private static TypeCollection GetImplementingTypes<TInterface>() where TInterface : class
-		{
-			return TypeCache.GetTypesDerivedFrom<TInterface>();
-		}
+		//private static TypeCache.TypeCollection GetServiceTypes() => TypeCache.GetTypesWithAttribute<EditorServiceAttribute>();
+		private static TypeCache.TypeCollection GetImplementingTypes<TInterface>() where TInterface : class => TypeCache.GetTypesDerivedFrom<TInterface>();
 	}
 }
 #endif

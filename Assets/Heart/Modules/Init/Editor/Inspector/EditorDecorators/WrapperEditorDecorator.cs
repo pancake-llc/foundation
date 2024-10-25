@@ -40,8 +40,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				return;
 			}
 
-			if(SerializedObject.FindProperty("wrapped") is not { } wrappedObjectProperty
-				|| !wrappedObjectProperty.NextVisible(true))
+			if(SerializedObject?.FindProperty("wrapped") is not { } wrappedObjectProperty
+			   || !wrappedObjectProperty.NextVisible(true))
 			{
 				return;
 			}

@@ -1,22 +1,205 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Sisus.Init.Internal;
 using Sisus.Shared.EditorOnly;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 using static Sisus.Init.Internal.ServiceTagUtility;
+using static Sisus.NullExtensions;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
-	internal static class ServiceTagEditorUtility
+	[InitializeOnLoad]
+	internal static class EditorServiceTagUtility
 	{
 		internal static Component openSelectTagsMenuFor;
 		private static readonly GUIContent serviceLabel = new("Service", "An instance of this service will be automatically provided during initialization.");
 		private static readonly GUIContent blankLabel = new(" ");
+		private static readonly HashSet<Type> definingTypesBuilder = new();
+		private static readonly Dictionary<object, Type[]> objectDefiningTypesCache = new();
+
+		static EditorServiceTagUtility()
+		{
+			Selection.selectionChanged -= OnSelectionChanged;
+			Selection.selectionChanged += OnSelectionChanged;
+			ObjectChangeEvents.changesPublished -= OnObjectChangesPublished;
+			ObjectChangeEvents.changesPublished += OnObjectChangesPublished;
+			Service.AnyChangedEditorOnly -= OnAnyServiceChanged;
+			Service.AnyChangedEditorOnly += OnAnyServiceChanged;
+			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+			Undo.undoRedoPerformed -= OnUndoRedoPerformed;
+			Undo.undoRedoPerformed += OnUndoRedoPerformed;
+			SceneManager.sceneUnloaded -= OnSceneUnloaded;
+			SceneManager.sceneUnloaded += OnSceneUnloaded;
+			EditorSceneManager.sceneClosed -= OnSceneClosed;
+			EditorSceneManager.sceneClosed += OnSceneClosed;
+
+			static void OnObjectChangesPublished(ref ObjectChangeEventStream stream) => ClearDefiningTypesCache();
+			static void OnUndoRedoPerformed() => ClearDefiningTypesCache();
+			static void OnSelectionChanged() => InspectorContents.Repaint();
+			static void OnAnyServiceChanged() => ClearDefiningTypesCache();
+			static void OnPlayModeStateChanged(PlayModeStateChange mode) => ClearDefiningTypesCache();
+			static void OnSceneUnloaded(Scene scene) => ClearDefiningTypesCache();
+			static void OnSceneClosed(Scene scene) => ClearDefiningTypesCache();
+
+			static void ClearDefiningTypesCache()
+			{
+				EditorApplication.delayCall -= ClearDefiningTypesCacheImmediate;
+				EditorApplication.delayCall += ClearDefiningTypesCacheImmediate;
+			}
+
+#if DEV_MODE
+			[MenuItem("DevMode/Clear Service Defining Types Cache")]
+#endif
+			static void ClearDefiningTypesCacheImmediate()
+			{
+				foreach(var definingTypes in objectDefiningTypesCache.Values)
+				{
+					if(definingTypes.Length > 0)
+					{
+						ArrayPool<Type>.Shared.Return(definingTypes, true);
+					}
+				}
+
+				objectDefiningTypesCache.Clear();
+				InspectorContents.Repaint();
+			}
+		}
+
+		internal static Span<Type> GetServiceDefiningTypes([DisallowNull] object serviceOrServiceProvider)
+		{
+			if(objectDefiningTypesCache.TryGetValue(serviceOrServiceProvider, out var cachedResults))
+			{
+				if(cachedResults.Length <= 1)
+				{
+					return cachedResults;
+				}
+
+				int nullIndex = Array.IndexOf(cachedResults, null, 1);
+				return nullIndex is -1 ? cachedResults.AsSpan() : cachedResults.AsSpan(0, nullIndex);
+			}
+
+			Profiler.BeginSample("GetServiceDefiningTypes(object)");
+
+			Transform clientOrNull = Find.In<Transform>(serviceOrServiceProvider);
+			AddServiceDefiningTypes(clientOrNull, serviceOrServiceProvider, definingTypesBuilder);
+
+			if(serviceOrServiceProvider is IValueProvider valueProvider)
+			{
+				AddServiceProviderValueDefiningTypes(clientOrNull, valueProvider, definingTypesBuilder);
+			}
+
+			Profiler.EndSample();
+
+			int count = definingTypesBuilder.Count;
+			if(count == 0)
+			{
+				objectDefiningTypesCache.Add(serviceOrServiceProvider, Array.Empty<Type>());
+				return Span<Type>.Empty;
+			}
+
+			var definingTypes = ArrayPool<Type>.Shared.Rent(definingTypesBuilder.Count);
+			definingTypesBuilder.CopyTo(definingTypes);
+			definingTypesBuilder.Clear();
+			objectDefiningTypesCache.Add(serviceOrServiceProvider, definingTypes);
+			return definingTypes.AsSpan(0, count);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			static void AddServiceDefiningTypes([AllowNull] Component clientOrNull, [DisallowNull] object service, [DisallowNull] HashSet<Type> definingTypes)
+			{
+				Type concreteType = service.GetType();
+				foreach(var definingType in ServiceAttributeUtility.GetDefiningTypes(concreteType))
+				{
+					definingTypes.Add(definingType);
+				}
+
+				for(var typeOrBaseType = concreteType; !TypeUtility.IsNullOrBaseType(typeOrBaseType); typeOrBaseType = typeOrBaseType.BaseType)
+				{
+					if(!definingTypes.Contains(typeOrBaseType) && (!clientOrNull ? ServiceUtility.IsServiceOrServiceProvider(typeOrBaseType, service) : ServiceUtility.IsServiceOrServiceProviderFor(clientOrNull, typeOrBaseType, service)))
+					{
+						definingTypes.Add(typeOrBaseType);
+					}
+				}
+
+				var interfaces = concreteType.GetInterfaces();
+				foreach(var interfaceType in interfaces)
+				{
+					if(definingTypes.Contains(interfaceType))
+					{
+						continue;
+					}
+
+					if(clientOrNull ? !ServiceUtility.IsServiceOrServiceProviderFor(clientOrNull, interfaceType, service) : !ServiceUtility.IsServiceOrServiceProvider(interfaceType, service))
+					{
+						continue;
+					}
+
+					definingTypes.Add(interfaceType);
+				}
+			}
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			static void AddServiceProviderValueDefiningTypes([AllowNull] Component client, [DisallowNull] IValueProvider serviceProvider, [DisallowNull] HashSet<Type> definingTypes)
+			{
+				Type concreteType;
+				var interfaces = serviceProvider.GetType().GetInterfaces();
+				HashSet<Type> providedValueTypes;
+				object providedValue = serviceProvider.Value;
+				bool hasValue = providedValue != Null;
+				if(hasValue)
+				{
+					concreteType = providedValue.GetType();
+					providedValueTypes = interfaces.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IValueProvider<>)).Select(t => t.GetGenericArguments()[0]).Append(concreteType).ToHashSet();
+				}
+				else
+				{
+					providedValueTypes = interfaces.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IValueProvider<>)).Select(t => t.GetGenericArguments()[0]).ToHashSet();
+				}
+
+				foreach(var providedValueType in providedValueTypes)
+				{
+					foreach(var definingType in ServiceAttributeUtility.GetDefiningTypes(providedValueType))
+					{
+						definingTypes.Add(definingType);
+					}
+				}
+
+				if(!hasValue)
+				{
+					return;
+				}
+
+				foreach(var providedValueType in providedValueTypes)
+				{
+					for(var typeOrBaseType = providedValueType; !TypeUtility.IsNullOrBaseType(typeOrBaseType); typeOrBaseType = typeOrBaseType.BaseType)
+					{
+						if(!definingTypes.Contains(typeOrBaseType) && ServiceUtility.IsServiceOrServiceProviderFor(client, typeOrBaseType, providedValue))
+						{
+							definingTypes.Add(typeOrBaseType);
+						}
+					}
+
+					interfaces = providedValueType.GetInterfaces();
+					foreach(var interfaceType in interfaces)
+					{
+						if(!definingTypes.Contains(interfaceType) && ServiceUtility.IsServiceOrServiceProviderFor(client, interfaceType, providedValue))
+						{
+							definingTypes.Add(interfaceType);
+						}
+					}
+				}
+			}
+		}
 
 		internal static Rect GetTagRect(Component component, Rect headerRect, GUIContent label, GUIStyle style)
 		{
@@ -200,7 +383,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		internal static void SelectAllReferencesInScene(object serviceOrServiceProvider)
-			=> Selection.objects = GetServiceDefiningTypes(serviceOrServiceProvider).SelectMany(t => FindAllReferences(t)).Distinct().ToArray();
+			=> Selection.objects = GetServiceDefiningTypes(serviceOrServiceProvider).ToArray().SelectMany(FindAllReferences).Distinct().ToArray();
 
 		/// <summary>
 		/// Ping MonoScript or GameObject containing the configuration that causes the object, or the value provided by the object
@@ -261,7 +444,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			// Ping services component that defines the service, if any...
 			var services = Find.All<Services>().FirstOrDefault(s => s.providesServices.Any(i => i.definingType.Value == definingType));
-			if(services != null)
+			if(services)
 			{
 				EditorGUIUtility.PingObject(services);
 				return;

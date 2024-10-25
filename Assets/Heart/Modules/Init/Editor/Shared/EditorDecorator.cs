@@ -1,6 +1,7 @@
-﻿//#define DEBUG_DISPOSE
+﻿#define DEBUG_DISPOSE
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -23,11 +24,16 @@ namespace Sisus.Shared.EditorOnly
 
 		[NonSerialized] private Editor decoratedEditor;
 		[NonSerialized] private bool isResponsibleForDecoratedEditorLifetime;
+		[SerializeField] private bool managedDisposed;
 
 		public bool DecoratingDefaultOrOdinEditor { get; private set; }
 
 		protected EditorDecorator(Editor decoratedEditor)
 		{
+#if DEV_MODE && DEBUG_DISPOSE
+			Debug.Log($"{GetType().Name}.Ctr({decoratedEditor.target.GetType().Name})");
+#endif
+			
 			this.decoratedEditor = decoratedEditor;
 			this.isResponsibleForDecoratedEditorLifetime = false;
 			DecoratingDefaultOrOdinEditor = CustomEditorUtility.IsDefaultOrOdinEditor(decoratedEditor.GetType());
@@ -35,7 +41,14 @@ namespace Sisus.Shared.EditorOnly
 			target = targets.FirstOrDefault();
 		}
 
-		~EditorDecorator() => Dispose(false);
+		~EditorDecorator()
+		{
+#if DEV_MODE
+			Debug.LogWarning($"{GetType().Name} Finalizer was called. Did you forget to call Dispose()?");
+#endif
+
+			Dispose(false);
+		}
 
 		private static EditorDecorator Create(Type decoratorType, Editor decoratedEditor)
 		{
@@ -46,30 +59,22 @@ namespace Sisus.Shared.EditorOnly
 			return (EditorDecorator)constructor.Invoke(new object[] { decoratedEditor });
 		}
 
-		public static bool CreateBeforeInspectorGUI(Type wrapperType, Editor wrappedEditor, out EditorDecorator beforeInspectorGUI)
-		{
-			if(!HasMethodOverride(wrapperType, nameof(OnBeforeInspectorGUI)))
-			{
-				beforeInspectorGUI = null;
-				return false;
-			}
+		public static bool ShouldCreateBeforeInspectorGUI([DisallowNull] Type wrapperType) => HasMethodOverride(wrapperType, nameof(OnBeforeInspectorGUI));
 
-			beforeInspectorGUI = Create(wrapperType, wrappedEditor);
+		public static EditorDecorator CreateBeforeInspectorGUI([DisallowNull] Type wrapperType, Editor wrappedEditor)
+		{
+			var beforeInspectorGUI = Create(wrapperType, wrappedEditor);
 			beforeInspectorGUI.onGUIHandler = beforeInspectorGUI.DrawBeforeInspectorGUI;
-			return true;
+			return beforeInspectorGUI;
 		}
 
-		public static bool CreateAfterInspectorGUI(Type wrapperType, Editor wrappedEditor, out EditorDecorator afterInspectorGUI)
-		{
-			if(!HasMethodOverride(wrapperType, nameof(OnAfterInspectorGUI)))
-			{
-				afterInspectorGUI = null;
-				return false;
-			}
+		public static bool ShouldCreateAfterInspectorGUI([DisallowNull] Type wrapperType) => HasMethodOverride(wrapperType, nameof(OnAfterInspectorGUI));
 
-			afterInspectorGUI = Create(wrapperType, wrappedEditor);
+		public static EditorDecorator CreateAfterInspectorGUI([DisallowNull] Type wrapperType, Editor wrappedEditor)
+		{
+			var afterInspectorGUI = Create(wrapperType, wrappedEditor);
 			afterInspectorGUI.onGUIHandler = afterInspectorGUI.DrawAfterInspectorGUI;
-			return true;
+			return afterInspectorGUI;
 		}
 
 		private void DrawBeforeInspectorGUI()
@@ -122,7 +127,19 @@ namespace Sisus.Shared.EditorOnly
 			EditorGUILayout.EndVertical();
 		}
 
-		private static bool HasMethodOverride(Type wrapperType, string methodName) => wrapperType.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public).DeclaringType != typeof(EditorDecorator);
+		private static bool HasMethodOverride(Type wrapperType, string methodName)
+		{
+			if(wrapperType.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public) is { } method)
+			{
+				return method.DeclaringType != typeof(EditorDecorator);
+			}
+
+#if DEV_MODE
+			Debug.LogWarning($"Method '{methodName}' was not found on {wrapperType}.");
+#endif
+
+			return false;
+		}
 
 		public virtual void OnBeforeInspectorGUI() { }
 
@@ -141,7 +158,14 @@ namespace Sisus.Shared.EditorOnly
 				DestroyIfNotNull(ref decoratedEditor);
 			}
 
+			if(managedDisposed)
+			{
+				return;
+			}
+
+			managedDisposed = disposeManaged;
 			base.Dispose(disposeManaged);
+			GC.SuppressFinalize(this);
 		}
 
 		private void DestroyIfNotNull(ref Editor editor)

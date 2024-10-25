@@ -2596,7 +2596,7 @@ namespace Sisus.Init.Internal
 				return;
 			}
 			
-			if(serviceInfo.service == null)
+			if(!serviceInfo.service)
 			{
 				Debug.LogError($"Service {TypeUtility.ToString(clientType)} requires argument {TypeUtility.ToString(dependencyType)} but reference to the service seems to be broken in the scene component.", context);
 				return;

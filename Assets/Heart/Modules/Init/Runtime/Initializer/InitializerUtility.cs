@@ -27,7 +27,7 @@ namespace Sisus.Init.Internal
 	/// <summary>
 	/// Utility methods related to initializers.
 	/// </summary>
-	internal static class InitializerUtility
+	public static class InitializerUtility
 	{
 		private static readonly List<Type> listWithNoTypes = new(0);
 		private static readonly List<Type> listWithOneType = new(1);

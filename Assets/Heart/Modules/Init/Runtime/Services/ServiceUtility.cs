@@ -6,6 +6,7 @@ using Sisus.Init.Internal;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+using static Sisus.NullExtensions;
 
 namespace Sisus.Init
 {
@@ -137,6 +138,7 @@ namespace Sisus.Init
 		/// <para>
 		/// This must be an interface that the service implement, a base type that the service derives from,
 		/// or the exact type of the service.
+		/// </para>
 		/// </param>
 		/// <returns></returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is globally accessible to any client. </exception>
@@ -164,6 +166,7 @@ namespace Sisus.Init
 		/// <para>
 		/// This must be an interface that the service implement, a base type that the service derives from,
 		/// or the exact type of the service.
+		/// </para>
 		/// </param>
 		/// <returns></returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is globally accessible to any client. </exception>
@@ -234,6 +237,10 @@ namespace Sisus.Init
 		/// <returns> Shared instance of the service of the given type. </returns>
 		public static bool TryGetFor(object client, [DisallowNull] Type definingType, out object service, Context context = Context.MainThread)
 		{
+#if DEV_MODE && UNITY_EDITOR
+			using Shared.Internal.ProfilerScope x = new("ServiceUtility.TryGetFor");
+#endif
+			
 			if(!context.IsUnitySafeContext())
 			{
 				return TryGet(definingType, out service);
@@ -318,6 +325,7 @@ namespace Sisus.Init
 		/// <para>
 		/// This must be an interface that the service implement, a base type that the service derives from,
 		/// or the exact type of the service.
+		/// </para>
 		/// </param>
 		/// <returns>
 		/// <see langword="true"/> if service of the given type exists for the client; otherwise, <see langword="false"/>.
@@ -326,7 +334,7 @@ namespace Sisus.Init
 
 		public static bool Exists([DisallowNull] Type definingType) => TryGet(definingType, out _);
 
-		public static bool TryGetClients(Component serviceOrServiceProvider, Type definingType, out Clients clients) // would it be better to pass both Component provider and object service as separate instances???
+		public static bool TryGetClients([DisallowNull] Component serviceOrServiceProvider, [DisallowNull] Type definingType, out Clients clients) // would it be better to pass both Component provider and object service as separate instances???
 		{
 			if(!definingType.IsInstanceOfType(serviceOrServiceProvider))
 			{
@@ -376,7 +384,7 @@ namespace Sisus.Init
 		#endif
 		public static void SetInstanceSilently([DisallowNull] Type definingType, [AllowNull] object instance)
 		{
-			Debug.Assert(definingType != null);
+			Debug.Assert(definingType is not null);
 
 			if(instance is not null && !definingType.IsInstanceOfType(instance))
 			{
@@ -427,7 +435,7 @@ namespace Sisus.Init
 		public static void SetInstance([DisallowNull] Type definingType, [AllowNull] object instance)
 		{
 			#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
-			Debug.Assert(definingType != null);
+			Debug.Assert(definingType is not null);
 
 			if(instance is not null && !definingType.IsInstanceOfType(instance))
 			{
@@ -483,10 +491,10 @@ namespace Sisus.Init
 		/// </param>
 		public static void AddFor([AllowNull] object service, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
 		{
-			#if DEV_MODE
-			Debug.Assert(definingType != null, service?.GetType().Name ?? "defining type null", service as Object);
-			Debug.Assert(service != NullExtensions.Null, definingType?.Name ?? "service null", service as Object);
-			#endif
+#if DEV_MODE
+			Debug.Assert(definingType is not null, service?.GetType().Name ?? "defining type null", service as Object);
+			Debug.Assert(service != Null, definingType?.Name ?? "service null", service as Object);
+#endif
 
 			if(!definingType.IsInstanceOfType(service) && !TryExtractServiceFrom(service, definingType, clients, container, out service))
 			{
@@ -708,8 +716,8 @@ namespace Sisus.Init
 		/// <param name="container"> Component that registered the service. </param>
 		public static void RemoveFromClients([DisallowNull] object service, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
 		{
-			Debug.Assert(definingType != null);
-			Debug.Assert(service != null);
+			Debug.Assert(definingType is not null);
+			Debug.Assert(service != Null);
 
 			if(!definingType.IsInstanceOfType(service))
 			{
@@ -740,14 +748,14 @@ namespace Sisus.Init
 		/// </returns>
 		public static bool IsServiceDefiningType<T>()
 		{
-			#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
-			return (!typeof(T).IsValueType && Service<T>.Instance != null)
-					|| ScopedService<T>.ExistsForAllClients()
-					|| ServiceAttributeUtility.definingTypes.ContainsKey(typeof(T))
-					|| (!ServicesAreReady && EditorServiceInjector.IsServiceDefiningType<T>());
-			#else
-			return (!typeof(T).IsValueType && Service<T>.Instance != null) || ScopedService<T>.ExistsForAllClients();
-			#endif
+#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
+			return (!typeof(T).IsValueType && Service<T>.Instance != Null)
+			       || ScopedService<T>.ExistsForAllClients()
+			       || ServiceAttributeUtility.definingTypes.ContainsKey(typeof(T))
+			       || (!ServicesAreReady && EditorServiceAttributeUtility.definingTypes.ContainsKey(typeof(T)));
+#else
+			return (!typeof(T).IsValueType && Service<T>.Instance is not null) || ScopedService<T>.ExistsForAllClients();
+#endif
 		}
 
 		/// <summary>
@@ -762,6 +770,10 @@ namespace Sisus.Init
 		/// <returns> <see langword="true"/> if type is the defining type of a service; otherwise, <see langword="false"/>. </returns>
 		public static bool IsServiceDefiningType([DisallowNull] Type type)
 		{
+#if DEV_MODE && UNITY_EDITOR
+			using Shared.Internal.ProfilerScope x = new("ServiceUtility.IsServiceDefiningType");
+#endif
+			
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(type is null)
 			{

@@ -1,95 +1,118 @@
 ﻿#if UNITY_EDITOR
 using System;
+
 using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Sisus.ComponentNames.EditorOnly
+namespace Sisus.ComponentNames.Editor
 {
-    /// <summary>
-    /// Utility class for getting and setting component tooltips.
-    /// </summary>
-    internal static class ComponentTooltip
-    {
-        private static readonly Dictionary<Object, string> tooltips = new();
+	/// <summary>
+	/// Utility class for getting and setting component tooltips.
+	/// </summary>
+	internal static class ComponentTooltip
+	{
+		private static readonly Dictionary<Object, string> tooltips = new();
+		private static readonly Dictionary<Type, string> xmlDocumentationSummaries = new()
+		{
+			{ typeof(Transform), "Position, rotation and scale of an object." },
+			{ typeof(MeshFilter), "A class to access the Mesh of the mesh filter." },
+			{ typeof(Light), "Script interface for light components." },
+			{ typeof(MeshCollider), "A mesh collider allows you to do collision detection between meshes and primitives." }
+		};
+		private static readonly HashSet<Component> hasOverride = new();
 
-        private static readonly Dictionary<Type, string> summaries = new()
-        {
-            {typeof(Transform), "Position, rotation and scale of an object."},
-            {typeof(MeshFilter), "A class to access the Mesh of the mesh filter."},
-            {typeof(Light), "Script interface for light components."},
-            {typeof(MeshCollider), "A mesh collider allows you to do collision detection between meshes and primitives."}
-        };
+		internal static bool HasOverride([NotNull] Component component)
+			=> hasOverride.Contains(component);
 
-        private static readonly HashSet<Component> hasOverride = new();
+		internal static void Set([NotNull] Component component, [CanBeNull] string tooltip, ModifyOptions modifyOptions)
+		{
+			if(string.IsNullOrEmpty(tooltip))
+			{
+				tooltips.Remove(component);
+				hasOverride.Remove(component);
 
-        internal static bool HasOverride([NotNull] Component component) => hasOverride.Contains(component);
+				if(modifyOptions.IsUpdatingContainerAllowed())
+				{
+					UpdateNameContainer(component, modifyOptions);
+				}
 
-        internal static void Set([NotNull] Component component, [CanBeNull] string tooltip, ModifyOptions modifyOptions = ModifyOptions.Defaults)
-        {
-            if (string.IsNullOrEmpty(tooltip))
-            {
-                tooltips.Remove(component);
-                hasOverride.Remove(component);
+				return;
 
-                NameContainer.TryGet(component,
-                    nameContainer =>
-                    {
-                        if (ComponentName.IsNullEmptyOrDefault(component, nameContainer.NameOverride) && modifyOptions.IsRemovingNameContainerAllowed())
-                        {
-                            nameContainer.Remove(modifyOptions);
-                        }
-                        else
-                        {
-                            nameContainer.TooltipOverride = "";
-                        }
-                    },
-                    modifyOptions);
+				static void UpdateNameContainer(Component component, ModifyOptions modifyOptions)
+				{
+					if(modifyOptions.IsDelayed())
+					{
+						EditorApplication.delayCall += ()=> UpdateNameContainer(component, modifyOptions.Immediately());
+					}
 
-                return;
-            }
+					if(!NameContainer.TryGet(component, out var nameContainer))
+					{
+						return;
+					}
 
-            hasOverride.Add(component);
-            tooltips[component] = tooltip;
+					if(ComponentName.IsNullEmptyOrDefault(component, nameContainer.NameOverride) && modifyOptions.IsRemovingNameContainerAllowed())
+					{
+						nameContainer.Remove(modifyOptions);
+					}
+					else
+					{
+						nameContainer.TooltipOverride = "";
+					}
+				}
+			}
 
-            NameContainer.TryGetOrCreate(component,
-                nameContainer => { nameContainer.TooltipOverride = tooltip; },
-                null,
-                tooltip,
-                modifyOptions);
-        }
+			hasOverride.Add(component);
+			tooltips[component] = tooltip;
 
-        internal static string Get([NotNull] Component component)
-        {
-            if (tooltips.TryGetValue(component, out string tooltip))
-            {
-                return tooltip;
-            }
+			if(modifyOptions.IsUpdatingContainerAllowed())
+			{
+				NameContainer.TryGetOrCreate(component, modifyOptions, nameContainer =>
+				{
+					nameContainer.TooltipOverride = tooltip;
+				}, null, tooltip);
+			}
+		}
 
-            tooltip = GetSummary(component);
-            tooltips.Add(component, tooltip);
-            return tooltip;
-        }
+		internal static string Get([NotNull] Component component)
+		{
+			if(tooltips.TryGetValue(component, out string tooltip))
+			{
+				return tooltip;
+			}
 
-        private static string GetSummary(Component component)
-        {
-            var type = component.GetType();
-            if (summaries.TryGetValue(type, out string summary))
-            {
-                return summary;
-            }
+			return GetDefault(component);
+		}
 
-            if (component is not MonoBehaviour monoBehaviour || !MonoScriptSummaryParser.TryParseSummary(monoBehaviour, out summary))
-            {
-                DLLSummaryParser.TryParseSummary(type, out summary);
-            }
+		internal static string GetDefault(Component component)
+		{
+			var componentType = component.GetType();
+			// TODO: Is it bad that the tooltip gets discarded here? do we need to then call this twice to also get the tooltip?
+			// Maybe not, if it's only updated on mouse enter for example. Investigate!
+			var (_, _, tooltip) = HeaderContentUtility.GetCustomHeaderContent(component, componentType);
 
-            summary ??= "";
-            summaries[type] = summary;
-            return summary;
-        }
-    }
+			return !tooltip.IsDefault ? tooltip : GetXmlDocumentationSummary(component);
+		}
+
+		internal static string GetXmlDocumentationSummary(Component component)
+		{
+			var type = component.GetType();
+			if(xmlDocumentationSummaries.TryGetValue(type, out string summary))
+			{
+				return summary;
+			}
+
+			if(component is not MonoBehaviour monoBehaviour || !MonoScriptSummaryParser.TryParseSummary(monoBehaviour, out summary))
+			{
+				DLLSummaryParser.TryParseSummary(type, out summary);
+			}
+
+			summary ??= "";
+			xmlDocumentationSummaries[type] = summary;
+			return summary;
+		}
+	}
 }
 #endif

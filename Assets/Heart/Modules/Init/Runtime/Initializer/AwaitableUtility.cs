@@ -1,4 +1,7 @@
 ﻿#if UNITY_2023_1_OR_NEWER
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Sisus.Init.Internal
@@ -111,6 +114,42 @@ namespace Sisus.Init.Internal
 				(Awaitable<TResult1> awaitable1, Awaitable<TResult2> awaitable2, Awaitable<TResult3> awaitable3, Awaitable<TResult4> awaitable4, Awaitable<TResult5> awaitable5, Awaitable<TResult6> awaitable6)
 					=> new Awaitables<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>(awaitable1, awaitable2, awaitable3, awaitable4, awaitable5, awaitable6);
 
+		/// <summary>
+		/// Awaits an <see cref="Task{T}"/> or <see cref="Awaitable{T}"/> with any generic type and returns its result.
+		/// </summary>
+		/// <param name="awaitable"> <see cref="Task{T}"/> or <see cref="Awaitable{T}"/> which to await. </param>
+		/// <returns>
+		/// Result of the <see cref="Task{T}"/> or <see cref="Awaitable{T}"/>, if <paramref name="awaitable"/> was
+		/// of either type; otherwise, the <paramref name="awaitable"/> itself.
+		/// </returns>
+		[return: NotNull]
+		public static async Awaitable<object> Await([DisallowNull] object awaitable)
+		{
+			if(awaitable is Task task)
+			{
+				return await task.GetResult();
+			}
+
+			if(awaitable.GetType().GetMethod(nameof(Task<object>.GetAwaiter)) is not { } getAwaiterMethod)
+			{
+				return awaitable;
+			}
+
+			var awaiter = (INotifyCompletion)getAwaiterMethod.Invoke(awaitable, null);
+			var awaiterType = awaiter.GetType();
+			var isCompletedProperty = awaiterType.GetProperty(nameof(Task<object>.IsCompleted));
+			var getResultMethod = awaiterType.GetMethod(nameof(TaskAwaiter<object>.GetResult));
+			if((bool)isCompletedProperty.GetValue(awaiter, null))
+			{
+				return getResultMethod.Invoke(awaiter, null);
+			}
+
+			var taskCompletionSource = new TaskCompletionSource<bool>();
+			awaiter.OnCompleted(() => taskCompletionSource.SetResult(true));
+			await taskCompletionSource.Task;
+			return getResultMethod.Invoke(awaiter, null);
+		}
+		
 		static class Result<TResult>
 		{
 			private static readonly AwaitableCompletionSource<TResult> completionSource = new();

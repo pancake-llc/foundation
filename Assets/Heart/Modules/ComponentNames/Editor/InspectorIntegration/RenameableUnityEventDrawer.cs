@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
-namespace Sisus.ComponentNames.EditorOnly
+namespace Sisus.ComponentNames.Editor
 {
     [CustomPropertyDrawer(typeof(UnityEventBase), true)]
     public class RenameableUnityEventDrawer : PropertyDrawer

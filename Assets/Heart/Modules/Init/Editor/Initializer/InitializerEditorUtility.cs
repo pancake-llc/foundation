@@ -253,7 +253,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					: editorDecoratorTypes.TryGetValue(typeOrBaseType, out editorDecoratorType))
 					{
 						editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
-						return true;
+						return editorDecoratorType is not null;
 					}
 				}
 
@@ -263,11 +263,6 @@ namespace Sisus.Init.EditorOnly.Internal
 					editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
 					return true;
 				}
-			}
-			else if(editorDecoratorTypes.TryGetValue(inspectedType, out editorDecoratorType))
-			{
-				editorDecoratorTypes.Add(inspectedType, editorDecoratorType);
-				return true;
 			}
 
 			bool hasAnyInitializer = false;
@@ -899,13 +894,26 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static object CreateInstance(Type type)
 		{
+			#if DEV_MODE
+			Debug.Assert(!type.IsAbstract, type.FullName);
+			Debug.Assert(!type.IsGenericTypeDefinition, type.FullName);
+			#endif
+
 			try
 			{
 				return Activator.CreateInstance(type);
 			}
 			catch
 			{
-				return FormatterServices.GetUninitializedObject(type);
+				try
+				{
+					return FormatterServices.GetUninitializedObject(type);
+				}
+				catch(Exception e)
+				{
+					Debug.LogWarning($"CreateInstance({TypeUtility.ToString(type)}: {e}");
+					return null;
+				}
 			}
 		}
 
@@ -1099,6 +1107,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static bool TryGetAssignableType(Object reference, Object owner, Type anyType, Type valueType, out Type assignableType)
 		{
+			#if DEV_MODE
+			using ProfilerScope x = new("InitializerEditorUtility.TryGetAssignableType");
+			#endif
+			
 			if(!reference)
 			{
 				assignableType = null;

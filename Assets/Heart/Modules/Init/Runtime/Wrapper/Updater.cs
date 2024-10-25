@@ -14,8 +14,8 @@ namespace Sisus.Init.Internal
 	/// <para>
 	/// Classes wrapped by <see cref="Wrapper{TWrapped}"/> can subscribe to these events simply by implementing
 	/// the <see cref="IUpdate"/>, <see cref="ILateUpdate"/> or <see cref="IFixedUpdate"/> interface. They will
-	/// receiving these events for as long as the wrapper component remains <see cref="Behaviour.enabled">enabled</see>
-	/// and <see cref="GameObject.activeInHierarchy">active</see> and is not <see cref="Object.Destroy">destroyed</see>.
+	/// receive these events for as long as the wrapper component remains <see cref="Behaviour.enabled">enabled</see>
+	/// and <see cref="GameObject.activeInHierarchy">active</see> and is not <see cref="UnityEngine.Object.Destroy">destroyed</see>.
 	/// </para>
 	/// <para>
 	/// Note that these events do not get sent in edit mode, not even if the wrapper component
@@ -23,7 +23,6 @@ namespace Sisus.Init.Internal
 	/// </para>
 	/// </summary>
 	[AddComponentMenu(Hidden)]
-	[Service(typeof(ICoroutineRunner))]
 	internal sealed class Updater : MonoBehaviour, ICoroutineRunner
 	{
 		private const string Hidden = "";

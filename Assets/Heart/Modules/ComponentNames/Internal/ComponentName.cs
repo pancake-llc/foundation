@@ -2,384 +2,396 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Sisus.ComponentNames.EditorOnly
+[assembly: InternalsVisibleTo("ComponentNames.Tests")]
+
+namespace Sisus.ComponentNames.Editor
 {
-    /// <summary>
-    /// Utility class for getting and setting component names.
-    /// </summary>
-    internal static class ComponentName
-    {
-        internal static event Action<Component, string> InspectorTitleChanged;
+	/// <summary>
+	/// Utility class for getting and setting component names.
+	/// </summary>
+	internal static class ComponentName
+	{
+		internal static event Action<Component, NameWithSuffix> InspectorTitleChanged;
 
-        private static readonly Dictionary<Type, string> defaults = new();
-        private static readonly Dictionary<Object, string> overrides = new();
-        private static readonly Dictionary<Type, string> defaultInspectorTitles = new();
-        private static readonly Dictionary<Object, string> inspectorTitleOverrides = new();
+		private static readonly Dictionary<Type, NameWithSuffix> originalInspectorTitles = new();
+		private static readonly Dictionary<Object, NameWithSuffix> inspectorTitleOverrides = new();
 
-        /// <summary>
-        /// Should class name be added as suffix in the inspector by default?
-        /// </summary>
-        internal static bool AddClassNameAsInspectorSuffixByDefault
-        {
-            get => EditorPrefs.GetBool("ComponentNames.AddClassNameInspectorSuffix", true);
-            set => EditorPrefs.SetBool("ComponentNames.AddClassNameInspectorSuffix", value);
-        }
+		/// <summary>
+		/// Should class name be added as suffix in the inspector by default?
+		/// </summary>
+		internal static bool AddClassNameAsInspectorSuffixByDefault
+		{
+			get => EditorPrefs.GetBool("ComponentNames.AddClassNameInspectorSuffix", true);
+			set => EditorPrefs.SetBool("ComponentNames.AddClassNameInspectorSuffix", value);
+		}
 
-        /// <summary>
-        /// The format for inspector suffixes.
-        /// </summary>
-        internal static string InspectorSuffixFormat
-        {
-            get => EditorPrefs.GetString("ComponentNames.InspectorSuffixFormat", " <color=grey>({0})</color>");
-            set => EditorPrefs.SetString("ComponentNames.InspectorSuffixFormat", value);
-        }
+		/// <summary>
+		/// The format for inspector suffixes.
+		/// </summary>
+		internal static string InspectorSuffixFormat
+		{
+			get => EditorPrefs.GetString("ComponentNames.InspectorSuffixFormat", " <color=grey>({0})</color>");
+			set => EditorPrefs.SetString("ComponentNames.InspectorSuffixFormat", value);
+		}
 
-        /// <summary>
-        /// Remove the default "(Script)" suffix from MonoBehaviour inspector titles?
-        /// </summary>
-        internal static bool RemoveDefaultScriptSuffix
-        {
-            get => EditorPrefs.GetBool("ComponentNames.RemoveDefaultScriptSuffix", true);
-            set => EditorPrefs.GetBool("ComponentNames.RemoveDefaultScriptSuffix", value);
-        }
+		/// <summary>
+		/// Remove the default "(Script)" suffix from MonoBehaviour inspector titles?
+		/// </summary>
+		internal static bool RemoveDefaultScriptSuffix
+		{
+			get => EditorPrefs.GetBool("ComponentNames.RemoveDefaultScriptSuffix", true);
+			set => EditorPrefs.GetBool("ComponentNames.RemoveDefaultScriptSuffix", value);
+		}
 
-        [return: NotNull]
-        internal static string GetDefault([DisallowNull] Component component)
-        {
-            var componentType = component.GetType();
-            if (!defaults.TryGetValue(componentType, out var defaultName))
-            {
-                defaultName = GetDefaultInspectorTitle(component, removeScriptSuffix: true);
-                defaults.Add(componentType, defaultName);
-            }
+		private static bool TryGetOverride([DisallowNull] Component component, out NameWithSuffix nameOverride)
+			=> inspectorTitleOverrides.TryGetValue(component, out nameOverride);
 
-            return defaultName;
-        }
+		internal static NameWithSuffix Get([DisallowNull] Component component)
+			=> TryGetOverride(component, out var @override) ? @override : GetDefault(component, withoutScriptSuffix:RemoveDefaultScriptSuffix);
 
-        internal static bool HasOverride([DisallowNull] Component component) => overrides.ContainsKey(component);
-
-        private static bool TryGetOverride([DisallowNull] Component component, out string nameOverride) => overrides.TryGetValue(component, out nameOverride);
-
-        [return: NotNull]
-        internal static string Get([DisallowNull] Component component) => TryGetOverride(component, out string nameOverride) ? nameOverride : GetDefault(component);
-
-        internal static void Set([DisallowNull] Component component, [AllowNull] string name, ModifyOptions modifyOptions = ModifyOptions.Defaults)
-        {
-#if DEV_MODE
+		internal static void Set([DisallowNull] Component component, [AllowNull] string name, ModifyOptions modifyOptions)
+		{
+			#if DEV_MODE
 			Debug.Assert(component, name);
-#endif
+			#endif
 
-            if (IsNullEmptyOrDefault(component, name))
-            {
-                ResetToDefault(component, modifyOptions);
-                return;
-            }
+			if(IsNullEmptyOrDefault(component, name))
+			{
+				ResetToDefault(component, modifyOptions);
+				return;
+			}
 
-            if (name.EndsWith(')'))
-            {
-                int i = name.IndexOf('(');
-                if (i != -1)
-                {
-                    string suffix = name.Substring(i + 1, name.Length - i - 2);
-                    name = name.Substring(0, i).Trim();
-                    if (name.Length == 0)
-                    {
-                        name = GetDefault(component);
-                    }
+			if(name.EndsWith(')'))
+			{
+				int i = name.IndexOf('(');
+				if(i != -1)
+				{
+					string suffix = name.Substring(i + 1, name.Length - i - 2);
+					name = name.Substring(0, i).Trim();
+					if(name.Length == 0)
+					{
+						name = GetDefault(component, true);
+					}
 
-                    Set(component, name, suffix);
-                    return;
-                }
-            }
+					Set(component, name, suffix, modifyOptions);
+					return;
+				}
+			}
 
-            Set(component, name, AddClassNameAsInspectorSuffixByDefault);
-        }
+			Set(component, name, AddClassNameAsInspectorSuffixByDefault, modifyOptions);
+		}
 
-        internal static void Set(
-            [DisallowNull] Component component,
-            [AllowNull] string name,
-            bool addTypeNameSuffix,
-            ModifyOptions modifyOptions = ModifyOptions.Defaults)
-        {
-#if DEV_MODE
+		internal static void Set([DisallowNull] Component component, [AllowNull] string name, bool addTypeNameSuffix, ModifyOptions modifyOptions)
+		{
+			#if DEV_MODE
 			Debug.Assert(component, name);
-#endif
+			#endif
 
-            if (IsNullEmptyOrDefault(component, name))
-            {
-                ResetToDefault(component, modifyOptions);
-                return;
-            }
+			if(IsNullEmptyOrDefault(component, name))
+			{
+				ResetToDefault(component, modifyOptions);
+				return;
+			}
 
-            if (!addTypeNameSuffix)
-            {
-                Set(component, name, "");
-                return;
-            }
+			if(!addTypeNameSuffix)
+			{
+				Set(component, name, "", modifyOptions);
+				return;
+			}
 
-            string suffix = GetDefault(component);
+			var suffix = GetDefault(component, withoutScriptSuffix:true).name;
 
-            // Avoid situations like "Cube" => "Cube (Cube (Mesh Filter))"
-            if (suffix.EndsWith(')'))
-            {
-                int i = suffix.IndexOf('(') + 1;
-                if (i > 0)
-                {
-                    suffix = suffix.Substring(i, suffix.Length - i - 1);
-                }
-            }
+			// Avoid situations like "Cube" => "Cube (Cube (Mesh Filter))"
+			if(suffix.EndsWith(')'))
+			{
+				int i = suffix.IndexOf('(') + 1;
+				if(i > 0)
+				{
+					suffix = suffix.Substring(i, suffix.Length - i - 1);
+				}
+			}
 
-            if (string.Equals(name, suffix))
-            {
-                Set(component, name, null);
-                return;
-            }
+			if(string.Equals(name, suffix))
+			{
+				Set(component, name, null, modifyOptions);
+				return;
+			}
 
-            Set(component, name, suffix);
-        }
+			Set(component, name, suffix, modifyOptions);
+		}
 
-        /// <param name="component"> The component whose name and suffix are being joined. </param>
-        /// <param name="name"> (Optional) The name for the component. </param>
-        /// <param name="suffix">
-        /// (Optional) The suffix to show after the component name inside parentheses.
-        /// <para>
-        /// If null, then default suffix, aka component type name, will be shown in the inspector.
-        /// </para>
-        /// <para>
-        /// If empty, then no suffix will be shown in the inspector.
-        /// </para>
-        /// </param>
-        /// <param name="inspectorTitle">
-        /// When this method returns, contains the joined string, in the format that it should be shown in the Inspector,
-        /// with rich text tags.
-        /// </param>
-        /// <returns>
-        /// If both name and suffix are not null, empty or the default name, then returns name with suffix appended at the end inside parentheses, like so: "{name} ({suffix})".
-        /// If the suffix is null or empty or the default name, then returns just the name.
-        /// If both name and suffix are null, empty or the default name, then returns null.
-        /// </returns>
-        private static (string nameInContainer, string inspectorTile) Join([DisallowNull] Component component, [AllowNull] string name, [AllowNull] string suffix)
-        {
-#if DEV_MODE
+		internal static void Set([DisallowNull] Component component, [AllowNull] string name, [AllowNull] string suffix, ModifyOptions modifyOptions)
+		{
+			#if DEV_MODE
 			Debug.Assert(component, name);
-#endif
+			#endif
 
-            var type = component.GetType();
+			if(IsNullEmptyOrDefault(component, name, suffix))
+			{
+				ResetToDefault(component, modifyOptions);
+				return;
+			}
 
-            string defaultName = GetDefault(component);
+			var titleAndSuffix = new NameWithSuffix(component, name, suffix);
+			inspectorTitleOverrides[component] = titleAndSuffix;
 
-#if DEV_MODE
-			Debug.Assert(defaultInspectorTitles.ContainsKey(type));
-#endif
+			var tileAndSuffixJoined = titleAndSuffix.ToString(false);
+			NameContainer.TryGetOrCreate(component, modifyOptions, nameContainer =>
+			{
+				nameContainer.NameOverride = titleAndSuffix.ToString(false);
+			}, tileAndSuffixJoined, null);
 
-            bool useDefaultName = string.IsNullOrEmpty(name) || string.Equals(name, defaultName);
-            // Null suffix value means "use default suffix".
-            bool useDefaultSuffix = suffix is null || string.Equals(suffix, defaultName);
+			InspectorTitleChanged?.Invoke(component, titleAndSuffix);
+		}
 
-            if (useDefaultName)
-            {
-                if (useDefaultSuffix)
-                {
-                    return (null, null);
-                }
+		private static void Set([DisallowNull] Component component, NameWithSuffix nameWithSuffix, ModifyOptions modifyOptions)
+		{
+			#if DEV_MODE
+			Debug.Assert(component, nameWithSuffix);
+			#endif
 
-                name = defaultName;
-            }
-            else if (useDefaultSuffix)
-            {
-                return (name, name + string.Format(InspectorSuffixFormat, defaultName));
-            }
+			if(IsNullEmptyOrDefault(component, nameWithSuffix))
+			{
+				ResetToDefault(component, modifyOptions);
+				return;
+			}
 
-            // Empty suffix means "no suffix in the inspector".
-            if (suffix.Length == 0)
-            {
-                return (name + " ()", name);
-            }
+			var tileAndSuffixJoined = nameWithSuffix.ToString(false);
+			NameContainer.TryGetOrCreate(component, modifyOptions, nameContainer =>
+			{
+				nameContainer.NameOverride = tileAndSuffixJoined;
+			}, tileAndSuffixJoined, null);
 
-            return (name + " (" + suffix + ")", name + string.Format(InspectorSuffixFormat, suffix));
-        }
+			InspectorTitleChanged?.Invoke(component, nameWithSuffix);
+		}
 
-        internal static void Set(
-            [DisallowNull] Component component,
-            [AllowNull] string name,
-            [AllowNull] string suffix,
-            ModifyOptions modifyOptions = ModifyOptions.Defaults)
-        {
-#if DEV_MODE
-			Debug.Assert(component, name);
-#endif
+		internal static NameWithSuffix GetInspectorTitle([DisallowNull] Component component)
+		{
+			if(inspectorTitleOverrides.TryGetValue(component, out var inspectorTitle))
+			{
+				return inspectorTitle;
+			}
 
-            if (IsNullEmptyOrDefault(component, name, suffix))
-            {
-                ResetToDefault(component, modifyOptions);
-                return;
-            }
+			return GetDefault(component, RemoveDefaultScriptSuffix);
+		}
 
-            (string setNameOverride, string inspectorTitle) = Join(component, name, suffix);
-            if (setNameOverride is null)
-            {
-                overrides.Remove(component);
-            }
-            else
-            {
-                overrides[component] = setNameOverride;
-            }
+		internal static NameWithSuffix GetDefault([DisallowNull] Component component, bool withoutScriptSuffix)
+		{
+			var componentType = component.GetType();
+			// TODO: Is it bad that the tooltip gets discarded here? do we need to then call this twice to also get the tooltip?
+			// Maybe not, if it's only updated on mouse enter for example. Investigate!
+			var (title, suffix, _) = HeaderContentUtility.GetCustomHeaderContent(component, componentType);
 
-            if (inspectorTitle is null)
-            {
-                inspectorTitleOverrides.Remove(component);
-            }
-            else
-            {
-                inspectorTitleOverrides[component] = inspectorTitle;
-            }
+			if(title.IsDefault)
+			{
+				var @default = GetDefaultBuiltIn(component, componentType, withoutScriptSuffix:false);
+				title = @default.name;
 
-            NameContainer.TryGetOrCreate(component,
-                nameContainer => { nameContainer.NameOverride = setNameOverride; },
-                setNameOverride,
-                null,
-                modifyOptions);
+				if(suffix.IsDefault)
+				{
+					suffix = withoutScriptSuffix && string.Equals(@default.suffix, "Script") ? "" : @default.suffix;
+				}
+			}
+			else if(suffix.IsDefault)
+			{
+				suffix = GetDefaultBuiltIn(component, componentType, withoutScriptSuffix:false).name;
+			}
 
-            InspectorTitleChanged?.Invoke(component, inspectorTitle);
-        }
+			return new(title, suffix);
+		}
 
-        internal static string GetInspectorTitle([DisallowNull] Component component)
-        {
-            if (inspectorTitleOverrides.TryGetValue(component, out string inspectorTitle))
-            {
-                return inspectorTitle;
-            }
+		internal static NameWithSuffix GetDefaultBuiltIn(Component component, Type componentType, bool withoutScriptSuffix)
+		{
+			if(originalInspectorTitles.TryGetValue(componentType, out var result))
+			{
+				return result;
+			}
 
-            return GetDefaultInspectorTitle(component, RemoveDefaultScriptSuffix);
-        }
+			if(componentType.GetCustomAttribute<AddComponentMenu>(false) is AddComponentMenu addComponentMenu
+			&& addComponentMenu.componentMenu is {Length: > 0} menuPath)
+			{
+				int lastCategoryEnd = menuPath.LastIndexOf('/');
+				result = new(lastCategoryEnd != -1 ? menuPath.Substring(lastCategoryEnd + 1) : menuPath, "");
+				return CacheAndReturn(result);
+			}
 
-        internal static string GetInspectorTitleAsPlainText([DisallowNull] Component component) { return WithoutRichTextTags(GetInspectorTitle(component)); }
+			var title = ObjectNames.GetInspectorTitle(component);
+			if(title.EndsWith(')'))
+			{
+				int suffixStart = title.LastIndexOf('(');
+				if(suffixStart != -1)
+				{
+					var name = title.Substring(0, suffixStart).TrimEnd(' ');
+					var suffix = title.Substring(suffixStart  + 1, title.Length - suffixStart - 2);
+					if(withoutScriptSuffix && string.Equals(suffix, "Script"))
+					{
+						return CacheAndReturn(new(name, ""));
+					}
 
-        [return: NotNull]
-        private static string GetDefaultInspectorTitle([DisallowNull] Component component, bool removeScriptSuffix)
-        {
-            var componentType = component.GetType();
-            if (defaultInspectorTitles.TryGetValue(componentType, out string inspectorTitle))
-            {
-                return inspectorTitle;
-            }
+					return CacheAndReturn(new(name, suffix));
+				}
+			}
 
-            if (TryGetCustomNameFromAddComponentMenuAttribute(componentType, out inspectorTitle))
-            {
-                defaultInspectorTitles.Add(componentType, inspectorTitle);
-                return inspectorTitle;
-            }
+			return CacheAndReturn(new(title, ""));
 
-            inspectorTitle = ObjectNames.GetInspectorTitle(component);
-            defaultInspectorTitles.Add(componentType, inspectorTitle);
+			NameWithSuffix CacheAndReturn(in NameWithSuffix result)
+			{
+				originalInspectorTitles.Add(componentType, result);
+				return result;
+			}
+		}
 
-            if (removeScriptSuffix && inspectorTitle.EndsWith(" (Script)"))
-            {
-                return inspectorTitle.Substring(0, inspectorTitle.Length - " (Script)".Length);
-            }
+		internal static void EnsureOriginalInspectorTitleIsCached([DisallowNull] Component component) => _ = GetDefaultBuiltIn(component, component.GetType(), RemoveDefaultScriptSuffix);
+		internal static void EnsureOriginalInspectorTitleIsCached([DisallowNull] Component component, [DisallowNull] Type componentType) => _ = GetDefaultBuiltIn(component, componentType, RemoveDefaultScriptSuffix);
 
-            return inspectorTitle;
-        }
+		/// <summary>
+		/// Resets the title of the component to its default value.
+		/// </summary>
+		/// <param name="component"> The component whose title to reset. </param>
+		/// <param name="modifyOptions">
+		/// <see cref="ModifyOptions.Immediate"/> can be used when calling from the main thread, outside of deserialization context.
+		/// <para>
+		/// <see cref="ModifyOptions.NonUndoable"/> can be used when to make the action non-undoable.
+		/// </para>
+		/// <para>
+		/// Both <see cref="ModifyOptions.Immediate"/> and <see cref="ModifyOptions.NonUndoable"/> flags are disabled by default.
+		/// </para>
+		/// </param>
+		internal static void ResetToDefault([DisallowNull] Component component, ModifyOptions modifyOptions)
+		{
+			bool invokeInspectorTitleChanged = inspectorTitleOverrides.Remove(component);
 
-        private static bool TryGetCustomNameFromAddComponentMenuAttribute(Type componentType, [MaybeNullWhen(false), NotNullWhen(true)] out string inspectorTitle)
-        {
-            foreach (AddComponentMenu addComponentMenu in componentType.GetCustomAttributes(typeof(AddComponentMenu), false))
-            {
-                string menuName = addComponentMenu.componentMenu;
-                if (!string.IsNullOrEmpty(menuName))
-                {
-                    int lastCategoryEnd = menuName.LastIndexOf('/');
-                    inspectorTitle = lastCategoryEnd != -1 ? menuName.Substring(lastCategoryEnd + 1) : menuName;
-                    return true;
-                }
-            }
+			if(modifyOptions.IsUpdatingContainerAllowed())
+			{
+				RemoveOrResetNameContainer(component, modifyOptions, ref invokeInspectorTitleChanged);
+			}
 
-            inspectorTitle = "";
-            return false;
-        }
+			if(invokeInspectorTitleChanged)
+			{
+				InspectorTitleChanged?.Invoke(component, new NameWithSuffix(component));
+			}
 
-        /// <summary>
-        /// Resets the name of the component to its default value.
-        /// </summary>
-        /// <param name="component"> The component whose name to reset. </param>
-        /// <param name="modifyOptions">
-        /// Use <see cref="ModifyOptions.Delayed"/> when calling during OnValidate or deserialization to avoid exceptions.
-        /// <para>
-        /// Use <see cref="ModifyOptions.Undoable"/> to make the action undoable.
-        /// </para>
-        /// <para>
-        /// Both <see cref="ModifyOptions.Delayed"/> and <see cref="ModifyOptions.Undoable"/> flags are enabled by default.
-        /// </para>
-        /// </param>
-        internal static void ResetToDefault([DisallowNull] Component component, ModifyOptions modifyOptions = ModifyOptions.Defaults)
-        {
-            inspectorTitleOverrides.Remove(component);
-            bool changed = overrides.Remove(component);
+			static void RemoveOrResetNameContainer(Component component, ModifyOptions modifyOptions, ref bool invokeInspectorTitleChanged)
+			{
+				if(modifyOptions.IsDelayed())
+				{
+					bool invokeInspectorTitleChangedDelayed = invokeInspectorTitleChanged;
+					EditorApplication.delayCall += ()=>
+					{
+						RemoveOrResetNameContainer(component, modifyOptions.Immediately(), ref invokeInspectorTitleChangedDelayed);
 
-            if (NameContainer.TryGet(component, out var nameContainer))
-            {
-                if (string.IsNullOrEmpty(nameContainer.TooltipOverride) && modifyOptions.IsRemovingNameContainerAllowed())
-                {
-                    nameContainer.Remove(modifyOptions);
-                    changed = true;
-                }
-                else if (!string.IsNullOrEmpty(nameContainer.NameOverride))
-                {
-                    nameContainer.NameOverride = "";
-                    changed = true;
-                }
-            }
+						if(invokeInspectorTitleChangedDelayed)
+						{
+							InspectorTitleChanged?.Invoke(component, new NameWithSuffix(component));
+						}
+					};
 
-            if (changed)
-            {
-                InspectorTitleChanged?.Invoke(component, "");
-            }
-        }
+					invokeInspectorTitleChanged = false;
+					return;
+				}
 
-        internal static bool IsNullEmptyOrDefault(Component component, string name)
-        {
-            string defaultName = GetDefault(component);
-            return string.IsNullOrEmpty(name) || string.Equals(name, defaultName);
-        }
+				if(!NameContainer.TryGet(component, out var nameContainer))
+				{
+					return;
+				}
 
-        private static bool IsNullEmptyOrDefault(Component component, string name, string suffix)
-        {
-            string defaultName = GetDefault(component);
-            return (string.IsNullOrEmpty(name) || string.Equals(name, defaultName)) && (suffix is null || string.Equals(suffix, defaultName));
-        }
+				if(string.IsNullOrEmpty(nameContainer.TooltipOverride) && modifyOptions.IsRemovingNameContainerAllowed())
+				{
+					nameContainer.Remove(modifyOptions);
+					invokeInspectorTitleChanged = true;
+					return;
+				}
 
-        private static string WithoutRichTextTags(string text)
-        {
-            const int maxIterations = 10;
-            for (int iteration = 1; iteration < maxIterations; iteration++)
-            {
-                int index = text.IndexOf("<color=", StringComparison.OrdinalIgnoreCase);
-                if (index == -1)
-                {
-                    return text;
-                }
+				if(!string.IsNullOrEmpty(nameContainer.NameOverride))
+				{
+					nameContainer.NameOverride = "";
+					invokeInspectorTitleChanged = true;
+				}
+			}
+		}
 
-                int endIndex = text.IndexOf('>', index + "<color=".Length);
-                if (endIndex > 0)
-                {
-                    text = text.Remove(index, endIndex + 1 - index);
-                }
+		internal static bool IsNullEmptyOrDefault(Component component, string name)
+		{
+			if(string.IsNullOrEmpty(name))
+			{
+				return true;
+			}
 
-                index = text.IndexOf("</color>", StringComparison.OrdinalIgnoreCase);
-                if (index == -1)
-                {
-                    return text;
-                }
+			if(string.Equals(WithoutScriptSuffix(name), GetDefault(component, withoutScriptSuffix:true).ToString(richText:false)))
+			{
+				return true;
+			}
 
-                text = text.Remove(index, "</color>".Length);
-            }
+			return false;
+		}
 
-            return text;
-        }
-    }
+		internal static bool IsNullEmptyOrDefault(Component component, NameWithSuffix nameWithSuffix)
+		{
+			if(string.IsNullOrEmpty(nameWithSuffix.name))
+			{
+				return true;
+			}
+
+			if(string.Equals(WithoutScriptSuffix(nameWithSuffix.name), GetDefault(component, withoutScriptSuffix:true).ToString(richText:false)))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool IsNullEmptyOrDefault(Component component, string name, string suffix)
+		{
+			if(string.IsNullOrEmpty(name))
+			{
+				return suffix is null || string.Equals(suffix, "Script") || string.Equals(suffix, GetDefault(component, withoutScriptSuffix:true).name);
+			}
+
+			var defaultName = GetDefault(component, withoutScriptSuffix:true);
+			if(string.Equals(name, defaultName.name))
+			{
+				return suffix is null || string.Equals(suffix, "Script");
+			}
+
+			return false;
+		}
+
+		internal static string WithoutRichTextTags([NotNull] string text)
+		{
+			const int MaxIterations = 10;
+			for(int iteration = 1; iteration < MaxIterations; iteration++)
+			{
+				int index = text.IndexOf("<color=", StringComparison.OrdinalIgnoreCase);
+				if(index == -1)
+				{
+					return text;
+				}
+
+				int endIndex = text.IndexOf('>', index + "<color=".Length);
+				if(endIndex > 0)
+				{
+					text = text.Remove(index, endIndex + 1 - index);
+				}
+
+				index = text.IndexOf("</color>", StringComparison.OrdinalIgnoreCase);
+				if(index == -1)
+				{
+					return text;
+				}
+
+				text = text.Remove(index, "</color>".Length);
+			}
+
+			return text;
+		}
+
+		private static string WithoutScriptSuffix(string title) => title.EndsWith(" (Script)") ? title.Substring(0, title.Length - " (Script)".Length) : title;
+	}
 }
 #endif

@@ -1,4 +1,6 @@
-﻿//#define DEBUG_ENABLED
+﻿//#define DEBUG_REPAINT
+#define DEBUG_INJECT
+#define DEBUG_REMOVE
 
 using System;
 using System.Collections.Generic;
@@ -6,8 +8,10 @@ using System.Linq;
 using System.Reflection;
 using Sisus.Shared.EditorOnly;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using static Sisus.Shared.EditorOnly.InspectorContents;
+using Object = UnityEngine.Object;
 
 namespace Sisus.Init.EditorOnly.Internal
 {
@@ -43,82 +47,153 @@ namespace Sisus.Init.EditorOnly.Internal
 				return;
 			}
 
-			if(Event.current.type != EventType.Repaint)
+			foreach(var inspectorElement in GetAllInspectorElements(rootEditor))
 			{
-				rootEditor.Repaint();
+				ProcessInspectorElement(rootEditor, inspectorElement);
+			}
+		}
+
+		private static void ProcessInspectorElement(Editor rootEditor, InspectorElement inspectorElement)
+		{
+			var editor = inspectorElement.GetEditor();
+			if(editor.GetType().Assembly == sisusEditorAssembly)
+			{
 				return;
 			}
 
-			foreach(var inspectorElement in GetAllInspectorElements(rootEditor))
+			var target = editor.target;
+			var targetType = target?.GetType();
+			if(!InitializerEditorUtility.TryGetEditorDecoratorType(targetType, out Type editorDecoratorType))
 			{
-				var editor = inspectorElement.GetEditor();
-				if(editor.GetType().Assembly == sisusEditorAssembly)
+				return;
+			}
+
+			// Dispose decorators that are no longer being used.
+			for(int i = activeDecorators.Count - 1; i >= 0; i--)
+			{
+				if(activeDecorators[i].panel is null)
+				{
+					activeDecorators[i].Dispose();
+					activeDecorators.RemoveAt(i);
+
+					#if DEV_MODE && DEBUG_REPAINT
+					Debug.Log(rootEditor.GetType().Name + "Repaint");
+					UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+					#endif
+
+					rootEditor.Repaint();
+
+					#if DEV_MODE && DEBUG_REPAINT
+					UnityEngine.Profiling.Profiler.EndSample();
+					#endif
+				}
+			}
+
+			for(int i = inspectorElement.childCount - 1; i >= 0; i--)
+			{
+				if(inspectorElement[i] is not EditorDecorator decorator)
 				{
 					continue;
 				}
 
-				var targetType = editor.target.GetType();
-				if(!InitializerEditorUtility.TryGetEditorDecoratorType(targetType, out Type editorWrapperType))
+				// If a valid decorator already exits, we are done here.
+				if(decorator.IsValid() && decorator.targets.SequenceEqual(inspectorElement.GetEditor().targets))
 				{
-					continue;
+					return;
 				}
 
-				// Dispose decorators that are no longer being used.
-				for(int i = activeDecorators.Count - 1; i >= 0; i--)
+				// VisualElement.Remove can not be called during a layout event.
+				if(Event.current.type is EventType.Repaint)
 				{
-					if(activeDecorators[i].panel is null)
-					{
-						activeDecorators[i].Dispose();
-						activeDecorators.RemoveAt(i);
-					}
-				}
-
-				for(int i = inspectorElement.childCount - 1; i >= 0; i--)
-				{
-					if(inspectorElement[i] is not EditorDecorator decorator)
-					{
-						continue;
-					}
-
-					// If a valid decorator already exits, we are done here.
-					if(decorator.IsValid() && decorator.targets.SequenceEqual(inspectorElement.GetEditor().targets))
-					{
-						return;
-					}
-
-					#if DEV_MODE && DEBUG_ENABLED
-					Debug.Log($"Removing {decorator.GetType().Name} with IsValid:{decorator.IsValid()}, targets:{decorator.targets} vs inspectorElement.editor.targets:{inspectorElement.GetEditor().targets}");
+					#if DEV_MODE && DEBUG_REMOVE
+					Debug.Log($"Removing {decorator.GetType().Name} with IsValid:{decorator.IsValid()}, targets:{string.Join(", ", decorator.targets.Select(t => "" + t))} vs inspectorElement.editor.targets:{string.Join(", ", inspectorElement.GetEditor().targets.Select(t => "" + t))}");
 					#endif
 
 					inspectorElement.RemoveAt(i);
 					activeDecorators.Remove(decorator);
 					decorator.Dispose();
 				}
-
-				if(EditorDecorator.CreateBeforeInspectorGUI(editorWrapperType, editor, out var beforeInspectorGUI))
+				else
 				{
+					decorator.visible = false;
+				}
+
+				#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(rootEditor.GetType().Name + "Repaint");
+				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+				#endif
+
+				rootEditor.Repaint();
+
+				#if DEV_MODE && DEBUG_REPAINT
+				UnityEngine.Profiling.Profiler.EndSample();
+				#endif
+			}
+
+			if(IsMissingComponent(target))
+			{
+				return;
+			}
+
+			if(EditorDecorator.ShouldCreateBeforeInspectorGUI(editorDecoratorType))
+			{
+				// VisualElement.Insert can not be called during a layout event.
+				if(Event.current.type is EventType.Repaint)
+				{
+					var beforeInspectorGUI = EditorDecorator.CreateBeforeInspectorGUI(editorDecoratorType, editor);
+
 					activeDecorators.Add(beforeInspectorGUI);
 
-					#if DEV_MODE && DEBUG_ENABLED
-					Debug.Log($"Injecting {editorWrapperType.Name}.{nameof(EditorDecorator.OnBeforeInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
+					#if DEV_MODE && DEBUG_INJECT
+					Debug.Log($"Injecting {editorDecoratorType.Name}.{nameof(EditorDecorator.OnBeforeInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
 					#endif
 
 					beforeInspectorGUI.name = nameof(EditorDecorator.OnBeforeInspectorGUI);
 					inspectorElement.Insert(0, beforeInspectorGUI);
 				}
 
-				if(EditorDecorator.CreateAfterInspectorGUI(editorWrapperType, editor, out var afterInspectorGUI))
+				#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(rootEditor.GetType().Name + $"({targetType.Name}).Repaint");
+				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+				#endif
+
+				rootEditor.Repaint();
+
+				#if DEV_MODE && DEBUG_REPAINT
+				UnityEngine.Profiling.Profiler.EndSample();
+				#endif
+			}
+
+			if(EditorDecorator.ShouldCreateAfterInspectorGUI(editorDecoratorType))
+			{
+				// VisualElement.Insert can not be called during a layout event.
+				if(Event.current.type is EventType.Repaint)
 				{
+					var afterInspectorGUI = EditorDecorator.CreateAfterInspectorGUI(editorDecoratorType, editor);
+
 					activeDecorators.Add(afterInspectorGUI);
 
-					#if DEV_MODE && DEBUG_ENABLED
-					Debug.Log($"Injecting {editorWrapperType.Name}.{nameof(EditorDecorator.OnAfterInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
-					#endif
+						#if DEV_MODE && DEBUG_INJECT
+					Debug.Log($"Injecting {editorDecoratorType.Name}.{nameof(EditorDecorator.OnAfterInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
+						#endif
 
 					afterInspectorGUI.name = nameof(EditorDecorator.OnAfterInspectorGUI);
 					inspectorElement.Insert(inspectorElement.childCount, afterInspectorGUI);
 				}
+
+				#if DEV_MODE && DEBUG_REPAINT
+				Debug.Log(rootEditor.GetType().Name + $"({targetType.Name}).Repaint");
+				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+				#endif
+
+				rootEditor.Repaint();
+
+				#if DEV_MODE && DEBUG_REPAINT
+				UnityEngine.Profiling.Profiler.EndSample();
+				#endif
 			}
 		}
+
+		private static bool IsMissingComponent(Object target) => !target || target.GetType() == typeof(MonoBehaviour);
 	}
 }
