@@ -27,33 +27,6 @@ namespace PancakeEditor
             }
         }
 
-        [MenuItem("Tools/Pancake/DOTween Adapter", validate = false)]
-        private static void ToggleDotweenAdapter()
-        {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER");
-            toggle = !toggle;
-            if (toggle)
-            {
-                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PRIME_TWEEN_DOTWEEN_ADAPTER");
-            }
-            else
-            {
-                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PRIME_TWEEN_DOTWEEN_ADAPTER");
-            }
-
-            AssetDatabase.Refresh();
-            string text = toggle ? " <color=#f75369>Enabled" : "<color=#FF2828>Disabled";
-            Debug.Log($"DOTween Adapter {text}</color>");
-        }
-
-        [MenuItem("Tools/Pancake/DOTween Adapter", validate = true)]
-        private static bool ValidateToggleDotweenAdapter()
-        {
-            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER");
-            Menu.SetChecked("Tools/Pancake/DOTween Adapter", toggle);
-            return true;
-        }
-
         [MenuItem("Tools/Fast Play Mode", validate = false)]
         private static void ToggleFastPlayMode()
         {
