@@ -18,8 +18,8 @@ namespace Pancake.Common
         private const float POINT_SIZE = 0.5f;
         internal const float ARROW_WIDTH = 0.5f;
         private const float RAY_LENGTH = 1000f;
-        private const float DIAMOND_SIZE = 1000f;
-        internal const float ARROW_TIP_SIZE = 1000f;
+        private const float DIAMOND_SIZE = 0.5f;
+        internal const float ARROW_TIP_SIZE = 0.25f;
         internal const float HIT_RADIUS = 0.1f;
         internal const float HIT_LENGTH = 0.25f;
         internal static readonly Color HitColor = new(1f, 0.94f, 0.54f);
