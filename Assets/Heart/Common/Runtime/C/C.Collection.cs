@@ -386,5 +386,21 @@ namespace Pancake.Common
 
             return collection;
         }
+
+        /// <summary> Eliminate an items range. </summary>
+        /// <param name="self"> The list. </param>
+        /// <param name="entries">Elements to be removed. </param>
+        public static void Removes<T>(this List<T> self, List<T> entries)
+        {
+            foreach (var item in entries) self.Remove(item);
+        }
+
+        /// <summary> Eliminate an items range. </summary>
+        /// <param name="self"> The list. </param>
+        /// <param name="entries">Elements to be removed. </param>
+        public static void Removes<T>(this List<T> self, T[] entries)
+        {
+            foreach (var item in entries) self.Remove(item);
+        }
     }
 }
