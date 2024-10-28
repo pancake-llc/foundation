@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Common
+namespace Pancake.Pattern
 {
     public interface IVisitor
     {

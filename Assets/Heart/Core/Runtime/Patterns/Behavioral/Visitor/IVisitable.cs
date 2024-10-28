@@ -1,4 +1,4 @@
-﻿namespace Pancake.Common
+﻿namespace Pancake.Pattern
 {
     public interface IVisitable
     {
