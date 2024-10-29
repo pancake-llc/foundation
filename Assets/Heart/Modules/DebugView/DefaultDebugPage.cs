@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Pancake.DebugView
 {
-    public class DefaultPage : DebugPageBase
+    public class DefaultDebugPage : DebugPageBase
     {
         private short _fps;
         private float _t = 0.1f;

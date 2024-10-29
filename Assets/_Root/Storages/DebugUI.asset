@@ -21,9 +21,9 @@ MonoBehaviour:
   m_ReferenceSpritePixelsPerUnit: 100
   m_PixelsPerUnit: 100
   m_Scale: 1
-  m_ReferenceDpi: 96
-  m_FallbackDpi: 96
-  m_ReferenceResolution: {x: 600, y: 800}
+  m_ReferenceDpi: 200
+  m_FallbackDpi: 200
+  m_ReferenceResolution: {x: 500, y: 1000}
   m_ScreenMatchMode: 0
   m_Match: 0
   m_SortingOrder: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
   m_VertexBudget: 0
   m_DynamicAtlasSettings:
     m_MinAtlasSize: 64
-    m_MaxAtlasSize: 2048
+    m_MaxAtlasSize: 1024
     m_MaxSubTextureSize: 64
     m_ActiveFilters: -1
   m_AtlasBlitShader: {fileID: 9101, guid: 0000000000000000f000000000000000, type: 0}

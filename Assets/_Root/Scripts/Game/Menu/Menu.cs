@@ -1,5 +1,6 @@
 using System;
 using Pancake.Component;
+using Pancake.DebugView;
 using Pancake.Localization;
 using Pancake.Sound;
 using Pancake.UI;
@@ -18,6 +19,7 @@ namespace Pancake.Game
         [SerializeField] private Button buttonGoToGameplay;
         [SerializeField] private Button buttonInGameNoti;
         [SerializeField] private Button buttonLeaderboard;
+        [SerializeField] private Button buttonDebug;
         [SerializeField] private LocaleText localeTextInGameNoti;
 
         [Space, SerializeField, PopupPickup] private string settingPopupKey;
@@ -36,7 +38,10 @@ namespace Pancake.Game
             buttonGoToGameplay.onClick.AddListener(OnButtonGotoGameplayPressed);
             buttonInGameNoti.onClick.AddListener(OnButtonInGameNotiPressed);
             buttonLeaderboard.onClick.AddListener(OnButtonLeaderboardPressed);
+            buttonDebug.onClick.AddListener(OnButtonDebugPressed);
         }
+
+        private void OnButtonDebugPressed() { Router.Default.PublishAsync(new ShowDebugCommand()); }
 
         private void OnButtonLeaderboardPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(leaderboardPopupKey, true); }
 

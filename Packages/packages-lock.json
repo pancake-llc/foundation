@@ -8,11 +8,11 @@
       "hash": "f25fb2680ce3bd01d284a3fe3406200ee0cec59e"
     },
     "com.annulusgames.debug-ui": {
-      "version": "https://github.com/AnnulusGames/DebugUI.git?path=src/DebugUI/Assets/DebugUI",
+      "version": "https://github.com/pancake-llc/DebugUI.git?path=src/DebugUI/Assets/DebugUI",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "eadce6b0604ad8a5a06117751eeae7de2d64707b"
+      "hash": "e6f7f118c7b4c244b3369be17471d91f87114211"
     },
     "com.annulusgames.lit-motion": {
       "version": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v1.9.0",

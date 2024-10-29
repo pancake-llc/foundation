@@ -16,7 +16,7 @@ namespace PancakeEditor.Common
                 "com.annulusgames.component-cache-generator",
                 "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator#v0.1.1"
             },
-            {"com.annulusgames.debug-ui", "https://github.com/AnnulusGames/DebugUI.git?path=src/DebugUI/Assets/DebugUI#v1.0.2"},
+            {"com.annulusgames.debug-ui", "https://github.com/pancake-llc/DebugUI.git?path=src/DebugUI/Assets/DebugUI"},
             {"jp.hadashikick.vitalrouter", "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#1.5.0"}
         };
 

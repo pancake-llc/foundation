@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace Pancake.DebugView
 {
-    public class DebugView : MonoBehaviour
+    public abstract class DebugViewBase : MonoBehaviour
     {
         [SerializeField] protected UIDocument uiDocument;
 
@@ -22,12 +22,14 @@ namespace Pancake.DebugView
 
         private void Start()
         {
+            if (!HeartSettings.DebugView) return;
 #if PANCAKE_DEBUG_UI
             uiDocument.panelSettings.referenceResolution = referenceResolution;
             builder.ConfigureWindowOptions(options =>
             {
                 options.Title = "Debug";
                 options.Draggable = true;
+                options.Foldout = true;
             });
             Configure();
             foreach (var page in pages)
@@ -36,19 +38,26 @@ namespace Pancake.DebugView
             }
 
             builder.AddSpace(1);
-            //builder.AddButton("Close", HideDebug);
+            builder.AddButton("Close", HideDebug);
             builder.BuildWith(uiDocument);
-            if (!HeartSettings.DebugView) HideDebug();
 
-            return;
+            HideDebug();
 #endif
         }
 
         private void OnResolutionChanged(Vector2Int value) { uiDocument.panelSettings.referenceResolution = value; }
 
-        private void HideDebug() { SetDisplayStatusUiDocument(); }
+        protected void HideDebug()
+        {
+            if (!HeartSettings.DebugView) return;
+            SetDisplayStatusUiDocument();
+        }
 
-        private void ShowDebug() { SetDisplayStatusUiDocument(DisplayStyle.Flex); }
+        protected void ShowDebug()
+        {
+            if (!HeartSettings.DebugView) return;
+            SetDisplayStatusUiDocument(DisplayStyle.Flex);
+        }
 
         private void SetDisplayStatusUiDocument(DisplayStyle style = DisplayStyle.None)
         {
@@ -58,7 +67,7 @@ namespace Pancake.DebugView
             }
         }
 
-        protected virtual void Configure() { pages.Add(new DefaultPage()); }
+        protected virtual void Configure() { pages.Add(new DefaultDebugPage()); }
 
         private void OnDestroy()
         {
