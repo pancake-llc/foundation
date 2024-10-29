@@ -11,7 +11,7 @@ namespace Sisus.Init.EditorOnly.Internal
 {
 	internal sealed class ServicesWindow : EditorWindow
 	{
-		public const string MenuItemName = "Window/Analysis/Service Debugger";
+		public const string MenuItemName = "Tools/Pancake/Init/Service Debugger";
 		private const double clientsListAutoRebuildInterval = 0.5d;
 		private static readonly GUIContent titleLabel = new("Service Debugger");
 

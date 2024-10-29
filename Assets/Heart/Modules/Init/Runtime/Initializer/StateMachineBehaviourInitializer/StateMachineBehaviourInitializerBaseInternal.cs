@@ -261,6 +261,7 @@ namespace Sisus.Init.Internal
 		NullGuardResult IInitializerEditorOnly.EvaluateNullGuard() => EvaluateNullGuard();
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => true;
 		bool IInitializerEditorOnly.WasJustReset { get; set; }
+		bool IInitializerEditorOnly.IsAsync => IsAsync;
 		void IInitializerEditorOnly.SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) => SetReleaseArgumentOnDestroy(argument, shouldRelease);
 		void IInitializerEditorOnly.SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) => SetReleaseArgumentOnDestroy(argument, isAsyncValueProvider);
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }

@@ -1563,7 +1563,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						(whereAny.HasFlag(Is.BuiltIn)		&& (valueType.IsPrimitive || valueType == typeof(string) || valueType == typeof(object))) ||
 						(whereAny.HasFlag(Is.Interface)		&& valueType.IsInterface) ||
 						(whereAny.HasFlag(Is.Component)		&& Find.typesToComponentTypes.ContainsKey(valueType)) ||
-						(whereAny.HasFlag(Is.WrappedObject)	&& Find.typeToWrapperTypes.ContainsKey(valueType)) ||
+						(whereAny.HasFlag(Is.WrappedObject)	&& Find.typesToWrapperTypes.ContainsKey(valueType)) ||
 						(whereAny.HasFlag(Is.SceneObject)	&& Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject))) ||
 						(whereAny.HasFlag(Is.Asset)			&& Find.typesToFindableTypes.ContainsKey(valueType)) ||
 						(whereAny.HasFlag(Is.Service)		&& ServiceUtility.IsServiceDefiningType(valueType)) ||
@@ -1607,7 +1607,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					   (!whereAll.HasFlag(Is.Abstract)		|| valueType.IsAbstract) &&
 					   (!whereAll.HasFlag(Is.Interface)	|| valueType.IsInterface) &&
 					   (!whereAll.HasFlag(Is.Component)	|| Find.typesToComponentTypes.ContainsKey(valueType)) &&
-					   (!whereAll.HasFlag(Is.WrappedObject)|| Find.typeToWrapperTypes.ContainsKey(valueType)) &&
+					   (!whereAll.HasFlag(Is.WrappedObject)|| Find.typesToWrapperTypes.ContainsKey(valueType)) &&
 					   (!whereAll.HasFlag(Is.SceneObject)	|| (Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject)))) &&
 					   (!whereAll.HasFlag(Is.Asset)		|| Find.typesToFindableTypes.ContainsKey(valueType)) &&
 					   (!whereAll.HasFlag(Is.Service)		|| ServiceUtility.IsServiceDefiningType(valueType)))

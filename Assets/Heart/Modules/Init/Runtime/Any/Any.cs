@@ -421,7 +421,7 @@ namespace Sisus.Init
 				// Handle "fake null" references
 				_ when reference.GetHashCode() == 0 => value switch
 				{
-					null => (client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out T result) : Service.TryGet(out result)) ? result : default,
+					null => client ? await Service.GetForAsync<T>(client, context) : await Service.GetAsync<T>(),
 					Object unityObject when !unityObject => (client && context.IsUnitySafeContext() ? Service.TryGetFor(client, out T result) : Service.TryGet(out result)) ? result : default,
 					// Needed to support value providers in Any.Serialization.cs
 					IValueProvider<T> valueProvider => valueProvider.TryGetFor(client, out T result) ? result : default,
@@ -438,9 +438,7 @@ namespace Sisus.Init
 				IValueProvider<T> valueProvider => valueProvider.TryGetFor(client, out T result) ? CacheValueProviderResult(result) : default,
 				IValueByTypeProvider valueProvider => valueProvider.TryGetFor(client, out T result) ? CacheValueProviderResult(result) : default,
 				IValueProvider valueProvider when valueProvider.TryGetFor(client, out object objectValue) && Find.In(objectValue, out T result) => CacheValueProviderResult(result),
-				_ when client && context.IsUnitySafeContext() => Service.TryGetFor(client, out T service) ? service : default,
-				_ when Service.TryGet(out T service) => service,
-				_ => value
+				_ => client ? await Service.GetForAsync<T>(client, context) : await Service.GetAsync<T>()
 			};
 		}
 
@@ -529,13 +527,6 @@ namespace Sisus.Init
 						return valueProvider.HasValueFor<T>(client);
 				}
 			}
-
-			#if UNITY_EDITOR
-			if(context.IsEditMode() && ServiceUtility.IsServiceDefiningType<T>())
-			{
-				return true;
-			}
-			#endif
 
 			if(value is null || (value is Object unityObject && !unityObject))
 			{

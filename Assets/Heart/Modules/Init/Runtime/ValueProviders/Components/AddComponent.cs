@@ -157,7 +157,7 @@ namespace Sisus.Init.ValueProviders
 					{
 						Debug.LogWarning($"Ambiguous Match Exception: unable to determine type of the component to attach to '{client.name}'; both {typeToAdd.Name} and {componentType.Name} implement the interface {typeof(TValue)}.", client);
 					}
-					else if(Find.typeToWrapperTypes.ContainsKey(typeof(TValue)))
+					else if(Find.typesToWrapperTypes.ContainsKey(typeof(TValue)))
 					{
 						Debug.LogWarning($"Ambiguous Match Exception: unable to determine type of the component to attach to '{client.name}'; both {typeToAdd.Name} and {componentType.Name} can wrap an object of type {typeof(TValue)}.", client);
 					}

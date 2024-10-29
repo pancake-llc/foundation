@@ -29,10 +29,6 @@ namespace Sisus.Init.Internal
 	/// </summary>
 	public static class InitializerUtility
 	{
-		private static readonly List<Type> listWithNoTypes = new(0);
-		private static readonly List<Type> listWithOneType = new(1);
-		private static readonly List<Type> listWithTwoTypes = new(2);
-
 		internal const int MAX_INIT_ARGUMENT_COUNT = 12;
 
 		internal const string InitArgumentMetadataClassName = "Init";
@@ -114,6 +110,8 @@ namespace Sisus.Init.Internal
 			{ typeof(IElevenArguments), 11 },
 			{ typeof(ITwelveArguments), 12 }
 		};
+		
+		private static Type[] typeArray = new Type[3];
 
 		public static bool TryGetClientAndInitArgumentTypes(Type initializerType, out Type clientType, out Type[] initArgumentTypes)
 		{
@@ -149,43 +147,40 @@ namespace Sisus.Init.Internal
 		}
 
 		/// <summary>
+		/// Gets all concrete types that implement <see cref="IInitializer{TClient}"/> where TClient
+		/// is the concrete type of the <see paramref="component"/>.
+		/// <remarks>
 		/// NOTE: Never cache or modify the list returned by this method!
+		/// </remarks>
 		/// </summary>
-		[return: NotNull]
-		public static List<Type> GetInitializerTypes(Component component)
+		public static Span<Type> GetInitializerTypes([DisallowNull] Component component)
 		{
-			var targetType = component.GetType();
-			var requiredInterfaceType = typeof(IInitializer<>).MakeGenericType(targetType);
-			List<Type> results = listWithNoTypes;
+			var clientType = component.GetType();
+			var requiredInterfaceType = typeof(IInitializer<>).MakeGenericType(clientType);
+			//List<Type> results = listWithNoTypes;
+			int count = 0;
 
-			#if UNITY_EDITOR
+#if UNITY_EDITOR
 			foreach(var type in TypeCache.GetTypesDerivedFrom<IInitializer>())
-			#else
+#else
 			foreach(var type in TypeUtility.GetAllTypesThreadSafe(targetType.Assembly, false))
-			#endif
+#endif
 			{
-				if (!requiredInterfaceType.IsAssignableFrom(type))
+				if (!requiredInterfaceType.IsAssignableFrom(type) || type.IsAbstract)
 				{
 					continue;
 				}
 
-				if(results == listWithNoTypes)
+				if(typeArray.Length <= count)
 				{
-					results = listWithOneType;
-				}
-				else if(results == listWithOneType)
-				{
-					results = listWithTwoTypes;
-				}
-				else if(results == listWithTwoTypes)
-				{
-					results = new(3);
+					Array.Resize(ref typeArray, count + count);
 				}
 
-				results.Add(type);
+				typeArray[count] = type;
+				count++;
 			}
 
-			return results;
+			return typeArray.AsSpan(0, count);
 		}
 
 		public static bool HasInitializer([DisallowNull] object client)
@@ -496,7 +491,7 @@ namespace Sisus.Init.Internal
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static void UpdateIsArgumentAsyncValueProvider<TInitializer, TArgument>(TInitializer initializer, Arguments flag, Any<TArgument> argument) where TInitializer : Object, IInitializerEditorOnly
-			=> initializer.SetIsArgumentAsyncValueProvider(flag, IsAsyncValueProvider(argument));
+			=> initializer.SetIsArgumentAsyncValueProvider(flag, IsAsyncValueProviderOrService(argument));
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static bool ShouldReleaseValueOnDestroy<TArgument>(Any<TArgument> argument)
@@ -506,7 +501,7 @@ namespace Sisus.Init.Internal
 				(argument.reference is IValueProvider && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(scriptableObject))));
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static bool IsAsyncValueProvider<TArgument>(Any<TArgument> argument) => ValueProviderUtility.IsAsyncValueProvider(argument.reference) && argument.reference;
+		private static bool IsAsyncValueProviderOrService<TArgument>(Any<TArgument> argument) => (ValueProviderUtility.IsAsyncValueProvider(argument.reference) && argument.reference) || (ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TArgument), out var serviceInfo) && serviceInfo.LoadAsync);
 		#endif
 
 		internal static MissingInitArgumentsException GetMissingInitArgumentsException<TClient>([DisallowNull] IInitializer<TClient> initializer, Type argumentType = null)
@@ -2051,19 +2046,22 @@ namespace Sisus.Init.Internal
 				}
 			}
 
-			// If Initializable has exactly one Initializer class option, then
-			// add it to GameObjects alongside the Initializable by default...
-			if(GetInitializerTypes(initializable).SingleOrDefaultNoException() is Type onlyInitializerType
+			var initializerTypes = GetInitializerTypes(initializable);
 
-			// ...however, only do this if the user is (likely) doing this via the Inspector.
-			// If the component was added in code, we should skip doing this, because
-			// this could be done as part of a unit test, and there were crashing issues
-			// (in Unity 2021.3.4f1) when this was done.
-				&& Array.IndexOf(Selection.gameObjects, initializable.gameObject) != -1)
+			// If Initializable has exactly one concrete Initializer class targeting it in particular,
+			// then attach it to GameObjects alongside the Initializable by default...
+			if(initializerTypes.Length == 1
+
+			   // ...however, only do this if the user is (likely) doing this via the Inspector.
+			   // If the component was added in code, we should skip doing this, because
+			   // this could be done as part of a unit test, and there were crashing issues
+			   // (in Unity 2021.3.4f1) when this was done.
+			   && Array.IndexOf(Selection.gameObjects, initializable.gameObject) != -1)
 			{
-				var newInitializer = Application.isPlaying
-									? initializable.gameObject.AddComponent(onlyInitializerType) as IInitializer
-									: Undo.AddComponent(initializable.gameObject, onlyInitializerType) as IInitializer;
+				var initializerType = initializerTypes[0];
+				var newInitializer = initializable.gameObject.IsAsset(true)
+					? initializable.gameObject.AddComponent(initializerType) as IInitializer
+					: Undo.AddComponent(initializable.gameObject, initializerType) as IInitializer;
 
 				newInitializer.Target = initializable;
 			}

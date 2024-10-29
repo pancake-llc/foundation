@@ -6,6 +6,7 @@ namespace Sisus.Init.EditorOnly
 {
 	public interface IInitializerEditorOnly : IInitializer
 	{
+		bool IsAsync { get; }
 		bool WasJustReset { get; set; }
 		bool ShowNullArgumentGuard { get; }
 		/// <summary>

@@ -64,6 +64,11 @@ namespace Sisus.Init
 		{
 			get
 			{
+				if(typeof(IServiceInitializerAsync).IsAssignableFrom(classWithAttribute))
+				{
+					return true;
+				}
+				
 				foreach(var attribute in attributes)
 				{
 					if(attribute.LoadAsync)

@@ -478,6 +478,8 @@ namespace Sisus.Init.Internal
 			return type is null ? "Null" : ToString(type, namespaceDelimiter, toStringCache);
 		}
 
+		internal static string ToString([AllowNull] IEnumerable<Type> type, char namespaceDelimiter = '\0') => string.Join(", ", type.Select(t => ToString(t, namespaceDelimiter)));
+		
 		internal static string ToString([DisallowNull] Type type, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache)
 		{
 			if(cache[namespaceDelimiter].TryGetValue(type, out string cached))

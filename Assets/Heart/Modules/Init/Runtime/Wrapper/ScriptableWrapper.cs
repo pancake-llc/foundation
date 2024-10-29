@@ -12,7 +12,7 @@ namespace Sisus.Init
 	/// A base class for <see cref="ScriptableObject">ScriptableObjects</see> that act as simple wrappers for plain old class objects.
 	/// <para>
 	/// A class wrapped by the <see cref="ScriptableWrapper{}"/> can be loaded from Resources using the
-	/// <see cref="Find.Resource{TWrapped}"/> function.
+	/// <see cref="Find.Resource{TWrapped}(string)"/> function.
 	/// </para>
 	/// <para>
 	/// Optionally the wrapped class can receive callbacks during select unity event functions from the wrapper
@@ -50,7 +50,7 @@ namespace Sisus.Init
 	/// </para>
 	/// </summary>
 	/// <typeparam name="TWrapped"> Type of the plain old class object wrapped by this scriptable object. </typeparam>
-	public abstract class ScriptableWrapper<TWrapped> : ScriptableObject, IWrapper<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
+	public abstract class ScriptableWrapper<TWrapped> : ScriptableWrapper, IWrapper<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
 	{
 		/// <summary>
 		/// The plain old class object wrapped by this scriptable object.
@@ -61,9 +61,9 @@ namespace Sisus.Init
 		private bool awakeInvokedWithoutWrappedObject;
 
 		/// <summary>
-		/// The plain old class object wrapped by this scriptable object.
+		/// The plain old class object wrapped by this component.
 		/// </summary>
-		public TWrapped WrappedObject => wrapped;
+		public new TWrapped WrappedObject => wrapped;
 
 		/// <summary>
 		/// The plain old class object wrapped by this scriptable object.
@@ -71,73 +71,9 @@ namespace Sisus.Init
 		object IWrapper.WrappedObject => wrapped;
 
 		/// <summary>
-		/// Scriptable objects are not attached to <see cref="GameObject">GameObjects</see>;
-		/// this always returns <see langword="null"/>.
-		/// </summary>
-		[NotNull]
-		GameObject IWrapper.gameObject => null;
-
-		/// <summary>
-		/// Scriptable objects do not derive from <see cref="MonoBehaviour"/>;
-		/// this always returns <see langword="null"/>.
-		/// </summary>
-		[NotNull]
-		MonoBehaviour IWrapper.AsMonoBehaviour => null;
-
-		/// <summary>
-		/// Starts the provided <paramref name="coroutine"/> running on the <see cref="Updater"/>.
-		/// <para>
-		/// Note that the lifetime of the coroutine will not be tied to the lifetime of the <see cref="ScriptableWrapper"/>.
-		/// </para>
-		/// </summary>
-		/// <param name="coroutine"> The coroutine to start. </param>
-		/// <returns>
-		/// A reference to the started <paramref name="coroutine"/>.
-		/// <para>
-		/// This reference can be passed to <see cref="ICoroutineRunner.StopCoroutine"/> to stop the execution of the coroutine.
-		/// </para>
-		/// </returns>
-		Coroutine ICoroutineRunner.StartCoroutine(IEnumerator coroutine) => Updater.StartCoroutine(coroutine);
-
-		/// <summary>
-		/// Stops the provided <paramref name="coroutine"/>.
-		/// </summary>
-		/// <param name="coroutine"> The <see cref="IEnumerator">coroutine</see> to stop. </param>
-		void ICoroutineRunner.StopCoroutine(IEnumerator coroutine) => Updater.StopCoroutine(coroutine);
-
-		/// <summary>
-		/// Stops the provided <paramref name="coroutine"/>.
-		/// </summary>
-		/// <param name="coroutine">
-		/// Reference to the <see cref="IEnumerator">coroutine</see> to stop.
-		/// <para>
-		/// This is the reference that was returned by <see cref="ICoroutineRunner.StartCoroutine"/>
-		/// when the coroutine was started.
-		/// </para>
-		/// </param>
-		void ICoroutineRunner.StopCoroutine(Coroutine coroutine) => Updater.StopCoroutine(coroutine);
-
-		/// <summary>
-		/// Not supported; use <see cref="ICoroutineRunner.StopCoroutine"/>
-		/// instead to stop each coroutine that might be running separately.
-		/// </summary>
-		void ICoroutineRunner.StopAllCoroutines() => throw new NotSupportedException();
-
-		/// <summary>
-		/// This wrapper as an <see cref="Object"/>.
-		/// </summary>
-		[NotNull]
-		Object IWrapper.AsObject => this;
-
-		/// <summary>
 		/// The plain old class object wrapped by this scriptable object.
 		/// </summary>
 		TWrapped IValueProvider<TWrapped>.Value => wrapped;
-
-		#if UNITY_2022_2_OR_NEWER
-		/// <inheritdoc cref="Updater.CancellationToken"/>
-		CancellationToken IWrapper.destroyCancellationToken => Updater.CancellationToken;
-		#endif
 
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>(Component client, out TValue value)
@@ -162,8 +98,8 @@ namespace Sisus.Init
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, during the Awake event when
-		/// an instance is created using <see cref="InstantiateExtensions.Instantiate{TWrapped}"/> or
-		/// <see cref="Create.Instance{TScriptableWrapper, TWrapped}(TArgument)"/> or when a scene that contains a reference
+		/// an instance is created using <see cref="InstantiateExtensions.Instantiate{TWrapper, TWrapped}(TWrapper, TWrapped)"/> or
+		/// <see cref="Create.Instance{TWrapper, TWrapped}(TWrapped)"/> or when a scene that contains a reference
 		/// to the asset is loaded.
 		/// </para>
 		/// <para>
@@ -337,6 +273,108 @@ namespace Sisus.Init
 		public static explicit operator ScriptableWrapper<TWrapped>(TWrapped wrapped)
 		{
 			return Find.WrapperOf(wrapped) as ScriptableWrapper<TWrapped>;
+		}
+
+		private protected override object GetWrappedObject() => wrapped;
+	}
+
+	public abstract class ScriptableWrapper : ScriptableObject, IWrapper, IValueProvider, IValueByTypeProvider
+	{
+		/// <summary>
+		/// Gets a value indicating whether the scriptable object has not been destroyed.
+		/// </summary>
+		bool IWrapper.enabled => this;
+
+		/// <summary>
+		/// Gets the plain old class object wrapped by this scriptable object.
+		/// </summary>
+		object IValueProvider.Value => GetWrappedObject();
+
+		/// <summary>
+		/// Gets the plain old class object wrapped by this scriptable object.
+		/// </summary>
+		public object WrappedObject => GetWrappedObject();
+
+		/// <summary>
+		/// Gets the plain old class object wrapped by this scriptable object.
+		/// </summary>
+		private protected abstract object GetWrappedObject();
+
+		/// <summary>
+		/// Scriptable objects are not attached to <see cref="GameObject">GameObjects</see>;
+		/// this always returns <see langword="null"/>.
+		/// </summary>
+		[NotNull]
+		GameObject IWrapper.gameObject => null;
+
+		/// <summary>
+		/// Scriptable objects do not derive from <see cref="MonoBehaviour"/>;
+		/// this always returns <see langword="null"/>.
+		/// </summary>
+		[NotNull]
+		MonoBehaviour IWrapper.AsMonoBehaviour => null;
+
+		/// <summary>
+		/// Starts the provided <paramref name="coroutine"/> running on the <see cref="Updater"/>.
+		/// <para>
+		/// Note that the lifetime of the coroutine will not be tied to the lifetime of the <see cref="ScriptableWrapper"/>.
+		/// </para>
+		/// </summary>
+		/// <param name="coroutine"> The coroutine to start. </param>
+		/// <returns>
+		/// A reference to the started <paramref name="coroutine"/>.
+		/// <para>
+		/// This reference can be passed to <see cref="ICoroutineRunner.StopCoroutine"/> to stop the execution of the coroutine.
+		/// </para>
+		/// </returns>
+		Coroutine ICoroutineRunner.StartCoroutine(IEnumerator coroutine) => Updater.StartCoroutine(coroutine);
+
+		/// <summary>
+		/// Stops the provided <paramref name="coroutine"/>.
+		/// </summary>
+		/// <param name="coroutine"> The <see cref="IEnumerator">coroutine</see> to stop. </param>
+		void ICoroutineRunner.StopCoroutine(IEnumerator coroutine) => Updater.StopCoroutine(coroutine);
+
+		/// <summary>
+		/// Stops the provided <paramref name="coroutine"/>.
+		/// </summary>
+		/// <param name="coroutine">
+		/// Reference to the <see cref="IEnumerator">coroutine</see> to stop.
+		/// <para>
+		/// This is the reference that was returned by <see cref="ICoroutineRunner.StartCoroutine"/>
+		/// when the coroutine was started.
+		/// </para>
+		/// </param>
+		void ICoroutineRunner.StopCoroutine(Coroutine coroutine) => Updater.StopCoroutine(coroutine);
+
+		/// <summary>
+		/// Not supported; use <see cref="ICoroutineRunner.StopCoroutine"/>
+		/// instead to stop each coroutine that might be running separately.
+		/// </summary>
+		void ICoroutineRunner.StopAllCoroutines() => throw new NotSupportedException();
+
+		/// <summary>
+		/// This wrapper as an <see cref="Object"/>.
+		/// </summary>
+		[NotNull]
+		Object IWrapper.AsObject => this;
+
+		#if UNITY_2022_2_OR_NEWER
+		/// <inheritdoc cref="Updater.CancellationToken"/>
+		CancellationToken IWrapper.destroyCancellationToken => Updater.CancellationToken;
+		#endif
+
+		/// <inheritdoc/>
+		bool IValueByTypeProvider.TryGetFor<TValue>(Component client, out TValue value)
+		{
+			if(GetWrappedObject() is TValue result)
+			{
+				value = result;
+				return true;
+			}
+
+			value = default;
+			return false;
 		}
 	}
 }

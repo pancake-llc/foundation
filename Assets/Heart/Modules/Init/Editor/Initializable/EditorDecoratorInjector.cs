@@ -194,6 +194,27 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
+		public static void RepaintAll()
+		{
+			for(int i = activeDecorators.Count - 1; i >= 0; i--)
+			{
+				var decorator = activeDecorators[i];
+				if(decorator.panel is not null)
+				{
+#if DEV_MODE && DEBUG_REPAINT
+					decorator.GetType().Name + "Repaint");
+					UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+#endif
+
+					decorator.DecoratedEditor.Repaint();
+
+#if DEV_MODE && DEBUG_REPAINT
+					UnityEngine.Profiling.Profiler.EndSample();
+#endif
+				}
+			}
+		}
+		
 		private static bool IsMissingComponent(Object target) => !target || target.GetType() == typeof(MonoBehaviour);
 	}
 }

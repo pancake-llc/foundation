@@ -184,7 +184,7 @@ namespace Sisus.Init.Serialization
 
 		public override bool Equals(object obj) => Equals(obj as _Type);
 
-		public override int GetHashCode() => value == null ? 0 : value.GetHashCode();
+		public override int GetHashCode() => value is null ? 0 : value.GetHashCode();
 
 		#if UNITY_EDITOR
 		private void SetClassGuidIfExists(Type type)

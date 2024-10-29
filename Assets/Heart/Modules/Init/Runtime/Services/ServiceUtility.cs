@@ -23,6 +23,7 @@ namespace Sisus.Init
 		static readonly Dictionary<Type, IsServiceOrServiceProviderForResolver> isServiceOrServiceProviderForResolvers = new();
 		static readonly Dictionary<Type, IsServiceOrServiceProviderResolver> isServiceOrServiceProviderResolvers = new();
 		static readonly Dictionary<Type, ScopedServiceRemover> scopedServiceRemovers = new();
+		static readonly Dictionary<Type, ScopedServicesFromProviderRemover> scopedServicesFromProviderRemovers = new();
 		static readonly Dictionary<Type, ServiceClientsGetter> serviceClientsGetters = new();
 
 		/// <summary>
@@ -66,7 +67,6 @@ namespace Sisus.Init
 		/// <summary>
 		/// <see langword="true"/> if all shared services that are loaded asynchronously during game initialization
 		/// have been created, initialized and are ready to be used by clients; otherwise, <see langword="false"/>.
-		/// </para>
 		/// <para>
 		/// This only takes into consideration services defined using the <see cref="ServiceAttribute"/>.
 		/// </para>
@@ -831,6 +831,25 @@ namespace Sisus.Init
 			Service.RemoveFrom(Clients.Everywhere, new GameObject().GetComponent<TService>(), new GameObject().GetComponent<Transform>());
 			Service.TryGetClients<TService>(default, out _);
 			#endif
+		}
+		
+		public static void RemoveAllServicesProvidedBy(Services serviceProvider)
+		{
+			foreach(var providedService in serviceProvider.providesServices)
+			{
+				if(providedService.definingType.Value is not { } definingType)
+				{
+					continue;
+				}
+
+				if(!scopedServicesFromProviderRemovers.TryGetValue(definingType, out var remover))
+				{
+					remover = new ScopedServicesFromProviderRemover(definingType);
+					scopedServicesFromProviderRemovers.Add(definingType, remover);
+				}
+
+				remover.RemoveFrom(serviceProvider.toClients, serviceProvider);
+			}
 		}
 	}
 }

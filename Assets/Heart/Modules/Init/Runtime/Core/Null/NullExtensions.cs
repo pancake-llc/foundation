@@ -11,7 +11,7 @@ namespace Sisus
 {
 	/// <summary>
 	/// Helper class for checking whether the value of a variable that is of <see cref="object"/>, interface or generic
-	/// type is <see langword="null"/>, <see cref="Object.Destroy">destroyed</see> or <see cref="GameObject.activeInHierarchy">inactive</see>.
+	/// type is <see langword="null"/>, <see cref="Object.Destroy(Object)">destroyed</see> or <see cref="GameObject.activeInHierarchy">inactive</see>.
 	/// <para>
 	/// By adding a using static directive it is possible to access the static members of the
 	/// <see cref="NullExtensions"/> class without having to qualify the access with the type name, making it possible
@@ -56,8 +56,8 @@ namespace Sisus
 	public static class NullExtensions
 	{
 		/// <summary>
-		/// A value against which any <see cref="object"/> can be compared to determine whether or not it is
-		/// <see langword="null"/> or an <see cref="Object"/> which has been <see cref="Object.Destroy">destroyed</see>.
+		/// A value against which any <see cref="object"/> can be compared to determine whether it is
+		/// <see langword="null"/> or an <see cref="Object"/> which has been <see cref="Object.Destroy(Object)">destroyed</see>.
 		/// <example>
 		/// <code>
 		/// using static Sisus.NullExtensions;
@@ -95,9 +95,10 @@ namespace Sisus
 		public static readonly NullComparer Null = new NullComparer();
 
 		/// <summary>
-		/// A value against which any <see cref="object"/> can be compared to determine whether or not it is
+		/// A value against which any <see cref="object"/> can be compared to determine whether it is
 		/// <see langword="null"/> or an <see cref="Object"/> which is <see cref="GameObject.activeInHierarchy">inactive</see>
-		/// or has been <see cref="Object.Destroy">destroyed</see>.
+		/// or has been <see cref="Object.Destroy(Object)">destroyed</see>.
+		/// </summary>
 		/// <example>
 		/// <code>
 		/// using static Sisus.NullExtensions;
@@ -174,7 +175,7 @@ namespace Sisus
 		public static void ThrowIfNull(Object reference, string exceptionMessage, Type type)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(reference == null)
+			if(!reference)
 			{
 				throw new ArgumentNullException(string.Format(exceptionMessage, TypeUtility.ToString(type)), default(Exception));
 			}
@@ -198,7 +199,7 @@ namespace Sisus
 		/// </para>
 		/// </param>
 		/// <param name="type"> Type information to include in the message. </param>
-		/// <exception cref="ArgumentNullException">
+		/// <exception cref="ArgumentNullException"/>
 		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
 		public static void ThrowIfNull(object reference, string exceptionMessage, Type type)
 		{
@@ -211,13 +212,13 @@ namespace Sisus
 		}
 
 		/// <summary>
-		/// Represents a <see langword="null"/> reference or an <see cref="Object"/> that has been <see cref="Object.Destroy">destroyed</see>.
+		/// Represents a <see langword="null"/> reference or an <see cref="Object"/> that has been <see cref="Object.Destroy(Object)">destroyed</see>.
 		/// </summary>
 		public sealed class NullComparer
 		{
 			internal NullComparer() { }
 
-			public override bool Equals(object obj) => obj is Object unityObject ? unityObject == null : obj is null;
+			public override bool Equals(object obj) => obj is Object unityObject ? !unityObject : obj is null;
 			public override int GetHashCode() => 0;
 			public override string ToString() => "Null";
 
@@ -230,7 +231,7 @@ namespace Sisus
 				#if UNITY_EDITOR
 				unityObject is Init.ValueProviders._Null ||
 				#endif
-				unityObject == null;
+				!unityObject;
 
 			/// <summary>
 			/// Determines whether the specified <paramref name="unityObject"/> is not a <see langword="null"/> reference and has not been <see cref="Object.Destroy">destroyed</see>.
@@ -241,7 +242,7 @@ namespace Sisus
 				#if UNITY_EDITOR
 				!(unityObject is Init.ValueProviders._Null) &&
 				#endif
-				unityObject != null;
+				unityObject;
 
 			/// <summary>
 			/// Determines whether the specified <paramref name="object"/> is a <see langword="null"/> reference or an <see cref="Object"/> that has been <see cref="Object.Destroy">destroyed</see>.
@@ -252,18 +253,18 @@ namespace Sisus
 				#if UNITY_EDITOR
 				@object is Init.ValueProviders._Null ? true :
 				#endif
-				@object is Object unityObject ? unityObject == null : @object is null;
+				@object is Object unityObject ? !unityObject : @object is null;
 
 			/// <summary>
 			/// Determines whether the specified <paramref name="object"/> is not a <see langword="null"/> reference or an <see cref="Object"/> that has been <see cref="Object.Destroy">destroyed</see>.
 			/// </summary>
 			/// <param name="@object"> The <see cref="object"/> to check. </param>
-			/// <returns> <see langword="true"/> if the specified <see cref="object"/> is not a <see langword="null"/> reference or an <see cref="Object"/> that has been <see cref="Object.Destroy">destroyed; otherwise, <see langword="false"/>. </returns>
+			/// <returns> <see langword="true"/> if the specified <see cref="object"/> is not a <see langword="null"/> reference or an <see cref="Object"/> that has been <see cref="Object.Destroy">destroyed</see>; otherwise, <see langword="false"/>. </returns>
 			public static bool operator !=(object @object, NullComparer @null) =>
 				#if UNITY_EDITOR
 				@object is Init.ValueProviders._Null ? false :
 				#endif
-				@object is Object unityObject ? unityObject != null : !(@object is null);
+				@object is Object unityObject ? unityObject : !(@object is null);
 		}
 
 		/// <summary>
@@ -278,12 +279,12 @@ namespace Sisus
 			public override int GetHashCode() => 0;
 			public override string ToString() => "NullOrInactive";
 
-			public static bool operator ==(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => gameObject == null || !gameObject.activeInHierarchy;
-			public static bool operator !=(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => gameObject != null && gameObject.activeInHierarchy;
+			public static bool operator ==(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => !gameObject || !gameObject.activeInHierarchy;
+			public static bool operator !=(GameObject gameObject, NullOrInactiveComparer nullOrInactive) => gameObject && gameObject.activeInHierarchy;
 
-			public static bool operator ==(Component component, NullOrInactiveComparer nullOrInactive) => component == null || !component.gameObject.activeInHierarchy;
+			public static bool operator ==(Component component, NullOrInactiveComparer nullOrInactive) => !component || !component.gameObject.activeInHierarchy;
 
-			public static bool operator !=(Component component, NullOrInactiveComparer nullOrInactive) => component != null && component.gameObject.activeInHierarchy;
+			public static bool operator !=(Component component, NullOrInactiveComparer nullOrInactive) => component && component.gameObject.activeInHierarchy;
 
 			public static bool operator ==(Object obj, NullOrInactiveComparer nullOrInactive) => IsNullOrDestroyedOrInactive(obj);
 			public static bool operator !=(Object obj, NullOrInactiveComparer nullOrInactive) => !IsNullOrDestroyedOrInactive(obj);
@@ -318,7 +319,7 @@ namespace Sisus
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			private static bool IsDestroyedOrInactive(Object unityObject)
 			{
-				if(unityObject == null)
+				if(!unityObject)
 				{
 					return true;
 				}

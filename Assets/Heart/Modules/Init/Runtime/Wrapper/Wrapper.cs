@@ -61,7 +61,7 @@ namespace Sisus.Init
 	/// </summary>
 	/// <typeparam name="TWrapped"> Type of the plain old class object wrapped by this component. </typeparam>
 	[RequiredInterface(typeof(IWrapper)), RequiredInterface(typeof(IValueByTypeProvider)), RequiredInterface(typeof(IValueProvider))]
-	public abstract class Wrapper<TWrapped> : MonoBehaviour, IWrapper<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
+	public abstract class Wrapper<TWrapped> : Wrapper, IWrapper<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
 	{
 		/// <summary>
 		/// The plain old class object wrapped by this component.
@@ -74,7 +74,9 @@ namespace Sisus.Init
 		/// <summary>
 		/// The plain old class object wrapped by this component.
 		/// </summary>
-		public TWrapped WrappedObject => wrapped;
+		public new TWrapped WrappedObject => wrapped;
+
+		bool IWrapper.enabled => enabled;
 
 		/// <summary>
 		/// The plain old class object wrapped by this component.
@@ -137,8 +139,8 @@ namespace Sisus.Init
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, during the Awake event when
-		/// the component is created using <see cref="InstantiateExtensions.Instantiate{TWrapped}"/> or
-		/// <see cref="AddComponent">GameObject.AddComponent{TComponent, TArgument}</see>.
+		/// the component is created using <see cref="InstantiateExtensions.Instantiate{TWrapped}(TWrapped)"/> or
+		/// <see cref="AddComponentExtensions.AddComponent{TWrapper, TWrapped}(GameObject, TWrapped)"/>.
 		/// </para>
 		/// <para>
 		/// In edit mode <see cref="Init"/> can also get called during the <see cref="Reset"/> event when the script is added to a <see cref="GameObject"/>,
@@ -386,5 +388,105 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="wrapped"> The <see cref="TWrapped"/> instance to convert. </param>
 		public static explicit operator Wrapper<TWrapped>(TWrapped wrapped) => Find.WrapperOf(wrapped) as Wrapper<TWrapped>;
+
+		private protected override object GetWrappedObject() => wrapped;
+	}
+
+	/// <summary>
+	/// Base class for <see cref="MonoBehaviour">MonoBehaviours</see> that act as simple wrappers for plain old class objects.
+	/// <para>
+	/// A class wrapped by the <see cref="Wrapper"/> component can be added to a <see cref="GameObject"/> using the
+	/// <see cref="AddComponentExtensions.AddComponent{TWrapper, TWrapped}(GameObject, TWrapped)"/> method.
+	/// </para>
+	/// <para>
+	/// Optionally the wrapped class can receive callbacks during select unity event functions from the wrapper
+	/// by implementing one or more of the following interfaces:
+	/// <list type="bullet">
+	/// <item>
+	/// <term> <see cref="IAwake"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.Awake event. </description>
+	/// </item>
+	/// <item>
+	/// <term> <see cref="IOnEnable"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.OnEnable event. </description>
+	/// </item>
+	/// <item>
+	/// <term> <see cref="IStart"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.Start event. </description>
+	/// </item>
+	/// <item>
+	/// <term> <see cref="IUpdate"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.Update event. </description>
+	/// </item>
+	/// <item>
+	/// <term> <see cref="IFixedUpdate"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.FixedUpdate event. </description>
+	/// </item>
+	/// <item>
+	/// <term> <see cref="ILateUpdate"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.LateUpdate event. </description>
+	/// </item>
+	/// <item>
+	/// <term> <see cref="IOnDisable"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.OnDisable event. </description>
+	/// </item>
+	/// <item>
+	/// <term> <see cref="IOnDestroy"/> </term>
+	/// <description> Receive callback during the MonoBehaviour.OnDestroy event. </description>
+	/// </item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// The wrapped object can start coroutines running on the wrapper component by implementing <see cref="ICoroutines"/>
+	/// and then using <see cref="ICoroutineRunner.StartCoroutine"/>.
+	/// </para>
+	/// </summary>
+	[RequiredInterface(typeof(IWrapper)), RequiredInterface(typeof(IValueByTypeProvider)), RequiredInterface(typeof(IValueProvider))]
+	public abstract class Wrapper : MonoBehaviour, IWrapper, IValueProvider, IValueByTypeProvider
+	{
+		/// <summary>
+		/// Gets a value indicating whether the behaviour is enabled.
+		/// </summary>
+		bool IWrapper.enabled => enabled;
+
+		/// <summary>
+		/// Gets the plain old class object wrapped by this component.
+		/// </summary>
+		object IValueProvider.Value => GetWrappedObject();
+
+		/// <summary>
+		/// Gets the plain old class object wrapped by this component.
+		/// </summary>
+		public object WrappedObject => GetWrappedObject();
+
+		/// <summary>
+		/// Gets the plain old class object wrapped by this component.
+		/// </summary>
+		private protected abstract object GetWrappedObject();
+
+		/// <summary>
+		/// This wrapper as a <see cref="MonoBehaviour"/>.
+		/// </summary>
+		[NotNull]
+		MonoBehaviour IWrapper.AsMonoBehaviour => this;
+
+		/// <summary>
+		/// This wrapper as an <see cref="Object"/>.
+		/// </summary>
+		[NotNull]
+		Object IWrapper.AsObject => this;
+
+		/// <inheritdoc/>
+		bool IValueByTypeProvider.TryGetFor<TValue>(Component client, out TValue value)
+		{
+			if(GetWrappedObject() is TValue result)
+			{
+				value = result;
+				return true;
+			}
+
+			value = default;
+			return false;
+		}
 	}
 }

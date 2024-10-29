@@ -128,6 +128,10 @@ namespace Sisus.Init.Internal
 			timer.Start();
 			#endif
 
+#if UNITY_EDITOR
+			Service.BatchEditingServices = true;
+#endif
+			
 			CreateInstancesOfAllServices();
 
 			ServicesAreReady = true;
@@ -161,6 +165,10 @@ namespace Sisus.Init.Internal
 			ServicesBecameReady?.Invoke();
 			ServicesBecameReady = null;
 
+#if UNITY_EDITOR
+			Service.BatchEditingServices = false;
+#endif
+			
 			#if DEV_MODE && DEBUG_INIT_TIME
 			Debug.Log($"Initialization of {services.Count} services took {timer.Elapsed.TotalSeconds} seconds.");
 			#endif
@@ -2703,8 +2711,6 @@ namespace Sisus.Init.Internal
 					continue;
 				}
 
-				setMethod.SetClientType(clientType);
-
 				var serviceTypes = interfaceType.GetGenericArguments();
 				bool allServicesAvailable = true;
 				for(int serviceIndex = 0; serviceIndex < serviceCount; serviceIndex++)
@@ -2721,17 +2727,18 @@ namespace Sisus.Init.Internal
 
 				if(!allServicesAvailable)
 				{
-					#if DEV_MODE && DEBUG_DEFAULT_SERVICES
-					Debug.Log($"{serviceCount} default services for clients of type {clientType.FullName} not found: {string.Join(", ", serviceTypes.Select(t => t.Name))}");
-					#endif
+#if DEV_MODE && DEBUG_DEFAULT_SERVICES
+					Debug.Log($"{serviceCount} default services for clients of type {clientType.FullName} not found: {string.Join(", ", serviceTypes.Select(t => TypeUtility.ToString(t)))}");
+#endif
 
 					continue;
 				}
 
-				#if DEV_MODE && DEBUG_DEFAULT_SERVICES
-				Debug.Log($"Registering {serviceCount} default services for clients of type {clientType.FullName}: {string.Join(", ", serviceTypes.Select(t => t.Name))}");
-				#endif
+#if DEV_MODE && DEBUG_DEFAULT_SERVICES
+				Debug.Log($"Registering {serviceCount} default services for clients of type {clientType.FullName}: {string.Join(", ", serviceTypes.Select(t => TypeUtility.ToString(t)))}");
+#endif
 
+				setMethod.SetClientType(clientType);
 				await setMethod.Invoke();
 
 				#if UNITY_EDITOR
@@ -2902,7 +2909,7 @@ namespace Sisus.Init.Internal
 		{
 			public readonly object[] clientTypeAndServices;
 			private readonly Type[] serviceTypes;
-			private readonly MethodInfo method;
+			private readonly MethodInfo methodDefinition;
 
 			public InitArgsSetMethodInvoker(Expression<Action<object>> expression) : this(GetGenericMethodDefinition(expression), 1, 2) { }
 			public InitArgsSetMethodInvoker(Expression<Action<object, object>> expression) : this(GetGenericMethodDefinition(expression), 2, 3) { }
@@ -2917,9 +2924,9 @@ namespace Sisus.Init.Internal
 			public InitArgsSetMethodInvoker(Expression<Action<object, object, object, object, object, object, object, object, object, object, object>> expression) : this(GetGenericMethodDefinition(expression), 11, 12) { }
 			public InitArgsSetMethodInvoker(Expression<Action<object, object, object, object, object, object, object, object, object, object, object, object>> expression) : this(GetGenericMethodDefinition(expression), 12, 13) { }
 
-			public InitArgsSetMethodInvoker(MethodInfo method, int genericArgumentCount, int parameterCount)
+			public InitArgsSetMethodInvoker(MethodInfo methodDefinition, int genericArgumentCount, int parameterCount)
 			{
-				this.method = method;
+				this.methodDefinition = methodDefinition;
 				serviceTypes = new Type[genericArgumentCount];
 				clientTypeAndServices = new object[parameterCount];
 			}
@@ -2944,7 +2951,8 @@ namespace Sisus.Init.Internal
 
 			public async Task Invoke()
 			{
-				bool isAsync = false;
+				bool needToAwait = false;
+				var methodToInvoke = methodDefinition.MakeGenericMethod(serviceTypes);
 				var loadArgumentTasks = Enumerable.Empty<Task>();
 				int argumentCount = serviceTypes.Length;
 				for(int argumentIndex = 0; argumentIndex < argumentCount; argumentIndex++)
@@ -2953,13 +2961,13 @@ namespace Sisus.Init.Internal
 					var service = clientTypeAndServices[argumentIndex + 1];
 					if(!serviceType.IsInstanceOfType(service) && service is Task loadServiceTask)
 					{
-						isAsync = true;
+						needToAwait = true;
 						loadArgumentTasks = loadArgumentTasks.Append(loadServiceTask);
 					}
 				}
 
 				object[] arguments;
-				if(!isAsync)
+				if(!needToAwait)
 				{
 					arguments = clientTypeAndServices;
 				}
@@ -2983,15 +2991,40 @@ namespace Sisus.Init.Internal
 					#endif
 				}
 
-				for(int argumentIndex = 0; argumentIndex < argumentCount; argumentIndex++)
+				for(int serviceIndex = argumentCount; serviceIndex >= 1; serviceIndex--)
 				{
-					if(arguments[argumentIndex] is Task finishedTask)
+					if(arguments[serviceIndex] is Task finishedTask)
 					{
-						arguments[argumentIndex] = await finishedTask.GetResult();
+						arguments[serviceIndex] = await finishedTask.GetResult();
+
+						#if DEBUG || INIT_ARGS_SAFE_MODE
+						if(finishedTask.IsFaulted)
+						{
+							Debug.LogWarning($"Can not set default services for {TypeUtility.ToString((Type)arguments[0])} because initialization of dependency #{serviceIndex} (zero-based) failed.");
+							return;
+						}
+						#endif
+
+						#if DEV_MODE
+						if(arguments[serviceIndex] is Task) Debug.LogWarning("Suspicious looking service: " + arguments[serviceIndex]);
+						#endif
 					}
 				}
 
-				method.MakeGenericMethod(serviceTypes).Invoke(null, arguments);
+				#if DEBUG || INIT_ARGS_SAFE_MODE
+				try
+				{
+				#endif
+
+				methodToInvoke.Invoke(null, arguments);
+
+				#if DEBUG || INIT_ARGS_SAFE_MODE
+				}
+				catch(Exception e)
+				{
+					Debug.LogError($"Failed to set default services for {TypeUtility.ToString((Type)arguments[0], '.')}.\nservices: {string.Join(", ", arguments.Skip(1).Select(obj => TypeUtility.ToString(obj?.GetType())))}\nloadArgumentTasks:{loadArgumentTasks.Count()}\n{e}");
+				}
+				#endif
 			}
 		}
 

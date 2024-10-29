@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define DEBUG_CLEAR_CACHE
+
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -46,7 +48,13 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			static void OnObjectChangesPublished(ref ObjectChangeEventStream stream) => ClearDefiningTypesCache();
 			static void OnUndoRedoPerformed() => ClearDefiningTypesCache();
-			static void OnSelectionChanged() => InspectorContents.Repaint();
+			
+			static void OnSelectionChanged()
+			{
+				// Need to repaint editor header to update service tag position.
+				RepaintAllServiceEditors();
+			}
+
 			static void OnAnyServiceChanged() => ClearDefiningTypesCache();
 			static void OnPlayModeStateChanged(PlayModeStateChange mode) => ClearDefiningTypesCache();
 			static void OnSceneUnloaded(Scene scene) => ClearDefiningTypesCache();
@@ -54,15 +62,19 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			static void ClearDefiningTypesCache()
 			{
+#if DEV_MODE && DEBUG_CLEAR_CACHE
+				Debug.Log("ClearDefiningTypesCache");
+#endif
 				EditorApplication.delayCall -= ClearDefiningTypesCacheImmediate;
 				EditorApplication.delayCall += ClearDefiningTypesCacheImmediate;
 			}
 
-#if DEV_MODE
-			[MenuItem("DevMode/Clear Service Defining Types Cache")]
-#endif
+			[MenuItem("Tools/Pancake/Init/Clear Service Defining Types Cache", priority = 10000)]
 			static void ClearDefiningTypesCacheImmediate()
 			{
+				var components = Selection.activeGameObject ? Selection.activeGameObject.GetComponentsNonAlloc<Component>() : ComponentCollection<Component>.Empty();
+				RepaintEditorsWhenService(components);
+				
 				foreach(var definingTypes in objectDefiningTypesCache.Values)
 				{
 					if(definingTypes.Length > 0)
@@ -72,7 +84,38 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				objectDefiningTypesCache.Clear();
-				InspectorContents.Repaint();
+				
+				RepaintEditorsWhenService(components);
+			}
+			
+			static void RepaintEditorsWhenService(ComponentCollection<Component> inspectedComponents)
+			{
+				foreach(var component in inspectedComponents)
+				{
+					if(component && GetServiceDefiningTypes(component).Length > 0)
+					{
+						// Need to repaint editor header to update service tag position.
+						InspectorContents.RepaintEditorsWithTarget(component);
+					}
+				}
+			}
+
+			static void RepaintAllServiceEditors()
+			{
+				var gameObject = Selection.activeGameObject;
+				if(!gameObject)
+				{
+					return;
+				}
+
+				foreach(var component in Selection.activeGameObject.GetComponentsNonAlloc<Component>())
+				{
+					if(GetServiceDefiningTypes(component).Length > 0)
+					{
+						// Need to repaint editor header to update service tag position.
+						InspectorContents.RepaintEditorsWithTarget(component);
+					}
+				}
 			}
 		}
 

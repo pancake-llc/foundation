@@ -31,6 +31,24 @@ namespace Sisus.Init
 		internal static Type nowSettingInstance;
 
 		#if UNITY_EDITOR
+		private static bool batchEditingServices;
+		internal static bool BatchEditingServices
+		{
+			set
+			{
+				if(batchEditingServices == value)
+				{
+					return;
+				}
+
+				batchEditingServices = value;
+				if(!value)
+				{
+					AnyChangedEditorOnly?.Invoke();
+				}
+			}
+		}
+
 		internal static event Action AnyChangedEditorOnly;
 		private static readonly List<ServiceInfo> activeInstancesEditorOnlyEditMode = new(64);
 		private static readonly List<ServiceInfo> activeInstancesEditorOnlyPlayMode = new(64);
@@ -50,8 +68,9 @@ namespace Sisus.Init
 		/// Determines whether service of type <typeparamref name="TService"/>
 		/// is available for the <paramref name="client"/>.
 		/// <para>
-		/// The service can be located from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or a global service registered using
+		/// a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -71,6 +90,11 @@ namespace Sisus.Init
 		/// <summary>
 		/// Gets a value indicating whether service of type <typeparamref name="TService"/> is available for the <paramref name="client"/>.
 		/// <para>
+		/// The service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or a global service registered using
+		/// a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
+		/// </para>
+		/// <para>
 		/// This method can only be called from the main thread.
 		/// </para>
 		/// </summary>
@@ -85,8 +109,9 @@ namespace Sisus.Init
 		/// Determines whether service of type <typeparamref name="TService"/> is available
 		/// for the <paramref name="client"/>.
 		/// <para>
-		/// The service can be located from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or a global service registered using
+		/// a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -100,11 +125,11 @@ namespace Sisus.Init
 		public static bool ExistsFor<TService>([DisallowNull] GameObject client) => ServiceInjector.CanProvideService<TService>() || TryGetFor<TService>(client, out _);
 
 		/// <summary>
-		/// Determines whether service of type <typeparamref name="TService"/>
-		/// is available and globally accessible by any client.
+		/// Determines whether a global service of type <typeparamref name="TService"/> is available.
 		/// <para>
-		/// The service can be located from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The service can be a service registered using the <see cref="ServiceAttribute"/>, manually using <see cref="Set{TService}"/>
+		/// or one registered using a <see cref="ServiceTag"/> or a <see cref="Services"/> component with availability set to
+		/// <see cref="Clients.Everywhere"/>.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -180,10 +205,11 @@ namespace Sisus.Init
 
 		/// <summary>
 		/// Tries to get <paramref name="service"/> of type <typeparamref name="TService"/>
-		/// for <paramref name="client"/>.
+		/// for the <paramref name="client"/>.
 		/// <para>
-		/// The service can be retrieved from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The returned service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or if one is not found, a global service
+		/// registered using a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -205,8 +231,9 @@ namespace Sisus.Init
 		/// Tries to get <paramref name="service"/> of type <typeparamref name="TService"/>
 		/// for <paramref name="client"/>.
 		/// <para>
-		/// The service can be retrieved from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The returned service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or if one is not found, a global service
+		/// registered using a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -424,8 +451,9 @@ namespace Sisus.Init
 		/// Tries to get <paramref name="service"/> of type <typeparamref name="TService"/>
 		/// for <paramref name="client"/>.
 		/// <para>
-		/// The service can be retrieved from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The returned service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or if one is not found, a global service
+		/// registered using a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -441,11 +469,11 @@ namespace Sisus.Init
 			=> TryGetFor(client.transform, out service);
 
 		/// <summary>
-		/// Tries to get <paramref name="service"/> of type <typeparamref name="TService"/>
-		/// for <paramref name="client"/>.
+		/// Tries to get a global <paramref name="service"/> of type <typeparamref name="TService"/>.
 		/// <para>
-		/// The service can be retrieved from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The returned service can be a service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component with availability set to <see cref="Clients.Everywhere"/>, or a service
+		/// registered using a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
 		/// </para>
 		/// <para>
 		/// This method can be called from any thread.
@@ -560,8 +588,9 @@ namespace Sisus.Init
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/>.
 		/// <para>
-		/// The service can be retrieved from <see cref="Services"/> components in the active scenes,
-		/// or failing that, from the globally shared <see cref="Service{TService}.Instance"/>.
+		/// The returned service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or if one is not found, a global service
+		/// registered using a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
 		/// </para>
 		/// <para>
 		/// This method can only be called from the main thread.
@@ -576,7 +605,121 @@ namespace Sisus.Init
 			=> TryGetFor(client.gameObject, out TService result)
 			? result
 			: throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {TypeUtility.ToString(client.GetType())}.");
+		
+		/// <summary>
+		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/> asynchrounously.
+		/// <para>
+		/// The returned service can be a local service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component in an active scene, or if one is not found, a global service
+		/// registered using a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
+		/// </para>
+		/// <para>
+		/// This will suspend the execution of the calling async method until a service of type <see typeparamref="TService"/>
+		/// becomes available for the <paramref name="client"/>.
+		/// </para>
+		/// </summary>
+		/// <typeparam name="TService"> The defining type of the service. </typeparam>
+		/// <param name="client"> The client that needs the service. </param>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
+		public static async
+		#if UNITY_2023_1_OR_NEWER
+        Awaitable<TService>
+        #else
+        System.Threading.Tasks.Task<TService>
+        #endif
+		GetForAsync<TService>([DisallowNull] Component client, Context context = Context.MainThread)
+		{
+			if(!context.IsUnitySafeContext())
+			{
+				await Until.UnitySafeContext();
+			}
 
+			var gameObject = client.gameObject;
+			if(TryGetFor(gameObject, out TService result))
+			{
+				return result;
+			}
+
+			#if UNITY_2023_1_OR_NEWER
+			AwaitableCompletionSource<TService> completionSource = new();
+			ServiceChanged<TService>.listeners += OnServiceChanged;
+			return await completionSource.Awaitable;
+			#else
+			TaskCompletionSource<TService> completionSource = new();
+			ServiceChanged<TService>.listeners += OnServiceChanged;
+			return await completionSource.Task;
+			#endif
+
+			void OnServiceChanged(Clients clients, TService oldinstance, TService newInstance)
+			{
+				if(!client)
+				{
+					ServiceChanged<TService>.listeners -= OnServiceChanged;
+					completionSource.SetCanceled();
+					return;
+				}
+
+				if(TryGetFor(gameObject, out TService result))
+				{
+					ServiceChanged<TService>.listeners -= OnServiceChanged;
+					completionSource.SetResult(result);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets service of type <typeparamref name="TService"/> asynchrounously.
+		/// <para>
+		/// The returned service can be a service registered using a <see cref="ServiceTag"/> or a
+		/// <see cref="Services"/> component with availability set to <see cref="Clients.Everywhere"/>, or a service
+		/// registered using a <see cref="ServiceAttribute"/> or <see cref="Set{TService}">manually</see>.
+		/// </para>
+		/// <para>
+		/// This will suspend the execution of the calling async method until a service of type <see typeparamref="TService"/>
+		/// becomes available.
+		/// </para>
+		/// </summary>
+		/// <typeparam name="TService"> The defining type of the service. </typeparam>
+		/// <param name="context"> Initialization phase during which the method is being called. </param>
+		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
+		public static async
+		#if UNITY_2023_1_OR_NEWER
+        Awaitable<TService>
+        #else
+        System.Threading.Tasks.Task<TService>
+        #endif
+		GetAsync<TService>(Context context = Context.MainThread)
+		{
+			if(!context.IsUnitySafeContext())
+			{
+				await Until.UnitySafeContext();
+			}
+
+			if(TryGet(out TService result))
+			{
+				return result;
+			}
+
+			#if UNITY_2023_1_OR_NEWER
+			AwaitableCompletionSource<TService> completionSource = new();
+			ServiceChanged<TService>.listeners += OnServiceChanged;
+			return await completionSource.Awaitable;
+			#else
+			TaskCompletionSource<TService> completionSource = new();
+			ServiceChanged<TService>.listeners += OnServiceChanged;
+			return await completionSource.Task;
+			#endif
+
+			void OnServiceChanged(Clients clients, TService oldinstance, TService newInstance)
+			{
+				if(TryGet(out TService result))
+				{
+					completionSource.SetResult(result);
+				}
+			}
+		}
+		
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/>.
 		/// <para>
@@ -905,7 +1048,10 @@ namespace Sisus.Init
 			ServiceChanged<TService>.listeners?.Invoke(clients, oldInstance, newInstance);
 
 			#if UNITY_EDITOR
-			AnyChangedEditorOnly?.Invoke();
+			if(!batchEditingServices)
+			{
+				AnyChangedEditorOnly?.Invoke();
+			}
 
 			var activeInstances = ActiveInstancesEditorOnly;
 			if(oldInstance is not null)
@@ -978,20 +1124,20 @@ namespace Sisus.Init
 		/// during their initialization.
 		/// </param>
 		/// <param name="service"> The service instance to add. </param>
-		/// <param name="container">
+		/// <param name="serviceProvider">
 		/// Component that is registering the service. This can also be the service itself, if it is a component.
 		/// <para>
 		/// This same argument should be passed when <see cref="RemoveFrom{TService}">removing the instance</see>.
 		/// </para>
 		/// </param>
-		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component container)
+		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component serviceProvider)
 		{
-			#if DEV_MODE
+#if DEV_MODE
 			Debug.Assert(service != Null);
-			Debug.Assert(container);
-			#endif
+			Debug.Assert(serviceProvider);
+#endif
 
-			if(ScopedService<TService>.Add(service, clients, container))
+			if(ScopedService<TService>.Add(service, clients, serviceProvider))
 			{
 				HandleInstanceChanged(clients, default, service);
 			}
@@ -1050,19 +1196,13 @@ namespace Sisus.Init
 		/// This must be an interface that the service implement, a base type that the service derives from,
 		/// or the exact type of the service.
 		/// </para>
-		/// <para>
-		/// This must also be a component type. If you want to unregister a service that is not a component,
-		/// or want to unregister a component service using an interface that it implements, you can use
-		/// the <see cref="RemoveFrom{TService}(Clients, TService, Component)"> overload</see> that
-		/// lets you provide a <see cref="Component"/> type reference separately.
-		/// </para>
 		/// </typeparam>
 		/// <param name="clients"> The availability of the service being removed. </param>
 		/// <param name="service"> The service instance to remove. </param>
-		/// <param name="container"> Component that registered the service. </param>
-		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component container)
+		/// <param name="serviceProvider"> Component that registered the service. </param>
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component serviceProvider)
 		{
-			if(ScopedService<TService>.Remove(service, clients, container))
+			if(ScopedService<TService>.Remove(service, serviceProvider))
 			{
 				HandleInstanceChanged(clients, service, default);
 			}
@@ -1085,10 +1225,42 @@ namespace Sisus.Init
 		/// </para>
 		/// </typeparam>
 		/// <param name="clients"> The availability of the service being removed. </param>
+		/// <param name="serviceProvider"> Component that registered the service. </param>
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] Component serviceProvider)
+		{
+			if(ScopedService<TService>.RemoveFrom(serviceProvider, out TService service))
+			{
+				HandleInstanceChanged(clients, service, default);
+			}
+		}
+
+		/// <summary>
+		/// Unregisters a service with the defining type <typeparamref name="TService"/>
+		/// that has been available to a limited set of clients.
+		/// <para>
+		/// If the provided instance is available to clients <see cref="Clients.Everywhere"/>
+		/// then the <see cref="ServiceChanged{TService}.listeners"/> event will be raised.
+		/// </para>
+		/// </summary>
+		/// <typeparam name="TService">
+		/// The defining type of the service; the class or interface type that uniquely defines
+		/// the service and can be used to retrieve an instance of it.
+		/// <para>
+		/// This must be an interface that the service implement, a base type that the service derives from,
+		/// or the exact type of the service.
+		/// </para>
+		/// <para>
+		/// This must also be a component type. If you want to unregister a service that is not a component,
+		/// or want to unregister a component service using an interface that it implements, you can use
+		/// the <see cref="RemoveFrom{TService}(Clients, TService, Component)"> overload</see> that
+		/// lets you provide a <see cref="Component"/> type reference separately.
+		/// </para>
+		/// </typeparam>
+		/// <param name="clients"> The availability of the service being removed. </param>
 		/// <param name="service"> The service component to remove. </param>
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] TService service) where TService : Component
 		{
-			if(ScopedService<TService>.Remove(service, clients, service))
+			if(ScopedService<TService>.Remove(service, service))
 			{
 				HandleInstanceChanged(clients, service, default);
 			}
@@ -1187,6 +1359,7 @@ namespace Sisus.Init
 			return false;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static bool IsServiceProvider<TService>([DisallowNull] TService test)
 		{
 			if(!ValueProviderUtility.TryGetValueProviderValue(test, out TService value))

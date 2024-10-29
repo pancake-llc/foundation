@@ -298,8 +298,8 @@ namespace Sisus.Init.EditorOnly.Internal
 						hasAnyInitializer = true;
 					}
 
-					if(Find.typeToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
-						&& Array.IndexOf(wrapperTypes, inspectedType) != -1)
+					if(Find.typesToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
+					   && Array.IndexOf(wrapperTypes, inspectedType) != -1)
 					{
 						if(initializableEditorDecoratorsByArgumentCount.TryGetValue(argumentCount, out editorDecoratorType))
 						{
@@ -450,8 +450,8 @@ namespace Sisus.Init.EditorOnly.Internal
 					return true;
 				}
 
-				if(Find.typeToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
-					&& Array.IndexOf(wrapperTypes, clientType) != -1)
+				if(Find.typesToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
+				   && Array.IndexOf(wrapperTypes, clientType) != -1)
 				{
 					return true;
 				}

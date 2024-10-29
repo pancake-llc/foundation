@@ -35,11 +35,12 @@ namespace Sisus.Init
 	/// </para>
 	/// <para>
 	/// Also supports finding components from inactive GameObjects.
+	/// </para>
 	/// </summary>
 	public static class Find
 	{
 		internal static readonly Dictionary<object, IWrapper> wrappedInstances = new(128);
-		internal static readonly Dictionary<Type, Type[]> typeToWrapperTypes = new();
+		internal static readonly Dictionary<Type, Type[]> typesToWrapperTypes = new();
 		internal static readonly Dictionary<Type, Type[]> typesToFindableTypes = new(64);
 		internal static readonly Dictionary<Type, Type[]> typesToComponentTypes = new(64);
 
@@ -414,7 +415,6 @@ namespace Sisus.Init
 
 			var list = Cached<T>.list;
 			ObjectsByExactTypes(findableTypes, list, includeInactive);
-
 			return ToArrayAndClear(list);
 		}
 
@@ -1447,10 +1447,7 @@ namespace Sisus.Init
 		/// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
 		/// <returns> Object of type <see cref="WrapperOf{TWrapped}"/>, if found; otherwise, <see langword="null"/> </returns>
 		[return: MaybeNull]
-		public static IWrapper WrapperOf([DisallowNull] object wrapped)
-		{
-			return wrappedInstances.TryGetValue(wrapped, out IWrapper wrapper) ? wrapper : null;
-		}
+		public static IWrapper WrapperOf([DisallowNull] object wrapped) => wrappedInstances.TryGetValue(wrapped, out IWrapper wrapper) ? wrapper : null;
 
 		/// <summary>
 		/// Returns the component which wraps the <paramref name="wrapped"/>.
@@ -1468,7 +1465,7 @@ namespace Sisus.Init
 			{
 				return false;
 			}
-			
+
 			if(!includeInactive && result is Component component && !component.gameObject.activeInHierarchy)
 			{
 				result = null;
@@ -1502,10 +1499,17 @@ namespace Sisus.Init
 			{
 				if(wrappedAndWrapper.Key is TWrapped)
 				{
-					if(!includeInactive && wrappedAndWrapper.Value is Component component && component != null && !component.gameObject.activeInHierarchy)
+					if(includeInactive)
+					{
+						return wrappedAndWrapper.Value;
+					}
+
+					var component = wrappedAndWrapper.Value.AsMonoBehaviour;
+					if(component && !component.gameObject.activeInHierarchy)
 					{
 						continue;
 					}
+
 					return wrappedAndWrapper.Value;
 				}
 			}
@@ -3303,127 +3307,7 @@ namespace Sisus.Init
 				list.Clear();
 			}
 		}
-
-		private static void Setup()
-		{
-			SetupUnityObjectAndInterfaceTypes();
-
-			SetupWrappedTypes();
-
-			var list = Cached<Type>.list;
-			foreach(var typeToFindableTypes in typesToFindableTypes)
-			{
-				foreach(var findableType in typeToFindableTypes.Value)
-				{
-					if(typeof(Component).IsAssignableFrom(findableType))
-					{
-						list.Add(findableType);
-					}
-				}
-
-				if(list.Count == 0)
-				{
-					continue;
-				}
-
-				typesToComponentTypes[typeToFindableTypes.Key] = ToArrayAndClear(list);
-			}
-
-			SetupObjectTypes();
-		}
-
-		private static void SetupUnityObjectAndInterfaceTypes()
-		{
-			var reusableList = new List<Type>(8);
-			var unityObjectTypes = TypeUtility.GetDerivedTypes(typeof(Object), typeof(Object).Assembly, false, 2048);
-
-			foreach(var unityObjectType in unityObjectTypes)
-			{
-				SetupUnityObjectType(reusableList, unityObjectType);
-			}
-		}
-
-		private static void SetupUnityObjectType(List<Type> reusableList, Type unityObjectType)
-		{
-			if(unityObjectType.IsGenericTypeDefinition)
-			{
-				return;
-			}
-
-			// All of Unity's internal search methods such as FindObjectOfType
-			// work with UnityEngine.Object types as is.
-			typesToFindableTypes[unityObjectType] = new[] { unityObjectType };
-
-			// FindObjectOfType doesn't work with interface types directly,
-			// so we need to create a map from interface types to UnityEngine.Object
-			// types that implement it.
-			var interfaceTypes = unityObjectType.GetInterfaces();
-			for(int i = interfaceTypes.Length - 1; i >= 0; i--)
-			{
-				SetupInterfaceType(reusableList, unityObjectType, interfaceTypes[i]);
-			}
-		}
-
-		private static void SetupWrappedTypes()
-		{
-			if(!typesToFindableTypes.TryGetValue(typeof(IWrapper), out var wrapperTypes))
-			{
-				return;
-			}
-
-			foreach(var wrapperType in wrapperTypes)
-			{
-				SetupWrappedType(wrapperType);
-			}
-
-			foreach(var wrappedAndWrappers in typeToWrapperTypes)
-			{
-				RegisterTypeToFindableTypeLinks(wrappedAndWrappers.Key, wrappedAndWrappers.Value);
-			}
-		}
-
-		private static void SetupObjectTypes()
-		{
-			typesToFindableTypes[typeof(object)] = new[] { typeof(Object) };
-			typesToFindableTypes[typeof(Object)] = new[] { typeof(Object) };
-			typesToComponentTypes[typeof(object)] = new[] { typeof(Component) };
-			typesToComponentTypes[typeof(Object)] = new[] { typeof(Component) };
-		}
-
-		private static void SetupInterfaceType([DisallowNull] List<Type> reusableList, [DisallowNull] Type implementingUnityObjectType, [DisallowNull] Type interfaceType)
-		{
-			if(interfaceType.IsGenericTypeDefinition)
-			{
-				return;
-			}
-
-			if(!typesToFindableTypes.TryGetValue(interfaceType, out var existingFindableTypes))
-			{
-				typesToFindableTypes[interfaceType] = new[] { implementingUnityObjectType };
-				return;
-			}
-
-			if(ContainsAnyTypesAssignableFrom(existingFindableTypes, implementingUnityObjectType))
-			{
-				return;
-			}
-
-			reusableList.AddRange(existingFindableTypes);
-
-			for(int i = existingFindableTypes.Length - 1; i >= 0; i--)
-			{
-				if(implementingUnityObjectType.IsAssignableFrom(existingFindableTypes[i]))
-				{
-					reusableList.RemoveAt(i);
-				}
-			}
-
-			reusableList.Add(implementingUnityObjectType);
-
-			typesToFindableTypes[interfaceType] = reusableList.ToArray();
-			reusableList.Clear();
-		}
-
+		
 		private static T InChildrenByExactType<T>([DisallowNull] GameObject gameObject, Type findableType, bool includeInactive)
 		{
 			var component = gameObject.GetComponentInChildren(findableType, includeInactive);
@@ -3516,15 +3400,13 @@ namespace Sisus.Init
 		{
 			if(!typesToFindableTypes.TryGetValue(type, out var existingFindableTypes))
 			{
-				typesToFindableTypes[type] = addFindableTypes;
+				typesToFindableTypes.Add(type, addFindableTypes);
 				return;
 			}
 
 			var list = Cached<Type>.list;
 			list.AddRange(existingFindableTypes);
-
 			AddAndRemoveDerivedTypes(list, addFindableTypes);
-
 			typesToFindableTypes[type] = ToArrayAndClear(list);
 		}
 
@@ -3596,7 +3478,7 @@ namespace Sisus.Init
 
 		private static void SetupWrappedTypeAndItsBaseTypesAndInterfaces([DisallowNull] Type wrappedType, [DisallowNull] Type wrapperType)
 		{
-			// In theory it is possible that a type has more than one wrapper.
+			// In theory, it is possible that a type has more than one wrapper.
 			RegisterWrappedToWrapperLink(wrappedType, wrapperType);
 
 			// Add support for searching for wrapped objects using types they derive from.
@@ -3617,9 +3499,9 @@ namespace Sisus.Init
 
 		private static void RegisterWrappedToWrapperLink([DisallowNull] Type wrappedType, [DisallowNull] Type wrapperType)
 		{
-			if(!typeToWrapperTypes.TryGetValue(wrappedType, out var wrapperTypes))
+			if(!typesToWrapperTypes.TryGetValue(wrappedType, out var wrapperTypes))
 			{
-				typeToWrapperTypes[wrappedType] = new Type[] { wrapperType };
+				typesToWrapperTypes.Add(wrappedType, new[] { wrapperType });
 				return;
 			}
 
@@ -3629,11 +3511,11 @@ namespace Sisus.Init
 				return;
 			}
 
-			// In theory it is possible that a type has more than one wrapper.
+			// A type can have more than one wrapper (esp. interface types).
 			int index = wrapperTypes.Length;
 			Array.Resize(ref wrapperTypes, index + 1);
 			wrapperTypes[index] = wrapperType;
-			typeToWrapperTypes[wrappedType] = wrapperTypes;
+			typesToWrapperTypes[wrappedType] = wrapperTypes;
 		}
 
 		private static T[] ToArrayAndClear<T>(List<T> list)
@@ -3646,10 +3528,125 @@ namespace Sisus.Init
 			list.Clear();
 			return results;
 		}
+		
+		private static void Setup()
+		{
+			var reusableList = new List<Type>(8);
+			var unityObjectTypes = TypeUtility.GetDerivedTypes(typeof(Object), typeof(Object).Assembly, false, 2048);
+
+			foreach(var unityObjectType in unityObjectTypes)
+			{
+				if(unityObjectType.IsGenericTypeDefinition)
+				{
+					continue;
+				}
+
+				// All of Unity's internal search methods such as FindObjectOfType work with UnityEngine.Object types as is.
+				typesToFindableTypes[unityObjectType] = new[] { unityObjectType };
+
+				// FindObjectOfType doesn't work with interface types directly,  so we need to create a map from interface types
+				// to UnityEngine.Object types that implement it.
+				var interfaceTypes = unityObjectType.GetInterfaces();
+				for(int i = interfaceTypes.Length - 1; i >= 0; i--)
+				{
+					//SetupInterfaceType(reusableList, unityObjectType, interfaceTypes[i]);
+					var interfaceType = interfaceTypes[i];
+					if(interfaceType.IsGenericTypeDefinition)
+					{
+						continue;
+					}
+
+					if(!typesToFindableTypes.TryGetValue(interfaceType, out var existingFindableTypes))
+					{
+						typesToFindableTypes.Add(interfaceType, new[] { unityObjectType });
+						continue;
+					}
+
+					if(ContainsAnyTypesAssignableFrom(existingFindableTypes, unityObjectType))
+					{
+						continue;
+					}
+
+					if(Array.IndexOf(existingFindableTypes, unityObjectType) != -1)
+					{
+						continue;
+					}
+
+					reusableList.AddRange(existingFindableTypes);
+
+					for(int j = existingFindableTypes.Length - 1; j >= 0; j--)
+					{
+						if(unityObjectType.IsAssignableFrom(existingFindableTypes[j]))
+						{
+							reusableList.RemoveAt(j);
+						}
+					}
+
+					reusableList.Add(unityObjectType);
+					typesToFindableTypes[interfaceType] = reusableList.ToArray();
+					reusableList.Clear();
+				}
+			}
+
+			foreach(var findableType in typesToFindableTypes.Keys)
+			{
+				if(typeof(Wrapper).IsAssignableFrom(findableType))
+				{
+					for(var type = findableType; type != typeof(Wrapper); type = type.BaseType)
+					{
+						if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Wrapper<>))
+						{
+							SetupWrappedTypeAndItsBaseTypesAndInterfaces(type.GetGenericArguments()[0], findableType);
+							break;
+						}
+					}
+				}
+				else if(typeof(ScriptableWrapper).IsAssignableFrom(findableType))
+				{
+					for(var type = findableType; type != typeof(ScriptableWrapper); type = type.BaseType)
+					{
+						if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ScriptableWrapper<>))
+						{
+							SetupWrappedTypeAndItsBaseTypesAndInterfaces(type.GetGenericArguments()[0], findableType);
+							break;
+						}
+					}
+				}
+			}
+
+			foreach(var wrappedAndWrappers in typesToWrapperTypes)
+			{
+				RegisterTypeToFindableTypeLinks(wrappedAndWrappers.Key, wrappedAndWrappers.Value);
+			}
+
+			var list = Cached<Type>.list;
+			foreach(var typeToFindableTypes in typesToFindableTypes)
+			{
+				foreach(var findableType in typeToFindableTypes.Value)
+				{
+					if(typeof(Component).IsAssignableFrom(findableType))
+					{
+						list.Add(findableType);
+					}
+				}
+
+				if(list.Count == 0)
+				{
+					continue;
+				}
+
+				typesToComponentTypes[typeToFindableTypes.Key] = ToArrayAndClear(list);
+			}
+
+			typesToFindableTypes[typeof(object)] = new[] { typeof(Object) };
+			typesToFindableTypes[typeof(Object)] = new[] { typeof(Object) };
+			typesToComponentTypes[typeof(object)] = new[] { typeof(Component) };
+			typesToComponentTypes[typeof(Object)] = new[] { typeof(Component) };
+		}
 
 		private static class Cached<T>
 		{
-			public static readonly List<T> list = new List<T>();
+			public static readonly List<T> list = new();
 		}
 
 		private static class SceneEqualityComparerCache<T>

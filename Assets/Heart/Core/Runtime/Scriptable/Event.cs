@@ -4,10 +4,10 @@ using UnityEngine.Events;
 namespace Pancake
 {
     /// <summary>
-    /// An <see cref="ScriptableObject"/> asset that represents an event.
+    /// A <see cref="ScriptableObject"/> asset that represents an event.
     /// <para>
-    /// Whenever the event is <see cref="Trigger">triggered</see> all methods
-    /// that are listening for the event are invoked.
+    /// Whenever the event is <see cref="Trigger">triggered</see> all
+    /// methods that have subscribed to receive a callback are executed.
     /// </para>
     /// </summary>
     public abstract class Event : ScriptableObject, IEvent, IEventTrigger

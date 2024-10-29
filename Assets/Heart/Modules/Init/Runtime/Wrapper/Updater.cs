@@ -42,31 +42,33 @@ namespace Sisus.Init.Internal
 		private static MonoBehaviour persistentInstance;
 
 		/// <summary>
-		/// Cancellation token raised when the application is quitting or exiting play mode.
+		/// Cancellation token raised when the application is quitting or exiting Play Mode.
 		/// </summary>
 		public static CancellationToken CancellationToken
 		{
 			get
 			{
+				#if UNITY_2022_2_OR_NEWER
+				return Application.exitCancellationToken;
+				#else
 				#if UNITY_EDITOR
 				// In we have exited play mode, then request cancellation of all running tasks.
-				if(!EditorOnly.ThreadSafe.Application.IsPlaying)
+				if(EditorOnly.ThreadSafe.Application.TryGetIsPlaying(Context.Default, out bool isPlaying) && !isPlaying)
 				{
 					return new CancellationToken(canceled: true);
 				}
 				#endif
 
-				#if UNITY_2022_2_OR_NEWER
 				if(persistentInstance)
 				{
-					return persistentInstance.destroyCancellationToken;
+					return CancellationToken.None;
 				}
-				#endif
 
 				// If no persistent instance has been created yet, don't request cancellation.
 				return persistentInstance is null
 					? CancellationToken.None
 					: new CancellationToken(canceled: true);
+				#endif
 			}
 		}
 
@@ -128,9 +130,56 @@ namespace Sisus.Init.Internal
 		}
 
 		/// <summary>
+		/// Subscribes <paramref name="subscriber"/> to receive callbacks during the MonoBehaviour.Update,
+		/// MonoBehaviour.LateUpdate and MonoBehaviour.FixedUpdate event functions, if it implements the
+		/// <see cref="IUpdate"/>, <see cref="ILateUpdate"/> or <see cref="IFixedUpdate"/> interfaces, respectively.
+		/// </summary>
+		/// <param name="subscriber"> object to start receiving the callbacks. </param>
+		public static void Subscribe([DisallowNull] IEnableable subscriber)
+		{
+			lock(threadLock)
+			{
+				if(subscriber is IUpdate updateable)
+				{
+					if(Array.IndexOf(updating, updateable) != -1)
+					{
+						return;
+					}
+
+					Add(ref updating, updateable, ref updatingCount);
+				}
+
+				if(subscriber is ILateUpdate lateUpdateable)
+				{
+					if(Array.IndexOf(lateUpdating, lateUpdateable) != -1)
+					{
+						return;
+					}
+
+					Add(ref lateUpdating, lateUpdateable, ref lateUpdatingCount);
+				}
+
+				if(subscriber is IFixedUpdate fixedUpdateable)
+				{
+					if(Array.IndexOf(fixedUpdating, fixedUpdateable) != -1)
+					{
+						return;
+					}
+
+					Add(ref fixedUpdating, fixedUpdateable, ref fixedUpdatingCount);
+				}
+				
+				if(subscriber is IOnEnable enableable)
+				{
+					enableable.OnEnable();
+				}
+			}
+		}
+
+		/// <summary>
 		/// Subscribes <paramref name="subscriber"/> to receive a callback during the MonoBehaviour.Update event function.
 		/// </summary>
-		/// <param name="subscriber"> object to receive the callback. </param>
+		/// <param name="subscriber"> object to start receiving the callback. </param>
 		public static void Subscribe([DisallowNull] IUpdate subscriber)
 		{
 			lock(threadLock)
@@ -142,7 +191,7 @@ namespace Sisus.Init.Internal
 		/// <summary>
 		/// Subscribes <paramref name="subscriber"/> to receive a callback during the MonoBehaviour.LateUpdate event function.
 		/// </summary>
-		/// <param name="subscriber"> object to receive the callback. </param>
+		/// <param name="subscriber"> object to start receiving the callback. </param>
 		public static void Subscribe([DisallowNull] ILateUpdate subscriber)
 		{
 			lock(threadLock)
@@ -154,12 +203,59 @@ namespace Sisus.Init.Internal
 		/// <summary>
 		/// Subscribes <paramref name="subscriber"/> to receive a callback during the MonoBehaviour.FixedUpdate event function.
 		/// </summary>
-		/// <param name="subscriber"> object to receive the callback. </param>
+		/// <param name="subscriber"> object to start receiving the callback. </param>
 		public static void Subscribe([DisallowNull] IFixedUpdate subscriber)
 		{
 			lock(threadLock)
 			{
 				Add(ref fixedUpdating, subscriber, ref fixedUpdatingCount);
+			}
+		}
+
+		/// <summary>
+		/// Unsubscribes <paramref name="subscriber"/> from receiving callbacks during the MonoBehaviour.Update,
+		/// MonoBehaviour.LateUpdate and MonoBehaviour.FixedUpdate event functions, if it implements the
+		/// <see cref="IUpdate"/>, <see cref="ILateUpdate"/> or <see cref="IFixedUpdate"/> interfaces, respectively.
+		/// </summary>
+		/// <param name="subscriber"> object to stop receiving the callbacks. </param>
+		public static void Unsubscribe([DisallowNull] IEnableable subscriber)
+		{
+			lock(threadLock)
+			{
+				if(subscriber is IUpdate updateable)
+				{
+					if(Array.IndexOf(updating, updateable) == -1)
+					{
+						return;
+					}
+
+					Remove(ref updating, updateable, ref updatingCount, NullUpdatable.Instance);
+				}
+
+				if(subscriber is ILateUpdate lateUpdateable)
+				{
+					if(Array.IndexOf(lateUpdating, lateUpdateable) == -1)
+					{
+						return;
+					}
+
+					Remove(ref lateUpdating, lateUpdateable, ref updatingCount, NullUpdatable.Instance);
+				}
+
+				if(subscriber is IFixedUpdate fixedUpdateable)
+				{
+					if(Array.IndexOf(fixedUpdating, fixedUpdateable) == -1)
+					{
+						return;
+					}
+
+					Remove(ref fixedUpdating, fixedUpdateable, ref fixedUpdatingCount, NullUpdatable.Instance);
+				}
+
+				if(subscriber is IOnDisable disableable)
+				{
+					disableable.OnDisable();
+				}
 			}
 		}
 
@@ -196,6 +292,30 @@ namespace Sisus.Init.Internal
 			lock(threadLock)
 			{
 				Remove(ref fixedUpdating, subscriber, ref fixedUpdatingCount, NullUpdatable.Instance);
+			}
+		}
+
+		public static bool IsSubscribed([DisallowNull] IUpdate updateable)
+		{
+			lock(threadLock)
+			{
+				return Array.IndexOf(updating, updateable) != -1;
+			}
+		}
+
+		public static bool IsSubscribed([DisallowNull] ILateUpdate lateUpdateable)
+		{
+			lock(threadLock)
+			{
+				return Array.IndexOf(lateUpdating, lateUpdateable) != -1;
+			}
+		}
+
+		public static bool IsSubscribed([DisallowNull] IFixedUpdate fixedUpdateable)
+		{
+			lock(threadLock)
+			{
+				return Array.IndexOf(fixedUpdating, fixedUpdateable) != -1;
 			}
 		}
 

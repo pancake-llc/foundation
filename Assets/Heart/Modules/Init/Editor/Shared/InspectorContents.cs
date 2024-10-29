@@ -1,4 +1,4 @@
-﻿//#define DEBUG_REPAINT
+﻿#define DEBUG_REPAINT
 
 using System;
 using System.Collections.Generic;
@@ -67,6 +67,31 @@ namespace Sisus.Shared.EditorOnly
 			return inspectorElementsList;
 		}
 
+		public static void RepaintEditorsWithTarget(Component target)
+		{
+			foreach(var propertyEditor in allPropertyEditors)
+			{
+				foreach(var editor in propertyEditor.tracker.activeEditors)
+				{
+					if(editor.target == target)
+					{
+#if DEV_MODE && DEBUG_REPAINT
+						Debug.Log(editor.target.GetType().Name + ".Repaint");
+						UnityEngine.Profiling.Profiler.BeginSample("Editor.Repaint");
+#endif
+
+						editor.Repaint();
+
+#if DEV_MODE && DEBUG_REPAINT
+						UnityEngine.Profiling.Profiler.EndSample();
+#endif
+
+						break;
+					}
+				}
+			}
+		}
+		
 		internal static List<(Editor editor, IMGUIContainer header)> GetAllHeaderElements(Editor editor)
 		{
 			headersList.Clear();
@@ -149,19 +174,6 @@ namespace Sisus.Shared.EditorOnly
 				if(list[i] == oldEditor)
 				{
 					list[i] = newEditor;
-				}
-			}
-		}
-
-		public static void SetEditorElementEditor(VisualElement visualElement, Editor newEditor)
-		{
-			//var editorElement = (EditorElement)visualElement;
-			//ReplaceAll(editorElement.Editors, newEditor);
-			foreach(var child in visualElement.Children())
-			{
-				if(child is InspectorElement inspectorElement)
-				{
-					inspectorElement.SetEditor(newEditor);
 				}
 			}
 		}

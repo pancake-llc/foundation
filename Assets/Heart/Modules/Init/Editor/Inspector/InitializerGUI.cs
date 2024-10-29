@@ -92,6 +92,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		private readonly bool[] initParametersAreServices;
 		private bool hasServiceParameters;
 		private bool allParametersAreServices;
+		private bool anyParameterIsAsyncLoadedService;
 		private bool targetImplementsIArgs;
 		private bool targetDerivesFromGenericBaseType;
 		//private bool targetCanMaybeSelfInitialize; // allParametersAreServices && targetImplementsIArgs
@@ -256,20 +257,26 @@ namespace Sisus.Init.EditorOnly.Internal
 			shouldUpdateInitArgumentDependentState = false;
 			int count = initParameterTypes.Length;
 			allParametersAreServices = true;
+			anyParameterIsAsyncLoadedService = false;
 			hasServiceParameters = false;
 			for(int i = 0; i < count; i++)
 			{
 				Type parameterType = initParameterTypes[i];
-				bool isService = IsService(parameterType);
-				initParametersAreServices[i] = isService;
 
-				if(isService)
+				if(ServiceAttributeUtility.definingTypes.TryGetValue(parameterType, out var serviceInfo) && serviceInfo.LoadAsync)
+				{
+					anyParameterIsAsyncLoadedService = true;
+					initParametersAreServices[i] = true;
+				}
+				else if(IsService(parameterType))
 				{
 					hasServiceParameters = true;
+					initParametersAreServices[i] = true;
 				}
 				else
 				{
 					allParametersAreServices = false;
+					initParametersAreServices[i] = false;
 				}
 			}
 
@@ -836,7 +843,12 @@ namespace Sisus.Init.EditorOnly.Internal
 							switch (initializable.InitState)
 							{
 								case InitState.Uninitialized:
-									if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
+									if(firstInitializerEditorOnly?.IsAsync ?? false)
+									{
+										nullGuardIcon = initStateUninitializedIcon;
+										nullGuardIcon.tooltip = "Target is still being initialized asynchronously...";
+									}
+									else if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
 									{
 										nullGuardIcon = initStateFailedIcon;
 										nullGuardIcon.tooltip = "❌ Target has not been initialized.";
@@ -871,12 +883,22 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 						else if(allParametersAreServices)
 						{
-							nullGuardIcon = nullGuardPassedIcon;
-							nullGuardIcon.tooltip
-								= GetTooltip(nullGuard, false) +
-								(targetDerivesFromGenericBaseType
-								? "\n\nAll arguments are services.\n\nThe client will receive them automatically during initialization.\n\nAdding an Initializer is not necessary - unless there is a need to override some of the services for this particular client."
-								: "\n\nAll arguments are services.\n\nThe client can use InitArgs.TryGet to acquire them during initialization, in which case adding an Initializer is not necessary - unless there is a need to override some of the services for this particular client");
+							if(anyParameterIsAsyncLoadedService)
+							{
+								nullGuardIcon = nullGuardPassedWithValueProviderValueMissing;
+								nullGuardIcon.tooltip
+									= GetTooltip(nullGuard, false)
+									  + "\n\nAll arguments are services, but some of them are loaded asynchronously.\n\nAdding an Initializer is recommended for deferred initialization support, in case the service isn't ready yet when this client is loaded.";
+							}
+							else
+							{
+								nullGuardIcon = nullGuardPassedIcon;
+								nullGuardIcon.tooltip
+									= GetTooltip(nullGuard, false) +
+									  (targetDerivesFromGenericBaseType
+										  ? "\n\nAll arguments are services.\n\nThe client will receive them automatically during initialization.\n\nAdding an Initializer is not necessary - unless there is a need to override some of the services for this particular client."
+										  : "\n\nAll arguments are services.\n\nThe client can use InitArgs.TryGet to acquire them during initialization, in which case adding an Initializer is not necessary - unless there is a need to override some of the services for this particular client");
+							}
 						}
 						else
 						{
@@ -995,7 +1017,12 @@ namespace Sisus.Init.EditorOnly.Internal
 							switch (initializable.InitState)
 							{
 								case InitState.Uninitialized:
-									if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
+									if(firstInitializerEditorOnly?.IsAsync ?? false)
+									{
+										nullGuardIcon = initStateUninitializedIcon;
+										nullGuardIcon.tooltip = "Target is still being initialized asynchronously...";
+									}
+									else if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
 									{
 										nullGuardIcon = initStateFailedIcon;
 										nullGuardIcon.tooltip = "❌ Target has not been initialized.";
@@ -1137,7 +1164,7 @@ namespace Sisus.Init.EditorOnly.Internal
 							else if(targets.Length > 0 && targets[0] is IInitializer initializer)
 							{
 								Type clientType = InitializerEditorUtility.GetClientType(initializer.GetType());
-								isInitializable = Find.typeToWrapperTypes.ContainsKey(clientType) || InitializerEditorUtility.IsInitializable(clientType);
+								isInitializable = Find.typesToWrapperTypes.ContainsKey(clientType) || InitializerEditorUtility.IsInitializable(clientType);
 							}
 							else
 							{

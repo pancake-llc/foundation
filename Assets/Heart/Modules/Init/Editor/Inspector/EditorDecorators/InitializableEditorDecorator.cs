@@ -288,6 +288,7 @@ namespace Sisus.Init.EditorOnly
 
 				// In Play Mode we need to call Repaint occasionally so that the Runtime Fields GUI
 				// reflects the current state of any values that might be changing.
+				scheduledItem?.Pause();
 				scheduledItem = schedule.Execute(RepaintIfDrawingRuntimeFields).Every(intervalMs: 500);
 			}
 

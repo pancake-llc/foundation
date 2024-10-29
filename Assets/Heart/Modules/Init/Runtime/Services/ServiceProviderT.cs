@@ -137,7 +137,7 @@ namespace Sisus.Init
 
 		private static void OnExitingApplicationOrPlayMode()
 		{
-			if(valueProvider is null || valueProvider is Object || Find.typeToWrapperTypes.ContainsKey(valueProvider.GetType()))
+			if(valueProvider is null || valueProvider is Object || Find.typesToWrapperTypes.ContainsKey(valueProvider.GetType()))
 			{
 				return;
 			}

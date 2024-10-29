@@ -105,7 +105,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			if(Find.typeToWrapperTypes.TryGetValue(type, out _))
+			if(Find.typesToWrapperTypes.TryGetValue(type, out _))
 			{
 				return true;
 			}

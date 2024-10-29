@@ -519,7 +519,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 					if(clientType is not null)
 					{
-						foreach((Type wrapped, Type[] wrappers) in Find.typeToWrapperTypes)
+						foreach((Type wrapped, Type[] wrappers) in Find.typesToWrapperTypes)
 						{
 							if(Array.IndexOf(wrappers, clientType) != -1)
 							{
@@ -543,7 +543,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				case InitializerType.PlainOldClassObjectInitializer:
 					baseClassName = canSerializeAllArgumentsAsReferences ? "WrapperInitializer" : "WrapperInitializerBase";
 					string wrapperTypeAsString;
-					if(clientType != null && Find.typeToWrapperTypes.TryGetValue(clientType, out Type[] wrapperTypes))
+					if(clientType != null && Find.typesToWrapperTypes.TryGetValue(clientType, out Type[] wrapperTypes))
 					{
 						wrapperTypeAsString = TypeUtility.ToString(wrapperTypes[0]);
 					}
@@ -714,7 +714,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			if(typeof(IWrapper).IsAssignableFrom(clientType))
 			{
-				foreach((Type wrappedType, Type[] wrapperTypes) in Find.typeToWrapperTypes)
+				foreach((Type wrappedType, Type[] wrapperTypes) in Find.typesToWrapperTypes)
 				{
 					if(Array.IndexOf(wrapperTypes, clientType) != -1)
 					{
@@ -724,7 +724,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			if(Find.typeToWrapperTypes.ContainsKey(clientType))
+			if(Find.typesToWrapperTypes.ContainsKey(clientType))
 			{
 				foreach(var constructor in clientType.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
 				{

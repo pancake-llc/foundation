@@ -120,6 +120,19 @@ namespace Sisus.Init.Internal
 			return false;
 		}
 
+		internal int GetStateBasedHashCode()
+		{
+			unchecked
+			{
+				int hashCode = 397 * providesServices.Length;
+				for(int n = providesServices.Length - 1; n >= 0; n--)
+				{
+					hashCode = (hashCode * 397) ^ providesServices[n].GetStateBasedHashCode();
+				}
+				return (hashCode * 397) ^ (int)toClients;
+			}
+		}
+		
 		protected virtual void OnEnable()
 		{
 			foreach(var serviceDefinition in providesServices)

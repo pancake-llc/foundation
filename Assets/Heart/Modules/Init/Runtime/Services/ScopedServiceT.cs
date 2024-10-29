@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-#if UNITY_EDITOR
-using System.Collections.Concurrent;
-#endif
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using System.Collections.Concurrent;
+using UnityEditor;
+#endif
 
 namespace Sisus.Init
 {
@@ -20,7 +21,10 @@ namespace Sisus.Init
 	/// or the exact type of the service.
 	/// </para>
 	/// </typeparam>
-	/// <seealso cref="Service.Get{TService}(object)"/>
+	/// <seealso cref="Service.GetFor{TService}(Component)"/>
+	/// <seealso cref="Service.TryGetFor{TService}(Component, out TService)"/>
+	/// <seealso cref="Service.AddFor{TService}(Clients, TService)"/>
+	/// <seealso cref="Service.RemoveFrom{TService}(Clients, TService)"/>
 	internal static class ScopedService<TService>
 	{
 		#if UNITY_EDITOR
@@ -35,6 +39,22 @@ namespace Sisus.Init
 		public static ICollection<Instance> Instances => (EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode).Keys;
 		#else
 		public static readonly List<Instance> Instances = new List<Instance>();
+		#endif
+
+		#if UNITY_EDITOR
+		static ScopedService()
+		{
+			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+
+			static void OnPlayModeStateChanged(PlayModeStateChange state)
+			{
+				if(state == PlayModeStateChange.ExitingPlayMode)
+				{
+					instancesInPlayMode.Clear();
+				}
+			}
+		}
 		#endif
 
 		internal static bool IsServiceFor([DisallowNull] Component client, [DisallowNull] TService test)
@@ -133,7 +153,7 @@ namespace Sisus.Init
 		}
 		#endif
 
-		public static bool Remove([DisallowNull] TService service, Clients clients, [DisallowNull] Component container)
+		public static bool Remove([DisallowNull] TService service, [DisallowNull] Component container)
 		{
 			#if UNITY_EDITOR
 			var instances = UnityEditor.EditorApplication.isPlaying ? instancesInPlayMode : instancesInEditMode;
@@ -159,6 +179,36 @@ namespace Sisus.Init
 			return false;
 		}
 
+		public static bool RemoveFrom([DisallowNull] Component serviceProvider, out TService service)
+		{
+			#if UNITY_EDITOR
+			var instances = UnityEditor.EditorApplication.isPlaying ? instancesInPlayMode : instancesInEditMode;
+			foreach(var instance in instances.Keys)
+			{
+				if(ReferenceEquals(instance.serviceProvider, serviceProvider))
+				{
+					instances.TryRemove(instance, out _);
+					service = instance.service;
+					return true;
+				}
+			}
+			#else
+			for(int i = Instances.Count - 1; i >= 0; i--)
+			{
+				var instance = Instances[i];
+				if(ReferenceEquals(instance.serviceProvider, serviceProvider))
+				{
+					Instances.RemoveAt(i);
+					service = instance.service;
+					return true;
+				}
+			}
+			#endif
+
+			service = default;
+			return false;
+		}
+
 		#if (ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT
 		private static void EnsureAOTPlatformSupport() => ServiceUtility.EnsureAOTPlatformSupportForService<TService>();
 		#endif
@@ -180,8 +230,8 @@ namespace Sisus.Init
 			/// </summary>
 			public readonly Component serviceProvider;
 
-			public readonly Transform Transform => serviceProvider != null ? serviceProvider.transform : null;
-			public readonly Scene Scene => serviceProvider != null ? serviceProvider.gameObject.scene : default;
+			public readonly Transform Transform => serviceProvider ? serviceProvider.transform : null;
+			public readonly Scene Scene => serviceProvider ? serviceProvider.gameObject.scene : default;
 
 			public Instance([DisallowNull] TService service, Clients clients, [DisallowNull] Component serviceProvider)
 			{

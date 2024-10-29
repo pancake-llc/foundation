@@ -13,7 +13,7 @@ namespace Sisus.Init
 	/// after all service instances have been created.
 	/// </summary>
 	[RequireImplementors]
-	public interface IOnEnable
+	public interface IOnEnable : IEnableable
 	{
 		/// <summary>
 		/// <see cref="OnEnable"/> is called every time the object becomes
@@ -23,6 +23,7 @@ namespace Sisus.Init
 		/// <see cref="GameObject.activeInHierarchy">active</see> <see cref="GameObject"/> at edit time,
 		/// then <see cref="OnEnable"/> is first called when the scene or prefab that contains the <see cref="GameObject"/>
 		/// is being loaded.
+		/// </para>
 		/// <para>
 		/// If the object is attached to an <see cref="GameObject.activeInHierarchy">active</see> <see cref="GameObject"/>
 		/// at runtime, then <see cref="OnEnable"/> is first called immediately, right after the <see cref="IAwake.Awake"/> event.
@@ -31,7 +32,7 @@ namespace Sisus.Init
 		/// If the object is attached to a <see cref="Behaviour.enabled">disabled</see> component or an
 		/// <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/>,
 		/// then <see cref="OnEnable"/> will be called when the object becomes
-		/// <see cref="Behaviour.isActiveAndEnabled">active and enabled</see.
+		/// <see cref="Behaviour.isActiveAndEnabled">active and enabled</see>.
 		/// </para>
 		/// <para>
 		/// A class that has the Service attribute receives the event when services are being initialized,

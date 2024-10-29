@@ -33,6 +33,25 @@ namespace Sisus.Init.Internal
 		private static readonly List<ComponentCollection<TComponent>> cache = new(1);
 
 		private ComponentCollection() { }
+		
+		internal static ComponentCollection<TComponent> Empty()
+		{
+			ComponentCollection<TComponent> collection;
+
+			int count = cache.Count;
+			if(count > 0)
+			{
+				int lastIndex = count - 1;
+				collection = cache[lastIndex];
+				cache.RemoveAt(lastIndex);
+			}
+			else
+			{
+				collection = new();
+			}
+
+			return collection;
+		}
 
 		internal static ComponentCollection<TComponent> GetFrom(GameObject gameObject)
 		{

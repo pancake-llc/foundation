@@ -289,7 +289,7 @@ namespace Sisus.Init
 			{
 				foreach(var initializerType in GetInitializerTypes(this))
 				{
-					if(!(initializerType.GetNestedType(InitArgumentMetadataClassName) is Type init))
+					if(initializerType.GetNestedType(InitArgumentMetadataClassName) is not Type init)
 					{
 						continue;
 					}

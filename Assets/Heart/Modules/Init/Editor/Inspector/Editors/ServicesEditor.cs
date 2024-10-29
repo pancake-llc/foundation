@@ -15,7 +15,7 @@ namespace Sisus.Init.EditorOnly.Internal
         private static readonly GUIContent clientsLabel = new("For Clients");
 
         private void OnEnable() => Setup();
-        
+
         private void Setup()
         {
             providesServices = serializedObject.FindProperty(nameof(providesServices));
@@ -29,41 +29,47 @@ namespace Sisus.Init.EditorOnly.Internal
                 Setup();
             }
 
+            int hashCodeBefore = ((Services)target).GetStateBasedHashCode();
             EditorGUI.BeginChangeCheck();
+
             EditorGUILayout.PropertyField(providesServices);
             EditorGUILayout.PropertyField(toClients, clientsLabel);
-            if(EditorGUI.EndChangeCheck())
-			{
-                var allInstances =
-                #if UNITY_2023_1_OR_NEWER
-                FindObjectsByType<Services>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-                #else
-                FindObjectsOfType<Services>();
-                #endif
 
-                foreach(var servicesComponent in allInstances)
+            if (!EditorGUI.EndChangeCheck())
+            {
+                return;
+            }
+
+            serializedObject.ApplyModifiedProperties();
+
+            int hashCodeAfter = ((Services)target).GetStateBasedHashCode();
+            // double check that contents has actually changed, before moving on doing FindObjectsByType
+            // and re-registering services, as that can be
+            // as that can
+            if(hashCodeBefore == hashCodeAfter)
+            {
+                return;
+            }
+
+            try
+            {
+                // Avoid raising the Service.AnyChangedEditorOnly more than once
+                Service.BatchEditingServices = true;
+
+                var servicesComponent = (Services)target;
+                ServiceUtility.RemoveAllServicesProvidedBy(servicesComponent);
+
+                foreach(var definition in servicesComponent.providesServices)
                 {
-                    foreach(var definition in servicesComponent.providesServices)
-					{
-                        if(definition.definingType?.Value is Type definingType && definition.service is Object service && service)
-                        {
-                            ServiceUtility.RemoveFromClients(service, definingType, servicesComponent.toClients, servicesComponent);
-                        }
-					}
+                    if(definition.definingType?.Value is Type definingType && definition.service is Object service && service)
+                    {
+                        ServiceUtility.AddFor(service, definingType, servicesComponent.toClients, servicesComponent);
+                    }
                 }
-
-                providesServices.serializedObject.ApplyModifiedProperties();
-
-                foreach(var servicesComponent in allInstances)
-				{
-                    foreach(var definition in servicesComponent.providesServices)
-					{
-                        if(definition.definingType?.Value is Type definingType && definition.service is Object service && service)
-                        {
-                            ServiceUtility.AddFor(service, definingType, servicesComponent.toClients, servicesComponent);
-                        }
-					}
-				}
+            }
+            finally
+            {
+                Service.BatchEditingServices = false;
             }
         }
     }

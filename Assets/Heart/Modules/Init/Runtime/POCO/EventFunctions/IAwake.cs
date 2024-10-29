@@ -4,9 +4,9 @@ using UnityEngine.Scripting;
 namespace Sisus.Init
 {
 	/// <summary>
-	/// Defines a class that nees to receive a callback during the Awake event function.
+	/// Defines a class that needs to receive a callback during the Awake event function.
 	/// <para>
-	/// An object that is wrapped by a Wrapper receives the event whem the wrapper component is being loaded.
+	/// An object that is wrapped by a Wrapper receives the event when the wrapper component is being loaded.
 	/// </para>
 	/// A class that has the Service attribute receives the event when services are being initialized,
 	/// after all service instances have been created.
@@ -19,8 +19,9 @@ namespace Sisus.Init
 		/// <para>
 		/// If the object has been attached to an <see cref="GameObject.activeInHierarchy">active</see> <see cref="GameObject"/>
 		/// at edit time, then <see cref="Awake"/> is called when the scene or prefab that contains the <see cref="GameObject"/>
-		/// is being loaded. <see cref="Awake"/> is called regardless of whether or not the component is
-		/// <see cref="MonoBehaviour.enabled">enabled</see>. 
+		/// is being loaded. <see cref="Awake"/> is called regardless of whether the component is
+		/// <see cref="MonoBehaviour.enabled">enabled</see>.
+		/// </para>
 		/// <para>
 		/// If the object is attached to an <see cref="GameObject.activeInHierarchy">active</see> <see cref="GameObject"/>
 		/// at runtime, then <see cref="Awake"/> is called immediately.

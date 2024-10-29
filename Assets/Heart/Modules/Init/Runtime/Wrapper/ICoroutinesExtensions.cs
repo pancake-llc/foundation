@@ -31,7 +31,7 @@ namespace Sisus.Init
 		/// is started on the object directly.
 		/// </para>
 		/// <para>
-		/// Otherwise the <paramref name="coroutine"/> is started on an <see cref="Updater"/> instance.
+		/// Otherwise, the <paramref name="coroutine"/> is started on an <see cref="Updater"/> instance.
 		/// </para>
 		/// </summary>
 		/// <typeparam name="T"> Type of <see langword="this"/> <see cref="object"/>. </typeparam>
@@ -66,7 +66,7 @@ namespace Sisus.Init
 		/// is started on the object directly.
 		/// </para>
 		/// <para>
-		/// Otherwise the <paramref name="coroutine"/> is started on an <see cref="Updater"/> instance.
+		/// Otherwise, the <paramref name="coroutine"/> is started on an <see cref="Updater"/> instance.
 		/// </para>
 		/// </summary>
 		/// <param name="coroutine"> The <see cref="IEnumerator">coroutine</see> to stop. </param>
@@ -87,7 +87,7 @@ namespace Sisus.Init
 		/// is stopped on the object directly.
 		/// </para>
 		/// <para>
-		/// Otherwise the <paramref name="coroutine"/> is stopped on an <see cref="Updater"/> instance.
+		/// Otherwise, the <paramref name="coroutine"/> is stopped on an <see cref="Updater"/> instance.
 		/// </para>
 		/// </summary>
 		/// <param name="coroutine">

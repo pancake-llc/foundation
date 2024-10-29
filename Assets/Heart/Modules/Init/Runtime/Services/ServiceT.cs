@@ -3,6 +3,7 @@ using Sisus.Init.Internal;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using Object = UnityEngine.Object;
 
 namespace Sisus.Init
 {
@@ -72,38 +73,43 @@ namespace Sisus.Init
 				}
 			}
 			#endif
-		}
-
-		#if UNITY_EDITOR
-		private static void OnPlayModeStateChanged(PlayModeStateChange state)
-		{
-			if(state == PlayModeStateChange.ExitingPlayMode)
+		
+#if UNITY_EDITOR
+			static void OnPlayModeStateChanged(PlayModeStateChange state)
 			{
-				OnExitingApplicationOrPlayMode();
+				if(state == PlayModeStateChange.ExitingPlayMode)
+				{
+					OnExitingApplicationOrPlayMode();
+				}
 			}
-		}
-		#endif
+#endif
 
-		private static void OnExitingApplicationOrPlayMode()
-		{
-			if(Instance is null || Instance is UnityEngine.Object || Find.typeToWrapperTypes.ContainsKey(Instance.GetType()))
+			static void OnExitingApplicationOrPlayMode()
 			{
-				return;
-			}
+				if(Instance is null)
+				{
+					return;
+				}
 
-			if(Instance is IOnDisable onDisable)
-			{
-				onDisable.OnDisable();
-			}
+				if(Instance is not Object && !Find.typesToWrapperTypes.ContainsKey(Instance.GetType()))
+				{
+					if(Instance is IOnDisable onDisable)
+					{
+						onDisable.OnDisable();
+					}
 
-			if(Instance is IOnDestroy onDestroy)
-			{
-				onDestroy.OnDestroy();
-			}
+					if(Instance is IOnDestroy onDestroy)
+					{
+						onDestroy.OnDestroy();
+					}
 
-			if(Instance is IDisposable disposable)
-			{
-				disposable.Dispose();
+					if(Instance is IDisposable disposable)
+					{
+						disposable.Dispose();
+					}
+				}
+
+				Instance = default;
 			}
 		}
 

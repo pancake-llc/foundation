@@ -46,7 +46,7 @@ namespace Sisus.Init.Internal
 		private protected virtual bool IsAsync => false;
 
 		/// <inheritdoc/>
-		TClient IValueProvider<TClient>.Value => target;
+		TClient IValueProvider<TClient>.Value => initTargetResult;
 
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
@@ -66,18 +66,7 @@ namespace Sisus.Init.Internal
 		/// <inheritdoc/>
 		Object IInitializer.Target
 		{
-			get
-			{
-				#if UNITY_EDITOR
-				if(gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
-				{
-					return target;
-				}
-				#endif
-
-				return initTargetResult;
-			}
-
+			get => initTargetResult ? initTargetResult : target;
 			set => target = value as TClient;
 		}
 
@@ -359,6 +348,7 @@ namespace Sisus.Init.Internal
 		NullGuardResult IInitializerEditorOnly.EvaluateNullGuard() => EvaluateNullGuard();
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => false;
 		bool IInitializerEditorOnly.WasJustReset { get; set; }
+		bool IInitializerEditorOnly.IsAsync => IsAsync;
 		void IInitializerEditorOnly.SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) => SetReleaseArgumentOnDestroy(argument, shouldRelease);
 		void IInitializerEditorOnly.SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) => SetIsArgumentAsyncValueProvider(argument, isAsyncValueProvider);
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }

@@ -34,6 +34,8 @@ namespace Sisus.Init.Internal
 			this.definingType = new _Type(definingType);
 		}
 
+		internal int GetStateBasedHashCode() => service ? service.GetHashCode() ^ definingType.GetHashCode() : 0;
+		
 		#if UNITY_EDITOR
 		public static void OnValidate(Object obj, ref ServiceDefinition definition)
 		{
