@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.annulusgames.component-cache-generator": {
-      "version": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "f25fb2680ce3bd01d284a3fe3406200ee0cec59e"
-    },
     "com.annulusgames.debug-ui": {
       "version": "https://github.com/pancake-llc/DebugUI.git?path=src/DebugUI/Assets/DebugUI",
       "depth": 0,
