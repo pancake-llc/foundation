@@ -163,7 +163,7 @@ namespace Sisus.Init.Internal
 #if UNITY_EDITOR
 			foreach(var type in TypeCache.GetTypesDerivedFrom<IInitializer>())
 #else
-			foreach(var type in TypeUtility.GetAllTypesThreadSafe(targetType.Assembly, false))
+			foreach(var type in TypeUtility.GetAllTypesThreadSafe(clientType.Assembly, false))
 #endif
 			{
 				if (!requiredInterfaceType.IsAssignableFrom(type) || type.IsAbstract)
