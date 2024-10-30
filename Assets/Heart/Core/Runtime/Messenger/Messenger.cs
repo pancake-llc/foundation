@@ -88,6 +88,8 @@ namespace Pancake
                 _tcs.TrySetResult(ev);
                 ReleaseAwaiter(this);
             }
+            
+            public Task<T> Task => _tcs.Task;
         }
 
         private struct Callback
