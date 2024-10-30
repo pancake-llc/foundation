@@ -9,7 +9,6 @@ using Pancake.Localization;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine.UI;
-using VitalRouter;
 
 namespace Pancake.Game.UI
 {
@@ -118,7 +117,8 @@ namespace Pancake.Game.UI
                 var pos = _dayStatusViews[EDailyRewardDayStatus.Claimable].transform.position;
                 if (reward.typeReward == EDailyRewardType.Coin) pos += Vector3.left * 3f;
                 else pos += Vector3.left * 1.5f;
-                await Router.Default.PublishAsync(new VfxMagnetCommand(_getFxColelctType?.Invoke(reward.typeReward).Value, pos, reward.amount));
+
+                Messenger<VfxMagnetMessage>.Raise(new VfxMagnetMessage(_getFxColelctType?.Invoke(reward.typeReward).Value, pos, reward.amount));
             }
 
             if (UserData.GetDailyRewardDay() == 7)

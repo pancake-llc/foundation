@@ -2,19 +2,12 @@
 using LitMotion;
 using LitMotion.Extensions;
 #endif
-#if PANCAKE_ROUTER
-using VitalRouter;
-#endif
+using UnityEngine;
 
 namespace Pancake.Component
 {
-    using UnityEngine;
-
-#if PANCAKE_ROUTER
-    [Routes]
-#endif
     [EditorIcon("icon_default")]
-    public partial class UIHideBeforeComponent : MonoBehaviour
+    public class UIHideBeforeComponent : MonoBehaviour
     {
         [SerializeField] private StringConstant group;
         [SerializeField] private RectTransform target;
@@ -25,14 +18,19 @@ namespace Pancake.Component
 #endif
         [SerializeField] private float duration = 0.5f;
 
-#if PANCAKE_ROUTER
-        private void OnEnable() { MapTo(Router.Default); }
+        private MessageBinding<UIHideBeforeMessage> _binding;
 
-        private void OnDisable() { UnmapRoutes(); }
-
-        public void OnHide(UIHideBeforeCommand cmd)
+        private void OnEnable()
         {
-            if (!cmd.Group.Equals(group.Value)) return;
+            _binding ??= new MessageBinding<UIHideBeforeMessage>(OnHide);
+            _binding.Listen = true;
+        }
+
+        private void OnDisable() { _binding.Listen = false; }
+
+        private void OnHide(UIHideBeforeMessage mes)
+        {
+            if (!mes.Group.Equals(group.Value)) return;
 #if PANCAKE_LITMOTION
             switch (direction)
             {
@@ -52,6 +50,5 @@ namespace Pancake.Component
             }
 #endif
         }
-#endif
     }
 }

@@ -1,25 +1,26 @@
 using Pancake.Common;
 using Pancake.Pools;
 using UnityEngine;
-#if PANCAKE_ROUTER
-using VitalRouter;
-#endif
 
 namespace Pancake.Component
 {
-#if PANCAKE_ROUTER
-    [Routes]
-#endif
     [EditorIcon("icon_default")]
-    public partial class InGameNotificationRouter : GameComponent
+    public class InGameNotificationRouter : GameComponent
     {
         [SerializeField] private GameObject notificationPrefab;
         [SerializeField] private RectTransform root;
 
-#if PANCAKE_ROUTER
-        private void Awake() { MapTo(Router.Default); }
+        private MessageBinding<SpawnInGameNotiMessage> _binding;
 
-        public void OnSpawn(SpawnInGameNotiCommand cmd)
+        private void OnEnable()
+        {
+            _binding ??= new MessageBinding<SpawnInGameNotiMessage>(OnSpawn);
+            _binding.Listen = true;
+        }
+
+        private void OnDisable() { _binding.Listen = false; }
+
+        private void OnSpawn(SpawnInGameNotiMessage mes)
         {
             var instance = notificationPrefab.Request<InGameNotification>();
             instance.transform.SetParent(root, false);
@@ -28,8 +29,7 @@ namespace Pancake.Component
             rectTransform.SetLocalPositionZ(0);
             rectTransform.SetAnchoredPositionY(-444);
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, root.rect.width - 100);
-            instance.Show(cmd.LocaleText);
+            instance.Show(mes.LocaleText);
         }
-#endif
     }
 }

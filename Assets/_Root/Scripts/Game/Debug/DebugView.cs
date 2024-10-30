@@ -1,12 +1,18 @@
 ﻿using Pancake.DebugView;
-using VitalRouter;
 
 namespace Pancake.Game
 {
-    [Routes]
-    public partial class DebugView : DebugViewBase
+    public class DebugView : DebugViewBase
     {
-        private void Awake() { MapTo(Router.Default); }
+        private MessageBinding<ShowDebugMessage> _binding;
+
+        private void OnEnable()
+        {
+            _binding ??= new MessageBinding<ShowDebugMessage>(OnShowDebug);
+            _binding.Listen = true;
+        }
+
+        private void OnDisable() { _binding.Listen = false; }
 
         protected override void Configure()
         {
@@ -14,6 +20,6 @@ namespace Pancake.Game
             pages.Add(new DailyRewardDebugPage());
         }
 
-        public void OnShowDebug(ShowDebugCommand cmd) { ShowDebug(); }
+        public void OnShowDebug(ShowDebugMessage mes) { ShowDebug(); }
     }
 }

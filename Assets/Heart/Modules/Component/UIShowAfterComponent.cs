@@ -3,15 +3,9 @@ using LitMotion;
 using LitMotion.Extensions;
 #endif
 using UnityEngine;
-#if PANCAKE_ROUTER
-using VitalRouter;
-#endif
 
 namespace Pancake.Component
 {
-#if PANCAKE_ROUTER
-    [Routes]
-#endif
     [EditorIcon("icon_default")]
     public partial class UIShowAfterComponent : MonoBehaviour
     {
@@ -24,17 +18,21 @@ namespace Pancake.Component
         [SerializeField] private float duration = 0.5f;
 
         private Vector2 _defaultPosition;
+        private MessageBinding<UIShowAfterMessage> _binding;
 
-#if PANCAKE_ROUTER
-        private void OnEnable() { MapTo(Router.Default); }
+        private void OnEnable()
+        {
+            _binding ??= new MessageBinding<UIShowAfterMessage>(OnShow);
+            _binding.Listen = true;
+        }
 
-        private void OnDisable() { UnmapRoutes(); }
+        private void OnDisable() { _binding.Listen = false; }
 
         private void Start() { _defaultPosition = target.anchoredPosition; }
 
-        public void OnShow(UIShowAfterCommand cmd)
+        public void OnShow(UIShowAfterMessage mes)
         {
-            if (!cmd.Group.Equals(group.Value)) return;
+            if (!mes.Group.Equals(group.Value)) return;
 #if PANCAKE_LITMOTION
             switch (direction)
             {
@@ -53,6 +51,5 @@ namespace Pancake.Component
             }
 #endif
         }
-#endif
     }
 }

@@ -6,7 +6,6 @@ using Pancake.Sound;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;
-using VitalRouter;
 
 namespace Pancake.Game
 {
@@ -41,11 +40,11 @@ namespace Pancake.Game
             buttonDebug.onClick.AddListener(OnButtonDebugPressed);
         }
 
-        private void OnButtonDebugPressed() { Router.Default.PublishAsync(new ShowDebugCommand()); }
+        private void OnButtonDebugPressed() { Messenger<ShowDebugMessage>.Raise(); }
 
         private void OnButtonLeaderboardPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(leaderboardPopupKey, true); }
 
-        private void OnButtonInGameNotiPressed() { Router.Default.PublishAsync(new SpawnInGameNotiCommand(localeTextInGameNoti)); }
+        private void OnButtonInGameNotiPressed() { Messenger<SpawnInGameNotiMessage>.Raise(new SpawnInGameNotiMessage(localeTextInGameNoti)); }
 
         private void OnButtonShopPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(shopPopupKey, true); }
 
