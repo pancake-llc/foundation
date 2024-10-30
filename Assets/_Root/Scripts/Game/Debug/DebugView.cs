@@ -20,6 +20,6 @@ namespace Pancake.Game
             pages.Add(new DailyRewardDebugPage());
         }
 
-        public void OnShowDebug(ShowDebugMessage mes) { ShowDebug(); }
+        public void OnShowDebug(ShowDebugMessage msg) { ShowDebug(); }
     }
 }

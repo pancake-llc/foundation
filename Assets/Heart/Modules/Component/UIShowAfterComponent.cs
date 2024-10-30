@@ -30,9 +30,9 @@ namespace Pancake.Component
 
         private void Start() { _defaultPosition = target.anchoredPosition; }
 
-        public void OnShow(UIShowAfterMessage mes)
+        public void OnShow(UIShowAfterMessage msg)
         {
-            if (!mes.Group.Equals(group.Value)) return;
+            if (!msg.Group.Equals(group.Value)) return;
 #if PANCAKE_LITMOTION
             switch (direction)
             {

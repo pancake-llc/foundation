@@ -28,9 +28,9 @@ namespace Pancake.Component
 
         private void OnDisable() { _binding.Listen = false; }
 
-        private void OnHide(UIHideBeforeMessage mes)
+        private void OnHide(UIHideBeforeMessage msg)
         {
-            if (!mes.Group.Equals(group.Value)) return;
+            if (!msg.Group.Equals(group.Value)) return;
 #if PANCAKE_LITMOTION
             switch (direction)
             {

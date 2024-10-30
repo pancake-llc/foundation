@@ -20,7 +20,7 @@ namespace Pancake.Component
 
         private void OnDisable() { _binding.Listen = false; }
 
-        private void OnSpawn(SpawnInGameNotiMessage mes)
+        private void OnSpawn(SpawnInGameNotiMessage msg)
         {
             var instance = notificationPrefab.Request<InGameNotification>();
             instance.transform.SetParent(root, false);
@@ -29,7 +29,7 @@ namespace Pancake.Component
             rectTransform.SetLocalPositionZ(0);
             rectTransform.SetAnchoredPositionY(-444);
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, root.rect.width - 100);
-            instance.Show(mes.LocaleText);
+            instance.Show(msg.LocaleText);
         }
     }
 }

@@ -37,19 +37,19 @@ namespace Pancake.Component
 
         private bool IsFxInstanceEmpty() => _fxInstances.Count == 0;
 
-        private void OnSpawnVfx(VfxMagnetMessage mes)
+        private void OnSpawnVfx(VfxMagnetMessage msg)
         {
-            if (mes.Type != type.Value) return;
+            if (msg.Type != type.Value) return;
 
             var fx = fxPrefab.Request();
             var vfxParticleCollision = fx.GetComponent<VfxParticleCollision>();
             if (vfxParticleCollision == null) return;
-            vfxParticleCollision.Init(mes.Value, ReturnFx, IsFxInstanceEmpty);
+            vfxParticleCollision.Init(msg.Value, ReturnFx, IsFxInstanceEmpty);
             var ps = vfxParticleCollision.PS;
             _fxInstances.Add(fx);
             ps.gameObject.SetActive(true);
             var transformCache = ps.transform;
-            transformCache.position = mes.Position;
+            transformCache.position = msg.Position;
             var localPos = transformCache.localPosition;
             localPos = new Vector3(localPos.x, localPos.y);
             transformCache.localPosition = localPos;
