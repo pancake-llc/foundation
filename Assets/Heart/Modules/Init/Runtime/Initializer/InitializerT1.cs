@@ -67,7 +67,7 @@ namespace Sisus.Init
 
 			if(target.gameObject != gameObject)
 			{
-				#if UNITY_6_0_OR_NEWER
+				#if UNITY_6000_0_OR_NEWER
 				TClient[] results = await target.InstantiateAsync(argument);
 				return results[0];
 				#else

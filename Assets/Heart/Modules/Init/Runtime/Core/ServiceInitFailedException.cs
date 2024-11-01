@@ -236,7 +236,7 @@ namespace Sisus.Init
 
 
 			int count =
-				#if UNITY_2022_2_OR_NEWER
+				#if UNITY_2022_3_OR_NEWER
 				SceneManager.loadedSceneCount;
 				#else
 				SceneManager.sceneCount;

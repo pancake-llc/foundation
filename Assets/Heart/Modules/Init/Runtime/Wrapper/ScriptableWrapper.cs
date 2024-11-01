@@ -359,7 +359,7 @@ namespace Sisus.Init
 		[NotNull]
 		Object IWrapper.AsObject => this;
 
-		#if UNITY_2022_2_OR_NEWER
+		#if UNITY_2022_3_OR_NEWER
 		/// <inheritdoc cref="Updater.CancellationToken"/>
 		CancellationToken IWrapper.destroyCancellationToken => Updater.CancellationToken;
 		#endif

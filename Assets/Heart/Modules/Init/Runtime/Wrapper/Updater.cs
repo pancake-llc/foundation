@@ -48,7 +48,7 @@ namespace Sisus.Init.Internal
 		{
 			get
 			{
-				#if UNITY_2022_2_OR_NEWER
+				#if UNITY_2022_3_OR_NEWER
 				return Application.exitCancellationToken;
 				#else
 				#if UNITY_EDITOR

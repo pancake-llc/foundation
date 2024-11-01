@@ -2417,7 +2417,7 @@ namespace Sisus.Init
 			throw new InitArgumentsNotReceivedException(client);
 		}
 
-		#if UNITY_6_0_OR_NEWER
+		#if UNITY_6000_0_OR_NEWER
 		/// <summary>
 		/// Asynchronously clones the <paramref name="original"/> <typeparamref name="TObject"/> and initializes the clone with the given argument.
 		/// <para>

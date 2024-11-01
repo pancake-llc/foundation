@@ -282,7 +282,7 @@ namespace Sisus.Init.Internal
 			}
 
 			var servicesComponents = 
-			#if UNITY_2022_2_OR_NEWER
+			#if UNITY_2022_3_OR_NEWER
 			Object.FindObjectsByType<Services>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 			#else
 			Object.FindObjectsOfType<Services>(true);
@@ -301,7 +301,7 @@ namespace Sisus.Init.Internal
 			}
 
 			var serviceTags =
-			#if UNITY_2022_2_OR_NEWER
+			#if UNITY_2022_3_OR_NEWER
 			Object.FindObjectsByType<ServiceTag>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 			#else
 			Object.FindObjectsOfType<ServiceTag>(true);
@@ -1620,7 +1620,7 @@ namespace Sisus.Init.Internal
 				return InstantiateFromAsset(component, serviceInfo, initialized, servicesInScene, initializersInScene);
 			}
 
-			#if UNITY_6_0_OR_NEWER
+			#if UNITY_6000_0_OR_NEWER
 			if(serviceInfo.LoadAsync)
 			{
 				var instances = await Object.InstantiateAsync(gameObject);
@@ -1683,7 +1683,7 @@ namespace Sisus.Init.Internal
 
 				if(serviceInfo.ShouldInstantiate(true))
 				{
-					#if UNITY_6_0_OR_NEWER
+					#if UNITY_6000_0_OR_NEWER
 					if(serviceInfo.LoadAsync)
 					{
 						Object[] instances = await Object.InstantiateAsync(serviceOrProvider);
@@ -1729,7 +1729,7 @@ namespace Sisus.Init.Internal
 
 				MethodInfo instantiateMethod;
 				instantiateMethod =
-					#if UNITY_6_0_OR_NEWER
+					#if UNITY_6000_0_OR_NEWER
 					serviceInfo.LoadAsync
 					? typeof(InstantiateExtensions).GetMember(nameof(InstantiateExtensions.InstantiateAsync), BindingFlags.Static | BindingFlags.Public)
 																.Select(member => (MethodInfo)member)
@@ -1749,7 +1749,7 @@ namespace Sisus.Init.Internal
 				return await GetServiceFromInstance(instance, serviceInfo);
 			}
 
-			#if UNITY_6_0_OR_NEWER
+			#if UNITY_6000_0_OR_NEWER
 			if(serviceInfo.LoadAsync)
 			{
 				Object[] instances = await Object.InstantiateAsync(serviceOrProvider);
@@ -1882,7 +1882,7 @@ namespace Sisus.Init.Internal
 
 				if(serviceInfo.ShouldInstantiate(false))
 				{
-					#if UNITY_6_0_OR_NEWER
+					#if UNITY_6000_0_OR_NEWER
 					if(serviceInfo.LoadAsync)
 					{
 						Object[] instances = await Object.InstantiateAsync(serviceOrProvider);
@@ -1927,7 +1927,7 @@ namespace Sisus.Init.Internal
 				}
 
 				MethodInfo instantiateMethod =
-					#if UNITY_6_0_OR_NEWER
+					#if UNITY_6000_0_OR_NEWER
 					serviceInfo.LoadAsync
 					? typeof(InstantiateExtensions).GetMember(nameof(InstantiateExtensions.InstantiateAsync), BindingFlags.Static | BindingFlags.Public)
 																.Select(member => (MethodInfo)member)
@@ -1946,7 +1946,7 @@ namespace Sisus.Init.Internal
 				return instantiateMethod.Invoke(null, arguments);
 			}
 
-			#if UNITY_6_0_OR_NEWER
+			#if UNITY_6000_0_OR_NEWER
 			if(serviceInfo.LoadAsync)
 			{
 				Object[] instances = await Object.InstantiateAsync(serviceOrProvider);
@@ -2490,7 +2490,7 @@ namespace Sisus.Init.Internal
 			Debug.LogError($"Service {TypeUtility.ToString(clientType)} requires argument {TypeUtility.ToString(dependencyType)} but reference to the service seems to be broken in the scene component.", context);
 		}
 
-		#if UNITY_6_0_OR_NEWER
+		#if UNITY_6000_0_OR_NEWER
 		private static async Task<object> InstantiateServiceAsync(Component prefab, GlobalServiceInfo serviceInfo, HashSet<Type> initialized, [DisallowNull] Dictionary<Type, ScopedServiceInfo> servicesInScene, [DisallowNull] List<IInitializer> initializersInScene)
 		{
 			var concreteType = serviceInfo.concreteType;

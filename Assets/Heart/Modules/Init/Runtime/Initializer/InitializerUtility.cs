@@ -1157,7 +1157,7 @@ namespace Sisus.Init.Internal
 			#endif
 		}
 
-		#if UNITY_2022_2_OR_NEWER
+		#if UNITY_2022_3_OR_NEWER
 		[HideInCallstack]
 		#endif
 		private static void HandleNullGuardFailedMessage<TInitializer>(TInitializer initializer, GameObject gameObject, List<string> missingArgumentTypes) where TInitializer : Object, IInitializerEditorOnly

@@ -70,7 +70,7 @@ namespace Sisus.Init
 			var fifthArgument = await this.fifthArgument.GetValueAsync(this, Context.MainThread);
 			var sixthArgument = await this.sixthArgument.GetValueAsync(this, Context.MainThread);
 
-			#if UNITY_2022_2_OR_NEWER && (UNITY_EDITOR || INIT_ARGS_SAFE_MODE)
+			#if UNITY_2022_3_OR_NEWER && (UNITY_EDITOR || INIT_ARGS_SAFE_MODE)
 			if(destroyCancellationToken.IsCancellationRequested) return default;
 			#endif
 
@@ -94,7 +94,7 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			if(target == null)
 			#else
-			if(target is null)
+			if(!target)
 			#endif
 			{
 				result = gameObject.AddComponent<TClient>();

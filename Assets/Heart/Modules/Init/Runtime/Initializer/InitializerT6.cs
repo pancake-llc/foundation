@@ -96,7 +96,7 @@ namespace Sisus.Init
 
 			if(target.gameObject != gameObject)
 			{
-				#if UNITY_6_0_OR_NEWER
+				#if UNITY_6000_0_OR_NEWER
 				var results = await target.InstantiateAsync(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 				return results[0];
 				#else
