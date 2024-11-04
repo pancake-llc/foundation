@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.Pools
 {
@@ -166,6 +169,23 @@ namespace Pancake.Pools
             PoolCallbackHelper.InvokeOnReturn(instance);
         }
 
+        public static void Prewarm(this GameObject original, int count)
+        {
+            if (original == null) throw new ArgumentNullException(nameof(original));
+
+            var pool = GetOrCreatePool(original);
+
+            for (int i = 0; i < count; i++)
+            {
+                var obj = UnityEngine.Object.Instantiate(original);
+
+                obj.SetActive(false);
+                pool.Push(obj);
+
+                PoolCallbackHelper.InvokeOnReturn(obj);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -175,7 +195,17 @@ namespace Pancake.Pools
         /// <param name="timeSlice">Sets the target duration allowed per frame to integrate instantiated object operations, in milliseconds.</param>
         /// <param name="onPrewarmCompleted"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static async UniTaskVoid PrewarmAsync(this GameObject original, int batchCount, int batchSize, float timeSlice = 2f, Action onPrewarmCompleted = null)
+#if PANCAKE_UNITASK
+        public static async UniTaskVoid PrewarmAsync(
+#else
+        public static async void PrewarmAsync(
+#endif
+            this GameObject original,
+            int batchCount,
+            int batchSize,
+            float timeSlice = 2f,
+            Action onPrewarmCompleted = null)
+
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
 
@@ -189,7 +219,14 @@ namespace Pancake.Pools
 
             for (var i = 0; i < batchCount; i++)
             {
-                while (!operations[i].isDone) await UniTask.NextFrame();
+                while (!operations[i].isDone)
+                {
+#if PANCAKE_UNITASK
+                    await UniTask.NextFrame();
+#else
+                    await Awaitable.NextFrameAsync();
+#endif
+                }
             }
 
             for (var i = 0; i < batchCount; i++)
@@ -204,22 +241,6 @@ namespace Pancake.Pools
             }
 
             onPrewarmCompleted?.Invoke();
-        }
-
-        public static void Prewarm(this GameObject original, int count)
-        {
-            if (original == null) throw new ArgumentNullException(nameof(original));
-
-            var pool = GetOrCreatePool(original);
-
-            for (int i = 0; i < count; i++)
-            {
-                var obj = UnityEngine.Object.Instantiate(original);
-                obj.SetActive(false);
-                pool.Push(obj);
-
-                PoolCallbackHelper.InvokeOnReturn(obj);
-            }
         }
 
         private static Stack<GameObject> GetOrCreatePool(GameObject original)

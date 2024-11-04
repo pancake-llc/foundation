@@ -42,7 +42,7 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public async UniTask<GameObject> RentAsync(Transform parent, CancellationToken cancellationToken = default)
+        public async UniTask<GameObject> RequestAsync(Transform parent, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
 
@@ -60,7 +60,7 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public async UniTask<GameObject> RentAsync(Vector3 position, Quaternion rotation, CancellationToken cancellationToken = default)
+        public async UniTask<GameObject> RequestAsync(Vector3 position, Quaternion rotation, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
 
@@ -78,7 +78,7 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public async UniTask<GameObject> RentAsync(Vector3 position, Quaternion rotation, Transform parent)
+        public async UniTask<GameObject> RequestAsync(Vector3 position, Quaternion rotation, Transform parent)
         {
             ThrowIfDisposed();
 
