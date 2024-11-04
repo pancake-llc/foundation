@@ -22,24 +22,24 @@ namespace Pancake.Spine
     {
         [SerializeField] private SkeletonAnimation skeleton;
         [SerializeField] private bool loopLastestTrack;
-        [SerializeField] private StartupMode startupMode = StartupMode.OnEnabled;
+        [SerializeField] private EStartupMode startupMode = EStartupMode.OnEnabled;
         [SerializeField] private TrackData[] datas;
 
         private AsyncProcessHandle _handle;
 
         private void Awake()
         {
-            if (startupMode == StartupMode.Awake) Play();
+            if (startupMode == EStartupMode.Awake) Play();
         }
 
         private void Start()
         {
-            if (startupMode == StartupMode.Start) Play();
+            if (startupMode == EStartupMode.Start) Play();
         }
 
         protected void OnEnable()
         {
-            if (startupMode == StartupMode.OnEnabled) Play();
+            if (startupMode == EStartupMode.OnEnabled) Play();
         }
 
         protected void OnDisable() { App.StopAndClean(ref _handle); }
