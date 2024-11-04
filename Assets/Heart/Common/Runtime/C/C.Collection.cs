@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Pancake.Common
 {
@@ -12,6 +13,7 @@ namespace Pancake.Common
         /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty<T>(this List<T> source) { return source == null || source.Count == 0; }
 
         /// <summary>
@@ -20,6 +22,7 @@ namespace Pancake.Common
         /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty<T>(this T[] source) { return source == null || source.Length == 0; }
 
         /// <summary>
@@ -29,6 +32,7 @@ namespace Pancake.Common
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty<TKey, TValue>(this Dictionary<TKey, TValue> source) { return source == null || source.Keys.Count == 0; }
 
         /// <summary>
@@ -36,6 +40,7 @@ namespace Pancake.Common
         /// </summary>
         /// <param name="source">array</param>
         /// <typeparam name="T"></typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this T[] source)
         {
             int n = source.Length;
@@ -52,6 +57,7 @@ namespace Pancake.Common
         /// </summary>
         /// <param name="source">IList</param>
         /// <typeparam name="T"></typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this List<T> source)
         {
             int n = source.Count;
@@ -70,6 +76,7 @@ namespace Pancake.Common
         /// <typeparam name="T1"></typeparam>
         /// <typeparam name="T2"></typeparam>
         /// <returns>new dictionary (shuffled)</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IDictionary<T1, T2> Shuffle<T1, T2>(this IDictionary<T1, T2> source)
         {
             var keys = source.Keys.ToArray();
@@ -97,6 +104,7 @@ namespace Pancake.Common
         /// <exception cref="ArgumentNullException"><paramref name="keys"/> parameter is null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="values"/> parameter is null</exception>
         /// <exception cref="ArgumentException">Size <paramref name="keys"/> and size <paramref name="values"/> diffirent!</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IDictionary<TKey, TValue> MakeDictionary<TKey, TValue>(this TKey[] keys, TValue[] values)
         {
             if (keys == null) throw new ArgumentNullException(nameof(keys));
@@ -122,6 +130,7 @@ namespace Pancake.Common
         /// <exception cref="ArgumentNullException"><paramref name="keys"/> parameter is null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="values"/> parameter is null</exception>
         /// <exception cref="ArgumentException">Size <paramref name="keys"/> and size <paramref name="values"/> diffirent!</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IDictionary<TKey, TValue> MakeDictionary<TKey, TValue>(this IList<TKey> keys, IList<TValue> values)
         {
             if (keys == null) throw new ArgumentNullException(nameof(keys));
@@ -138,142 +147,148 @@ namespace Pancake.Common
         }
 
         /// <summary>
-        /// <para>Indicates the random value in the <paramref name="collection"/>. If <paramref name="collection"/> is empty return default vaule of T</para>
+        /// <para>Indicates the random value in the <paramref name="source"/>. If <paramref name="source"/> is empty return default vaule of T</para>
         /// 
         /// <para>Return a random value of index within [0..maxExclusive) (Read Only).</para>
-        /// <para>maxExclusive = length of <paramref name="collection"/></para>
-        /// <para>maxExcusive is exclusive, so for example <paramref name="collection"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
+        /// <para>maxExclusive = length of <paramref name="source"/></para>
+        /// <para>maxExcusive is exclusive, so for example <paramref name="source"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
         ///
         /// <para>If maxExclusive equal 0, value of index 0 will be returned.</para>
         ///
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// http://docs.unity3d.com/ScriptReference/Random.Range.html
-        public static T PickRandom<T>(this T[] collection)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T PickRandom<T>(this T[] source)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            return collection.Length == 0 ? default : collection[UnityEngine.Random.Range(0, collection.Length)];
+            return source.Length == 0 ? default : source[UnityEngine.Random.Range(0, source.Length)];
         }
 
         /// <summary>
-        /// <para>Indicates the random value in the <paramref name="collection"/>. If <paramref name="collection"/> is empty return default vaule of T</para>
+        /// <para>Indicates the random value in the <paramref name="source"/>. If <paramref name="source"/> is empty return default vaule of T</para>
         /// 
         /// <para>Return a random value of index within [0..maxExclusive) (Read Only).</para>
-        /// <para>maxExclusive = length of <paramref name="collection"/></para>
-        /// <para>maxExcusive is exclusive, so for example <paramref name="collection"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
+        /// <para>maxExclusive = length of <paramref name="source"/></para>
+        /// <para>maxExcusive is exclusive, so for example <paramref name="source"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
         ///
         /// <para>If maxExclusive equal 0, value of index 0 will be returned.</para>
         ///
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// http://docs.unity3d.com/ScriptReference/Random.Range.html
-        public static (T, int) PickRandomWithIndex<T>(this T[] collection)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (T, int) PickRandomWithIndex<T>(this T[] source)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            int index = UnityEngine.Random.Range(0, collection.Length);
-            return collection.Length == 0 ? (default, -1) : (collection[index], index);
+            int index = UnityEngine.Random.Range(0, source.Length);
+            return source.Length == 0 ? (default, -1) : (source[index], index);
         }
 
         /// <summary>
-        /// <para>Indicates the random value in the <paramref name="collection"/>. If <paramref name="collection"/> is empty return default vaule of T</para>
+        /// <para>Indicates the random value in the <paramref name="source"/>. If <paramref name="source"/> is empty return default vaule of T</para>
         /// 
         /// <para>Return a random value of index within [0..maxExclusive) (Read Only).</para>
-        /// <para>maxExclusive = length of <paramref name="collection"/></para>
-        /// <para>maxExcusive is exclusive, so for example <paramref name="collection"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
+        /// <para>maxExclusive = length of <paramref name="source"/></para>
+        /// <para>maxExcusive is exclusive, so for example <paramref name="source"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
         ///
         /// <para>If maxExclusive equal 0, value of index 0 will be returned.</para>
         ///
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// http://docs.unity3d.com/ScriptReference/Random.Range.html
-        public static T PickRandom<T>(this List<T> collection)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T PickRandom<T>(this List<T> source)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            return collection.Count == 0 ? default : collection[UnityEngine.Random.Range(0, collection.Count)];
+            return source.Count == 0 ? default : source[UnityEngine.Random.Range(0, source.Count)];
         }
 
         /// <summary>
-        /// <para>Indicates the random value in the <paramref name="collection"/>. If <paramref name="collection"/> is empty return default vaule of T</para>
+        /// <para>Indicates the random value in the <paramref name="source"/>. If <paramref name="source"/> is empty return default vaule of T</para>
         /// 
         /// <para>Return a random value of index within [0..maxExclusive) (Read Only).</para>
-        /// <para>maxExclusive = length of <paramref name="collection"/></para>
-        /// <para>maxExcusive is exclusive, so for example <paramref name="collection"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
+        /// <para>maxExclusive = length of <paramref name="source"/></para>
+        /// <para>maxExcusive is exclusive, so for example <paramref name="source"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
         ///
         /// <para>If maxExclusive equal 0, value of index 0 will be returned.</para>
         ///
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// http://docs.unity3d.com/ScriptReference/Random.Range.html
-        public static (T, int) PickRandomWithIndex<T>(this List<T> collection)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (T, int) PickRandomWithIndex<T>(this List<T> source)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            var index = UnityEngine.Random.Range(0, collection.Count);
-            return collection.Count == 0 ? (default, -1) : (collection[index], index);
+            var index = UnityEngine.Random.Range(0, source.Count);
+            return source.Count == 0 ? (default, -1) : (source[index], index);
         }
 
         /// <summary>
-        /// <para>Indicates the random value in the <paramref name="collection"/> and also remove that element. If <paramref name="collection"/> is empty return default vaule of T</para>
+        /// <para>Indicates the random value in the <paramref name="source"/> and also remove that element. If <paramref name="source"/> is empty return default vaule of T</para>
         /// <para>Return a random value of index within [0..maxExclusive) (Read Only).</para>
-        /// <para>maxExclusive = length of <paramref name="collection"/></para>
-        /// <para>maxExcusive is exclusive, so for example <paramref name="collection"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
+        /// <para>maxExclusive = length of <paramref name="source"/></para>
+        /// <para>maxExcusive is exclusive, so for example <paramref name="source"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
         ///
         /// <para>If maxExclusive equal 0, value of index 0 will be returned.</para>
         ///
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// http://docs.unity3d.com/ScriptReference/Random.Range.html
-        public static T PopRandom<T>(this List<T> collection)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T PopRandom<T>(this List<T> source)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (collection.Count == 0) return default;
-            int i = UnityEngine.Random.Range(0, collection.Count);
-            var value = collection[i];
-            collection.RemoveAt(i);
+            if (source.Count == 0) return default;
+            int i = UnityEngine.Random.Range(0, source.Count);
+            var value = source[i];
+            source.RemoveAt(i);
             return value;
         }
 
         /// <summary>
-        /// <para>Indicates the random value in the <paramref name="collection"/> and also remove that element. If <paramref name="collection"/> is empty return default vaule of T</para>
+        /// <para>Indicates the random value in the <paramref name="source"/> and also remove that element. If <paramref name="source"/> is empty return default vaule of T</para>
         /// <para>Return a random value of index within [0..maxExclusive) (Read Only).</para>
-        /// <para>maxExclusive = length of <paramref name="collection"/></para>
-        /// <para>maxExcusive is exclusive, so for example <paramref name="collection"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
+        /// <para>maxExclusive = length of <paramref name="source"/></para>
+        /// <para>maxExcusive is exclusive, so for example <paramref name="source"/> has 10 element will return a value of index between 0 and 9, each with approximately equal probability.</para>
         ///
         /// <para>If maxExclusive equal 0, value of index 0 will be returned.</para>
         ///
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// http://docs.unity3d.com/ScriptReference/Random.Range.html
-        public static (T, int) PopRandomWithIndex<T>(this List<T> collection)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (T, int) PopRandomWithIndex<T>(this List<T> source)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (collection.Count == 0) return default;
-            int i = UnityEngine.Random.Range(0, collection.Count);
-            var value = collection[i];
-            collection.RemoveAt(i);
+            if (source.Count == 0) return default;
+            int i = UnityEngine.Random.Range(0, source.Count);
+            var value = source[i];
+            source.RemoveAt(i);
             return (value, i);
         }
 
@@ -284,6 +299,7 @@ namespace Pancake.Common
         /// <param name="oldIndex">old index</param>
         /// <param name="newIndex">new index</param>
         /// <typeparam name="T">type</typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Swap<T>(this T[] source, int oldIndex, int newIndex)
         {
             if (oldIndex < 0 || newIndex < 0 || oldIndex > source.Length || newIndex > source.Length)
@@ -305,6 +321,7 @@ namespace Pancake.Common
         /// <param name="oldIndex">old index</param>
         /// <param name="newIndex">new index</param>
         /// <typeparam name="T">type</typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Swap<T>(this List<T> source, int oldIndex, int newIndex)
         {
             if (oldIndex < 0 || newIndex < 0 || oldIndex > source.Count || newIndex > source.Count)
@@ -322,85 +339,113 @@ namespace Pancake.Common
         /// <summary>
         /// Added the ability to access all elements in Linq
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T[] ForEach<T>(this T[] collection, Action<T> action)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] ForEach<T>(this T[] source, Action<T> action)
         {
-            for (int i = collection.Length - 1; i >= 0; i--)
+            for (int i = source.Length - 1; i >= 0; i--)
             {
-                action(collection[i]);
+                action(source[i]);
             }
 
-            return collection;
+            return source;
         }
 
         /// <summary>
         /// Added the ability to access all elements in Linq
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> ForEach<T>(this List<T> collection, Action<T> action)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static List<T> ForEach<T>(this List<T> source, Action<T> action)
         {
-            for (int i = collection.Count - 1; i >= 0; i--)
+            for (int i = source.Count - 1; i >= 0; i--)
             {
-                action(collection[i]);
+                action(source[i]);
             }
 
-            return collection;
+            return source;
         }
 
         /// <summary>
         /// Added the ability to access all elements in Linq (including index)
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T[] ForEach<T>(this T[] collection, Action<T, int> action)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] ForEach<T>(this T[] source, Action<T, int> action)
         {
-            for (int i = collection.Length - 1; i >= 0; i--)
+            for (int i = source.Length - 1; i >= 0; i--)
             {
-                action(collection[i], i);
+                action(source[i], i);
             }
 
-            return collection;
+            return source;
         }
 
         /// <summary>
         /// Added the ability to access all elements in Linq (including index)
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="source"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> ForEach<T>(this List<T> collection, Action<T, int> action)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static List<T> ForEach<T>(this List<T> source, Action<T, int> action)
         {
-            for (int i = collection.Count - 1; i >= 0; i--)
+            for (int i = source.Count - 1; i >= 0; i--)
             {
-                action(collection[i], i);
+                action(source[i], i);
             }
 
-            return collection;
+            return source;
         }
 
         /// <summary> Eliminate an items range. </summary>
-        /// <param name="self"> The list. </param>
+        /// <param name="source"> The list. </param>
         /// <param name="entries">Elements to be removed. </param>
-        public static void Removes<T>(this List<T> self, List<T> entries)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Removes<T>(this List<T> source, List<T> entries)
         {
-            foreach (var item in entries) self.Remove(item);
+            foreach (var item in entries) source.Remove(item);
         }
 
         /// <summary> Eliminate an items range. </summary>
-        /// <param name="self"> The list. </param>
+        /// <param name="source"> The list. </param>
         /// <param name="entries">Elements to be removed. </param>
-        public static void Removes<T>(this List<T> self, T[] entries)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Removes<T>(this List<T> source, T[] entries)
         {
-            foreach (var item in entries) self.Remove(item);
+            foreach (var item in entries) source.Remove(item);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static List<T> Adds<T>(this List<T> source, List<T> entries)
+        {
+            for (int i = 0; i < entries.Count; i++)
+            {
+                source.Add(entries[i]);
+            }
+
+            return source;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static List<T> Adds<T>(this List<T> source, T[] entries)
+        {
+            foreach (var e in entries)
+            {
+                source.Add(e);
+            }
+
+            return source;
         }
     }
 }
