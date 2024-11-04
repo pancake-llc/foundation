@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Pancake.Pools
@@ -163,6 +164,46 @@ namespace Pancake.Pools
             CloneReferences.Remove(instance);
 
             PoolCallbackHelper.InvokeOnReturn(instance);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="batchCount"></param>
+        /// <param name="batchSize"></param>
+        /// <param name="timeSlice">Sets the target duration allowed per frame to integrate instantiated object operations, in milliseconds.</param>
+        /// <param name="onPrewarmCompleted"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static async UniTaskVoid PrewarmAsync(this GameObject original, int batchCount, int batchSize, float timeSlice = 2f, Action onPrewarmCompleted = null)
+        {
+            if (original == null) throw new ArgumentNullException(nameof(original));
+
+            var pool = GetOrCreatePool(original);
+            AsyncInstantiateOperation.SetIntegrationTimeMS(timeSlice);
+            var operations = new AsyncInstantiateOperation<GameObject>[batchCount];
+            for (var i = 0; i < batchCount; i++)
+            {
+                operations[i] = UnityEngine.Object.InstantiateAsync(original, batchSize);
+            }
+
+            for (var i = 0; i < batchCount; i++)
+            {
+                while (!operations[i].isDone) await UniTask.NextFrame();
+            }
+
+            for (var i = 0; i < batchCount; i++)
+            {
+                foreach (var obj in operations[i].Result)
+                {
+                    obj.SetActive(false);
+                    pool.Push(obj);
+
+                    PoolCallbackHelper.InvokeOnReturn(obj);
+                }
+            }
+
+            onPrewarmCompleted?.Invoke();
         }
 
         public static void Prewarm(this GameObject original, int count)
