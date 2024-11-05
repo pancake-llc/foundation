@@ -325,25 +325,25 @@ namespace Pancake.Editor
 
                             if (enableAds)
                             {
-                                RegistryManager.Add("com.unity.ads.ios-support", "1.2.0");
-                                RegistryManager.Add("com.unity.sharp-zip-lib", "1.3.3-preview");
+                                RegistryManager.AddPackage("com.unity.ads.ios-support", "1.2.0");
+                                RegistryManager.AddPackage("com.unity.sharp-zip-lib", "1.3.3-preview");
                                 InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADS");
                             }
                             else
                             {
-                                RegistryManager.Remove("com.unity.ads.ios-support");
-                                RegistryManager.Remove("com.unity.sharp-zip-lib");
+                                RegistryManager.RemovePackage("com.unity.ads.ios-support");
+                                RegistryManager.RemovePackage("com.unity.sharp-zip-lib");
                                 InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADS");
                             }
 
                             if (enableIap)
                             {
-                                RegistryManager.Add("com.unity.purchasing", "4.5.2");
+                                RegistryManager.AddPackage("com.unity.purchasing", "4.5.2");
                                 InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_IAP");
                             }
                             else
                             {
-                                RegistryManager.Remove("com.unity.purchasing");
+                                RegistryManager.RemovePackage("com.unity.purchasing");
                                 InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_IAP");
                             }
 
@@ -352,18 +352,18 @@ namespace Pancake.Editor
 
                             if (enableNotification)
                             {
-                                RegistryManager.Add("com.unity.mobile.notifications", "2.1.1");
+                                RegistryManager.AddPackage("com.unity.mobile.notifications", "2.1.1");
                                 InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_NOTIFICATION");
                             }
                             else
                             {
-                                RegistryManager.Remove("com.unity.mobile.notifications");
+                                RegistryManager.RemovePackage("com.unity.mobile.notifications");
                                 InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_NOTIFICATION");
                             }
 
                             if (enableAddressable)
                             {
-                                RegistryManager.Add("com.unity.addressables", "1.19.19");
+                                RegistryManager.AddPackage("com.unity.addressables", "1.19.19");
                                 if (enableUsingAddressableForPopup)
                                 {
                                     InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADDRESSABLE_POPUP");
@@ -375,57 +375,57 @@ namespace Pancake.Editor
                             }
                             else
                             {
-                                RegistryManager.Remove("com.unity.addressables");
+                                RegistryManager.RemovePackage("com.unity.addressables");
                                 InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADDRESSABLE_POPUP");
                             }
 
                             if (enablePlayfab)
                             {
-                                RegistryManager.Add("com.pancake.playfab", "https://github.com/pancake-llc/playfab.git#2.157.230123");
+                                RegistryManager.AddPackage("com.pancake.playfab", "https://github.com/pancake-llc/playfab.git#2.157.230123");
                                 InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_PLAYFAB");
                             }
                             else
                             {
-                                RegistryManager.Remove("com.pancake.playfab");
+                                RegistryManager.RemovePackage("com.pancake.playfab");
                                 InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_PLAYFAB");
                             }
 
                             if (enableAnalytic) InstallFirebasePackage(FIREBASE_ANALYTIC_PACKAGE, "firebase-analytics");
-                            else RegistryManager.Remove(FIREBASE_ANALYTIC_PACKAGE);
+                            else RegistryManager.RemovePackage(FIREBASE_ANALYTIC_PACKAGE);
 
                             if (enableRemoteConfig) InstallFirebasePackage(FIREBASE_REMOTE_CONFIG_PACKAGE, "firebase-remote-config");
-                            else RegistryManager.Remove(FIREBASE_REMOTE_CONFIG_PACKAGE);
+                            else RegistryManager.RemovePackage(FIREBASE_REMOTE_CONFIG_PACKAGE);
 
                             if (enableCrashlytic) InstallFirebasePackage(FIREBASE_CRASHLYTIC_PACKAGE, "firebase-crashlytics");
-                            else RegistryManager.Remove(FIREBASE_CRASHLYTIC_PACKAGE);
+                            else RegistryManager.RemovePackage(FIREBASE_CRASHLYTIC_PACKAGE);
 
                             if (enableCloudMessage) InstallFirebasePackage(FIREBASE_MESSAGE_PACKAGE, "firebase-messaging");
-                            else RegistryManager.Remove(FIREBASE_MESSAGE_PACKAGE);
+                            else RegistryManager.RemovePackage(FIREBASE_MESSAGE_PACKAGE);
 
                             if (enableInAppReview)
                             {
                                 string version = repoTags[IN_APP_REVIEW_PACKAGE][selectedTags[IN_APP_REVIEW_PACKAGE]];
                                 string versionEdm = edmModel.inappreview.edm[Array.FindIndex(edmModel.inappreview.source, _ => _ == version)];
-                                RegistryManager.Add(IN_APP_REVIEW_PACKAGE, $"https://github.com/google-unity/in-app-review.git#{version}");
-                                RegistryManager.Add("com.google.play.core", $"https://github.com/google-unity/google-play-core.git#{version}");
-                                RegistryManager.Add("com.google.play.common", $"https://github.com/google-unity/google-play-common.git#{version}");
-                                RegistryManager.Add("com.google.android.appbundle", $"https://github.com/google-unity/android-app-bundle.git#{version}");
-                                RegistryManager.Add("com.google.external-dependency-manager",
+                                RegistryManager.AddPackage(IN_APP_REVIEW_PACKAGE, $"https://github.com/google-unity/in-app-review.git#{version}");
+                                RegistryManager.AddPackage("com.google.play.core", $"https://github.com/google-unity/google-play-core.git#{version}");
+                                RegistryManager.AddPackage("com.google.play.common", $"https://github.com/google-unity/google-play-common.git#{version}");
+                                RegistryManager.AddPackage("com.google.android.appbundle", $"https://github.com/google-unity/android-app-bundle.git#{version}");
+                                RegistryManager.AddPackage("com.google.external-dependency-manager",
                                     $"https://github.com/google-unity/external-dependency-manager.git#{versionEdm}");
                             }
                             else
                             {
-                                RegistryManager.Remove("com.google.play.review");
-                                RegistryManager.Remove("com.google.play.core");
-                                RegistryManager.Remove("com.google.play.common");
-                                RegistryManager.Remove("com.google.android.appbundle");
+                                RegistryManager.RemovePackage("com.google.play.review");
+                                RegistryManager.RemovePackage("com.google.play.core");
+                                RegistryManager.RemovePackage("com.google.play.common");
+                                RegistryManager.RemovePackage("com.google.android.appbundle");
                             }
 
 
                             if (!enableAnalytic && !enableRemoteConfig && !enableCrashlytic && !enableCloudMessage)
                             {
-                                RegistryManager.Remove("com.google.firebase.app");
-                                if (!enableInAppReview && !enableAds) RegistryManager.Remove("com.google.external-dependency-manager");
+                                RegistryManager.RemovePackage("com.google.firebase.app");
+                                if (!enableInAppReview && !enableAds) RegistryManager.RemovePackage("com.google.external-dependency-manager");
                             }
 
                             RegistryManager.Resolve();
@@ -445,10 +445,10 @@ namespace Pancake.Editor
         {
             string version = repoTags[key][selectedTags[key]];
             string versionEdm = edmModel.firebase.edm[Array.FindIndex(edmModel.firebase.source, _ => _ == version)];
-            RegistryManager.Add(key, $"https://github.com/firebase-unity/{repoName}.git#{version}");
-            RegistryManager.Add("com.google.firebase.app", $"https://github.com/firebase-unity/firebase-app.git#{version}");
-            RegistryManager.Remove("com.google.external-dependency-manager"); // alway use edm dependency from firebase
-            RegistryManager.Add("com.google.external-dependency-manager", $"https://github.com/google-unity/external-dependency-manager.git#{versionEdm}");
+            RegistryManager.AddPackage(key, $"https://github.com/firebase-unity/{repoName}.git#{version}");
+            RegistryManager.AddPackage("com.google.firebase.app", $"https://github.com/firebase-unity/firebase-app.git#{version}");
+            RegistryManager.RemovePackage("com.google.external-dependency-manager"); // alway use edm dependency from firebase
+            RegistryManager.AddPackage("com.google.external-dependency-manager", $"https://github.com/google-unity/external-dependency-manager.git#{versionEdm}");
         }
     }
 

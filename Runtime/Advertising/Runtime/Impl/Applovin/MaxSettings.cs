@@ -10,13 +10,11 @@ namespace Pancake.Monetization
     public class MaxSettings
     {
         [SerializeField] private bool enable;
-        [SerializeField] private string sdkKey;
         [SerializeField] private ApplovinBannerUnit bannerAdUnit;
         [SerializeField] private ApplovinInterstitialUnit interstitialAdUnit;
         [SerializeField] private ApplovinRewardedUnit rewardedAdUnit;
         [SerializeField] private ApplovinAppOpenUnit appOpenAdUnit;
         [SerializeField] private ApplovinRewardedInterstitialUnit rewardedInterstitialAdUnit;
-        [SerializeField] private bool enableAgeRestrictedUser;
         [SerializeField] private bool enableRequestAdAfterHidden = true;
         [SerializeField] private bool enableMaxAdReview;
 
@@ -48,15 +46,12 @@ namespace Pancake.Monetization
 #endif
 
         public bool Enable => enable;
-        public string SdkKey => sdkKey;
         public ApplovinBannerUnit BannerAdUnit => bannerAdUnit;
         public ApplovinInterstitialUnit InterstitialAdUnit => interstitialAdUnit;
         public ApplovinRewardedUnit RewardedAdUnit => rewardedAdUnit;
         public ApplovinAppOpenUnit AppOpenAdUnit => appOpenAdUnit;
 
         public ApplovinRewardedInterstitialUnit RewardedInterstitialAdUnit => rewardedInterstitialAdUnit;
-
-        public bool EnableAgeRestrictedUser => enableAgeRestrictedUser;
 
         public bool EnableRequestAdAfterHidden => enableRequestAdAfterHidden;
 

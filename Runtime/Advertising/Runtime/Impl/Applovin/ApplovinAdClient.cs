@@ -186,11 +186,7 @@ namespace Pancake.Monetization
         protected override void InternalInit()
         {
 #if PANCAKE_MAX_ENABLE
-            MaxSdk.SetSdkKey(AdSettings.MaxSettings.SdkKey);
-            if (AdSettings.AdCommonSettings.EnableGDPR) MaxSdkCallbacks.OnSdkInitializedEvent += OnSdkInitializedEvent;
-
             MaxSdk.InitializeSdk();
-            MaxSdk.SetIsAgeRestrictedUser(AdSettings.MaxSettings.EnableAgeRestrictedUser);
 #endif
 
             _banner = new ApplovinBannerLoader(this);
@@ -205,25 +201,6 @@ namespace Pancake.Monetization
             isInitialized = true;
             _isBannerDestroyed = false;
         }
-
-#if PANCAKE_MAX_ENABLE
-        private void OnSdkInitializedEvent(MaxSdkBase.SdkConfiguration configuration)
-        {
-            if (configuration.ConsentDialogState == MaxSdkBase.ConsentDialogState.Applies)
-            {
-                ShowConsentForm();
-            }
-            else if (configuration.ConsentDialogState == MaxSdkBase.ConsentDialogState.DoesNotApply)
-            {
-                // No need to show consent dialog, proceed with initialization
-            }
-            else
-            {
-                // Consent dialog state is unknown. Proceed with initialization, but check if the consent
-                // dialog should be shown on the next application initialization
-            }
-        }
-#endif
 
         protected override void InternalShowBannerAd()
         {
@@ -372,12 +349,7 @@ namespace Pancake.Monetization
         public override void ShowConsentForm()
         {
 #if UNITY_ANDROID
-#if PANCAKE_MAX_ENABLE
-            if (AdsUtil.IsInEEA())
-            {
-                MaxSdk.UserService.ShowConsentDialog();
-            }
-#endif
+
 #elif UNITY_IOS
             if (Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() == Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
             {

@@ -1,8 +1,11 @@
 #if PANCAKE_ADS
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Pancake.Editor;
+using Pancake.Linq;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Pancake.Monetization.Editor
@@ -65,13 +68,11 @@ namespace Pancake.Monetization.Editor
         {
             public static SerializedProperty main;
             public static Property enable = new Property(null, new GUIContent("Enable", "Enable using applovin ad"));
-            public static Property sdkKey = new Property(null, new GUIContent("Sdk Key", "Sdk of applovin"));
             public static Property bannerAdUnit = new Property(null, new GUIContent("Banner Ad"));
             public static Property interstitialAdUnit = new Property(null, new GUIContent("Interstitial Ad"));
             public static Property rewardedAdUnit = new Property(null, new GUIContent("Rewarded Ad"));
             public static Property rewardedInterstitialAdUnit = new Property(null, new GUIContent("Rewarded Interstitial Ad"));
             public static Property appOpenAdUnit = new Property(null, new GUIContent("App Open Ad"));
-            public static Property enableAgeRestrictedUser = new Property(null, new GUIContent("Age Restrictd User"));
 
             public static Property enableRequestAdAfterHidden = new Property(null,
                 new GUIContent("Request Ad After Hidden",
@@ -157,14 +158,12 @@ namespace Pancake.Monetization.Editor
 
             ApplovinProperties.main = serializedObject.FindProperty("maxSettings");
             ApplovinProperties.enable.property = ApplovinProperties.main.FindPropertyRelative("enable");
-            ApplovinProperties.sdkKey.property = ApplovinProperties.main.FindPropertyRelative("sdkKey");
             ApplovinProperties.bannerAdUnit.property = ApplovinProperties.main.FindPropertyRelative("bannerAdUnit");
             ApplovinProperties.interstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("interstitialAdUnit");
             ApplovinProperties.rewardedAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedAdUnit");
             ApplovinProperties.rewardedInterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
             ApplovinProperties.appOpenAdUnit.property = ApplovinProperties.main.FindPropertyRelative("appOpenAdUnit");
 
-            ApplovinProperties.enableAgeRestrictedUser.property = ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
             ApplovinProperties.enableRequestAdAfterHidden.property = ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
             ApplovinProperties.enableMaxAdReview.property = ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
         }
@@ -199,7 +198,8 @@ namespace Pancake.Monetization.Editor
 
                     EditorGUILayout.PropertyField(AdProperties.currentNetwork.property, AdProperties.currentNetwork.content);
 
-                    if (AdSettings.AdCommonSettings.EnableGDPR) EditorGUILayout.PropertyField(AdProperties.privacyPolicyUrl.property, AdProperties.privacyPolicyUrl.content);
+                    if (AdSettings.AdCommonSettings.EnableGDPR)
+                        EditorGUILayout.PropertyField(AdProperties.privacyPolicyUrl.property, AdProperties.privacyPolicyUrl.content);
 
                     if (AdSettings.AdCommonSettings.EnableMultipleDex)
                     {
@@ -249,7 +249,8 @@ namespace Pancake.Monetization.Editor
                         if (IsAdmobSdkAvaiable)
                         {
                             EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
-                            if (AdSettings.AdmobSettings.editorImportingSdk != null && !string.IsNullOrEmpty(AdSettings.AdmobSettings.editorImportingSdk.lastVersion.unity) &&
+                            if (AdSettings.AdmobSettings.editorImportingSdk != null &&
+                                !string.IsNullOrEmpty(AdSettings.AdmobSettings.editorImportingSdk.lastVersion.unity) &&
                                 AdSettings.AdmobSettings.editorImportingSdk.CurrentToLatestVersionComparisonResult == EVersionComparisonResult.Lesser)
                             {
                                 if (GUILayout.Button("Update Admob Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
@@ -328,71 +329,29 @@ namespace Pancake.Monetization.Editor
                     EditorGUILayout.PropertyField(ApplovinProperties.enable.property, ApplovinProperties.enable.content);
                     if (AdSettings.MaxSettings.Enable)
                     {
-                        SettingManager.ValidateApplovinSdkImported();
-                        if (IsApplovinSdkAvaiable)
-                        {
-                            EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
-                            
-                            if (AdSettings.MaxSettings.editorImportingSdk != null && !string.IsNullOrEmpty(AdSettings.MaxSettings.editorImportingSdk.lastVersion.unity) &&
-                                AdSettings.MaxSettings.editorImportingSdk.CurrentToLatestVersionComparisonResult == EVersionComparisonResult.Lesser)
-                            {
-                                if (GUILayout.Button("Update MaxSdk Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
-                                {
-                                    EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(AdSettings.MaxSettings.editorImportingSdk));
-                                }
-                            }
-                            EditorGUILayout.Space();
-                            EditorGUILayout.PropertyField(ApplovinProperties.sdkKey.property, ApplovinProperties.sdkKey.content);
-                            EditorGUILayout.PropertyField(ApplovinProperties.enableAgeRestrictedUser.property, ApplovinProperties.enableAgeRestrictedUser.content);
-                            EditorGUILayout.PropertyField(ApplovinProperties.enableRequestAdAfterHidden.property, ApplovinProperties.enableRequestAdAfterHidden.content);
-                            EditorGUILayout.PropertyField(ApplovinProperties.enableMaxAdReview.property, ApplovinProperties.enableMaxAdReview.content);
+#if PANCAKE_ADS && PANCAKE_MAX_ENABLE
+                        EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
+
+                        EditorGUILayout.Space();
+                        EditorGUILayout.PropertyField(ApplovinProperties.enableRequestAdAfterHidden.property, ApplovinProperties.enableRequestAdAfterHidden.content);
+                        EditorGUILayout.PropertyField(ApplovinProperties.enableMaxAdReview.property, ApplovinProperties.enableMaxAdReview.content);
 #if PANCAKE_MAX_ENABLE
-                            AppLovinSettings.Instance.QualityServiceEnabled = AdSettings.MaxSettings.EnableMaxAdReview;
-                            AppLovinSettings.Instance.ConsentFlowEnabled = AdSettings.AdCommonSettings.EnableGDPR;
-                            AppLovinSettings.Instance.ConsentFlowPrivacyPolicyUrl = AdSettings.AdCommonSettings.PrivacyPolicyUrl;
+                        AppLovinSettings.Instance.QualityServiceEnabled = AdSettings.MaxSettings.EnableMaxAdReview;
 #endif
-                            EditorGUILayout.Space();
-                            EditorGUI.indentLevel++;
-                            EditorGUILayout.PropertyField(ApplovinProperties.bannerAdUnit.property, ApplovinProperties.bannerAdUnit.content);
-                            EditorGUILayout.PropertyField(ApplovinProperties.interstitialAdUnit.property, ApplovinProperties.interstitialAdUnit.content);
-                            EditorGUILayout.PropertyField(ApplovinProperties.rewardedAdUnit.property, ApplovinProperties.rewardedAdUnit.content);
-                            EditorGUILayout.PropertyField(ApplovinProperties.rewardedInterstitialAdUnit.property, ApplovinProperties.rewardedInterstitialAdUnit.content);
-                            EditorGUILayout.PropertyField(ApplovinProperties.appOpenAdUnit.property, ApplovinProperties.appOpenAdUnit.content);
-                            EditorGUI.indentLevel--;
-                            EditorGUILayout.Space();
-
-                            Uniform.DrawGroupFoldout("APPLOVIN_MODULE_MEDIATION",
-                                "MEDIATION",
-                                () =>
-                                {
-                                    DrawHeaderMediation();
-                                    foreach (var network in AdSettings.MaxSettings.editorListNetwork)
-                                    {
-                                        DrawApplovinNetworkDetailRow(network);
-                                    }
-
-                                    DrawApplovinInstallAllNetwork();
-                                });
-                            EditorGUILayout.Space();
-                        }
-                        else
-                        {
-                            EditorGUILayout.HelpBox("Max plugin not found. Please import it to show ads from Applovin", MessageType.Warning);
-                            if (GUILayout.Button("Import MAX Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
+                        EditorGUILayout.Space();
+                        EditorGUI.indentLevel++;
+                        EditorGUILayout.PropertyField(ApplovinProperties.bannerAdUnit.property, ApplovinProperties.bannerAdUnit.content);
+                        EditorGUILayout.PropertyField(ApplovinProperties.interstitialAdUnit.property, ApplovinProperties.interstitialAdUnit.content);
+                        EditorGUILayout.PropertyField(ApplovinProperties.rewardedAdUnit.property, ApplovinProperties.rewardedAdUnit.content);
+                        EditorGUILayout.PropertyField(ApplovinProperties.rewardedInterstitialAdUnit.property, ApplovinProperties.rewardedInterstitialAdUnit.content);
+                        EditorGUILayout.PropertyField(ApplovinProperties.appOpenAdUnit.property, ApplovinProperties.appOpenAdUnit.content);
+                        EditorGUI.indentLevel--;
+                        EditorGUILayout.Space();
+#else
+                            if (GUILayout.Button("Install Applovin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
                             {
-                                if (AdSettings.MaxSettings.editorImportingSdk != null)
-                                {
-                                    EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(AdSettings.MaxSettings.editorImportingSdk));
-                                }
-                                else
-                                {
-                                    Application.OpenURL("https://github.com/gamee-studio/ads/releases/tag/1.0.21");
-                                }
+                                _ = InstallApplovin();
                             }
-                        }
-
-#if PANCAKE_MAX_ENABLE
-                        if (GUI.changed) AppLovinSettings.Instance.SaveAsync();
 #endif
                     }
                 });
@@ -401,6 +360,38 @@ namespace Pancake.Monetization.Editor
 
             EditorGUI.EndDisabledGroup();
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private const string APPLOVIN_REGISTRY_NAME = "AppLovin MAX Unity";
+        private const string APPLOVIN_REGISTRY_URL = "https://unity.packages.applovin.com/";
+        private const string APPLOVIN_PACKAGE_NAME = "com.applovin.mediation.ads";
+
+        private static readonly List<string> AppLovinRegistryScopes =
+            new() {"com.applovin.mediation.ads", "com.applovin.mediation.adapters", "com.applovin.mediation.dsp"};
+
+        private static async Task InstallApplovin()
+        {
+            RegistryManager.AddScopedRegistry(APPLOVIN_REGISTRY_NAME, APPLOVIN_REGISTRY_URL, AppLovinRegistryScopes);
+            RegistryManager.Resolve();
+
+            string version = await GetLatestVersionApplovinMediation();
+            if (string.IsNullOrEmpty(version)) return;
+
+            RegistryManager.AddPackage(APPLOVIN_PACKAGE_NAME, version);
+            RegistryManager.Resolve();
+        }
+
+        private static async Task<string> GetLatestVersionApplovinMediation()
+        {
+            var request = Client.Search(APPLOVIN_PACKAGE_NAME);
+            while (!request.IsCompleted)
+            {
+                await Task.Delay(100);
+            }
+
+            if (request.Status != StatusCode.Success) return "";
+
+            return request.Result.First().versions.latestCompatible;
         }
 
         private void DrawHeaderMediation()
@@ -493,111 +484,6 @@ namespace Pancake.Monetization.Editor
             }
         }
 
-        private void DrawApplovinNetworkDetailRow(MaxNetwork network)
-        {
-            string currentVersion = network.CurrentVersions != null ? network.CurrentVersions.Unity : "";
-            string latestVersion = network.LatestVersions.Unity;
-            var status = "";
-            var isActionEnabled = false;
-            var isInstalled = false;
-            ValidateVersionMax(network.CurrentToLatestVersionComparisonResult,
-                ref currentVersion,
-                ref status,
-                ref isActionEnabled,
-                ref isInstalled);
-
-            GUILayout.Space(4);
-            using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandHeight(false)))
-            {
-                GUILayout.Space(5);
-                EditorGUILayout.LabelField(new GUIContent(network.DisplayName), NetworkWidthOption);
-                EditorGUILayout.LabelField(new GUIContent(currentVersion), VersionWidthOption);
-                GUILayout.Space(3);
-                EditorGUILayout.LabelField(new GUIContent(latestVersion), VersionWidthOption);
-                GUILayout.FlexibleSpace();
-
-                if (network.RequiresUpdate)
-                {
-                    GUILayout.Label(_warningIcon);
-                }
-
-                GUI.enabled = isActionEnabled && !EditorApplication.isCompiling;
-                if (GUILayout.Button(new GUIContent(status), FieldWidth))
-                {
-                    // Download the plugin.
-                    EditorCoroutine.Start(MaxManager.Instance.DownloadPlugin(network));
-                    if (network.Name.Equals("ALGORIX_NETWORK"))
-                    {
-                        AdsEditorUtil.CreateMainTemplateGradle();
-                        AdsEditorUtil.AddSettingProguardFile(new List<string>()
-                        {
-                            "-keep class com.alxad.* {;}",
-                            "-keep class admob.custom.adapter.* {;}",
-                            "-keep class anythink.custom.adapter.* {;}",
-                            "-keep class com.mopub.mobileads.* {;}",
-                            "-keep class com.applovin.mediation.adapters.* {;}"
-                        });
-                        AdsEditorUtil.AddAlgorixSettingGradle(network);
-                    }
-                }
-
-                GUI.enabled = !EditorApplication.isCompiling;
-                GUILayout.Space(2);
-
-                GUI.enabled = isInstalled && !EditorApplication.isCompiling;
-                if (GUILayout.Button(_iconUnintall, FieldWidth))
-                {
-                    EditorUtility.DisplayProgressBar("Ads", "Deleting " + network.DisplayName + "...", 0.5f);
-                    var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
-                    foreach (var pluginFilePath in network.PluginFilePaths)
-                    {
-                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath + ".meta"));
-                    }
-
-                    if (network.Name.Equals("ALGORIX_NETWORK"))
-                    {
-                        AdsEditorUtil.RemoveAlgorixSettingGradle();
-                        AdsEditorUtil.DeleteProguardFile();
-                    }
-
-                    SettingManager.RemoveAllEmptyFolder(new DirectoryInfo(pluginRoot));
-                    MaxManager.UpdateCurrentVersions(network, pluginRoot);
-
-                    // Refresh UI
-                    AssetDatabase.Refresh();
-                    EditorUtility.ClearProgressBar();
-                }
-
-                GUI.enabled = !EditorApplication.isCompiling;
-                GUILayout.Space(5);
-            }
-
-            if (isInstalled)
-            {
-                if (network.Name.Equals("ADMOB_NETWORK"))
-                {
-#if PANCAKE_MAX_ENABLE
-                    // ReSharper disable once PossibleNullReferenceException
-                    if ((int) MaxSdkUtils.CompareUnityMediationVersions(network.CurrentVersions.Unity, "android_19.0.1.0_ios_7.57.0.0") ==
-                        (int) EVersionComparisonResult.Greater)
-                    {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(20);
-
-                        using (new EditorGUILayout.VerticalScope())
-                        {
-                            AppLovinSettings.Instance.AdMobAndroidAppId =
-                                Uniform.DrawTextField("App ID (Android)", AppLovinSettings.Instance.AdMobAndroidAppId, NetworkWidthOption);
-                            AppLovinSettings.Instance.AdMobIosAppId = Uniform.DrawTextField("App ID (iOS)", AppLovinSettings.Instance.AdMobIosAppId, NetworkWidthOption);
-                        }
-
-                        GUILayout.EndHorizontal();
-                    }
-#endif
-                }
-            }
-        }
 
         /// <summary>
         /// Use Install All Network to import package => AssetDatabase.importPackageCompleted not called
@@ -681,89 +567,6 @@ namespace Pancake.Monetization.Editor
             }
         }
 
-        /// <summary>
-        /// AssetDatabase.importPackageCompleted not called
-        /// </summary>
-        private void DrawApplovinInstallAllNetwork()
-        {
-            var showInstallAll = false;
-            var showUninstallAll = false;
-            for (int i = 0; i < AdSettings.MaxSettings.editorListNetwork.Count; i++)
-            {
-                var network = AdSettings.MaxSettings.editorListNetwork[i];
-                var status = "";
-                string currentVersion = network.CurrentVersions != null ? network.CurrentVersions.Unity : "";
-                var isActionEnabled = false;
-                var isInstalled = false;
-                ValidateVersionMax(network.CurrentToLatestVersionComparisonResult,
-                    ref currentVersion,
-                    ref status,
-                    ref isActionEnabled,
-                    ref isInstalled);
-
-                if (isActionEnabled) showInstallAll = true;
-                if (isInstalled) showUninstallAll = true;
-            }
-
-            GUILayout.Space(4);
-            using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandHeight(false)))
-            {
-                GUILayout.Space(5);
-                EditorGUILayout.LabelField(new GUIContent(), NetworkWidthOption);
-                EditorGUILayout.LabelField(new GUIContent(), VersionWidthOption);
-                GUILayout.Space(3);
-                EditorGUILayout.LabelField(new GUIContent(), VersionWidthOption);
-                GUILayout.Space(3);
-                GUILayout.FlexibleSpace();
-
-                GUI.enabled = showInstallAll && !EditorApplication.isCompiling;
-                if (GUILayout.Button(new GUIContent("Install All"), FieldWidth))
-                {
-                    MaxManager.Instance.DownloadAllPlugin(AdSettings.MaxSettings.editorListNetwork);
-                }
-
-                GUI.enabled = !EditorApplication.isCompiling;
-                GUILayout.Space(2);
-
-                GUI.enabled = showUninstallAll && !EditorApplication.isCompiling;
-                if (GUILayout.Button(new GUIContent("Unistall All"), GUILayout.Width(ACTION_FIELD_WIDTH + 10)))
-                {
-                    EditorUtility.DisplayProgressBar("Ads", "Deleting All Network...", 0.5f);
-                    var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
-
-                    foreach (var network in AdSettings.MaxSettings.editorListNetwork)
-                    {
-                        var status = "";
-                        var isActionEnabled = false;
-                        var isInstalled = false;
-                        string currentVersion = network.CurrentVersions != null ? network.CurrentVersions.Unity : "";
-
-                        if (!ValidateVersionMax(network.CurrentToLatestVersionComparisonResult,
-                                ref currentVersion,
-                                ref status,
-                                ref isActionEnabled,
-                                ref isInstalled))
-                        {
-                            foreach (var pluginFilePath in network.PluginFilePaths)
-                            {
-                                FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath));
-                                FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath + ".meta"));
-                            }
-
-                            MaxManager.UpdateCurrentVersions(network, pluginRoot);
-                        }
-                    }
-
-                    // Refresh UI
-                    AssetDatabase.Refresh();
-                    EditorUtility.ClearProgressBar();
-                }
-
-                GUI.enabled = !EditorApplication.isCompiling;
-                GUILayout.Space(5);
-            }
-        }
-
         private bool ValidateVersionAdmob(
             EVersionComparisonResult comparison,
             ref string currentVersion,
@@ -793,50 +596,6 @@ namespace Pancake.Monetization.Editor
                 }
                 // Current installed version is newer than latest version from DB (beta version)
                 else if (comparison == EVersionComparisonResult.Greater)
-                {
-                    status = "Installed";
-                    isActionEnabled = false;
-                }
-                // Already on the latest version
-                else
-                {
-                    status = "Installed";
-                    isActionEnabled = false;
-                }
-            }
-
-            return isActionEnabled;
-        }
-
-        private bool ValidateVersionMax(
-            EVersionComparisonResult comparisonResult,
-            ref string currentVersion,
-            // ReSharper disable once RedundantAssignment
-            ref string status,
-            // ReSharper disable once RedundantAssignment
-            ref bool isActionEnabled,
-            // ReSharper disable once RedundantAssignment
-            ref bool isInstalled)
-        {
-            if (string.IsNullOrEmpty(currentVersion))
-            {
-                status = "Install";
-                currentVersion = "Not Installed";
-                isActionEnabled = true;
-                isInstalled = false;
-            }
-            else
-            {
-                isInstalled = true;
-
-                // A newer version is available
-                if (comparisonResult == EVersionComparisonResult.Lesser)
-                {
-                    status = "Upgrade";
-                    isActionEnabled = true;
-                }
-                // Current installed version is newer than latest version from DB (beta version)
-                else if (comparisonResult == EVersionComparisonResult.Greater)
                 {
                     status = "Installed";
                     isActionEnabled = false;

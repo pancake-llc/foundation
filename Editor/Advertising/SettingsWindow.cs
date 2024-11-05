@@ -60,13 +60,9 @@ namespace Pancake.Monetization.Editor
 
             SettingManager.importGmaCompletedCallback = OnImportGmaCompleted;
 
-            MaxManager.downloadPluginProgressCallback = OnDownloadMaxPluginProgress;
-            MaxManager.importPackageCompletedCallback = OnMaxImportPackageCompleted;
 
             SettingManager.Instance.Load();
             SettingManager.Instance.LoadGma();
-            MaxManager.Instance.Load();
-            MaxManager.Instance.LoadMaxSdkJson();
             Uniform.LoadFoldoutSetting();
         }
 
@@ -134,45 +130,6 @@ namespace Pancake.Monetization.Editor
                     else
                     {
                         SettingManager.Instance.brandWidthWebRequest[index]?.Abort();
-                    }
-
-                    EditorUtility.ClearProgressBar();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Callback method that will be called when package import completed
-        /// </summary>
-        /// <param name="network"></param>
-        private static void OnMaxImportPackageCompleted(MaxNetwork network)
-        {
-            string parentDirectory = network.Name.Equals("APPLOVIN_NETWORK") ? MaxManager.PluginParentDirectory : MaxManager.MediationSpecificPluginParentDirectory;
-            MaxManager.UpdateCurrentVersions(network, parentDirectory);
-        }
-
-        /// <summary>
-        /// Callback method that will be called with progress updates when the plugin is being downloaded.
-        /// </summary>
-        private static void OnDownloadMaxPluginProgress(string pluginName, float progress, bool done, int index)
-        {
-            // Download is complete. Clear progress bar.
-            if (done)
-            {
-                EditorUtility.ClearProgressBar();
-            }
-            // Download is in progress, update progress bar.
-            else
-            {
-                if (EditorUtility.DisplayCancelableProgressBar("Advertisement", string.Format("Downloading {0} plugin...", pluginName), progress))
-                {
-                    if (index == -1)
-                    {
-                        MaxManager.Instance.webRequest?.Abort();
-                    }
-                    else
-                    {
-                        MaxManager.Instance.branWidthRequest[index]?.Abort();
                     }
 
                     EditorUtility.ClearProgressBar();
