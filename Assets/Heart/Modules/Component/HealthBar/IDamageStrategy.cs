@@ -1,7 +1,8 @@
-﻿namespace Pancake.Component
+﻿using Pancake.Pattern;
+
+namespace Pancake.Component
 {
-    public interface IDamageStrategy
+    public interface IDamageStrategy : IStrategy<float, float>
     {
-        float CalculateDamage(float baseDamage);
     }
 }
