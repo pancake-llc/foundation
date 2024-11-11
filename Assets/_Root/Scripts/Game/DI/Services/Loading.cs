@@ -1,4 +1,4 @@
-using System.Globalization;
+using System.Text;
 using Pancake.Common;
 using Pancake.Game.Interfaces;
 using Pancake.Localization;
@@ -16,6 +16,8 @@ namespace Pancake.Game
         [SerializeField] private LocaleTextComponent localeTxtPercent;
 
         private float _currentTimeLoading;
+        private StringBuilder _builder;
+        private int _lastPercent = -1;
         public bool IsLoadingCompleted { get; private set; }
 
         void ILoadComponent.OnLoadComponents()
@@ -28,6 +30,7 @@ namespace Pancake.Game
         {
             loadingBar.value = 0;
             IsLoadingCompleted = false;
+            _builder = new StringBuilder();
         }
 
         private void Update()
@@ -45,7 +48,15 @@ namespace Pancake.Game
                     _currentTimeLoading += Time.deltaTime;
                 }
 
-                localeTxtPercent.UpdateArgs((loadingBar.value * 100).Round().ToString(CultureInfo.InvariantCulture));
+                var now = (int) (loadingBar.value * 100).Round();
+                if (_lastPercent != now)
+                {
+                    _lastPercent = now;
+                    _builder.Clear();
+                    _builder.Append((loadingBar.value * 100).Round());
+                    localeTxtPercent.UpdateArgs(_builder.ToString());
+                }
+
                 if (_currentTimeLoading >= duration) IsLoadingCompleted = true;
             }
         }
