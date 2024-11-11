@@ -8,7 +8,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Pancake.Pools
 {
-    public static class SharedAdressableGameObjectPoolAsync
+    public static class SharedAsyncAddressableGameObjectPool
     {
         private static readonly Dictionary<AssetReferenceGameObject, AsyncAddressableGameObjectPool> Pools = new();
 

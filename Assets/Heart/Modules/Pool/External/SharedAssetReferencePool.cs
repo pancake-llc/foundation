@@ -6,74 +6,74 @@ using UnityEngine.AddressableAssets;
 
 namespace Pancake.Pools
 {
-    public static class SharedAdressableGameObjectPool
+    public static class SharedAssetReferencePool
     {
         private static readonly Dictionary<AssetReferenceGameObject, AddressableGameObjectPool> Pools = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init() { DisposeAll(); }
 
-        public static GameObject Request(this AssetReferenceGameObject original)
+        public static GameObject Request(AssetReferenceGameObject original)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
             return GetOrCreatePool(original).Request();
         }
 
-        public static GameObject Request(this AssetReferenceGameObject original, Transform parent, bool worldPositionStays = false)
+        public static GameObject Request(AssetReferenceGameObject original, Transform parent, bool worldPositionStays = false)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
             return GetOrCreatePool(original).Request(parent, worldPositionStays);
         }
 
-        public static GameObject Request(this AssetReferenceGameObject original, Vector3 position, Quaternion rotation)
+        public static GameObject Request(AssetReferenceGameObject original, Vector3 position, Quaternion rotation)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
             return GetOrCreatePool(original).Request(position, rotation);
         }
 
-        public static GameObject Request(this AssetReferenceGameObject original, Vector3 position, Quaternion rotation, Transform parent)
+        public static GameObject Request(AssetReferenceGameObject original, Vector3 position, Quaternion rotation, Transform parent)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
             return GetOrCreatePool(original).Request(position, rotation, parent);
         }
 
-        public static TComponent Request<TComponent>(this AssetReferenceGameObject original) where TComponent : Component
+        public static TComponent Request<TComponent>(AssetReferenceGameObject original) where TComponent : Component
         {
             return Request(original).GetComponent<TComponent>();
         }
 
-        public static TComponent Request<TComponent>(this AssetReferenceGameObject original, Transform parent, bool worldPositionStays = false)
+        public static TComponent Request<TComponent>(AssetReferenceGameObject original, Transform parent, bool worldPositionStays = false)
             where TComponent : Component
         {
             return Request(original, parent, worldPositionStays).GetComponent<TComponent>();
         }
 
-        public static TComponent Request<TComponent>(this AssetReferenceGameObject original, Vector3 position, Quaternion rotation) where TComponent : Component
+        public static TComponent Request<TComponent>(AssetReferenceGameObject original, Vector3 position, Quaternion rotation) where TComponent : Component
         {
             return Request(original, position, rotation).GetComponent<TComponent>();
         }
 
-        public static TComponent Request<TComponent>(this AssetReferenceGameObject original, Vector3 position, Quaternion rotation, Transform parent)
+        public static TComponent Request<TComponent>(AssetReferenceGameObject original, Vector3 position, Quaternion rotation, Transform parent)
             where TComponent : Component
         {
             return Request(original, position, rotation, parent).GetComponent<TComponent>();
         }
 
-        public static void Return(this AssetReferenceGameObject original, GameObject gameObject)
+        public static void Return(AssetReferenceGameObject original, GameObject gameObject)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
             if (gameObject == null) throw new ArgumentNullException(nameof(gameObject));
             GetOrCreatePool(original).Return(gameObject);
         }
 
-        public static void Prewarm(this AssetReferenceGameObject original, int count)
+        public static void Prewarm(AssetReferenceGameObject original, int count)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
             var pool = GetOrCreatePool(original);
             pool.Prewarm(count);
         }
 
-        public static void Dispose(this AssetReferenceGameObject original)
+        public static void Dispose(AssetReferenceGameObject original)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
             var pool = GetOrCreatePool(original);
