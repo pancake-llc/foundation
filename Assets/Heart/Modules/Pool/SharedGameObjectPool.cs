@@ -25,21 +25,9 @@ namespace Pancake.Pools
 
             var pool = GetOrCreatePool(original);
 
-            GameObject obj;
-            while (true)
-            {
-                if (!pool.TryPop(out obj))
-                {
-                    obj = UnityEngine.Object.Instantiate(original);
-                    break;
-                }
+            if (!pool.TryPop(out var obj)) obj = UnityEngine.Object.Instantiate(original);
 
-                if (obj != null)
-                {
-                    obj.SetActive(true);
-                    break;
-                }
-            }
+            if (obj != null) obj.SetActive(true);
 
             CloneReferences.Add(obj, pool);
 
@@ -54,21 +42,12 @@ namespace Pancake.Pools
 
             var pool = GetOrCreatePool(original);
 
-            GameObject obj;
-            while (true)
-            {
-                if (!pool.TryPop(out obj))
-                {
-                    obj = UnityEngine.Object.Instantiate(original, parent);
-                    break;
-                }
+            if (!pool.TryPop(out var obj)) obj = UnityEngine.Object.Instantiate(original, parent);
 
-                if (obj != null)
-                {
-                    obj.transform.SetParent(parent);
-                    obj.SetActive(true);
-                    break;
-                }
+            if (obj != null)
+            {
+                obj.transform.SetParent(parent);
+                obj.SetActive(true);
             }
 
             CloneReferences.Add(obj, pool);
@@ -84,21 +63,12 @@ namespace Pancake.Pools
 
             var pool = GetOrCreatePool(original);
 
-            GameObject obj;
-            while (true)
-            {
-                if (!pool.TryPop(out obj))
-                {
-                    obj = UnityEngine.Object.Instantiate(original, position, rotation);
-                    break;
-                }
+            if (!pool.TryPop(out var obj)) obj = UnityEngine.Object.Instantiate(original, position, rotation);
 
-                if (obj != null)
-                {
-                    obj.transform.SetPositionAndRotation(position, rotation);
-                    obj.SetActive(true);
-                    break;
-                }
+            if (obj != null)
+            {
+                obj.transform.SetPositionAndRotation(position, rotation);
+                obj.SetActive(true);
             }
 
             CloneReferences.Add(obj, pool);
@@ -114,22 +84,13 @@ namespace Pancake.Pools
 
             var pool = GetOrCreatePool(original);
 
-            GameObject obj;
-            while (true)
-            {
-                if (!pool.TryPop(out obj))
-                {
-                    obj = UnityEngine.Object.Instantiate(original, position, rotation, parent);
-                    break;
-                }
+            if (!pool.TryPop(out var obj)) obj = UnityEngine.Object.Instantiate(original, position, rotation, parent);
 
-                if (obj != null)
-                {
-                    obj.transform.SetParent(parent);
-                    obj.transform.SetPositionAndRotation(position, rotation);
-                    obj.SetActive(true);
-                    break;
-                }
+            if (obj != null)
+            {
+                obj.transform.SetParent(parent);
+                obj.transform.SetPositionAndRotation(position, rotation);
+                obj.SetActive(true);
             }
 
             CloneReferences.Add(obj, pool);
