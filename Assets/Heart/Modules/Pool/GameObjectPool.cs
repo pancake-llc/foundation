@@ -39,17 +39,17 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public GameObject Request(Transform parent)
+        public GameObject Request(Transform parent, bool worldPositionStays = false)
         {
             ThrowIfDisposed();
 
             if (!_stack.TryPop(out var obj))
             {
-                obj = UnityEngine.Object.Instantiate(_original, parent);
+                obj = UnityEngine.Object.Instantiate(_original, parent, worldPositionStays);
             }
             else
             {
-                obj.transform.SetParent(parent);
+                obj.transform.SetParent(parent, worldPositionStays);
                 obj.SetActive(true);
             }
 

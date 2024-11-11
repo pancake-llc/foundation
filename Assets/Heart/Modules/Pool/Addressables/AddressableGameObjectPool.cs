@@ -40,17 +40,17 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public GameObject Request(Transform parent)
+        public GameObject Request(Transform parent, bool worldPositionStays = false)
         {
             ThrowIfDisposed();
 
             if (!_stack.TryPop(out var obj))
             {
-                obj = Addressables.InstantiateAsync(_key, parent).WaitForCompletion();
+                obj = Addressables.InstantiateAsync(_key, parent, worldPositionStays).WaitForCompletion();
             }
             else
             {
-                obj.transform.SetParent(parent);
+                obj.transform.SetParent(parent, worldPositionStays);
                 obj.SetActive(true);
             }
 

@@ -42,17 +42,17 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public async UniTask<GameObject> RequestAsync(Transform parent, CancellationToken cancellationToken = default)
+        public async UniTask<GameObject> RequestAsync(Transform parent, bool worldPositionStays = false, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
 
             if (!_stack.TryPop(out var obj))
             {
-                obj = await Addressables.InstantiateAsync(_key, parent).ToUniTask(cancellationToken: cancellationToken);
+                obj = await Addressables.InstantiateAsync(_key, parent, worldPositionStays).ToUniTask(cancellationToken: cancellationToken);
             }
             else
             {
-                obj.transform.SetParent(parent);
+                obj.transform.SetParent(parent, worldPositionStays);
                 obj.SetActive(true);
             }
 

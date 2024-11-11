@@ -36,17 +36,17 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public static GameObject Request(this GameObject original, Transform parent)
+        public static GameObject Request(this GameObject original, Transform parent, bool worldPositionStays = false)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
 
             var pool = GetOrCreatePool(original);
 
-            if (!pool.TryPop(out var obj)) obj = UnityEngine.Object.Instantiate(original, parent);
+            if (!pool.TryPop(out var obj)) obj = UnityEngine.Object.Instantiate(original, parent, worldPositionStays);
 
             if (obj != null)
             {
-                obj.transform.SetParent(parent);
+                obj.transform.SetParent(parent, worldPositionStays);
                 obj.SetActive(true);
             }
 
@@ -102,9 +102,9 @@ namespace Pancake.Pools
 
         public static TComponent Request<TComponent>(this GameObject original) where TComponent : Component { return Request(original).GetComponent<TComponent>(); }
 
-        public static TComponent Request<TComponent>(this GameObject original, Transform parent) where TComponent : Component
+        public static TComponent Request<TComponent>(this GameObject original, Transform parent, bool worldPositionStays = false) where TComponent : Component
         {
-            return Request(original, parent).GetComponent<TComponent>();
+            return Request(original, parent, worldPositionStays).GetComponent<TComponent>();
         }
 
         public static TComponent Request<TComponent>(this GameObject original, Vector3 position, Quaternion rotation) where TComponent : Component
@@ -205,11 +205,9 @@ namespace Pancake.Pools
 
         private static Stack<GameObject> GetOrCreatePool(GameObject original)
         {
-            if (!Pools.TryGetValue(original, out var pool))
-            {
-                pool = new Stack<GameObject>();
-                Pools.Add(original, pool);
-            }
+            if (Pools.TryGetValue(original, out var pool)) return pool;
+            pool = new Stack<GameObject>();
+            Pools.Add(original, pool);
 
             return pool;
         }
