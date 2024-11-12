@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -31,13 +30,11 @@ namespace PancakeEditor.Common
         private readonly GUIStyle _style;
         private readonly Vector2 _size;
         private readonly GUILayoutOption _height;
-        private readonly WaitForSeconds _waitForSeconds;
-
-        private EditorCoroutine _coroutine;
+        private readonly float _time;
 
         public TooltipWindowContent(string text, float time, int fontSize)
         {
-            _style = new(EditorStyles.label) {alignment = TextAnchor.UpperLeft, fontSize = fontSize,};
+            _style = new GUIStyle(EditorStyles.label) {alignment = TextAnchor.UpperLeft, fontSize = fontSize};
 
             var guiContent = new GUIContent(text);
             var labelSize = _style.CalcSize(guiContent);
@@ -45,23 +42,17 @@ namespace PancakeEditor.Common
             _message = text;
             _size = labelSize + WindowSizeOffset;
             _height = GUILayout.Height(labelSize.y);
-            _waitForSeconds = new WaitForSeconds(time);
+            _time = time;
         }
 
-        public override void OnOpen() { _coroutine = EditorCoroutine.Start(OnUpdate()); }
+        public override void OnOpen() { OnUpdate(); }
 
-        public override void OnClose()
-        {
-            if (_coroutine == null) return;
-            _coroutine.Stop();
-            _coroutine = null;
-        }
+        public override void OnClose() { }
 
-        private IEnumerator OnUpdate()
+        private async void OnUpdate()
         {
-            yield return _waitForSeconds;
-            _coroutine = null;
-            if (editorWindow == null) yield break;
+            await Awaitable.WaitForSecondsAsync(_time);
+            if (editorWindow == null) return;
             editorWindow.Close();
         }
 
