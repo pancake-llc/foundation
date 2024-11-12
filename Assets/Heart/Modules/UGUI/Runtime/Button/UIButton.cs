@@ -84,7 +84,7 @@ namespace Pancake.UI
         private float _holdTimer; // calculate how long was the button pressed
         private Vector3 _endValue;
         private bool _isCompletePhaseDown;
-        private readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
+        private readonly WaitForEndOfFrame _waitForEndOfFrame = new();
 #if PANCAKE_LITMOTION
         private MotionHandle _handleUp;
         private MotionHandle _handleDown;

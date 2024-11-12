@@ -34,6 +34,7 @@ namespace Pancake.Game
 
         private void Start()
         {
+            LitMotion.LMotion.Create(0, 0, 0).RunWithoutBinding();
             if (dailyNotification != null) dailyNotification.Schedule();
             LoadScene();
         }
