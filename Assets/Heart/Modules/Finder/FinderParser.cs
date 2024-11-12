@@ -8,13 +8,13 @@ namespace PancakeEditor.Finder
     {
         public static void ReadYaml(string filePath, Action<string, long> callback) { Read(filePath, ParseLine_Yaml, callback); }
 
-        public static void ReadJson(string filePath, Action<string, long> callback) { Read(filePath, ParseLine_Json, callback); }
+        public static void ReadJson(string filePath, Action<string, long> callback) { Read(filePath, ParseLine_Json, callback, false); }
 
         public static void ReadUssUxml(string filePath, Action<string, long> callback) { Read(filePath, ParseLine_Uxml_Uss, callback); }
 
         public static void ReadTss(string filePath, Action<string, long> callback) { Read(filePath, ParseLine_Tss, callback); }
 
-        private static void Read(string filePath, Func<string, (string, long)> lineHandler, Action<string, long> add)
+        private static void Read(string filePath, Func<string, (string, long)> lineHandler, Action<string, long> add, bool doubleCheck = true)
         {
             try
             {
@@ -24,36 +24,66 @@ namespace PancakeEditor.Finder
                     {
                         string line = sr.ReadLine();
                         if (string.IsNullOrEmpty(line)) continue;
-                        int idx1 = line.IndexOf("guid", StringComparison.Ordinal);
-                        int idx2 = line.IndexOf("m_AssetGUID", StringComparison.Ordinal);
-                        if (idx1 == -1 && idx2 == -1) continue;
 
-                        // compact line so that guid: xxxxx, fileID: xxxxx became guid:xxxxx,fileID:xxxxx
-                        line = line.Replace(" ", string.Empty);
                         (string guid, long fileId) = lineHandler(line);
-                        if (guid == null)
+                        if (!string.IsNullOrEmpty(guid))
                         {
-                            if (filePath.Contains("ProjectSettings/EditorBuildSettings.asset")) continue;
+                            add(guid, fileId);
+                            continue;
                         }
 
-                        add(guid, fileId);
+                        if (!doubleCheck) continue;
+                        guid = ExtractGuid(line);
+                        if (!string.IsNullOrEmpty(guid)) add(guid, 0);
                     }
                 }
             }
-#pragma warning disable CS0168
-            catch (Exception e)
+            catch (Exception)
             {
                 // ignored
             }
-#pragma warning restore CS0168
         }
+
+        private static string ExtractGuid(string line)
+        {
+            const int GuidLength = 32;
+            var validCharCount = 0;
+
+            for (var i = 0; i < line.Length; i++)
+            {
+                // Check if the character is a valid hex character (0-9, a-f, A-F)
+                if (IsHexChar(line[i]))
+                {
+                    validCharCount++;
+
+                    if (validCharCount == GuidLength)
+                    {
+                        // Return substring from the start of the valid sequence
+                        return line.Substring(i - GuidLength + 1, GuidLength);
+                    }
+                }
+                else
+                {
+                    // Reset count if a non-hex character interrupts the sequence
+                    validCharCount = 0;
+                }
+            }
+
+            return null; // No valid GUID found
+        }
+
+        // Helper method to check if a character is a hex character
+        private static bool IsHexChar(char c) => c is >= '0' and <= '9' or >= 'a' and <= 'f' or >= 'A' and <= 'F';
 
         private static (string guid, long fileId) ParseLine_Yaml(string line)
         {
-            // Check for both guid: and m_AssetGUID: patterns
-            var result = FindRef(line, "guid:", "fileID:", ",");
+            (string guid, long fileId) result = FindRef(line, "guid:", "fileID:", ",");
             if (result.guid != null) return result;
-            return FindRef(line, "m_AssetGUID:", null, null);
+            
+            result = FindRef(line, "m_AssetGUID:", null, null);
+            if (!string.IsNullOrEmpty(result.guid)) return result;
+            
+            return FindRef(line, "GUID:", null, null);
         }
 
         private static (string guid, long fileId) ParseLine_Json(string line)
@@ -89,16 +119,21 @@ namespace PancakeEditor.Finder
             return (guid, fileId);
         }
 
-        private static string Find(string source, string strBegin, string strEnd)
+        private static string Find(string source, string str_begin, string str_end)
         {
-            int st = source.IndexOf(strBegin, StringComparison.Ordinal);
+            int st = source.IndexOf(str_begin, StringComparison.Ordinal);
             if (st == -1) return null;
-            st += strBegin.Length;
+            st += str_begin.Length;
+            while (char.IsWhiteSpace(source[st]) && st < source.Length-1) st++;
+            if (string.IsNullOrEmpty(str_end)) // no end: determine by length
+            {
+                return source.Substring(st, 32);
+            }
             
-            if (string.IsNullOrEmpty(strEnd)) return source.Substring(st);
-
-            int ed = source.IndexOf(strEnd, st, StringComparison.Ordinal);
-            return ed == -1 ? null : source.Substring(st, ed - st);
+            int ed = source.IndexOf(str_end, st, StringComparison.Ordinal);
+            if (ed == -1) return null;
+            while (char.IsWhiteSpace(source[ed])) ed--;
+            return source.Substring(st, ed - st);
         }
     }
 }

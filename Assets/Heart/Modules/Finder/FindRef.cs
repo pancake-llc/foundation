@@ -18,7 +18,11 @@ namespace PancakeEditor.Finder
         public readonly string sceneFullPath = "";
         public readonly string scenePath = "";
         public readonly string targetType;
+        public Func<bool> drawFullPath;
         private readonly HashSet<string> _usingType = new();
+        private readonly GUIContent _assetNameGC;
+        
+        public static IWindow Window { get; set; }
 
         public FindSceneRef(int index, int depth, FindAsset asset, FindAsset by)
             : base(index, depth, asset, by)
@@ -47,12 +51,9 @@ namespace PancakeEditor.Finder
             targetType = component.GetType().Name;
             _assetNameGC = MyGUIContent.FromString(cName);
         }
-
-        public static IWindow Window { get; set; }
-
+        
         public override bool IsSelected() { return component != null && AssetBookmark.Contains(component); }
-        private readonly GUIContent _assetNameGC;
-
+        
         public void Draw(Rect r, IWindow window, FindRefDrawer.Mode groupMode, bool showDetails)
         {
             bool selected = IsSelected();
@@ -642,6 +643,7 @@ namespace PancakeEditor.Finder
         public Action<Rect, string, int> customDrawGroupLabel;
         public Action<Rect, FindRef> beforeItemDraw;
         public Action<Rect, FindRef> afterItemDraw;
+        public bool drawFullPath;
 
         internal List<FindRef> list;
         internal Dictionary<string, FindRef> refs;
@@ -755,6 +757,7 @@ namespace PancakeEditor.Finder
 
         private void DrawGroup(Rect r, string label, int childCount)
         {
+            if (string.IsNullOrEmpty(label)) label = "(none)";
             DrawToggleGroup(r, label);
             r.xMin += 18f;
 
@@ -876,7 +879,7 @@ namespace PancakeEditor.Finder
 
                 rf.asset.Draw(r,
                     isHighlight,
-                    !forceHideDetails && _getGroupMode() != Mode.Folder,
+                    drawFullPath,
                     !forceHideDetails && FinderWindowBase.DisplayFileSize,
                     !forceHideDetails && FinderWindowBase.DisplayAssetBundleName,
                     !forceHideDetails && FinderWindowBase.DisplayAtlasName,

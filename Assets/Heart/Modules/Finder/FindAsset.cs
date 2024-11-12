@@ -24,7 +24,8 @@ namespace PancakeEditor.Finder
         Model,
         Terrain,
         LightingData,
-        NonReadable
+        NonReadable,
+        BuiltIn
     }
 
     public enum EFinderAssetState
@@ -87,6 +88,11 @@ namespace PancakeEditor.Finder
 
         private static readonly HashSet<string> ReferencableMeta = new() {".texture2darray"};
 
+        internal static readonly HashSet<string> BuiltInAssets = new()
+        {
+            "0000000000000000f000000000000000", "0000000000000000e000000000000000", "0000000000000000d000000000000000"
+        };
+
         private static readonly Dictionary<long, Type> HashClasses = new();
         internal static Dictionary<string, GUIContent> cacheImage = new();
 
@@ -115,7 +121,7 @@ namespace PancakeEditor.Finder
         [SerializeField] private int mCachefileWriteTs; // file's lastModification at the time the content being read
 
         [SerializeField] internal int refreshStamp; // use to check if asset has been deleted (refreshStamp not updated)
-        [SerializeField] private List<Classes> useGUIDsList = new();
+        [SerializeField] internal List<Classes> useGUIDsList = new();
 
         public string DebugUseGUID() => $"{guid} : {AssetPath}\n{string.Join("\n", useGUIDsList.Select(item => item.guid).ToArray())}";
 
@@ -150,7 +156,7 @@ namespace PancakeEditor.Finder
         public FindAsset(string guid)
         {
             this.guid = guid;
-            type = EFinderAssetType.Unknown;
+            type = BuiltInAssets.Contains(guid) ? EFinderAssetType.BuiltIn : EFinderAssetType.Unknown;
         }
 
         public bool ForcedIncludedInBuild => mForceIncludeInBuild;
@@ -251,7 +257,7 @@ namespace PancakeEditor.Finder
 
         internal bool IsFolder => type == EFinderAssetType.Folder;
         internal bool IsScript => type == EFinderAssetType.Script;
-        internal bool IsMissing => state == EFinderAssetState.Missing;
+        internal bool IsMissing => state == EFinderAssetState.Missing && !IsBuiltIn;
 
         internal bool IsReferencable => type == EFinderAssetType.Referencable || type == EFinderAssetType.Scene;
 
@@ -260,9 +266,9 @@ namespace PancakeEditor.Finder
 
         // ----------------------- PATH INFO ------------------------
         public bool FileInfoDirty => type == EFinderAssetType.Unknown || mFileInfoReadTs <= mAssetChangeTs;
-        public bool FileContentDirty => mFileWriteTs != mCachefileWriteTs;
-
-        public bool IsDirty => FileInfoDirty || FileContentDirty;
+        public bool FileContentDirty => mFileWriteTs != mCachefileWriteTs && !IsBuiltIn;
+        public bool IsDirty => (FileInfoDirty || FileContentDirty) && !IsBuiltIn;
+        public bool IsBuiltIn => type == EFinderAssetType.BuiltIn;
 
         internal string FileInfoHash
         {
@@ -386,6 +392,7 @@ namespace PancakeEditor.Finder
 
         private bool ExistOnDisk()
         {
+            if (IsBuiltIn) return true;
             if (IsMissing) return false; // asset not exist - no need to check FileSystem!
             if (type == EFinderAssetType.Folder || type == EFinderAssetType.Unknown)
             {
@@ -411,7 +418,7 @@ namespace PancakeEditor.Finder
             if (string.IsNullOrEmpty(_mAssetPath)) LoadPathInfo(); // always reload Path Info
 
             mFileInfoReadTs = FinderUtility.Epoch(DateTime.Now);
-
+            if (IsBuiltIn) return;
             if (IsMissing) return;
 
             if (!ExistOnDisk())
@@ -680,9 +687,8 @@ namespace PancakeEditor.Finder
             if (Event.current.type == EventType.Repaint)
             {
                 var icon = AssetDatabase.GetCachedIcon(_mAssetPath);
-                if (icon != null) GUI.DrawTexture(iconRect, icon);
+                if (icon != null) GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
             }
-
 
             if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
             {
@@ -710,7 +716,7 @@ namespace PancakeEditor.Finder
                 GUI.Label(countRect, str, GUI2.MiniLabelAlignRight);
             }
 
-            float pathW = drawPath && !string.IsNullOrEmpty(AssetFolder) ? EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(AssetFolder)).x : 0;
+            float pathW = drawPath && !string.IsNullOrEmpty(AssetFolder) ? EditorStyles.miniLabel.CalcSize(MyGUIContent.FromString(AssetFolder)).x : 8f;
             float nameW = drawPath
                 ? EditorStyles.boldLabel.CalcSize(MyGUIContent.FromString(AssetName)).x
                 : EditorStyles.label.CalcSize(MyGUIContent.FromString(AssetName)).x;
@@ -719,7 +725,7 @@ namespace PancakeEditor.Finder
 
             if (singleLine)
             {
-                var lbRect = GUI2.LeftRect(pathW + nameW + extW + 8f, ref r);
+                var lbRect = GUI2.LeftRect(pathW + nameW + extW, ref r);
 
                 if (selected)
                 {
@@ -739,10 +745,15 @@ namespace PancakeEditor.Finder
                         GUI.color = c2;
                     }
 
-                    lbRect.xMin -= 4f;
                     GUI.Label(lbRect, MyGUIContent.FromString(AssetName), EditorStyles.boldLabel);
                 }
-                else GUI.Label(lbRect, MyGUIContent.FromString(AssetName));
+                else
+                {
+                    var c2 = GUI.color;
+                    GUI.color = new Color(c2.r, c2.g, c2.b, c2.a * 0.9f);
+                    GUI.Label(lbRect, MyGUIContent.FromString(AssetName));
+                    GUI.color = c2;
+                }
 
                 lbRect.xMin += nameW - 2f;
                 lbRect.y += 1f;
@@ -1362,7 +1373,7 @@ namespace PancakeEditor.Finder
         }
 
         [Serializable]
-        private class Classes
+        internal class Classes
         {
             public string guid;
             public List<long> ids;

@@ -102,17 +102,13 @@ namespace PancakeEditor.Finder
         {
             get
             {
-                if (FinderSetting.hashIgnore == null)
+                if (FinderSetting.hashIgnore != null) return FinderSetting.hashIgnore;
+                FinderSetting.hashIgnore = new HashSet<string>();
+                if (ListIgnore == null) return FinderSetting.hashIgnore;
+
+                for (var i = 0; i < ListIgnore.Count; i++)
                 {
-                    FinderSetting.hashIgnore = new HashSet<string>();
-                    if (ListIgnore == null) return FinderSetting.hashIgnore;
-
-                    for (int i = 0; i < ListIgnore.Count; i++)
-                    {
-                        if (FinderSetting.hashIgnore.Contains(ListIgnore[i])) continue;
-
-                        FinderSetting.hashIgnore.Add(ListIgnore[i]);
-                    }
+                    FinderSetting.hashIgnore.Add(ListIgnore[i]);
                 }
 
                 return FinderSetting.hashIgnore;

@@ -10,13 +10,21 @@ namespace PancakeEditor.Finder
     [InitializeOnLoad]
     public class CacheHelper : AssetPostprocessor
     {
-        private static HashSet<string> scenes;
-        private static HashSet<string> guidsIgnore;
+        [NonSerialized] private static HashSet<string> scenes;
+        [NonSerialized] private static HashSet<string> guidsIgnore;
+        [NonSerialized] internal static bool inited = false;
 
         static CacheHelper()
         {
-            EditorApplication.update -= InitHelper;
-            EditorApplication.update += InitHelper;
+            try
+            {
+                EditorApplication.update -= InitHelper;
+                EditorApplication.update += InitHelper;
+            }
+            catch (Exception)
+            {
+                //ignored
+            }
         }
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
@@ -56,13 +64,14 @@ namespace PancakeEditor.Finder
             FinderWindowBase.CacheSetting.Check4Work();
         }
 
-        private static void InitHelper()
+        internal static void InitHelper()
         {
-            if (FinderUtility.isEditorCompiling || FinderUtility.isEditorPlayingOrWillChangePlaymode) return;
+            if (FinderUtility.isEditorCompiling || FinderUtility.isEditorUpdating) return;
 
             if (!FinderWindowBase.IsCacheReady) return;
             EditorApplication.update -= InitHelper;
 
+            inited = true;
             InitListScene();
             InitIgnore();
 
@@ -79,15 +88,7 @@ namespace PancakeEditor.Finder
             EditorApplication.projectWindowItemOnGUI += OnGUIProjectItem;
 #endif
 
-            AssetCache.onCacheReady -= OnCacheReady;
-            AssetCache.onCacheReady += OnCacheReady;
-        }
-
-        private static void OnCacheReady()
-        {
             InitIgnore();
-
-            EditorApplication.RepaintProjectWindow();
         }
 
         public static void InitIgnore()
@@ -350,14 +351,21 @@ namespace PancakeEditor.Finder
         {
             if (FinderWindowBase.InternalDisabled) Debug.LogWarning("Something wrong??? Finder is disabled!");
             if (assetMap == null || assetMap.Count == 0) ReadFromCache();
+            foreach (string b in FindAsset.BuiltInAssets)
+            {
+                if (assetMap.ContainsKey(b)) continue;
+                var asset = new FindAsset(b);
+                assetMap.Add(b, asset);
+                assetList.Add(asset);
+            }
 
-            var paths = AssetDatabase.GetAllAssetPaths();
+            string[] paths = AssetDatabase.GetAllAssetPaths();
             cacheStamp++;
             workCount = 0;
             queueLoadContent?.Clear();
 
             // Check for new assets
-            foreach (var p in paths)
+            foreach (string p in paths)
             {
                 var isValid = FinderUtility.StringStartsWith(p,
                     "Assets/",
@@ -367,13 +375,9 @@ namespace PancakeEditor.Finder
 
                 if (!isValid) continue;
 
-                var guid = AssetDatabase.AssetPathToGUID(p);
+                string guid = AssetDatabase.AssetPathToGUID(p);
 
-                FindAsset asset;
-                if (!assetMap.TryGetValue(guid, out asset))
-                {
-                    AddAsset(guid);
-                }
+                if (!assetMap.TryGetValue(guid, out var asset)) AddAsset(guid);
                 else
                 {
                     asset.refreshStamp = cacheStamp; // mark this asset so it won't be deleted
@@ -625,7 +629,7 @@ namespace PancakeEditor.Finder
                 if (!v.AssetPath.StartsWith("Assets/")) continue; // ignore built-in / packages assets
                 if (v.ForcedIncludedInBuild) continue; // ignore assets that are forced to be included in build
                 if (v.AssetName == "LICENSE") continue; // ignore license files
-                
+
                 if (SpecialUseAssets.Contains(v.AssetPath)) continue; // ignore assets with special use (can not remove)
                 if (SpecialExtensions.Contains(v.Extension)) continue;
 
@@ -643,14 +647,14 @@ namespace PancakeEditor.Finder
                     {
                         var asset = FinderWindowBase.CacheSetting.Get(spriteGuid);
                         if (asset.usedByMap.Count <= 1) continue; // only use by this atlas
-                        
+
                         isInUsed = true;
                         break; // this one is used by other assets
                     }
-                    
+
                     if (isInUsed) continue;
                 }
-                
+
                 if (v.IsExcluded) continue;
 
                 if (!string.IsNullOrEmpty(v.AtlasName)) continue;

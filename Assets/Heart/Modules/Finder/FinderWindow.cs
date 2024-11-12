@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
-using Editor = PancakeEditor.Common.Editor;
 using UnityObject = UnityEngine.Object;
 
 
@@ -38,7 +37,7 @@ namespace PancakeEditor.Finder
         public bool details;
         public bool bookmark;
         public bool toolMode;
-
+        public bool showFullPath = true;
         public FindRefDrawer.Mode toolGroupMode = FindRefDrawer.Mode.Type;
         public FindRefDrawer.Mode groupMode = FindRefDrawer.Mode.Dependency;
         public FindRefDrawer.Sort sortMode = FindRefDrawer.Sort.Path;
@@ -154,6 +153,7 @@ namespace PancakeEditor.Finder
                 Repaint();
             }
 
+            RefreshShowFullPath();
             Repaint();
         }
 
@@ -254,11 +254,13 @@ namespace PancakeEditor.Finder
             _ids = FinderUtility.SelectionAssetGUIDs;
             selection.Clear();
 
+            var gameObjects = Selection.gameObjects;
+
             //ignore selection on asset when selected any object in scene
-            if (Selection.gameObjects.Length > 0 && !FinderUtility.IsInAsset(Selection.gameObjects[0]))
+            if (gameObjects.Length > 0 && !FinderUtility.IsInAsset(gameObjects[0]))
             {
                 _ids = Array.Empty<string>();
-                selection.AddRange(Selection.gameObjects);
+                selection.AddRange(gameObjects);
             }
             else
             {
@@ -277,9 +279,9 @@ namespace PancakeEditor.Finder
             }
             else
             {
-                _refSceneInScene.ResetSceneInScene(Selection.gameObjects);
-                _sceneToAssetDrawer.Reset(Selection.gameObjects, true, true);
-                _sceneUsesDrawer.ResetSceneUseSceneObjects(Selection.gameObjects);
+                _refSceneInScene.ResetSceneInScene(gameObjects);
+                _sceneToAssetDrawer.Reset(gameObjects, true, true);
+                _sceneUsesDrawer.ResetSceneUseSceneObjects(gameObjects);
             }
         }
 
@@ -714,8 +716,13 @@ namespace PancakeEditor.Finder
             _bottomTabs.DrawLayout();
             var bottomBar = GUILayoutUtility.GetLastRect();
 
-            var buttonRect = bottomBar;
-            buttonRect.xMin = buttonRect.xMax - 24f;
+            bottomBar.xMin += 100f; // offset for left buttons
+
+            var (fullPathRect, flex) = (new Rect(bottomBar.x, bottomBar.y, 24, bottomBar.height),
+                new Rect(bottomBar.x + 24, bottomBar.y, bottomBar.width - 24, bottomBar.height));
+            var (buttonRect, _) = (new Rect(flex.x + flex.width - 24, flex.y, 24, flex.height), new Rect(flex.x, flex.y, flex.width - 24, flex.height));
+
+            bottomBar = flex;
 
             var viewModeRect = bottomBar;
             viewModeRect.xMax -= 24f;
@@ -723,7 +730,7 @@ namespace PancakeEditor.Finder
 
             DrawViewModes(viewModeRect);
 
-            Color oColor = GUI.color;
+            var oColor = GUI.color;
             if (settings.toolMode) GUI.color = Color.green;
             {
                 if (GUI.Button(buttonRect, MyGUIContent.From(Uniform.IconContent("CustomTool").image), EditorStyles.toolbarButton))
@@ -731,6 +738,20 @@ namespace PancakeEditor.Finder
                     settings.toolMode = !settings.toolMode;
                     EditorUtility.SetDirty(this);
                     WillRepaint = true;
+                }
+            }
+            GUI.color = oColor;
+
+            if (settings.showFullPath) GUI.color = Color.green;
+            {
+                if (GUI.Button(fullPathRect, Uniform.IconContent("UnityEditor.HierarchyWindow"), EditorStyles.toolbarButton))
+                {
+                    settings.showFullPath = !settings.showFullPath;
+                    EditorUtility.SetDirty(this);
+                    WillRepaint = true;
+
+                    // update all panels
+                    RefreshShowFullPath();
                 }
             }
             GUI.color = oColor;
@@ -815,6 +836,7 @@ namespace PancakeEditor.Finder
                 return;
             }
 
+            if (!CacheHelper.inited) CacheHelper.InitHelper();
             if (_tabs == null) InitTabs();
             if (sp1 == null) InitPanes();
 
@@ -947,6 +969,17 @@ namespace PancakeEditor.Finder
             _sceneUsesDrawer.SetDirty();
             _usedInBuild.SetDirty();
             WillRepaint = true;
+        }
+
+        protected void RefreshShowFullPath()
+        {
+            _refUnUse.drawFullPath = settings.showFullPath;
+            _usesDrawer.drawFullPath = settings.showFullPath;
+            _usedByDrawer.drawFullPath = settings.showFullPath;
+            _sceneToAssetDrawer.drawFullPath = settings.showFullPath;
+            _refInScene.drawFullPath = settings.showFullPath;
+            _sceneUsesDrawer.drawFullPath = settings.showFullPath;
+            _refSceneInScene.drawFullPath = settings.showFullPath;
         }
 
         protected void RefreshSort()

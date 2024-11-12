@@ -225,13 +225,13 @@ namespace PancakeEditor.Finder
 
         private class AssetIgnore
         {
-            public readonly FindTreeUI2.GroupDrawer groupIgnore;
+            private readonly FindTreeUI2.GroupDrawer _groupIgnore;
             private bool _dirty;
             private Dictionary<string, FindRef> _refs;
 
             public AssetIgnore()
             {
-                groupIgnore = new FindTreeUI2.GroupDrawer(DrawGroup, DrawItem) {hideGroupIfPossible = false};
+                _groupIgnore = new FindTreeUI2.GroupDrawer(DrawGroup, DrawItem) {hideGroupIfPossible = true};
 
                 ApplyFiter();
             }
@@ -288,14 +288,15 @@ namespace PancakeEditor.Finder
                     GUILayout.Space(4f);
                     var drops = GUI2.DropZone("Drag & Drop folders here to exclude", 100, 95);
                     if (drops != null && drops.Length > 0)
+                    {
                         for (var i = 0; i < drops.Length; i++)
                         {
                             string path = AssetDatabase.GetAssetPath(drops[i]);
-
                             FinderWindowBase.AddIgnore(path);
                         }
+                    }
 
-                    groupIgnore.DrawLayout();
+                    _groupIgnore.DrawLayout();
                 }
                 GUILayout.EndHorizontal();
             }
@@ -320,7 +321,7 @@ namespace PancakeEditor.Finder
                     _refs.Add(guid, r);
                 }
 
-                groupIgnore.Reset(_refs.Values.ToList(), rf => rf.asset != null ? rf.asset.guid : "", GetGroup, SortGroup);
+                _groupIgnore.Reset(_refs.Values.ToList(), rf => rf.asset != null ? rf.asset.guid : "", GetGroup, SortGroup);
             }
 
             private string GetGroup(FindRef rf) { return "Ignore"; }
