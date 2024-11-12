@@ -85,18 +85,19 @@ namespace Sisus.Init.Internal
 				{
 					updating[i] = NullUpdatable.Instance;
 				}
-				updatingCount = 0;
 
 				for(int i = 0; i < lateUpdatingCount; i++)
 				{
-					lateUpdating[i] = NullUpdatable.Instance;;
+					lateUpdating[i] = NullUpdatable.Instance;
 				}
-				lateUpdatingCount = 0;
 
 				for(int i = 0; i < fixedUpdatingCount; i++)
 				{
-					fixedUpdating[i] = NullUpdatable.Instance;;
+					fixedUpdating[i] = NullUpdatable.Instance;
 				}
+				
+				updatingCount = 0;
+				lateUpdatingCount = 0;
 				fixedUpdatingCount = 0;
 			}
 
@@ -489,6 +490,5 @@ namespace Sisus.Init.Internal
 
 			public void LateUpdate(float deltaTime) { }
 		}
-
 	}
 }

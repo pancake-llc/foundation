@@ -157,13 +157,12 @@ namespace Sisus.Init.Internal
 		{
 			var clientType = component.GetType();
 			var requiredInterfaceType = typeof(IInitializer<>).MakeGenericType(clientType);
-			//List<Type> results = listWithNoTypes;
 			int count = 0;
 
 #if UNITY_EDITOR
 			foreach(var type in TypeCache.GetTypesDerivedFrom<IInitializer>())
 #else
-			foreach(var type in TypeUtility.GetAllTypesThreadSafe(clientType.Assembly, false))
+			foreach(var type in TypeUtility.GetAllTypesThreadSafe(typeof(CustomInitializer<Component, object>).Assembly, false))
 #endif
 			{
 				if (!requiredInterfaceType.IsAssignableFrom(type) || type.IsAbstract)

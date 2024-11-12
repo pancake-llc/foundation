@@ -109,7 +109,106 @@ namespace Sisus.Init.Internal
 			ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
 			ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
 
-			static void OnExitingPlayMode() => ServicesAreReady = false;
+			static void OnExitingPlayMode()
+			{
+				ServicesAreReady = false;
+				AsyncServicesAreReady = false;
+				HashSet<object> handled = new();
+
+				foreach(var serviceInfo in GetServiceDefinitions())
+				{
+					var concreteOrDefiningType = serviceInfo.ConcreteOrDefiningType;
+					if(!services.TryGetValue(concreteOrDefiningType, out object instance)
+					&& !services.TryGetValue(serviceInfo.definingTypes.FirstOrDefault() ?? typeof(void), out instance))
+					{
+						continue;
+					}
+
+					if(!handled.Add(instance)
+					|| serviceInfo.FindFromScene
+					|| instance is Component
+					|| Find.WrapperOf(instance, out _))
+					{
+						continue;
+					}
+
+					var concreteType = instance.GetType();
+					if(Find.typesToWrapperTypes.ContainsKey(concreteType))
+					{
+						continue;
+					}
+
+					if(instance is IUpdate update)
+					{
+						Updater.Unsubscribe(update);
+					}
+
+					if(instance is ILateUpdate lateUpdate)
+					{
+						Updater.Unsubscribe(lateUpdate);
+					}
+
+					if(instance is IFixedUpdate fixedUpdate)
+					{
+						Updater.Unsubscribe(fixedUpdate);
+					}
+
+					if(instance is IOnDisable onDisable)
+					{
+						try
+						{
+							onDisable.OnDisable();
+						}
+						catch(Exception e)
+						{
+							Debug.LogException(e);
+						}
+					}
+
+					if(instance is IOnDestroy onDestroy)
+					{
+						try
+						{
+							onDestroy.OnDestroy();
+						}
+						catch(Exception e)
+						{
+							Debug.LogException(e);
+						}
+					}
+
+					if(instance is IDisposable disposable)
+					{
+						try
+						{
+							disposable.Dispose();
+						}
+						catch(Exception e)
+						{
+							Debug.LogException(e);
+						}
+					}
+					else if(instance is IAsyncDisposable asyncDisposable)
+					{
+						try
+						{
+							asyncDisposable.DisposeAsync();
+						}
+						catch(Exception e)
+						{
+							if(e is not TaskCanceledException)
+							{
+								Debug.LogException(e);
+							}
+						}
+					}
+				}
+
+				services.Clear();
+				uninitializedServices.Clear();
+				container = null;
+				exceptionsLogged.Clear();
+			}
 		}
 		#endif
 
@@ -232,6 +331,11 @@ namespace Sisus.Init.Internal
 
 				foreach(var concreteType in initialized)
 				{
+					if(ServiceAttributeUtility.concreteTypes.TryGetValue(concreteType, out var serviceInfo) && serviceInfo.FindFromScene)
+					{
+						continue;
+					}
+					
 					if(services.TryGetValue(concreteType, out object instance))
 					{
 						#if DEV_MODE
@@ -346,7 +450,6 @@ namespace Sisus.Init.Internal
 		{
 			container = new GameObject("Services");
 			container.SetActive(false);
-			container.hideFlags = HideFlags.DontSave;
 			Object.DontDestroyOnLoad(container);
 		}
 
@@ -494,7 +597,10 @@ namespace Sisus.Init.Internal
 
 			await InjectCrossServiceDependencies(service, initialized, servicesInScene, initializersInScene);
 
-			await HandleExecutingEventFunctionsFor(service);
+			if(!serviceInfo.FindFromScene)
+			{
+				await HandleExecutingEventFunctionsFor(service);
+			}
 
 			return service;
 		}
@@ -2349,7 +2455,7 @@ namespace Sisus.Init.Internal
 				SetInstanceSync(serviceInfo, service);
 			}
 
-			if(ServicesAreReady)
+			if(ServicesAreReady && !serviceInfo.FindFromScene)
 			{
 				SubscribeToUpdateEvents(service);
 				ExecuteAwake(service);
@@ -2836,9 +2942,16 @@ namespace Sisus.Init.Internal
 
 		private static void ExecuteAwake(object service)
 		{
-			if(service is IAwake onEnable)
+			if(service is IAwake awake)
 			{
-				onEnable.Awake();
+				try
+				{
+					awake.Awake();
+				}
+				catch(Exception ex)
+				{
+					Debug.LogError(ex);
+				}
 			}
 		}
 
@@ -2846,7 +2959,14 @@ namespace Sisus.Init.Internal
 		{
 			if(service is IOnEnable onEnable)
 			{
-				onEnable.OnEnable();
+				try
+				{
+					onEnable.OnEnable();
+				}
+				catch(Exception ex)
+				{
+					Debug.LogError(ex);
+				}
 			}
 		}
 
