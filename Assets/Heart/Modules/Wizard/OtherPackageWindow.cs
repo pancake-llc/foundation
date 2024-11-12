@@ -50,7 +50,7 @@ namespace PancakeEditor
             GUILayout.Space(4);
 
 #if PANCAKE_UI_EFFECT
-            Uninstall("UI Effect 4.0.0-preview.10", "com.coffee.ui-effect");
+            Uninstall("UI Effect 5.0.0", "com.coffee.ui-effect");
 #else
             InstallUIEffect();
 #endif
@@ -101,7 +101,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10");
+                RegistryManager.AddPackage("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git?path=Packages/src#5.0.0");
                 RegistryManager.Resolve();
             }
 
