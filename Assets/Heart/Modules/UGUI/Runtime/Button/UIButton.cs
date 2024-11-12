@@ -549,13 +549,10 @@ namespace Pancake.UI
                     break;
                 case EButtonMotion.Normal:
 #if PANCAKE_UNITASK
-                    try
+                    while (!_isCompletePhaseDown)
                     {
-                        await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        break;
+                        if (_tokenSource.Token.IsCancellationRequested) break;
+                        await UniTask.Yield();
                     }
 #endif
 
@@ -582,13 +579,10 @@ namespace Pancake.UI
 #endif
 
 #if PANCAKE_UNITASK
-                    try
+                    while (!_isCompletePhaseDown)
                     {
-                        await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        break;
+                        if (_tokenSource.Token.IsCancellationRequested) break;
+                        await UniTask.Yield();
                     }
 #endif
 
@@ -641,13 +635,10 @@ namespace Pancake.UI
 #endif
 
 #if PANCAKE_UNITASK
-                    try
+                    while (!_isCompletePhaseDown)
                     {
-                        await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        break;
+                        if (_tokenSource.Token.IsCancellationRequested) break;
+                        await UniTask.Yield();
                     }
 #endif
 
