@@ -36,11 +36,37 @@ namespace Pancake.Localization
         /// </summary>
         protected static T GetValueOrDefault<T>(LocaleVariable<T> variable) where T : class { return variable ? variable.Value : default; }
 
+#if UNITY_EDITOR
+        private bool _firstOnValidateHasOccurred;
+
         private void OnValidate()
+        {
+            if (!_firstOnValidateHasOccurred)
+            {
+                _firstOnValidateHasOccurred = true;
+                return;
+            }
+
+            if (System.Threading.Thread.CurrentThread.IsBackground)  UnityEditor.EditorApplication.delayCall += OnSubsequentValidateOnMainThread;
+            else OnSubsequentValidateOnMainThread();
+        }
+
+        private async void OnSubsequentValidateOnMainThread()
+        {
+            while (UnityEditor.EditorApplication.isCompiling || UnityEditor.EditorApplication.isUpdating)
+            {
+                await System.Threading.Tasks.Task.Yield();
+            }
+
+            if (this) OnValueChangedUsingTheInspector();
+        }
+
+        private void OnValueChangedUsingTheInspector()
         {
             _isOnValidate = true;
             ForceUpdate();
         }
+#endif
 
         /// <summary>
         /// Updates component localization if possible.
