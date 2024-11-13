@@ -43,7 +43,7 @@ namespace Pancake.Pools
             stack.Push(obj);
         }
 
-        public void Clear()
+        private void Clear()
         {
             ThrowIfDisposed();
             while (stack.TryPop(out var obj))

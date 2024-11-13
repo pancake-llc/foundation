@@ -13,11 +13,7 @@ namespace Pancake.Pools
         private static readonly Dictionary<GameObject, Stack<GameObject>> CloneReferences = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Init()
-        {
-            Pools.Clear();
-            CloneReferences.Clear();
-        }
+        private static void Init() { DisposeAll(); }
 
         public static GameObject Request(this GameObject original)
         {
@@ -201,6 +197,18 @@ namespace Pancake.Pools
             }
 
             onPrewarmCompleted?.Invoke();
+        }
+
+        public static void DisposeAll()
+        {
+            Pools.Clear();
+            CloneReferences.Clear();
+        }
+
+        public static void Dispose(GameObject original)
+        {
+            if (Pools.TryGetValue(original, out var pool)) pool.Clear();
+            if (CloneReferences.TryGetValue(original, out var poolRef)) poolRef.Clear();
         }
 
         private static Stack<GameObject> GetOrCreatePool(GameObject original)

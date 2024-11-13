@@ -104,7 +104,7 @@ namespace Pancake.Pools
             PoolCallbackHelper.InvokeOnReturn(obj);
         }
 
-        public void Clear()
+        private void Clear()
         {
             ThrowIfDisposed();
 
