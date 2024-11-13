@@ -85,11 +85,11 @@ namespace Pancake.UI
         private Vector3 _endValue;
         private bool _isCompletePhaseDown;
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new();
+        private CancellationToken _token;
 #if PANCAKE_LITMOTION
         private MotionHandle _handleUp;
         private MotionHandle _handleDown;
 #endif
-        private CancellationTokenSource _tokenSource;
 
         #endregion
 
@@ -129,9 +129,9 @@ namespace Pancake.UI
         {
             base.Awake();
             if (!Application.isPlaying) return; // not execute awake when not playing
-            _tokenSource = new CancellationTokenSource();
             DefaultScale = AffectObject.localScale;
             onClick.AddListener(PlaySound);
+            _token = destroyCancellationToken;
         }
 
         private void PlaySound()
@@ -190,7 +190,6 @@ namespace Pancake.UI
             if (_handleUp.IsActive()) _handleUp.Cancel();
             if (_handleDown.IsActive()) _handleDown.Cancel();
 #endif
-            _tokenSource?.Cancel();
         }
 
         #region Overrides of Button
@@ -539,7 +538,7 @@ namespace Pancake.UI
 
         #region Motion
 
-        public async void MotionUp(MotionData data)
+        private async void MotionUp(MotionData data)
         {
             _endValue = DefaultScale;
             switch (data.motion)
@@ -551,7 +550,7 @@ namespace Pancake.UI
 #if PANCAKE_UNITASK
                     while (!_isCompletePhaseDown)
                     {
-                        if (_tokenSource.Token.IsCancellationRequested) break;
+                        if (_token.IsCancellationRequested) return;
                         await UniTask.Yield();
                     }
 #endif
@@ -581,7 +580,7 @@ namespace Pancake.UI
 #if PANCAKE_UNITASK
                     while (!_isCompletePhaseDown)
                     {
-                        if (_tokenSource.Token.IsCancellationRequested) break;
+                        if (_token.IsCancellationRequested) return;
                         await UniTask.Yield();
                     }
 #endif
@@ -598,11 +597,7 @@ namespace Pancake.UI
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="data"></param>
-        public async void MotionDown(MotionData data)
+        private async void MotionDown(MotionData data)
         {
             _endValue = new Vector3(DefaultScale.x * motionData.scale.x, DefaultScale.y * motionData.scale.y);
             switch (data.motion)
@@ -637,7 +632,7 @@ namespace Pancake.UI
 #if PANCAKE_UNITASK
                     while (!_isCompletePhaseDown)
                     {
-                        if (_tokenSource.Token.IsCancellationRequested) break;
+                        if (_token.IsCancellationRequested) return;
                         await UniTask.Yield();
                     }
 #endif
