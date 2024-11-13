@@ -20,5 +20,6 @@
 
         public static void StopAll() { AudioManager.stopAllEvent?.Invoke(); }
         public static void StopAllByType(this EAudioType audioType) { AudioManager.stopAllByTypeEvent?.Invoke(audioType); }
+        public static void ClearPool() { AudioManager.clearPoolEvent?.Invoke(); }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using Pancake.Component;
 using Pancake.DebugView;
 using Pancake.Localization;
@@ -54,24 +53,11 @@ namespace Pancake.Game
 
         private async void OnButtonGotoGameplayPressed()
         {
-            AudioStatic.StopAll(); // todo: check issue when click button play sound meanwhile call StopAll (StopAll call before sound click played)
+            EAudioType.Music.StopAllByType();
+            await Awaitable.NextFrameAsync();
             await SceneLoader.LoadScene(Constant.Scene.GAMEPLAY);
         }
 
-        private void OnDisable()
-        {
-#if UNITY_EDITOR
-            try
-            {
-#endif
-                bgm.Stop();
-#if UNITY_EDITOR
-            }
-            catch (Exception)
-            {
-                // ingored
-            }
-#endif
-        }
+        private void OnDestroy() { AudioStatic.ClearPool(); }
     }
 }
