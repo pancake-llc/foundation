@@ -24,7 +24,7 @@ namespace Pancake.Sound
         internal static Action<AudioId, float, float, float> quietOthersEvent;
         internal static Action stopAllEvent;
         internal static Action<EAudioType> stopAllByTypeEvent;
-        internal static Action clearPoolEvent;
+        internal static Action stopAllAndCleanEvent;
 
         public static float MusicVolume
         {
@@ -57,7 +57,7 @@ namespace Pancake.Sound
             stopAllEvent += StopAll;
             stopAllByTypeEvent += StopAll;
             quietOthersEvent += OnQuietOthers;
-            clearPoolEvent += ClearPool;
+            stopAllAndCleanEvent += StopAllAndClean;
         }
 
         private void OnDisable()
@@ -71,7 +71,7 @@ namespace Pancake.Sound
             stopAllEvent -= StopAll;
             stopAllByTypeEvent -= StopAll;
             quietOthersEvent -= OnQuietOthers;
-            clearPoolEvent -= ClearPool;
+            stopAllAndCleanEvent -= StopAllAndClean;
         }
 
         private void OnMusicVolumeChanged(float volume)
@@ -180,7 +180,11 @@ namespace Pancake.Sound
             }
         }
 
-        private void ClearPool() { SharedGameObjectPool.Dispose(playerPrefab); }
+        private void StopAllAndClean()
+        {
+            StopAll();
+            SharedGameObjectPool.Dispose(playerPrefab);
+        }
 
         private void OnQuietOthers(AudioId id, float volume, float fadeTime, float effectiveTime)
         {

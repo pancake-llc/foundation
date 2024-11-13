@@ -53,11 +53,10 @@ namespace Pancake.Game
 
         private async void OnButtonGotoGameplayPressed()
         {
-            EAudioType.Music.StopAllByType();
             await Awaitable.NextFrameAsync();
             await SceneLoader.LoadScene(Constant.Scene.GAMEPLAY);
         }
 
-        private void OnDestroy() { AudioStatic.ClearPool(); }
+        private void OnDestroy() { AudioStatic.StopAllAndClean(); }
     }
 }

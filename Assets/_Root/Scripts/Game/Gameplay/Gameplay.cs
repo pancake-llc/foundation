@@ -11,10 +11,8 @@ namespace Pancake.Game
 
         private void Start() { bgm.Play(); }
 
-        public async void GotoMenu()
-        {
-            AudioStatic.StopAll();
-            await SceneLoader.LoadScene(Constant.Scene.MENU);
-        }
+        public async void GotoMenu() { await SceneLoader.LoadScene(Constant.Scene.MENU); }
+
+        private void OnDestroy() { AudioStatic.StopAllAndClean(); }
     }
 }
