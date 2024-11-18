@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Pancake.Component;
 using Pancake.DebugView;
 using Pancake.Localization;
@@ -41,15 +42,15 @@ namespace Pancake.Game
 
         private void OnButtonDebugPressed() { Messenger<ShowDebugMessage>.Raise(); }
 
-        private void OnButtonLeaderboardPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(leaderboardPopupKey, true); }
+        private void OnButtonLeaderboardPressed() { MainUIContainer.In.GetMain<PopupContainer>().PushAsync(leaderboardPopupKey, true).Forget(); }
 
         private void OnButtonInGameNotiPressed() { Messenger<SpawnInGameNotiMessage>.Raise(new SpawnInGameNotiMessage(localeTextInGameNoti)); }
 
-        private void OnButtonShopPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(shopPopupKey, true); }
+        private void OnButtonShopPressed() { MainUIContainer.In.GetMain<PopupContainer>().PushAsync(shopPopupKey, true).Forget(); }
 
-        private void OnButtonDailyRewardPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(dailyRewardPopupKey, true); }
+        private void OnButtonDailyRewardPressed() { MainUIContainer.In.GetMain<PopupContainer>().PushAsync(dailyRewardPopupKey, true).Forget(); }
 
-        private void OnButtonSettingPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(settingPopupKey, true); }
+        private void OnButtonSettingPressed() { MainUIContainer.In.GetMain<PopupContainer>().PushAsync(settingPopupKey, true).Forget(); }
 
         private async void OnButtonGotoGameplayPressed()
         {

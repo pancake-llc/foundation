@@ -70,9 +70,9 @@ namespace Pancake.Game.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonBackupPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(backupDataPopupKey, true); }
+        private void OnButtonBackupPressed() { MainUIContainer.In.GetMain<PopupContainer>().PushAsync(backupDataPopupKey, true).Forget(); }
 
-        private void OnButtonCreditPressed() { MainUIContainer.In.GetMain<PopupContainer>().Push(creditPopupKey, true); }
+        private void OnButtonCreditPressed() { MainUIContainer.In.GetMain<PopupContainer>().PushAsync(creditPopupKey, true).Forget(); }
 
         private void OnButtonGifcodePressed()
         {

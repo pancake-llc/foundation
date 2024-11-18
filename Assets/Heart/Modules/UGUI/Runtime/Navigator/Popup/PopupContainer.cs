@@ -161,7 +161,7 @@ namespace Pancake.UI
         /// <param name="loadAsync"></param>
         /// <param name="onLoad"></param>
         /// <returns></returns>
-        public async UniTask PopAsync(
+        public async UniTask PushAsync(
             string resourceKey,
             bool playAnimation,
             string popupId = null,
@@ -186,7 +186,7 @@ namespace Pancake.UI
         /// <param name="loadAsync"></param>
         /// <param name="onLoad"></param>
         /// <returns></returns>
-        public async UniTask PopAsync(
+        public async UniTask PushAsync(
             Type popupType,
             string resourceKey,
             bool playAnimation,
@@ -212,7 +212,7 @@ namespace Pancake.UI
         /// <param name="onLoad"></param>
         /// <typeparam name="TPopup"></typeparam>
         /// <returns></returns>
-        public async UniTask PopAsync<TPopup>(
+        public async UniTask PushAsync<TPopup>(
             string resourceKey,
             bool playAnimation,
             string popupId = null,

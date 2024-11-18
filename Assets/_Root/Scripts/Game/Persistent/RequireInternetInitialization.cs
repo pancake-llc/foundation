@@ -28,7 +28,7 @@ namespace Pancake.Game
                 {
                     var popupContainer = MainUIContainer.In.GetMain<PopupContainer>();
                     popupContainer.Popups.TryGetValue(noInternetPopupKey, out var popup);
-                    if (popup == null) popupContainer.Push<NoInternetPopup>(noInternetPopupKey, true, popupId: noInternetPopupKey).Forget();
+                    if (popup == null) popupContainer.PushAsync<NoInternetPopup>(noInternetPopupKey, true, popupId: noInternetPopupKey).Forget();
                 }
             });
         }

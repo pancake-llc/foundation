@@ -24,7 +24,7 @@ namespace Pancake.Game.UI
             PlaySoundClose();
             await PopupHelper.Close(transform);
             await MainUIContainer.In.GetMain<PopupContainer>()
-                .Push<ChoosePlatformLoginPopup>(choosePlatformPopupKey, true, onLoad: tuple => tuple.popup.view.Setup(true));
+                .PushAsync<ChoosePlatformLoginPopup>(choosePlatformPopupKey, true, onLoad: tuple => tuple.popup.view.Setup(true));
         }
 
         private void OnButtonClosePressed()

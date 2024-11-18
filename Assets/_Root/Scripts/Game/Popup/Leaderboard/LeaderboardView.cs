@@ -393,8 +393,11 @@ namespace Pancake.Game.UI
         private async void ShowPopupRename(Action<bool> onPopupRenameClosed)
         {
             var popupContainer = MainUIContainer.In.GetMain<PopupContainer>();
-            await UniTask.WaitUntil(() => !popupContainer.IsInTransition);
-            await popupContainer.Push<RenamePopup>(popupRename, true, onLoad: t => { t.popup.view.SetCallbackClose(onPopupRenameClosed); });
+            while (popupContainer.IsInTransition)
+            {
+                await UniTask.Yield();
+            }
+            await popupContainer.PushAsync<RenamePopup>(popupRename, true, onLoad: t => { t.popup.view.SetCallbackClose(onPopupRenameClosed); });
         }
 
         private LeaderboardElementColor ColorDivision(int rank, string playerId)
