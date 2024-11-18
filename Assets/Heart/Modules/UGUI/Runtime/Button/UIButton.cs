@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Threading;
-using Pancake.Common;
 using Pancake.Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -74,7 +73,6 @@ namespace Pancake.UI
 
         private Coroutine _routineLongClick;
         private Coroutine _routineHold;
-        private AsyncProcessHandle _handleMultipleClick;
         private bool _clickedOnce; // marked as true after one click. (only check for double click)
         private bool _longClickDone; // marks as true after long click or hold up
         private bool _holdDone;
@@ -85,7 +83,7 @@ namespace Pancake.UI
         private Vector3 _endValue;
         private bool _isCompletePhaseDown;
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new();
-        private CancellationToken _token;
+        private CancellationToken _destroyToken;
 #if PANCAKE_LITMOTION
         private MotionHandle _handleUp;
         private MotionHandle _handleDown;
@@ -131,7 +129,7 @@ namespace Pancake.UI
             if (!Application.isPlaying) return; // not execute awake when not playing
             DefaultScale = AffectObject.localScale;
             onClick.AddListener(PlaySound);
-            _token = destroyCancellationToken;
+            _destroyToken = destroyCancellationToken;
         }
 
         private void PlaySound()
@@ -158,19 +156,6 @@ namespace Pancake.UI
         {
             base.OnDisable();
             if (!Application.isPlaying) return; // not execute awake when not playing
-
-            if (_handleMultipleClick is {IsTerminated: false})
-            {
-                // avoid case app be destroyed sooner than other component
-                try
-                {
-                    App.StopCoroutine(_handleMultipleClick);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
 
             if (_routineLongClick != null) StopCoroutine(_routineLongClick);
             if (_routineHold != null) StopCoroutine(_routineHold);
@@ -286,13 +271,14 @@ namespace Pancake.UI
             MotionUp(motionData);
         }
 
-        private IEnumerator IeDisableButton(float duration)
+#if PANCAKE_UNITASK
+        private async UniTask DisableButtonAsync(float duration, CancellationToken token)
         {
             interactable = false;
-            if (ignoreTimeScale) yield return new WaitForSecondsRealtime(duration);
-            else yield return new WaitForSeconds(duration);
+            if(!token.IsCancellationRequested) await UniTask.WaitForSeconds(duration, ignoreTimeScale, cancellationToken: token);
             interactable = true;
         }
+#endif
 
         private void InternalInvokePointerDownEvent()
         {
@@ -325,26 +311,26 @@ namespace Pancake.UI
                 return;
             }
 
-            StartCoroutine(IeExecute(eventData));
+            IeExecute(eventData).Forget();
         }
 
         /// <summary>
         /// execute for click button
         /// </summary>
         /// <returns></returns>
-        private IEnumerator IeExecute(PointerEventData eventData)
+        private async UniTask IeExecute(PointerEventData eventData)
         {
             if (IsDetectSingleClick) base.OnPointerClick(eventData);
 
             if (!allowMultipleClick && clickType == EButtonClickType.OnlySingleClick)
             {
-                if (!interactable) yield break;
+                if (!interactable) return;
 
-                _handleMultipleClick = App.StartCoroutine(IeDisableButton(timeDisableButton));
-                yield break;
+                await DisableButtonAsync(timeDisableButton, _destroyToken);
+                return;
             }
 
-            if (clickType == EButtonClickType.OnlySingleClick || clickType == EButtonClickType.LongClick || clickType == EButtonClickType.Hold) yield break;
+            if (clickType == EButtonClickType.OnlySingleClick || clickType == EButtonClickType.LongClick || clickType == EButtonClickType.Hold) return;
 
             if (!_clickedOnce && _doubleClickTimer < doubleClickInterval)
             {
@@ -353,10 +339,10 @@ namespace Pancake.UI
             else
             {
                 _clickedOnce = false;
-                yield break;
+                return;
             }
 
-            yield return null;
+            await UniTask.Yield();
 
             while (_doubleClickTimer < doubleClickInterval)
             {
@@ -365,12 +351,12 @@ namespace Pancake.UI
                     ExecuteDoubleClick();
                     _doubleClickTimer = 0;
                     _clickedOnce = false;
-                    yield break;
+                    return;
                 }
 
                 if (ignoreTimeScale) _doubleClickTimer += Time.unscaledDeltaTime;
                 else _doubleClickTimer += Time.deltaTime;
-                yield return null;
+                await UniTask.Yield();
             }
 
             if (clickType == EButtonClickType.Delayed) base.OnPointerClick(eventData);
@@ -550,7 +536,7 @@ namespace Pancake.UI
 #if PANCAKE_UNITASK
                     while (!_isCompletePhaseDown)
                     {
-                        if (_token.IsCancellationRequested) return;
+                        if (_destroyToken.IsCancellationRequested) return;
                         await UniTask.Yield();
                     }
 #endif
@@ -580,7 +566,7 @@ namespace Pancake.UI
 #if PANCAKE_UNITASK
                     while (!_isCompletePhaseDown)
                     {
-                        if (_token.IsCancellationRequested) return;
+                        if (_destroyToken.IsCancellationRequested) return;
                         await UniTask.Yield();
                     }
 #endif
@@ -632,7 +618,7 @@ namespace Pancake.UI
 #if PANCAKE_UNITASK
                     while (!_isCompletePhaseDown)
                     {
-                        if (_token.IsCancellationRequested) return;
+                        if (_destroyToken.IsCancellationRequested) return;
                         await UniTask.Yield();
                     }
 #endif
