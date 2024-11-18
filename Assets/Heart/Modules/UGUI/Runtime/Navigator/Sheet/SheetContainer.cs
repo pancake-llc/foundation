@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
@@ -150,20 +151,6 @@ namespace Pancake.UI
         }
 
         /// <summary>
-        ///     Show a sheet.
-        /// </summary>
-        /// <param name="sheetId"></param>
-        /// <param name="playAnimation"></param>
-        /// <returns></returns>
-        public AsyncProcessHandle Show(string sheetId, bool playAnimation) { return App.StartCoroutine(ShowRoutine(sheetId, playAnimation)); }
-
-        /// <summary>
-        ///     Hide a sheet.
-        /// </summary>
-        /// <param name="playAnimation"></param>
-        public AsyncProcessHandle Hide(bool playAnimation) { return App.StartCoroutine(HideRoutine(playAnimation)); }
-
-        /// <summary>
         ///     Register a sheet.
         /// </summary>
         /// <param name="resourceKey"></param>
@@ -172,13 +159,14 @@ namespace Pancake.UI
         /// <param name="sheetId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public AsyncProcessHandle Register(string resourceKey, Action<(string sheetId, Sheet sheet)> onLoad = null, bool loadAsync = true, string sheetId = null)
+        public async UniTask<string> RegisterAsync(string resourceKey, Action<(string sheetId, Sheet sheet)> onLoad = null, bool loadAsync = true, string sheetId = null)
         {
-            return App.StartCoroutine(RegisterRoutine(typeof(Sheet),
+            string id = await Register(typeof(Sheet),
                 resourceKey,
                 onLoad,
                 loadAsync,
-                sheetId));
+                sheetId);
+            return id;
         }
 
         /// <summary>
@@ -191,18 +179,19 @@ namespace Pancake.UI
         /// <param name="sheetId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public AsyncProcessHandle Register(
+        public async UniTask<string> RegisterAsync(
             Type sheetType,
             string resourceKey,
             Action<(string sheetId, Sheet sheet)> onLoad = null,
             bool loadAsync = true,
             string sheetId = null)
         {
-            return App.StartCoroutine(RegisterRoutine(sheetType,
+            string id = await Register(sheetType,
                 resourceKey,
                 onLoad,
                 loadAsync,
-                sheetId));
+                sheetId);
+            return id;
         }
 
         /// <summary>
@@ -214,17 +203,21 @@ namespace Pancake.UI
         /// <param name="sheetId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public AsyncProcessHandle Register<TSheet>(string resourceKey, Action<(string sheetId, TSheet sheet)> onLoad = null, bool loadAsync = true, string sheetId = null)
-            where TSheet : Sheet
+        public async UniTask<string> RegisterAsync<TSheet>(
+            string resourceKey,
+            Action<(string sheetId, TSheet sheet)> onLoad = null,
+            bool loadAsync = true,
+            string sheetId = null) where TSheet : Sheet
         {
-            return App.StartCoroutine(RegisterRoutine(typeof(TSheet),
+            string id = await Register(typeof(TSheet),
                 resourceKey,
                 x => onLoad?.Invoke((x.sheetId, (TSheet) x.sheet)),
                 loadAsync,
-                sheetId));
+                sheetId);
+            return id;
         }
 
-        private IEnumerator RegisterRoutine(
+        private async UniTask<string> Register(
             Type sheetType,
             string resourceKey,
             Action<(string sheetId, Sheet sheet)> onLoad = null,
@@ -234,7 +227,7 @@ namespace Pancake.UI
             if (resourceKey == null) throw new ArgumentNullException(nameof(resourceKey));
 
             var assetLoadHandle = loadAsync ? AssetLoader.LoadAsync<GameObject>(resourceKey) : AssetLoader.Load<GameObject>(resourceKey);
-            while (!assetLoadHandle.IsDone) yield return null;
+            while (!assetLoadHandle.IsDone) await UniTask.Yield();
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
 
@@ -243,24 +236,29 @@ namespace Pancake.UI
                 c = instance.AddComponent(sheetType);
             var sheet = (Sheet) c;
 
-            if (sheetId == null) sheetId = Guid.NewGuid().ToString();
+            sheetId ??= Guid.NewGuid().ToString();
             _sheets.Add(sheetId, sheet);
             _sheetNameToId[resourceKey] = sheetId;
             _assetLoadHandles.Add(sheetId, assetLoadHandle);
             onLoad?.Invoke((sheetId, sheet));
-            var afterLoadHandle = sheet.AfterLoad((RectTransform) transform);
-            while (!afterLoadHandle.IsTerminated) yield return null;
+            await sheet.AfterLoadAsync((RectTransform) transform);
 
-            yield return sheetId;
+            return sheetId;
         }
 
         private IEnumerator ShowByResourceKeyRoutine(string resourceKey, bool playAnimation)
         {
             var sheetId = _sheetNameToId[resourceKey];
-            yield return ShowRoutine(sheetId, playAnimation);
+            yield return ShowAsync(sheetId, playAnimation);
         }
 
-        private IEnumerator ShowRoutine(string sheetId, bool playAnimation)
+        /// <summary>
+        ///     Show a sheet.
+        /// </summary>
+        /// <param name="sheetId"></param>
+        /// <param name="playAnimation"></param>
+        /// <returns></returns>
+        public async UniTask ShowAsync(string sheetId, bool playAnimation)
         {
             if (IsInTransition) throw new InvalidOperationException("Cannot transition because the screen is already in transition.");
 
@@ -288,26 +286,24 @@ namespace Pancake.UI
             // Preprocess
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforeShow(enterSheet, exitSheet);
 
-            var preprocessHandles = new List<AsyncProcessHandle>();
-            if (exitSheet != null) preprocessHandles.Add(exitSheet.BeforeExit(enterSheet));
+            var preprocessHandles = new List<UniTask>();
+            if (exitSheet != null) preprocessHandles.Add(exitSheet.BeforeExitAsync(enterSheet));
 
-            preprocessHandles.Add(enterSheet.BeforeEnter(exitSheet));
-            foreach (var coroutineHandle in preprocessHandles)
+            preprocessHandles.Add(enterSheet.BeforeEnterAsync(exitSheet));
+            foreach (var handle in preprocessHandles)
             {
-                while (!coroutineHandle.IsTerminated)
-                    yield return null;
+                await handle;
             }
 
             // Play Animation
-            var animationHandles = new List<AsyncProcessHandle>();
-            if (exitSheet != null) animationHandles.Add(exitSheet.Exit(playAnimation, enterSheet));
+            var animationHandles = new List<UniTask>();
+            if (exitSheet != null) animationHandles.Add(exitSheet.ExitAsync(playAnimation, enterSheet));
 
-            animationHandles.Add(enterSheet.Enter(playAnimation, exitSheet));
+            animationHandles.Add(enterSheet.EnterAsync(playAnimation, exitSheet));
 
             foreach (var handle in animationHandles)
             {
-                while (!handle.IsTerminated)
-                    yield return null;
+                await handle;
             }
 
             // End Transition
@@ -342,13 +338,15 @@ namespace Pancake.UI
             }
         }
 
-        private IEnumerator HideRoutine(bool playAnimation)
+        /// <summary>
+        ///     Hide a sheet.
+        /// </summary>
+        /// <param name="playAnimation"></param>
+        public async UniTask HideAsync(bool playAnimation)
         {
-            if (IsInTransition)
-                throw new InvalidOperationException("Cannot transition because the screen is already in transition.");
+            if (IsInTransition) throw new InvalidOperationException("Cannot transition because the screen is already in transition.");
 
-            if (ActiveSheetId == null)
-                throw new InvalidOperationException("Cannot transition because there is no active sheets.");
+            if (ActiveSheetId == null) throw new InvalidOperationException("Cannot transition because there is no active sheets.");
 
             IsInTransition = true;
 
@@ -371,12 +369,10 @@ namespace Pancake.UI
             // Preprocess
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforeHide(exitSheet);
 
-            var preprocessHandle = exitSheet.BeforeExit(null);
-            while (!preprocessHandle.IsTerminated) yield return preprocessHandle;
+            await exitSheet.BeforeExitAsync(null);
 
             // Play Animation
-            var animationHandle = exitSheet.Exit(playAnimation, null);
-            while (!animationHandle.IsTerminated) yield return null;
+            await exitSheet.ExitAsync(playAnimation, null);
 
             // End Transition
             ActiveSheetId = null;

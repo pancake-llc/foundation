@@ -1,14 +1,15 @@
-﻿using Pancake.Common;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Pancake.UI
 {
     public static class PopupHelper
     {
-        public static AsyncProcessHandle Close(Transform transform, bool playAnimation = true)
+        public static async UniTask Close(Transform transform, bool playAnimation = true)
         {
             var popupContainer = PopupContainer.Of(transform);
-            return popupContainer.IsInTransition ? null : popupContainer.Pop(playAnimation);
+            if (popupContainer.IsInTransition) return;
+            await popupContainer.PopAsync(playAnimation);
         }
     }
 }

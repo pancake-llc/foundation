@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine.Assertions;
 
 namespace Pancake.UI
@@ -10,7 +10,7 @@ namespace Pancake.UI
 
         protected virtual ViewInitMode InitMode => ViewInitMode.BeforeFirstEnter;
 
-        public override async Task Initialize()
+        public override async UniTask Initialize()
         {
             Assert.IsNotNull(view);
 
@@ -25,7 +25,7 @@ namespace Pancake.UI
             }
         }
 
-        public override async Task WillEnter()
+        public override async UniTask WillEnter()
         {
             Assert.IsNotNull(view);
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.Common;
 using Pancake.Linq;
@@ -62,32 +62,32 @@ namespace Pancake.UI
         /// </summary>
         public event Action<float> TransitionAnimationProgressChanged;
 
-        public virtual Task Initialize() { return Task.CompletedTask; }
+        public virtual UniTask Initialize() { return UniTask.CompletedTask; }
 
-        public virtual Task WillPushEnter() { return Task.CompletedTask; }
+        public virtual UniTask WillPushEnter() { return UniTask.CompletedTask; }
 
         public virtual void DidPushEnter() { }
 
-        public virtual Task WillPushExit() { return Task.CompletedTask; }
+        public virtual UniTask WillPushExit() { return UniTask.CompletedTask; }
 
         public virtual void DidPushExit() { }
 
-        public virtual Task WillPopEnter() { return Task.CompletedTask; }
+        public virtual UniTask WillPopEnter() { return UniTask.CompletedTask; }
 
         public virtual void DidPopEnter() { }
 
-        public virtual Task WillPopExit() { return Task.CompletedTask; }
+        public virtual UniTask WillPopExit() { return UniTask.CompletedTask; }
 
         public virtual void DidPopExit() { }
 
-        public virtual Task Cleanup() { return Task.CompletedTask; }
+        public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
 
 
         public void AddLifecycleEvent(IPopupLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
 
         public void RemoveLifecycleEvent(IPopupLifecycleEvent lifecycleEvent) { _lifecycleEvents.RemoveItem(lifecycleEvent); }
 
-        internal AsyncProcessHandle AfterLoad(RectTransform parentTransform)
+        internal async UniTask AfterLoad(RectTransform parentTransform)
         {
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
@@ -97,13 +97,10 @@ namespace Pancake.UI
             _rectTransform.FillWithParent(_parentTransform);
             _canvasGroup.alpha = 0.0f;
 
-            var task = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize());
-            return App.StartCoroutine(CreateCoroutine(task));
+            await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize());
         }
 
-        internal AsyncProcessHandle BeforeEnter(bool push, Popup partnerPopup) { return App.StartCoroutine(BeforeEnterRoutine(push, partnerPopup)); }
-
-        private IEnumerator BeforeEnterRoutine(bool push, Popup partnerPopup)
+        internal async UniTask BeforeEnterAsync(bool push, Popup partnerPopup)
         {
             IsTransitioning = true;
             if (push)
@@ -116,21 +113,12 @@ namespace Pancake.UI
 
             SetTransitionProgress(0.0f);
 
-            var task = push
-                ? _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushEnter())
-                : _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopEnter());
-            var handle = App.StartCoroutine(CreateCoroutine(task));
-
-            while (!handle.IsTerminated)
-                yield return null;
+            if (push) await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushEnter());
+            await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopEnter());
         }
 
-        internal AsyncProcessHandle Enter(bool push, bool playAnimation, Popup partnerPopup)
-        {
-            return App.StartCoroutine(EnterRoutine(push, playAnimation, partnerPopup));
-        }
 
-        private IEnumerator EnterRoutine(bool push, bool playAnimation, Popup partnerPopup)
+        internal async UniTask EnterAsync(bool push, bool playAnimation, Popup partnerPopup)
         {
             if (push)
             {
@@ -146,7 +134,7 @@ namespace Pancake.UI
                     {
                         anim.SetPartner(partnerPopup?.transform as RectTransform);
                         anim.Setup(_rectTransform);
-                        yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
+                        await anim.PlayWith(TransitionProgressReporter);
                     }
                 }
 
@@ -165,9 +153,7 @@ namespace Pancake.UI
             TransitionAnimationType = null;
         }
 
-        internal AsyncProcessHandle BeforeExit(bool push, Popup partnerPopup) { return App.StartCoroutine(BeforeExitRoutine(push, partnerPopup)); }
-
-        private IEnumerator BeforeExitRoutine(bool push, Popup partnerPopup)
+        internal async UniTask BeforeExitAsync(bool push, Popup partnerPopup)
         {
             IsTransitioning = true;
             if (!push)
@@ -180,18 +166,12 @@ namespace Pancake.UI
 
             SetTransitionProgress(0.0f);
 
-            var task = push
-                ? _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushExit())
-                : _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopExit());
-            var handle = App.StartCoroutine(CreateCoroutine(task));
-
-            while (!handle.IsTerminated)
-                yield return null;
+            if (push) await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushExit());
+            else await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopExit());
         }
 
-        internal AsyncProcessHandle Exit(bool push, bool playAnimation, Popup partnerPopup) { return App.StartCoroutine(ExitRoutine(push, playAnimation, partnerPopup)); }
 
-        private IEnumerator ExitRoutine(bool push, bool playAnimation, Popup partnerPopup)
+        internal async UniTask ExitAsync(bool push, bool playAnimation, Popup partnerPopup)
         {
             if (!push)
             {
@@ -204,7 +184,7 @@ namespace Pancake.UI
                     {
                         anim.SetPartner(partnerPopup?.transform as RectTransform);
                         anim.Setup(_rectTransform);
-                        yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
+                        await anim.PlayWith(TransitionProgressReporter);
                     }
                 }
 
@@ -213,6 +193,7 @@ namespace Pancake.UI
 
             SetTransitionProgress(1.0f);
         }
+
 
         internal void AfterExit(bool push, Popup partnerPopup)
         {
@@ -231,19 +212,18 @@ namespace Pancake.UI
             return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup())));
         }
 
-        private IEnumerator CreateCoroutine(IEnumerable<Task> targets)
+        private IEnumerator CreateCoroutine(IEnumerable<UniTask> targets)
         {
             foreach (var target in targets)
             {
                 var handle = App.StartCoroutine(CreateCoroutine(target));
-                if (!handle.IsTerminated)
-                    yield return handle;
+                if (!handle.IsTerminated) yield return handle;
             }
         }
 
-        private IEnumerator CreateCoroutine(Task target)
+        private IEnumerator CreateCoroutine(UniTask target)
         {
-            async void WaitTaskAndCallback(Task task, Action callback)
+            async void WaitTaskAndCallback(UniTask task, Action callback)
             {
                 await task;
                 callback?.Invoke();

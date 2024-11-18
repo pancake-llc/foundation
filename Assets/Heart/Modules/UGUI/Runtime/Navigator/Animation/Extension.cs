@@ -1,29 +1,27 @@
 ﻿using System;
-using System.Collections;
-using Pancake.Common;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Pancake.UI
 {
     internal static class TransitionExtension
     {
-        public static IEnumerator CreateRoutine(this ITransitionAnimation transition, IProgress<float> progress = null)
+        public static async UniTask PlayWith(this ITransitionAnimation transition, IProgress<float> progress = null)
         {
             var player = new AnimationPlayer(transition);
 
-            App.AddListener(EUpdateMode.Update, Update);
             progress?.Report(0.0f);
             player.Play();
+
             while (!player.IsFinished)
             {
-                yield return null;
+                await UniTask.Yield(PlayerLoopTiming.Update);
+                player.Update(Time.unscaledDeltaTime);
                 progress?.Report(player.Time / transition.Duration);
             }
 
-            App.RemoveListener(EUpdateMode.Update, Update);
-            yield break;
-
-            void Update() => player.Update(Time.unscaledDeltaTime);
+            player.Stop();
+            progress?.Report(1.0f);
         }
     }
 

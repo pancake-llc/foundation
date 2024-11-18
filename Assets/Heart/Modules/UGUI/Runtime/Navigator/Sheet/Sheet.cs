@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Pancake.Common;
 using Pancake.Linq;
 using UnityEngine;
@@ -60,27 +59,27 @@ namespace Pancake.UI
             return result;
         }
 
-        public virtual Task Initialize() { return Task.CompletedTask; }
+        public virtual UniTask Initialize() { return UniTask.CompletedTask; }
 
 
-        public virtual Task WillEnter() { return Task.CompletedTask; }
+        public virtual UniTask WillEnter() { return UniTask.CompletedTask; }
 
 
         public virtual void DidEnter() { }
 
-        public virtual Task WillExit() { return Task.CompletedTask; }
+        public virtual UniTask WillExit() { return UniTask.CompletedTask; }
 
 
         public virtual void DidExit() { }
 
-        public virtual Task Cleanup() { return Task.CompletedTask; }
+        public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
 
 
         public void AddLifecycleEvent(ISheetLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
 
         public void RemoveLifecycleEvent(ISheetLifecycleEvent lifecycleEvent) { _lifecycleEvents.RemoveItem(lifecycleEvent); }
 
-        internal AsyncProcessHandle AfterLoad(RectTransform parentTransform)
+        internal async UniTask AfterLoadAsync(RectTransform parentTransform)
         {
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
@@ -104,12 +103,10 @@ namespace Pancake.UI
 
             gameObject.SetActive(false);
 
-            return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize())));
+            await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize());
         }
 
-        internal AsyncProcessHandle BeforeEnter(Sheet partnerSheet) { return App.StartCoroutine(BeforeEnterRoutine(partnerSheet)); }
-
-        private IEnumerator BeforeEnterRoutine(Sheet partnerSheet)
+        internal async UniTask BeforeEnterAsync(Sheet partnerSheet)
         {
             IsTransitioning = true;
             TransitionAnimationType = SheetTransitionType.Enter;
@@ -119,14 +116,10 @@ namespace Pancake.UI
 
             _canvasGroup.alpha = 0.0f;
 
-            var handle = App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillEnter())));
-            while (!handle.IsTerminated)
-                yield return null;
+            await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillEnter());
         }
 
-        internal AsyncProcessHandle Enter(bool playAnimation, Sheet partnerSheet) { return App.StartCoroutine(EnterRoutine(playAnimation, partnerSheet)); }
-
-        private IEnumerator EnterRoutine(bool playAnimation, Sheet partnerSheet)
+        internal async UniTask EnterAsync(bool playAnimation, Sheet partnerSheet)
         {
             _canvasGroup.alpha = 1.0f;
 
@@ -139,7 +132,7 @@ namespace Pancake.UI
                 {
                     anim.SetPartner(partnerSheet?.transform as RectTransform);
                     anim.Setup(_rectTransform);
-                    yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
+                    await anim.PlayWith(TransitionProgressReporter);
                 }
             }
 
@@ -154,9 +147,7 @@ namespace Pancake.UI
             TransitionAnimationType = null;
         }
 
-        internal AsyncProcessHandle BeforeExit(Sheet partnerSheet) { return App.StartCoroutine(BeforeExitRoutine(partnerSheet)); }
-
-        private IEnumerator BeforeExitRoutine(Sheet partnerSheet)
+        internal async UniTask BeforeExitAsync(Sheet partnerSheet)
         {
             IsTransitioning = true;
             TransitionAnimationType = SheetTransitionType.Exit;
@@ -166,14 +157,10 @@ namespace Pancake.UI
 
             _canvasGroup.alpha = 1.0f;
 
-            var handle = App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillExit())));
-            while (!handle.IsTerminated)
-                yield return null;
+            await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillExit());
         }
 
-        internal AsyncProcessHandle Exit(bool playAnimation, Sheet partnerSheet) { return App.StartCoroutine(ExitRoutine(playAnimation, partnerSheet)); }
-
-        private IEnumerator ExitRoutine(bool playAnimation, Sheet partnerSheet)
+        internal async UniTask ExitAsync(bool playAnimation, Sheet partnerSheet)
         {
             if (playAnimation)
             {
@@ -184,7 +171,7 @@ namespace Pancake.UI
                 {
                     anim.SetPartner(partnerSheet?.transform as RectTransform);
                     anim.Setup(_rectTransform);
-                    yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
+                    await anim.PlayWith(TransitionProgressReporter);
                 }
             }
 
@@ -202,29 +189,6 @@ namespace Pancake.UI
 
         internal void BeforeReleaseAndForget() { _ = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
 
-        private IEnumerator CreateCoroutine(IEnumerable<Task> targets)
-        {
-            foreach (var target in targets)
-            {
-                var handle = App.StartCoroutine(CreateCoroutine(target));
-                if (!handle.IsTerminated)
-                    yield return handle;
-            }
-        }
-
-        private IEnumerator CreateCoroutine(Task target)
-
-        {
-            async void WaitTaskAndCallback(Task task, Action callback)
-            {
-                await task;
-                callback?.Invoke();
-            }
-
-            var isCompleted = false;
-            WaitTaskAndCallback(target, () => { isCompleted = true; });
-            return new WaitUntil(() => isCompleted);
-        }
 
         private void SetTransitionProgress(float progress)
         {

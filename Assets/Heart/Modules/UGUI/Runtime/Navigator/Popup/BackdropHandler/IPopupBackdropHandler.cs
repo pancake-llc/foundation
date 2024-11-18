@@ -1,14 +1,14 @@
-﻿using Pancake.Common;
+﻿using Cysharp.Threading.Tasks;
 
 namespace Pancake.UI
 {
     public interface IPopupBackdropHandler
     {
-        AsyncProcessHandle BeforePopupEnter(Popup popup, int popupIndex, bool playAnimation);
+        UniTask BeforePopupEnterAsync(Popup popup, int popupIndex, bool playAnimation);
 
         void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation);
 
-        AsyncProcessHandle BeforePopupExit(Popup popup, int popupIndex, bool playAnimation);
+        UniTask BeforePopupExitAsync(Popup popup, int popupIndex, bool playAnimation);
 
         void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation);
     }

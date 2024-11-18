@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Pancake.Linq;
 
 namespace Pancake.UI
@@ -12,24 +12,24 @@ namespace Pancake.UI
         public event Action OnDidPopEnter;
         public event Action OnDidPopExit;
 
-        public List<Func<Task>> OnInitialize { get; } = new();
-        public List<Func<Task>> OnWillPushEnter { get; } = new();
-        public List<Func<Task>> OnWillPushExit { get; } = new();
-        public List<Func<Task>> OnWillPopEnter { get; } = new();
-        public List<Func<Task>> OnWillPopExit { get; } = new();
-        public List<Func<Task>> OnCleanup { get; } = new();
+        public List<Func<UniTask>> OnInitialize { get; } = new();
+        public List<Func<UniTask>> OnWillPushEnter { get; } = new();
+        public List<Func<UniTask>> OnWillPushExit { get; } = new();
+        public List<Func<UniTask>> OnWillPopEnter { get; } = new();
+        public List<Func<UniTask>> OnWillPopExit { get; } = new();
+        public List<Func<UniTask>> OnCleanup { get; } = new();
 
         public AnonymousPopupLifecycleEvent(
-            Func<Task> initialize = null,
-            Func<Task> onWillPushEnter = null,
+            Func<UniTask> initialize = null,
+            Func<UniTask> onWillPushEnter = null,
             Action onDidPushEnter = null,
-            Func<Task> onWillPushExit = null,
+            Func<UniTask> onWillPushExit = null,
             Action onDidPushExit = null,
-            Func<Task> onWillPopEnter = null,
+            Func<UniTask> onWillPopEnter = null,
             Action onDidPopEnter = null,
-            Func<Task> onWillPopExit = null,
+            Func<UniTask> onWillPopExit = null,
             Action onDidPopExit = null,
-            Func<Task> onCleanup = null)
+            Func<UniTask> onCleanup = null)
 
         {
             if (initialize != null) OnInitialize.Add(initialize);
@@ -53,24 +53,24 @@ namespace Pancake.UI
             if (onCleanup != null) OnCleanup.Add(onCleanup);
         }
 
-        Task IPopupLifecycleEvent.Initialize() { return Task.WhenAll(OnInitialize.Map(x => x.Invoke())); }
+        UniTask IPopupLifecycleEvent.Initialize() { return UniTask.WhenAll(OnInitialize.Map(x => x.Invoke())); }
 
-        Task IPopupLifecycleEvent.WillPushEnter() { return Task.WhenAll(OnWillPushEnter.Map(x => x.Invoke())); }
+        UniTask IPopupLifecycleEvent.WillPushEnter() { return UniTask.WhenAll(OnWillPushEnter.Map(x => x.Invoke())); }
 
         void IPopupLifecycleEvent.DidPushEnter() { OnDidPushEnter?.Invoke(); }
 
-        Task IPopupLifecycleEvent.WillPushExit() { return Task.WhenAll(OnWillPushExit.Map(x => x.Invoke())); }
+        UniTask IPopupLifecycleEvent.WillPushExit() { return UniTask.WhenAll(OnWillPushExit.Map(x => x.Invoke())); }
 
         void IPopupLifecycleEvent.DidPushExit() { OnDidPushExit?.Invoke(); }
 
-        Task IPopupLifecycleEvent.WillPopEnter() { return Task.WhenAll(OnWillPopEnter.Map(x => x.Invoke())); }
+        UniTask IPopupLifecycleEvent.WillPopEnter() { return UniTask.WhenAll(OnWillPopEnter.Map(x => x.Invoke())); }
 
         void IPopupLifecycleEvent.DidPopEnter() { OnDidPopEnter?.Invoke(); }
 
-        Task IPopupLifecycleEvent.WillPopExit() { return Task.WhenAll(OnWillPopExit.Map(x => x.Invoke())); }
+        UniTask IPopupLifecycleEvent.WillPopExit() { return UniTask.WhenAll(OnWillPopExit.Map(x => x.Invoke())); }
 
         void IPopupLifecycleEvent.DidPopExit() { OnDidPopExit?.Invoke(); }
 
-        Task IPopupLifecycleEvent.Cleanup() { return Task.WhenAll(OnCleanup.Map(x => x.Invoke())); }
+        UniTask IPopupLifecycleEvent.Cleanup() { return UniTask.WhenAll(OnCleanup.Map(x => x.Invoke())); }
     }
 }

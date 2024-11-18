@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
@@ -161,19 +162,19 @@ namespace Pancake.UI
         /// <param name="loadAsync"></param>
         /// <param name="onLoad"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Push(
+        public async UniTask Push(
             string resourceKey,
             bool playAnimation,
             string popupId = null,
             bool loadAsync = true,
             Action<(string popupId, Popup popup)> onLoad = null)
         {
-            return App.StartCoroutine(PushRoutine(typeof(Popup),
+            await Push(typeof(Popup),
                 resourceKey,
                 playAnimation,
                 onLoad,
                 loadAsync,
-                popupId));
+                popupId);
         }
 
         /// <summary>
@@ -186,7 +187,7 @@ namespace Pancake.UI
         /// <param name="loadAsync"></param>
         /// <param name="onLoad"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Push(
+        public async UniTask Push(
             Type popupType,
             string resourceKey,
             bool playAnimation,
@@ -194,12 +195,12 @@ namespace Pancake.UI
             bool loadAsync = true,
             Action<(string popupId, Popup popup)> onLoad = null)
         {
-            return App.StartCoroutine(PushRoutine(popupType,
+            await Push(popupType,
                 resourceKey,
                 playAnimation,
                 onLoad,
                 loadAsync,
-                popupId));
+                popupId);
         }
 
         /// <summary>
@@ -212,20 +213,20 @@ namespace Pancake.UI
         /// <param name="onLoad"></param>
         /// <typeparam name="TPopup"></typeparam>
         /// <returns></returns>
-        public AsyncProcessHandle Push<TPopup>(
+        public async UniTask Push<TPopup>(
             string resourceKey,
             bool playAnimation,
             string popupId = null,
             bool loadAsync = true,
             Action<(string popupId, TPopup popup)> onLoad = null) where TPopup : Popup
         {
-            return App.StartCoroutine(PushRoutine(typeof(TPopup),
+            await Push(typeof(TPopup),
                 resourceKey,
                 playAnimation,
                 x => onLoad?.Invoke((x.popupId, (TPopup) x.popup)),
                 loadAsync,
-                popupId));
-        }
+                popupId);
+        } 
 
         /// <summary>
         ///     Pop popups.
@@ -233,7 +234,7 @@ namespace Pancake.UI
         /// <param name="playAnimation"></param>
         /// <param name="popCount"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Pop(bool playAnimation, int popCount = 1) { return App.StartCoroutine(PopRoutine(playAnimation, popCount)); }
+        public async UniTask PopAsync(bool playAnimation, int popCount = 1) { await Pop(playAnimation, popCount); }
 
         /// <summary>
         ///     Pop popups.
@@ -241,7 +242,7 @@ namespace Pancake.UI
         /// <param name="playAnimation"></param>
         /// <param name="destinationPopupId"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Pop(bool playAnimation, string destinationPopupId)
+        public async UniTask PopAsync(bool playAnimation, string destinationPopupId)
         {
             var popCount = 0;
             for (var i = _orderedPopupIds.Count - 1; i >= 0; i--)
@@ -252,13 +253,12 @@ namespace Pancake.UI
                 popCount++;
             }
 
-            if (popCount == _orderedPopupIds.Count)
-                throw new Exception($"The popup with id '{destinationPopupId}' is not found.");
+            if (popCount == _orderedPopupIds.Count) throw new Exception($"The popup with id '{destinationPopupId}' is not found.");
 
-            return App.StartCoroutine(PopRoutine(playAnimation, popCount));
+            await Pop(playAnimation, popCount);
         }
 
-        private IEnumerator PushRoutine(
+        private async UniTask Push(
             Type popupType,
             string resourceKey,
             bool playAnimation,
@@ -287,7 +287,7 @@ namespace Pancake.UI
             }
 
             var assetLoadHandle = loadAsync ? AssetLoader.LoadAsync<GameObject>(resourceKey) : AssetLoader.Load<GameObject>(resourceKey);
-            if (!assetLoadHandle.IsDone) yield return new WaitUntil(() => assetLoadHandle.IsDone);
+            if (!assetLoadHandle.IsDone) await UniTask.WaitUntil(() => assetLoadHandle.IsDone);
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
 
@@ -298,8 +298,7 @@ namespace Pancake.UI
             if (popupId == null) popupId = Guid.NewGuid().ToString();
             _assetLoadHandles.Add(popupId, assetLoadHandle);
             onLoad?.Invoke((popupId, enterPopup));
-            var afterLoadHandle = enterPopup.AfterLoad((RectTransform) transform);
-            while (!afterLoadHandle.IsTerminated) yield return null;
+            await enterPopup.AfterLoad((RectTransform) transform);
 
             var exitPopupId = _orderedPopupIds.Count == 0 ? null : _orderedPopupIds[_orderedPopupIds.Count - 1];
             var exitPopup = exitPopupId == null ? null : _popups[exitPopupId];
@@ -307,28 +306,28 @@ namespace Pancake.UI
             // Preprocess
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforePush(enterPopup, exitPopup);
 
-            var preprocessHandles = new List<AsyncProcessHandle>();
-            if (exitPopup != null) preprocessHandles.Add(exitPopup.BeforeExit(true, enterPopup));
+            var preprocessHandles = new List<UniTask>();
+            if (exitPopup != null) preprocessHandles.Add(exitPopup.BeforeExitAsync(true, enterPopup));
 
-            preprocessHandles.Add(enterPopup.BeforeEnter(true, exitPopup));
+            preprocessHandles.Add(enterPopup.BeforeEnterAsync(true, exitPopup));
 
-            foreach (var coroutineHandle in preprocessHandles)
+            foreach (var handle in preprocessHandles)
             {
-                while (!coroutineHandle.IsTerminated) yield return coroutineHandle;
+                await handle;
             }
 
             // Play Animation
             int enterPopupIndex = _popups.Count;
-            var animationHandles = new List<AsyncProcessHandle>();
-            animationHandles.Add(_backdropHandler.BeforePopupEnter(enterPopup, enterPopupIndex, playAnimation));
+            var animationHandles = new List<UniTask>();
+            animationHandles.Add(_backdropHandler.BeforePopupEnterAsync(enterPopup, enterPopupIndex, playAnimation));
 
-            if (exitPopup != null) animationHandles.Add(exitPopup.Exit(true, playAnimation, enterPopup));
+            if (exitPopup != null) animationHandles.Add(exitPopup.ExitAsync(true, playAnimation, enterPopup));
 
-            animationHandles.Add(enterPopup.Enter(true, playAnimation, exitPopup));
+            animationHandles.Add(enterPopup.EnterAsync(true, playAnimation, exitPopup));
 
             foreach (var coroutineHandle in animationHandles)
             {
-                while (!coroutineHandle.IsTerminated) yield return coroutineHandle;
+                await coroutineHandle;
             }
 
             _backdropHandler.AfterPopupEnter(enterPopup, enterPopupIndex, true);
@@ -366,7 +365,7 @@ namespace Pancake.UI
             }
         }
 
-        private IEnumerator PopRoutine(bool playAnimation, int popCount = 1)
+        private async UniTask Pop(bool playAnimation, int popCount = 1)
         {
             Assert.IsTrue(popCount >= 1);
 
@@ -413,15 +412,16 @@ namespace Pancake.UI
             // Preprocess
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforePop(enterPopup, exitPopup);
 
-            var preprocessHandles = new List<AsyncProcessHandle> {exitPopup.BeforeExit(false, enterPopup)};
-            if (enterPopup != null) preprocessHandles.Add(enterPopup.BeforeEnter(false, exitPopup));
+            var preprocessHandles = new List<UniTask> {exitPopup.BeforeExitAsync(false, enterPopup)};
+            if (enterPopup != null) preprocessHandles.Add(enterPopup.BeforeEnterAsync(false, exitPopup));
 
-            foreach (var coroutineHandle in preprocessHandles)
-                while (!coroutineHandle.IsTerminated)
-                    yield return coroutineHandle;
+            foreach (var handle in preprocessHandles)
+            {
+                await handle;
+            }
 
             // Play Animation
-            var animationHandles = new List<AsyncProcessHandle>();
+            var animationHandles = new List<UniTask>();
             for (var i = unusedPopupIds.Count - 1; i >= 0; i--)
             {
                 var unusedPopupId = unusedPopupIds[i];
@@ -429,15 +429,16 @@ namespace Pancake.UI
                 var unusedPopupIndex = unusedPopupIndices[i];
                 var partnerPopupId = i == 0 ? enterPopupId : unusedPopupIds[i - 1];
                 var partnerPopup = partnerPopupId == null ? null : _popups[partnerPopupId];
-                animationHandles.Add(_backdropHandler.BeforePopupExit(unusedPopup, unusedPopupIndex, playAnimation));
-                animationHandles.Add(unusedPopup.Exit(false, playAnimation, partnerPopup));
+                animationHandles.Add(_backdropHandler.BeforePopupExitAsync(unusedPopup, unusedPopupIndex, playAnimation));
+                animationHandles.Add(unusedPopup.ExitAsync(false, playAnimation, partnerPopup));
             }
 
-            if (enterPopup != null) animationHandles.Add(enterPopup.Enter(false, playAnimation, exitPopup));
+            if (enterPopup != null) animationHandles.Add(enterPopup.EnterAsync(false, playAnimation, exitPopup));
 
-            foreach (var coroutineHandle in animationHandles)
-                while (!coroutineHandle.IsTerminated)
-                    yield return coroutineHandle;
+            foreach (var handle in animationHandles)
+            {
+                await handle;
+            }
 
             // End Transition
             for (var i = 0; i < unusedPopupIds.Count; i++)
@@ -456,8 +457,7 @@ namespace Pancake.UI
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.AfterPop(enterPopup, exitPopup);
 
             // Unload Unused Page
-            var beforeReleaseHandle = exitPopup.BeforeRelease();
-            while (!beforeReleaseHandle.IsTerminated) yield return null;
+            await exitPopup.BeforeRelease();
 
             for (var i = 0; i < unusedPopupIds.Count; i++)
             {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
@@ -152,7 +153,7 @@ namespace Pancake.UI
         /// <param name="loadAsync"></param>
         /// <param name="onLoad"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Push(
+        public async UniTask Push(
             string resourceKey,
             bool playAnimation,
             bool stack = true,
@@ -160,13 +161,13 @@ namespace Pancake.UI
             bool loadAsync = true,
             Action<(string pageId, Page page)> onLoad = null)
         {
-            return App.StartCoroutine(PushRoutine(typeof(Page),
+            await Push(typeof(Page),
                 resourceKey,
                 playAnimation,
                 stack,
                 onLoad,
                 loadAsync,
-                pageId));
+                pageId);
         }
 
         /// <summary>
@@ -180,7 +181,7 @@ namespace Pancake.UI
         /// <param name="loadAsync"></param>
         /// <param name="onLoad"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Push(
+        public async UniTask PushAsync(
             Type pageType,
             string resourceKey,
             bool playAnimation,
@@ -189,13 +190,13 @@ namespace Pancake.UI
             bool loadAsync = true,
             Action<(string pageId, Page page)> onLoad = null)
         {
-            return App.StartCoroutine(PushRoutine(pageType,
+            await Push(pageType,
                 resourceKey,
                 playAnimation,
                 stack,
                 onLoad,
                 loadAsync,
-                pageId));
+                pageId);
         }
 
         /// <summary>
@@ -209,7 +210,7 @@ namespace Pancake.UI
         /// <param name="onLoad"></param>
         /// <typeparam name="TPage"></typeparam>
         /// <returns></returns>
-        public AsyncProcessHandle Push<TPage>(
+        public async UniTask PushAsync<TPage>(
             string resourceKey,
             bool playAnimation,
             bool stack = true,
@@ -217,13 +218,13 @@ namespace Pancake.UI
             bool loadAsync = true,
             Action<(string pageId, TPage page)> onLoad = null) where TPage : Page
         {
-            return App.StartCoroutine(PushRoutine(typeof(TPage),
+            await Push(typeof(TPage),
                 resourceKey,
                 playAnimation,
                 stack,
                 x => onLoad?.Invoke((x.pageId, (TPage) x.page)),
                 loadAsync,
-                pageId));
+                pageId);
         }
 
         /// <summary>
@@ -232,7 +233,10 @@ namespace Pancake.UI
         /// <param name="playAnimation"></param>
         /// <param name="popCount"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Pop(bool playAnimation, int popCount = 1) { return App.StartCoroutine(PopRoutine(playAnimation, popCount)); }
+        public async UniTask PopAsync(bool playAnimation, int popCount = 1)
+        {
+            await Pop(playAnimation, popCount);
+        }
 
         /// <summary>
         ///     Pop pages.
@@ -240,7 +244,7 @@ namespace Pancake.UI
         /// <param name="playAnimation"></param>
         /// <param name="destinationPageId"></param>
         /// <returns></returns>
-        public AsyncProcessHandle Pop(bool playAnimation, string destinationPageId)
+        public async UniTask PopAsync(bool playAnimation, string destinationPageId)
         {
             var popCount = 0;
             for (var i = _orderedPageIds.Count - 1; i >= 0; i--)
@@ -253,10 +257,10 @@ namespace Pancake.UI
 
             if (popCount == _orderedPageIds.Count) throw new Exception($"The page with id '{destinationPageId}' is not found.");
 
-            return App.StartCoroutine(PopRoutine(playAnimation, popCount));
+            await Pop(playAnimation, popCount);
         }
 
-        private IEnumerator PushRoutine(
+        private async UniTask Push(
             Type pageType,
             string resourceKey,
             bool playAnimation,
@@ -287,7 +291,7 @@ namespace Pancake.UI
 
             // Setup
             var assetLoadHandle = loadAsync ? AssetLoader.LoadAsync<GameObject>(resourceKey) : AssetLoader.Load<GameObject>(resourceKey);
-            if (!assetLoadHandle.IsDone) yield return new WaitUntil(() => assetLoadHandle.IsDone);
+            if (!assetLoadHandle.IsDone) await UniTask.WaitUntil(() => assetLoadHandle.IsDone);
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
 
@@ -298,34 +302,34 @@ namespace Pancake.UI
             if (pageId == null) pageId = Guid.NewGuid().ToString();
             _assetLoadHandles.Add(pageId, assetLoadHandle);
             onLoad?.Invoke((pageId, enterPage));
-            var afterLoadHandle = enterPage.AfterLoad((RectTransform) transform);
-            while (!afterLoadHandle.IsTerminated) yield return null;
+            await enterPage.AfterLoadAsync((RectTransform) transform);
 
-            var exitPageId = _orderedPageIds.Count == 0 ? null : _orderedPageIds[_pages.Count - 1];
+            string exitPageId = _orderedPageIds.Count == 0 ? null : _orderedPageIds[_pages.Count - 1];
             var exitPage = exitPageId == null ? null : _pages[exitPageId];
 
             // Preprocess
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforePush(enterPage, exitPage);
 
-            var preprocessHandles = new List<AsyncProcessHandle>();
-            if (exitPage != null) preprocessHandles.Add(exitPage.BeforeExit(true, enterPage));
+            var preprocessHandles = new List<UniTask>();
+            if (exitPage != null) preprocessHandles.Add(exitPage.BeforeExitAsync(true, enterPage));
 
-            preprocessHandles.Add(enterPage.BeforeEnter(true, exitPage));
+            preprocessHandles.Add(enterPage.BeforeEnterAsync(true, exitPage));
 
-            foreach (var coroutineHandle in preprocessHandles)
+            foreach (var handle in preprocessHandles)
             {
-                while (!coroutineHandle.IsTerminated) yield return coroutineHandle;
+                await handle;
             }
 
             // Play Animations
-            var animationHandles = new List<AsyncProcessHandle>();
-            if (exitPage != null) animationHandles.Add(exitPage.Exit(true, playAnimation, enterPage));
+            var animationHandles = new List<UniTask>();
+            if (exitPage != null) animationHandles.Add(exitPage.ExitAsync(true, playAnimation, enterPage));
 
             animationHandles.Add(enterPage.Enter(true, playAnimation, exitPage));
 
             foreach (var coroutineHandle in animationHandles)
-                while (!coroutineHandle.IsTerminated)
-                    yield return coroutineHandle;
+            {
+                await coroutineHandle;
+            }
 
             // End Transition
             if (!_isActivePageStacked && exitPage != null)
@@ -350,8 +354,7 @@ namespace Pancake.UI
             // Unload Unused Page
             if (!_isActivePageStacked && exitPage != null)
             {
-                var beforeReleaseHandle = exitPage.BeforeRelease();
-                while (!beforeReleaseHandle.IsTerminated) yield return null;
+                await exitPage.BeforeReleaseAsync();
 
                 var handle = _assetLoadHandles[exitPageId];
                 AssetLoader.Release(handle);
@@ -383,7 +386,7 @@ namespace Pancake.UI
             }
         }
 
-        private IEnumerator PopRoutine(bool playAnimation, int popCount = 1)
+        private async UniTask Pop(bool playAnimation, int popCount = 1)
         {
             Assert.IsTrue(popCount >= 1);
 
@@ -426,21 +429,21 @@ namespace Pancake.UI
             // Preprocess
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforePop(enterPage, exitPage);
 
-            var preprocessHandles = new List<AsyncProcessHandle> {exitPage.BeforeExit(false, enterPage)};
-            if (enterPage != null) preprocessHandles.Add(enterPage.BeforeEnter(false, exitPage));
+            var preprocessHandles = new List<UniTask> {exitPage.BeforeExitAsync(false, enterPage)};
+            if (enterPage != null) preprocessHandles.Add(enterPage.BeforeEnterAsync(false, exitPage));
 
-            foreach (var coroutineHandle in preprocessHandles)
+            foreach (var handle in preprocessHandles)
             {
-                while (!coroutineHandle.IsTerminated) yield return coroutineHandle;
+                await handle;
             }
 
             // Play Animations
-            var animationHandles = new List<AsyncProcessHandle> {exitPage.Exit(false, playAnimation, enterPage)};
+            var animationHandles = new List<UniTask> {exitPage.ExitAsync(false, playAnimation, enterPage)};
             if (enterPage != null) animationHandles.Add(enterPage.Enter(false, playAnimation, exitPage));
 
-            foreach (var coroutineHandle in animationHandles)
+            foreach (var handle in animationHandles)
             {
-                while (!coroutineHandle.IsTerminated) yield return coroutineHandle;
+                await handle;
             }
 
             // End Transition
@@ -460,8 +463,7 @@ namespace Pancake.UI
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.AfterPop(enterPage, exitPage);
 
             // Unload Unused Page
-            var beforeReleaseHandle = exitPage.BeforeRelease();
-            while (!beforeReleaseHandle.IsTerminated) yield return null;
+            await exitPage.BeforeReleaseAsync();
 
             for (var i = 0; i < unusedPageIds.Count; i++)
             {

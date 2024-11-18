@@ -1,15 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 
 namespace Pancake.UI
 {
     public interface IPageLifecycleEvent
     {
-        Task Initialize();
-        Task WillPushEnter();
-        Task WillPushExit();
-        Task WillPopEnter();
-        Task WillPopExit();
-        Task Cleanup();
+        UniTask Initialize();
+        UniTask WillPushEnter();
+        UniTask WillPushExit();
+        UniTask WillPopEnter();
+        UniTask WillPopExit();
+        UniTask Cleanup();
         void DidPushEnter();
         void DidPushExit();
         void DidPopEnter();
