@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -153,7 +152,7 @@ namespace Pancake.UI
         /// <param name="loadAsync"></param>
         /// <param name="onLoad"></param>
         /// <returns></returns>
-        public async UniTask Push(
+        public async UniTask PushAsync(
             string resourceKey,
             bool playAnimation,
             bool stack = true,
@@ -233,10 +232,7 @@ namespace Pancake.UI
         /// <param name="playAnimation"></param>
         /// <param name="popCount"></param>
         /// <returns></returns>
-        public async UniTask PopAsync(bool playAnimation, int popCount = 1)
-        {
-            await Pop(playAnimation, popCount);
-        }
+        public async UniTask PopAsync(bool playAnimation, int popCount = 1) { await Pop(playAnimation, popCount); }
 
         /// <summary>
         ///     Pop pages.
@@ -291,7 +287,11 @@ namespace Pancake.UI
 
             // Setup
             var assetLoadHandle = loadAsync ? AssetLoader.LoadAsync<GameObject>(resourceKey) : AssetLoader.Load<GameObject>(resourceKey);
-            if (!assetLoadHandle.IsDone) await UniTask.WaitUntil(() => assetLoadHandle.IsDone);
+
+            while (!assetLoadHandle.IsDone)
+            {
+                await UniTask.Yield();
+            }
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
 
@@ -498,9 +498,9 @@ namespace Pancake.UI
             }
         }
 
-        public AsyncProcessHandle Preload(string resourceKey, bool loadAsync = true) { return App.StartCoroutine(PreloadRoutine(resourceKey, loadAsync)); }
+        public async UniTask PreloadAsync(string resourceKey, bool loadAsync = true) { await Preload(resourceKey, loadAsync); }
 
-        private IEnumerator PreloadRoutine(string resourceKey, bool loadAsync = true)
+        private async UniTask Preload(string resourceKey, bool loadAsync = true)
         {
             if (_preloadedResourceHandles.ContainsKey(resourceKey))
                 throw new InvalidOperationException($"The resource with key \"${resourceKey}\" has already been preloaded.");
@@ -508,7 +508,10 @@ namespace Pancake.UI
             var assetLoadHandle = loadAsync ? AssetLoader.LoadAsync<GameObject>(resourceKey) : AssetLoader.Load<GameObject>(resourceKey);
             _preloadedResourceHandles.Add(resourceKey, assetLoadHandle);
 
-            if (!assetLoadHandle.IsDone) yield return new WaitUntil(() => assetLoadHandle.IsDone);
+            while (!assetLoadHandle.IsDone)
+            {
+                await UniTask.Yield();
+            }
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
         }

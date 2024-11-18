@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -145,10 +144,7 @@ namespace Pancake.UI
         /// <param name="resourceKey"></param>
         /// <param name="playAnimation"></param>
         /// <returns></returns>
-        public AsyncProcessHandle ShowByResourceKey(string resourceKey, bool playAnimation)
-        {
-            return App.StartCoroutine(ShowByResourceKeyRoutine(resourceKey, playAnimation));
-        }
+        public async UniTask ShowByResourceKeyAsync(string resourceKey, bool playAnimation) { await ShowByResourceKey(resourceKey, playAnimation); }
 
         /// <summary>
         ///     Register a sheet.
@@ -246,10 +242,10 @@ namespace Pancake.UI
             return sheetId;
         }
 
-        private IEnumerator ShowByResourceKeyRoutine(string resourceKey, bool playAnimation)
+        private async UniTask ShowByResourceKey(string resourceKey, bool playAnimation)
         {
-            var sheetId = _sheetNameToId[resourceKey];
-            yield return ShowAsync(sheetId, playAnimation);
+            string sheetId = _sheetNameToId[resourceKey];
+            await ShowAsync(sheetId, playAnimation);
         }
 
         /// <summary>
