@@ -1,7 +1,7 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Pancake.Common;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -13,8 +13,11 @@ namespace Pancake.Notification
 #if UNITY_ANDROID
         [SerializeField] private ScriptableNotification[] notificationVariables;
 
+        private CancellationToken _token;
+
         private void Start()
         {
+            _token = destroyCancellationToken;
             var strs = new List<string>();
 
             foreach (var variable in notificationVariables)
@@ -25,17 +28,24 @@ namespace Pancake.Notification
 
             foreach (string s in strs)
             {
-                App.StartCoroutine(PrepareImage(Application.persistentDataPath, s));
+                PrepareImage(Application.persistentDataPath, s);
             }
         }
 
-        private IEnumerator PrepareImage(string destDir, string filename)
+        private async void PrepareImage(string destDir, string filename)
         {
             string path = Path.Combine(destDir, filename);
-            if (File.Exists(path)) yield break;
-            using var uwr = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, filename));
-            yield return uwr.SendWebRequest();
-            File.WriteAllBytes(path, uwr.downloadHandler.data);
+            if (File.Exists(path)) return;
+            using var www = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, filename));
+            try
+            {
+                await Awaitable.FromAsyncOperation(www.SendWebRequest(), _token);
+                await File.WriteAllBytesAsync(path, www.downloadHandler.data, _token);
+            }
+            catch (OperationCanceledException)
+            {
+                // ignore
+            }
         }
 #endif
     }

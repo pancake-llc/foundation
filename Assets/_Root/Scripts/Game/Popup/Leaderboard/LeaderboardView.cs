@@ -396,6 +396,7 @@ namespace Pancake.Game.UI
             {
                 await UniTask.Yield();
             }
+
             await popupContainer.PushAsync<RenamePopup>(popupRename, true, onLoad: t => { t.popup.view.SetCallbackClose(onPopupRenameClosed); });
         }
 
@@ -456,10 +457,10 @@ namespace Pancake.Game.UI
             contentSlot.SetActive(true);
             block.SetActive(false);
 
-            App.StartCoroutine(PageSetup(pageData));
+            PageSetup(pageData);
         }
 
-        private IEnumerator PageSetup(List<LeaderboardEntry> pageData)
+        private async void PageSetup(List<LeaderboardEntry> pageData)
         {
             for (int i = 0; i < pageData.Count; i++)
             {
@@ -483,7 +484,7 @@ namespace Pancake.Game.UI
                     })
                     .BindToLocalScale(slots[i].transform);
 
-                yield return new WaitForSeconds(displayRankCurve.Evaluate(i / (float) pageData.Count));
+                await Awaitable.WaitForSecondsAsync(displayRankCurve.Evaluate(i / (float) pageData.Count));
             }
         }
     }

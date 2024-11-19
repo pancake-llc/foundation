@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.Common;
 using Cysharp.Threading.Tasks;
 
 namespace Pancake.UI
@@ -63,25 +61,12 @@ namespace Pancake.UI
             }
         }
 
-        public IEnumerator ExecuteLifecycleEventsSequentially(Func<TLifecycleEvent, IEnumerator> execute)
-        {
-            int? currentPriority = null;
-            while ((currentPriority = FindNextPriority(currentPriority)) != null)
-            {
-                // LifecycleEvents with the same Priority are executed in parallel.
-                var lifecycleEvents = GetItems(currentPriority.Value);
-                var handles = lifecycleEvents.Select(x => App.StartCoroutine(execute(x))).ToArray();
-                foreach (var handle in handles)
-                    while (!handle.IsTerminated)
-                        yield return null;
-            }
-        }
-
         public void ExecuteLifecycleEventsSequentially(Action<TLifecycleEvent> execute)
         {
             foreach (var lifecycleEvent in _priorityToLifecycleEvent.Values)
-            foreach (var item in lifecycleEvent)
-                execute(item);
+            {
+                foreach (var item in lifecycleEvent) execute(item);
+            }
         }
     }
 }
