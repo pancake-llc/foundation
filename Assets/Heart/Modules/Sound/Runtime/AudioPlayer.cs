@@ -91,7 +91,7 @@ namespace Pancake.Sound
         internal void Stop()
         {
             OnStopped?.Invoke(this);
-            audioSource.Stop();
+            audioSource.OrNull()?.Stop();
         }
 
         internal void Finish()
