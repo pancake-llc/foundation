@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_UNITASK
+using System;
 using Cysharp.Threading.Tasks;
 
 namespace Pancake.UI
@@ -34,3 +35,4 @@ namespace Pancake.UI
         }
     }
 }
+#endif

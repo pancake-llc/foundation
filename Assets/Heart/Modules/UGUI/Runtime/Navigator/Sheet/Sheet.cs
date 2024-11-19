@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
-using Pancake.Common;
 using Pancake.Linq;
 using UnityEngine;
+
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+using Pancake.Common;
+#endif
 
 namespace Pancake.UI
 {
@@ -59,15 +62,14 @@ namespace Pancake.UI
             return result;
         }
 
+#if PANCAKE_UNITASK
         public virtual UniTask Initialize() { return UniTask.CompletedTask; }
 
         public virtual UniTask WillEnter() { return UniTask.CompletedTask; }
 
-        public virtual void DidEnter() { }
 
         public virtual UniTask WillExit() { return UniTask.CompletedTask; }
 
-        public virtual void DidExit() { }
 
         public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
 
@@ -136,13 +138,6 @@ namespace Pancake.UI
             SetTransitionProgress(1.0f);
         }
 
-        internal void AfterEnter(Sheet partnerSheet)
-        {
-            _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidEnter());
-            IsTransitioning = false;
-            TransitionAnimationType = null;
-        }
-
         internal async UniTask BeforeExitAsync(Sheet partnerSheet)
         {
             IsTransitioning = true;
@@ -175,6 +170,22 @@ namespace Pancake.UI
             SetTransitionProgress(1.0f);
         }
 
+        internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
+
+        internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+#endif
+
+        public virtual void DidEnter() { }
+
+        public virtual void DidExit() { }
+
+        internal void AfterEnter(Sheet partnerSheet)
+        {
+            _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidEnter());
+            IsTransitioning = false;
+            TransitionAnimationType = null;
+        }
+
         internal void AfterExit(Sheet partnerSheet)
         {
             _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidExit());
@@ -182,10 +193,6 @@ namespace Pancake.UI
             IsTransitioning = false;
             TransitionAnimationType = null;
         }
-
-        internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
-
-        internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
 
         private void SetTransitionProgress(float progress)
         {

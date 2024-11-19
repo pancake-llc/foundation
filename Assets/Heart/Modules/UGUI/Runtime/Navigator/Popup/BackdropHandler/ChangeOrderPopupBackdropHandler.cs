@@ -1,4 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 using UnityEngine;
 
 namespace Pancake.UI
@@ -25,6 +27,7 @@ namespace Pancake.UI
             _changeTiming = changeTiming;
         }
 
+#if PANCAKE_UNITASK
         public async UniTask BeforePopupEnterAsync(Popup popup, int popupIndex, bool playAnimation)
         {
             var parent = (RectTransform) popup.transform.parent;
@@ -44,12 +47,6 @@ namespace Pancake.UI
             if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(popupIndex);
         }
 
-        public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation)
-        {
-            // For the second and subsequent popups, change the drawing order of the backdrop
-            if (_changeTiming == ChangeTiming.AfterAnimation) _instance.transform.SetSiblingIndex(popupIndex);
-        }
-
         public async UniTask BeforePopupExitAsync(Popup popup, int popupIndex, bool playAnimation)
         {
             // If it is the first popup, play the backdrop animation
@@ -61,6 +58,13 @@ namespace Pancake.UI
 
             // For the second and subsequent popups, change the drawing order of the backdrop
             if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(popupIndex - 1);
+        }
+#endif
+
+        public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation)
+        {
+            // For the second and subsequent popups, change the drawing order of the backdrop
+            if (_changeTiming == ChangeTiming.AfterAnimation) _instance.transform.SetSiblingIndex(popupIndex);
         }
 
         public void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation)

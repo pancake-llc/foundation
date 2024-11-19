@@ -311,14 +311,17 @@ namespace Pancake.UI
                 return;
             }
 
-            IeExecute(eventData).Forget();
+#if PANCAKE_UNITASK
+            Execute(eventData).Forget();
+#endif
         }
 
+#if PANCAKE_UNITASK
         /// <summary>
         /// execute for click button
         /// </summary>
         /// <returns></returns>
-        private async UniTask IeExecute(PointerEventData eventData)
+        private async UniTask Execute(PointerEventData eventData)
         {
             if (IsDetectSingleClick) base.OnPointerClick(eventData);
 
@@ -364,6 +367,7 @@ namespace Pancake.UI
             _doubleClickTimer = 0;
             _clickedOnce = false;
         }
+#endif
 
         #endregion
 

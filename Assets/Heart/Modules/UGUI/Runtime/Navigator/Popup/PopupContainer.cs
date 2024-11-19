@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -78,7 +80,9 @@ namespace Pancake.UI
                 var popup = _popups[popupId];
                 var assetLoadHandle = _assetLoadHandles[popupId];
 
+#if PANCAKE_UNITASK
                 if (DefaultNavigatorSetting.CallCleanupWhenDestroy) popup.BeforeRelease();
+#endif
                 Destroy(popup.gameObject);
                 AssetLoader.Release(assetLoadHandle);
             }
@@ -152,6 +156,7 @@ namespace Pancake.UI
         /// <param name="callbackReceiver"></param>
         public void RemoveCallbackReceiver(IPopupContainerCallbackReceiver callbackReceiver) { _callbackReceivers.Remove(callbackReceiver); }
 
+#if PANCAKE_UNITASK
         /// <summary>
         ///     Push new popup.
         /// </summary>
@@ -494,9 +499,7 @@ namespace Pancake.UI
             }
         }
 
-        public async UniTask PreloadAsync(string resourceKey, bool loadAsync = true) { await Preload(resourceKey, loadAsync); }
-
-        private async UniTask Preload(string resourceKey, bool loadAsync = true)
+        public async UniTask PreloadAsync(string resourceKey, bool loadAsync = true)
         {
             if (_preloadedResourceHandles.ContainsKey(resourceKey))
                 throw new InvalidOperationException($"The resource with key \"${resourceKey}\" has already been preloaded.");
@@ -511,6 +514,7 @@ namespace Pancake.UI
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
         }
+#endif
 
         public bool IsPreloadRequested(string resourceKey) { return _preloadedResourceHandles.ContainsKey(resourceKey); }
 

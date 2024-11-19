@@ -1,4 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 using Pancake.Common;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,7 +46,9 @@ namespace Pancake.UI
                 {
                     var popupContainer = PopupContainer.Of(transform);
                     if (popupContainer.IsInTransition) return;
+#if PANCAKE_UNITASK
                     popupContainer.PopAsync(true).Forget();
+#endif
                 });
             }
         }
@@ -60,6 +64,7 @@ namespace Pancake.UI
 
         protected virtual void OnSetup(RectTransform parentTransform, int popupIndex) { }
 
+#if PANCAKE_UNITASK
         internal async UniTask EnterAsync(bool playAnimation)
         {
             gameObject.SetActive(true);
@@ -102,5 +107,6 @@ namespace Pancake.UI
             _canvasGroup.alpha = 0;
             gameObject.SetActive(false);
         }
+#endif
     }
 }

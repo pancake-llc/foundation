@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if PANCAKE_UNITASK
 using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -49,6 +51,7 @@ namespace Pancake.UI
                 }
         }
 
+#if PANCAKE_UNITASK
         public async UniTask ExecuteLifecycleEventsSequentially(Func<TLifecycleEvent, UniTask> execute)
         {
             int? currentPriority = null;
@@ -60,6 +63,7 @@ namespace Pancake.UI
                 await UniTask.WhenAll(tasks);
             }
         }
+#endif
 
         public void ExecuteLifecycleEventsSequentially(Action<TLifecycleEvent> execute)
         {

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
 using UnityEngine;
 using UnityEngine.UI;
+
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -138,6 +141,7 @@ namespace Pancake.UI
         /// <param name="callbackReceiver"></param>
         public void RemoveCallbackReceiver(ISheetContainerCallbackReceiver callbackReceiver) { _callbackReceivers.Remove(callbackReceiver); }
 
+#if PANCAKE_UNITASK
         /// <summary>
         ///     Show a sheet.
         /// </summary>
@@ -398,6 +402,7 @@ namespace Pancake.UI
                 }
             }
         }
+#endif
 
         /// <summary>
         ///     Destroy and release all sheets.
@@ -406,7 +411,9 @@ namespace Pancake.UI
         {
             foreach (var sheet in _sheets.Values)
             {
+#if PANCAKE_UNITASK
                 if (DefaultNavigatorSetting.CallCleanupWhenDestroy) sheet.BeforeRelease();
+#endif
                 Destroy(sheet.gameObject);
             }
 

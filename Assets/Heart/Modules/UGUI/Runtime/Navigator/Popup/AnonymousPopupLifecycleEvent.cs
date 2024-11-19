@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Pancake.Linq;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -12,6 +14,7 @@ namespace Pancake.UI
         public event Action OnDidPopEnter;
         public event Action OnDidPopExit;
 
+#if PANCAKE_UNITASK
         public List<Func<UniTask>> OnInitialize { get; } = new();
         public List<Func<UniTask>> OnWillPushEnter { get; } = new();
         public List<Func<UniTask>> OnWillPushExit { get; } = new();
@@ -57,20 +60,18 @@ namespace Pancake.UI
 
         UniTask IPopupLifecycleEvent.WillPushEnter() { return UniTask.WhenAll(OnWillPushEnter.Map(x => x.Invoke())); }
 
-        void IPopupLifecycleEvent.DidPushEnter() { OnDidPushEnter?.Invoke(); }
-
         UniTask IPopupLifecycleEvent.WillPushExit() { return UniTask.WhenAll(OnWillPushExit.Map(x => x.Invoke())); }
-
-        void IPopupLifecycleEvent.DidPushExit() { OnDidPushExit?.Invoke(); }
 
         UniTask IPopupLifecycleEvent.WillPopEnter() { return UniTask.WhenAll(OnWillPopEnter.Map(x => x.Invoke())); }
 
-        void IPopupLifecycleEvent.DidPopEnter() { OnDidPopEnter?.Invoke(); }
-
         UniTask IPopupLifecycleEvent.WillPopExit() { return UniTask.WhenAll(OnWillPopExit.Map(x => x.Invoke())); }
 
-        void IPopupLifecycleEvent.DidPopExit() { OnDidPopExit?.Invoke(); }
-
         UniTask IPopupLifecycleEvent.Cleanup() { return UniTask.WhenAll(OnCleanup.Map(x => x.Invoke())); }
+#endif
+
+        void IPopupLifecycleEvent.DidPushEnter() { OnDidPushEnter?.Invoke(); }
+        void IPopupLifecycleEvent.DidPushExit() { OnDidPushExit?.Invoke(); }
+        void IPopupLifecycleEvent.DidPopEnter() { OnDidPopEnter?.Invoke(); }
+        void IPopupLifecycleEvent.DidPopExit() { OnDidPopExit?.Invoke(); }
     }
 }

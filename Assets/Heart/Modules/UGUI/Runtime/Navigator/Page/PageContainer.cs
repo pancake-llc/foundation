@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -68,7 +71,9 @@ namespace Pancake.UI
                 var page = _pages[pageId];
                 var assetLoadHandle = _assetLoadHandles[pageId];
 
+#if PANCAKE_UNITASK
                 if (DefaultNavigatorSetting.CallCleanupWhenDestroy) page.BeforeRelease();
+#endif
                 Destroy(page.gameObject);
                 AssetLoader.Release(assetLoadHandle);
             }
@@ -142,6 +147,7 @@ namespace Pancake.UI
         /// <param name="callbackReceiver"></param>
         public void RemoveCallbackReceiver(IPageContainerCallbackReceiver callbackReceiver) { _callbackReceivers.Remove(callbackReceiver); }
 
+#if PANCAKE_UNITASK
         /// <summary>
         ///     Push new page.
         /// </summary>
@@ -515,6 +521,7 @@ namespace Pancake.UI
 
             if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
         }
+#endif
 
         public bool IsPreloadRequested(string resourceKey) { return _preloadedResourceHandles.ContainsKey(resourceKey); }
 

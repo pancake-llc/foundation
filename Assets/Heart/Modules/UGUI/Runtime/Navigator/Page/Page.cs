@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+#if PANCAKE_UNITASK
 using Cysharp.Threading.Tasks;
+#endif
 using Sirenix.OdinInspector;
 using Pancake.Common;
 using UnityEngine;
@@ -58,6 +59,7 @@ namespace Pancake.UI
 
         #region Implement
 
+#if PANCAKE_UNITASK
         public virtual UniTask Initialize() { return UniTask.CompletedTask; }
 
         public virtual UniTask WillPushEnter() { return UniTask.CompletedTask; }
@@ -69,6 +71,7 @@ namespace Pancake.UI
         public virtual UniTask WillPopExit() { return UniTask.CompletedTask; }
 
         public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
+#endif
 
         public virtual void DidPushEnter() { }
 
@@ -104,6 +107,7 @@ namespace Pancake.UI
         public void AddLifecycleEvent(IPageLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
         public void RemoveLifecycleEvent(IPageLifecycleEvent lifecycleEvent) { _lifecycleEvents.RemoveItem(lifecycleEvent); }
 
+#if PANCAKE_UNITASK
         internal async UniTask AfterLoadAsync(RectTransform parentTransform)
         {
             _rectTransform = (RectTransform) transform;
@@ -217,5 +221,6 @@ namespace Pancake.UI
         internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
 
         internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+#endif
     }
 }

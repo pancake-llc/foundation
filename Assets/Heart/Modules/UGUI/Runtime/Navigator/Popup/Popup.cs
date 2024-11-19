@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Pancake.Common;
 using Pancake.Linq;
 using UnityEngine;
+
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -61,23 +64,16 @@ namespace Pancake.UI
         /// </summary>
         public event Action<float> TransitionAnimationProgressChanged;
 
+#if PANCAKE_UNITASK
         public virtual UniTask Initialize() { return UniTask.CompletedTask; }
 
         public virtual UniTask WillPushEnter() { return UniTask.CompletedTask; }
 
-        public virtual void DidPushEnter() { }
-
         public virtual UniTask WillPushExit() { return UniTask.CompletedTask; }
-
-        public virtual void DidPushExit() { }
 
         public virtual UniTask WillPopEnter() { return UniTask.CompletedTask; }
 
-        public virtual void DidPopEnter() { }
-
         public virtual UniTask WillPopExit() { return UniTask.CompletedTask; }
-
-        public virtual void DidPopExit() { }
 
         public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
 
@@ -202,6 +198,12 @@ namespace Pancake.UI
         internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
 
         internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+#endif
+
+        public virtual void DidPushEnter() { }
+        public virtual void DidPushExit() { }
+        public virtual void DidPopEnter() { }
+        public virtual void DidPopExit() { }
 
         private void SetTransitionProgress(float progress)
         {

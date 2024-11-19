@@ -1,11 +1,14 @@
 ﻿using System;
+#if PANCAKE_UNITASK
 using Cysharp.Threading.Tasks;
+#endif
 using UnityEngine;
 
 namespace Pancake.UI
 {
     internal static class TransitionExtension
     {
+#if PANCAKE_UNITASK
         public static async UniTask PlayWith(this ITransitionAnimation transition, IProgress<float> progress = null)
         {
             var player = new AnimationPlayer(transition);
@@ -23,6 +26,7 @@ namespace Pancake.UI
             player.Stop();
             progress?.Report(1.0f);
         }
+#endif
     }
 
     internal static class AlgimentExtension

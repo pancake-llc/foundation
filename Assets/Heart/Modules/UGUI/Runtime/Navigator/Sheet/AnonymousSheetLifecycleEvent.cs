@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+#if PANCAKE_UNITASK
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using Pancake.Linq;
+#endif
 
 namespace Pancake.UI
 {
@@ -10,6 +12,7 @@ namespace Pancake.UI
         public event Action OnDidEnter;
         public event Action OnDidExit;
 
+#if PANCAKE_UNITASK
         public AnonymousSheetLifecycleEvent(
             Func<UniTask> initialize = null,
             Func<UniTask> onWillEnter = null,
@@ -40,19 +43,15 @@ namespace Pancake.UI
 
         UniTask ISheetLifecycleEvent.Initialize() { return UniTask.WhenAll(OnInitialize.Map(x => x.Invoke())); }
 
-
         UniTask ISheetLifecycleEvent.WillEnter() { return UniTask.WhenAll(OnWillEnter.Map(x => x.Invoke())); }
-
-
-        void ISheetLifecycleEvent.DidEnter() { OnDidEnter?.Invoke(); }
-
 
         UniTask ISheetLifecycleEvent.WillExit() { return UniTask.WhenAll(OnWillExit.Map(x => x.Invoke())); }
 
+        UniTask ISheetLifecycleEvent.Cleanup() { return UniTask.WhenAll(OnCleanup.Map(x => x.Invoke())); }
+#endif
+
+        void ISheetLifecycleEvent.DidEnter() { OnDidEnter?.Invoke(); }
 
         void ISheetLifecycleEvent.DidExit() { OnDidExit?.Invoke(); }
-
-
-        UniTask ISheetLifecycleEvent.Cleanup() { return UniTask.WhenAll(OnCleanup.Map(x => x.Invoke())); }
     }
 }
