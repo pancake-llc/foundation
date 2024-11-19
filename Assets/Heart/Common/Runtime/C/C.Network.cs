@@ -58,7 +58,6 @@ namespace Pancake.Common
     {
         public static class Network
         {
-            private static Task activeTask;
             private static CancellationTokenSource tokenSource;
 
             public static void CheckConnection(Action<ENetworkStatus> onCompleted)
@@ -68,161 +67,53 @@ namespace Pancake.Common
                     case RuntimePlatform.Android:
                     case RuntimePlatform.WebGLPlayer:
                     default:
-                        CheckNetworkAndroid(onCompleted);
+                        _ = CheckNetworkAndroid(onCompleted);
                         break;
                     case RuntimePlatform.IPhonePlayer:
                     case RuntimePlatform.OSXEditor:
                     case RuntimePlatform.OSXPlayer:
-                        CheckNetworkiOS(onCompleted);
+                        _ = CheckNetworkiOS(onCompleted);
                         break;
                 }
             }
 
             public static void StopCheckConnection()
             {
-                if (tokenSource != null && activeTask is {IsCompleted: false})
+                if (tokenSource != null)
                 {
                     tokenSource.Cancel();
                     tokenSource.Dispose();
+                    tokenSource = null;
                 }
             }
 
-            private static void CheckNetworkAndroid(Action<ENetworkStatus> onCompleted)
+            private static async Task CheckNetworkAndroid(Action<ENetworkStatus> onCompleted)
             {
-                tokenSource ??= new CancellationTokenSource();
+                StopCheckConnection(); // cancel previous task
+                tokenSource = new CancellationTokenSource();
 
-                if (activeTask is {IsCompleted: false})
-                {
-                    tokenSource.Cancel();
-                    tokenSource.Dispose();
-                }
-
-                activeTask = Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted, tokenSource.Token);
+                await PerformCheck(url: "https://clients3.google.com/generate_204",
+                    responseType: ENetworkResponseType.HttpStatusCode,
+                    statusCode: HttpStatusCode.NoContent,
+                    expectedContent: null,
+                    onCompleted: onCompleted,
+                    token: tokenSource.Token);
             }
 
-            private static void CheckNetworkiOS(Action<ENetworkStatus> onCompleted)
+            private static async Task CheckNetworkiOS(Action<ENetworkStatus> onCompleted)
             {
-                tokenSource ??= new CancellationTokenSource();
+                StopCheckConnection(); // cancel previous task
+                tokenSource = new CancellationTokenSource();
 
-                if (activeTask is {IsCompleted: false})
-                {
-                    tokenSource.Cancel();
-                    tokenSource.Dispose();
-                }
-
-                activeTask = Check_ResponseContain("https://captive.apple.com/hotspot-detect.html",
-                    "<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>",
-                    onCompleted,
-                    tokenSource.Token);
-            }
-            
-            /// <summary>
-            /// Check internet connection status
-            /// </summary>
-            /// <returns></returns>
-            private static async Task Check_HttpStatusCode(string url, HttpStatusCode statusCode, Action<ENetworkStatus> onCompleted, CancellationToken token)
-            {
-                using var www = UnityWebRequest.Get(url);
-                ENetworkStatus status;
-                while (!token.IsCancellationRequested)
-                {
-                    try
-                    {
-                        await Awaitable.FromAsyncOperation(www.SendWebRequest(), token);
-                    }
-                    catch (Exception)
-                    {
-                        status = ENetworkStatus.PendingCheck;
-                        onCompleted?.Invoke(status);
-                        return;
-                    }
-                }
-
-                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
-                {
-                    status = ENetworkStatus.NoDnsConnection;
-                    onCompleted?.Invoke(status);
-                    return;
-                }
-
-                status = (int) www.responseCode == (int) statusCode ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-
-                onCompleted?.Invoke(status);
+                await PerformCheck(url: "https://captive.apple.com/hotspot-detect.html",
+                    responseType: ENetworkResponseType.ResponseContent,
+                    statusCode: HttpStatusCode.OK,
+                    expectedContent: "<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>",
+                    onCompleted: onCompleted,
+                    token: tokenSource.Token);
             }
 
-            /// <summary>
-            /// Check internet connection status
-            /// </summary>
-            /// <returns></returns>
-            private static async Task Check_ResponseContain(string url, string expectedContent, Action<ENetworkStatus> onCompleted, CancellationToken token)
-            {
-                using var www = UnityWebRequest.Get(url);
-                ENetworkStatus status;
-                while (!token.IsCancellationRequested)
-                {
-                    try
-                    {
-                        await Awaitable.FromAsyncOperation(www.SendWebRequest(), token);
-                    }
-                    catch (Exception)
-                    {
-                        status = ENetworkStatus.PendingCheck;
-                        onCompleted?.Invoke(status);
-                        return;
-                    }
-                }
-
-                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
-                {
-                    status = ENetworkStatus.NoDnsConnection;
-                    onCompleted?.Invoke(status);
-                    return;
-                }
-
-                status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-
-                onCompleted?.Invoke(status);
-            }
-
-            /// <summary>
-            /// Check internet connection status
-            /// </summary>
-            /// <returns></returns>
-            private static async Task Check_ResponseContainContent(string url, string expectedContent, Action<ENetworkStatus> onCompleted, CancellationToken token)
-            {
-                using var www = UnityWebRequest.Get(url);
-                ENetworkStatus status;
-                while (!token.IsCancellationRequested)
-                {
-                    try
-                    {
-                        await Awaitable.FromAsyncOperation(www.SendWebRequest(), token);
-                    }
-                    catch (Exception)
-                    {
-                        status = ENetworkStatus.PendingCheck;
-                        onCompleted?.Invoke(status);
-                        return;
-                    }
-                }
-
-                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
-                {
-                    status = ENetworkStatus.NoDnsConnection;
-                    onCompleted?.Invoke(status);
-                    return;
-                }
-
-                status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-
-                onCompleted?.Invoke(status);
-            }
-            
-            /// <summary>
-            /// Check internet connection status
-            /// </summary>
-            /// <returns></returns>
-            public static async Task Check(
+            private static async Task PerformCheck(
                 string url,
                 ENetworkResponseType responseType,
                 HttpStatusCode statusCode,
@@ -231,39 +122,42 @@ namespace Pancake.Common
                 CancellationToken token)
             {
                 using var www = UnityWebRequest.Get(url);
-                ENetworkStatus status;
-                while (!token.IsCancellationRequested)
+
+                try
                 {
-                    try
-                    {
-                        await Awaitable.FromAsyncOperation(www.SendWebRequest(), token);
-                    }
-                    catch (Exception)
-                    {
-                        status = ENetworkStatus.PendingCheck;
-                        onCompleted?.Invoke(status);
-                        return;
-                    }
+                    await Awaitable.FromAsyncOperation(www.SendWebRequest(), token);
+                }
+                catch (OperationCanceledException)
+                {
+                    // do nothing
+                    return;
                 }
 
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
                 {
-                    status = ENetworkStatus.NoDnsConnection;
-                    onCompleted?.Invoke(status);
+                    onCompleted?.Invoke(ENetworkStatus.NoDnsConnection);
                     return;
                 }
 
+                ENetworkStatus status;
                 switch (responseType)
                 {
                     case ENetworkResponseType.HttpStatusCode:
                         status = (int) www.responseCode == (int) statusCode ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
                         break;
+
                     case ENetworkResponseType.ResponseContent:
-                        status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+                        status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim(), StringComparison.Ordinal)
+                            ? ENetworkStatus.Connected
+                            : ENetworkStatus.WalledGarden;
                         break;
+
                     case ENetworkResponseType.ResponseContainContent:
-                        status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+                        status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim(), StringComparison.Ordinal)
+                            ? ENetworkStatus.Connected
+                            : ENetworkStatus.WalledGarden;
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
