@@ -16,6 +16,9 @@
     <img alt="Repo Size" src="https://img.shields.io/github/repo-size/pancake-llc/foundation?logo=VirtualBox">
   </a>
   <a>
+    <img alt="Code Size" src="https://img.shields.io/github/languages/code-size/pancake-llc/foundation?logo=sharp">
+  </a>
+  <a>
     <img alt="Last Release" src="https://img.shields.io/github/v/release/pancake-llc/foundation?include_prereleases&logo=Dropbox&color=yellow">
   </a>
 </p>

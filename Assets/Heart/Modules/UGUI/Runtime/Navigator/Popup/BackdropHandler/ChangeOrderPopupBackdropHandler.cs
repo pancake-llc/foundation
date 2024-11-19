@@ -1,4 +1,6 @@
-﻿using Pancake.Common;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 using UnityEngine;
 
 namespace Pancake.UI
@@ -25,7 +27,8 @@ namespace Pancake.UI
             _changeTiming = changeTiming;
         }
 
-        public AsyncProcessHandle BeforePopupEnter(Popup popup, int popupIndex, bool playAnimation)
+#if PANCAKE_UNITASK
+        public async UniTask BeforePopupEnterAsync(Popup popup, int popupIndex, bool playAnimation)
         {
             var parent = (RectTransform) popup.transform.parent;
 
@@ -36,30 +39,32 @@ namespace Pancake.UI
                 backdrop.Setup(parent, popupIndex);
                 backdrop.transform.SetSiblingIndex(0);
                 _instance = backdrop;
-                return backdrop.Enter(playAnimation);
+                await backdrop.EnterAsync(playAnimation);
+                return;
             }
 
             // For the second and subsequent popups, change the drawing order of the backdrop
             if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(popupIndex);
-
-            return AsyncProcessHandle.Completed();
         }
+
+        public async UniTask BeforePopupExitAsync(Popup popup, int popupIndex, bool playAnimation)
+        {
+            // If it is the first popup, play the backdrop animation
+            if (popupIndex == 0)
+            {
+                await _instance.ExitAsync(playAnimation);
+                return;
+            }
+
+            // For the second and subsequent popups, change the drawing order of the backdrop
+            if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(popupIndex - 1);
+        }
+#endif
 
         public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation)
         {
             // For the second and subsequent popups, change the drawing order of the backdrop
             if (_changeTiming == ChangeTiming.AfterAnimation) _instance.transform.SetSiblingIndex(popupIndex);
-        }
-
-        public AsyncProcessHandle BeforePopupExit(Popup popup, int popupIndex, bool playAnimation)
-        {
-            // If it is the first popup, play the backdrop animation
-            if (popupIndex == 0) return _instance.Exit(playAnimation);
-
-            // For the second and subsequent popups, change the drawing order of the backdrop
-            if (_changeTiming == ChangeTiming.BeforeAnimation) _instance.transform.SetSiblingIndex(popupIndex - 1);
-
-            return AsyncProcessHandle.Completed();
         }
 
         public void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation)

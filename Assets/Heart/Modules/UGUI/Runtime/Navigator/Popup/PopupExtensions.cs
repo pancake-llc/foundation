@@ -1,5 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿#if PANCAKE_UNITASK
+using System;
+using Cysharp.Threading.Tasks;
 
 namespace Pancake.UI
 {
@@ -7,16 +8,16 @@ namespace Pancake.UI
     {
         public static void AddLifecycleEvent(
             this Popup self,
-            Func<Task> initialize = null,
-            Func<Task> onWillPushEnter = null,
+            Func<UniTask> initialize = null,
+            Func<UniTask> onWillPushEnter = null,
             Action onDidPushEnter = null,
-            Func<Task> onWillPushExit = null,
+            Func<UniTask> onWillPushExit = null,
             Action onDidPushExit = null,
-            Func<Task> onWillPopEnter = null,
+            Func<UniTask> onWillPopEnter = null,
             Action onDidPopEnter = null,
-            Func<Task> onWillPopExit = null,
+            Func<UniTask> onWillPopExit = null,
             Action onDidPopExit = null,
-            Func<Task> onCleanup = null,
+            Func<UniTask> onCleanup = null,
             int priority = 0)
 
         {
@@ -34,3 +35,4 @@ namespace Pancake.UI
         }
     }
 }
+#endif

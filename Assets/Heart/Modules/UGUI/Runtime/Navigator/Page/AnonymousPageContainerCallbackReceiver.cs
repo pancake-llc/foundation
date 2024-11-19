@@ -8,7 +8,7 @@ namespace Pancake.UI
         public event Action<(Page enterPage, Page exitPage)> OnAfterPush;
         public event Action<(Page enterPage, Page exitPage)> OnBeforePop;
         public event Action<(Page enterPage, Page exitPage)> OnBeforePush;
-        
+
         public AnonymousPageContainerCallbackReceiver(
             Action<(Page enterPage, Page exitPage)> onBeforePush = null,
             Action<(Page enterPage, Page exitPage)> onAfterPush = null,
@@ -28,6 +28,5 @@ namespace Pancake.UI
         void IPageContainerCallbackReceiver.BeforePop(Page enterPage, Page exitPage) { OnBeforePop?.Invoke((enterPage, exitPage)); }
 
         void IPageContainerCallbackReceiver.AfterPop(Page enterPage, Page exitPage) { OnAfterPop?.Invoke((enterPage, exitPage)); }
-        
     }
 }

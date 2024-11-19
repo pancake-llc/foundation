@@ -1,13 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
     public interface ISheetLifecycleEvent
     {
-        Task Initialize();
-        Task WillEnter();
-        Task WillExit();
-        Task Cleanup();
+#if PANCAKE_UNITASK
+        UniTask Initialize();
+        UniTask WillEnter();
+        UniTask WillExit();
+        UniTask Cleanup();
+#endif
         void DidEnter();
         void DidExit();
     }

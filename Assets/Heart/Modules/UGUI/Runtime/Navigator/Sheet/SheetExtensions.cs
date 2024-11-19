@@ -1,5 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿#if PANCAKE_UNITASK
+using System;
+using Cysharp.Threading.Tasks;
 
 
 namespace Pancake.UI
@@ -8,12 +9,12 @@ namespace Pancake.UI
     {
         public static void AddLifecycleEvent(
             this Sheet self,
-            Func<Task> initialize = null,
-            Func<Task> onWillEnter = null,
+            Func<UniTask> initialize = null,
+            Func<UniTask> onWillEnter = null,
             Action onDidEnter = null,
-            Func<Task> onWillExit = null,
+            Func<UniTask> onWillExit = null,
             Action onDidExit = null,
-            Func<Task> onCleanup = null,
+            Func<UniTask> onCleanup = null,
             int priority = 0)
         {
             var lifecycleEvent = new AnonymousSheetLifecycleEvent(initialize,
@@ -26,3 +27,4 @@ namespace Pancake.UI
         }
     }
 }
+#endif

@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76a3b5748e7f7f448bcb87c31b28d4bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeCheckAgain: 5
+  timeCheckAgain: 3
   noInternetPopupKey: NoInternetPopup
 --- !u!114 &498101909
 MonoBehaviour:

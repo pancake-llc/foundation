@@ -1,7 +1,9 @@
 ﻿using System;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Pancake.Linq;
+#endif
 
 namespace Pancake.UI
 {
@@ -10,13 +12,14 @@ namespace Pancake.UI
         public event Action OnDidEnter;
         public event Action OnDidExit;
 
+#if PANCAKE_UNITASK
         public AnonymousSheetLifecycleEvent(
-            Func<Task> initialize = null,
-            Func<Task> onWillEnter = null,
+            Func<UniTask> initialize = null,
+            Func<UniTask> onWillEnter = null,
             Action onDidEnter = null,
-            Func<Task> onWillExit = null,
+            Func<UniTask> onWillExit = null,
             Action onDidExit = null,
-            Func<Task> onCleanup = null)
+            Func<UniTask> onCleanup = null)
 
         {
             if (initialize != null) OnInitialize.Add(initialize);
@@ -32,27 +35,23 @@ namespace Pancake.UI
             if (onCleanup != null) OnCleanup.Add(onCleanup);
         }
 
-        public List<Func<Task>> OnInitialize { get; } = new();
-        public List<Func<Task>> OnWillEnter { get; } = new();
-        public List<Func<Task>> OnWillExit { get; } = new();
-        public List<Func<Task>> OnCleanup { get; } = new();
+        public List<Func<UniTask>> OnInitialize { get; } = new();
+        public List<Func<UniTask>> OnWillEnter { get; } = new();
+        public List<Func<UniTask>> OnWillExit { get; } = new();
+        public List<Func<UniTask>> OnCleanup { get; } = new();
 
 
-        Task ISheetLifecycleEvent.Initialize() { return Task.WhenAll(OnInitialize.Map(x => x.Invoke())); }
+        UniTask ISheetLifecycleEvent.Initialize() { return UniTask.WhenAll(OnInitialize.Map(x => x.Invoke())); }
 
+        UniTask ISheetLifecycleEvent.WillEnter() { return UniTask.WhenAll(OnWillEnter.Map(x => x.Invoke())); }
 
-        Task ISheetLifecycleEvent.WillEnter() { return Task.WhenAll(OnWillEnter.Map(x => x.Invoke())); }
+        UniTask ISheetLifecycleEvent.WillExit() { return UniTask.WhenAll(OnWillExit.Map(x => x.Invoke())); }
 
+        UniTask ISheetLifecycleEvent.Cleanup() { return UniTask.WhenAll(OnCleanup.Map(x => x.Invoke())); }
+#endif
 
         void ISheetLifecycleEvent.DidEnter() { OnDidEnter?.Invoke(); }
 
-
-        Task ISheetLifecycleEvent.WillExit() { return Task.WhenAll(OnWillExit.Map(x => x.Invoke())); }
-
-
         void ISheetLifecycleEvent.DidExit() { OnDidExit?.Invoke(); }
-
-
-        Task ISheetLifecycleEvent.Cleanup() { return Task.WhenAll(OnCleanup.Map(x => x.Invoke())); }
     }
 }

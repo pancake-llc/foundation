@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Threading;
 using UnityEngine;
-using System.Collections;
-using Sirenix.OdinInspector;
 using Pancake.Common;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
@@ -17,13 +16,11 @@ namespace Pancake.Monetization
         public EBannerCollapsiblePosition collapsiblePosition = EBannerCollapsiblePosition.None;
         private bool _isBannerShowing;
         private bool _previousBannerShowStatus;
+        private CancellationTokenSource _tokenSource;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private BannerView _bannerView;
 #endif
-
-        private readonly WaitForSeconds _waitBannerReload = new WaitForSeconds(5f);
-        private AsyncProcessHandle _reload;
 
         public override void Load()
         {
@@ -140,15 +137,33 @@ namespace Pancake.Monetization
         {
             C.CallActionClean(ref failedToLoadCallback);
 
-            if (_reload is {IsTerminated: false}) App.StopCoroutine(_reload);
-            _reload = App.StartCoroutine(DelayBannerReload());
+            StopReload();
+            _tokenSource = new CancellationTokenSource();
+            DelayBannerReload();
         }
 
         private void OnAdClosed() { C.CallActionClean(ref closedCallback); }
 
-        private IEnumerator DelayBannerReload()
+        private void StopReload()
         {
-            yield return _waitBannerReload;
+            if (_tokenSource == null) return;
+
+            _tokenSource.Cancel();
+            _tokenSource.Dispose();
+            _tokenSource = null;
+        }
+
+        private async void DelayBannerReload()
+        {
+            try
+            {
+                await Awaitable.WaitForSecondsAsync(5f, _tokenSource.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
             Load();
         }
 #endif

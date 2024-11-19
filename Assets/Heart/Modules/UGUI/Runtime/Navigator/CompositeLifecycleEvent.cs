@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Pancake.Common;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -51,7 +51,8 @@ namespace Pancake.UI
                 }
         }
 
-        public async Task ExecuteLifecycleEventsSequentially(Func<TLifecycleEvent, Task> execute)
+#if PANCAKE_UNITASK
+        public async UniTask ExecuteLifecycleEventsSequentially(Func<TLifecycleEvent, UniTask> execute)
         {
             int? currentPriority = null;
             while ((currentPriority = FindNextPriority(currentPriority)) != null)
@@ -59,29 +60,17 @@ namespace Pancake.UI
                 // LifecycleEvents with the same Priority are executed in parallel.
                 var lifecycleEvents = GetItems(currentPriority.Value);
                 var tasks = lifecycleEvents.Select(execute).ToArray();
-                await Task.WhenAll(tasks);
+                await UniTask.WhenAll(tasks);
             }
         }
-
-        public IEnumerator ExecuteLifecycleEventsSequentially(Func<TLifecycleEvent, IEnumerator> execute)
-        {
-            int? currentPriority = null;
-            while ((currentPriority = FindNextPriority(currentPriority)) != null)
-            {
-                // LifecycleEvents with the same Priority are executed in parallel.
-                var lifecycleEvents = GetItems(currentPriority.Value);
-                var handles = lifecycleEvents.Select(x => App.StartCoroutine(execute(x))).ToArray();
-                foreach (var handle in handles)
-                    while (!handle.IsTerminated)
-                        yield return null;
-            }
-        }
+#endif
 
         public void ExecuteLifecycleEventsSequentially(Action<TLifecycleEvent> execute)
         {
             foreach (var lifecycleEvent in _priorityToLifecycleEvent.Values)
-            foreach (var item in lifecycleEvent)
-                execute(item);
+            {
+                foreach (var item in lifecycleEvent) execute(item);
+            }
         }
     }
 }

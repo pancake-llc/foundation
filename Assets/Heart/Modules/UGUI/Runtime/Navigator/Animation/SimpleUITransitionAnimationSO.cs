@@ -78,7 +78,7 @@ namespace Pancake.UI
                 afterAlpha);
             return anim;
         }
-        
+
         private void SetParams(
             float? duration = null,
             Ease? easeType = null,

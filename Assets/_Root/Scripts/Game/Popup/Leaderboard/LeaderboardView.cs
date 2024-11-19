@@ -93,7 +93,6 @@ namespace Pancake.Game.UI
         private int _countInOnePage;
         private MotionHandle[] _handles;
         private ELeaderboardTab _currentTab = ELeaderboardTab.AllTime;
-        private AsyncProcessHandle _handleAnimation;
         private bool _firstTimeEnterWeekly = true;
         private bool _firstTimeEnterWorld = true;
 
@@ -393,8 +392,12 @@ namespace Pancake.Game.UI
         private async void ShowPopupRename(Action<bool> onPopupRenameClosed)
         {
             var popupContainer = MainUIContainer.In.GetMain<PopupContainer>();
-            await UniTask.WaitUntil(() => !popupContainer.IsInTransition);
-            await popupContainer.Push<RenamePopup>(popupRename, true, onLoad: t => { t.popup.view.SetCallbackClose(onPopupRenameClosed); });
+            while (popupContainer.IsInTransition)
+            {
+                await UniTask.Yield();
+            }
+
+            await popupContainer.PushAsync<RenamePopup>(popupRename, true, onLoad: t => { t.popup.view.SetCallbackClose(onPopupRenameClosed); });
         }
 
         private LeaderboardElementColor ColorDivision(int rank, string playerId)
@@ -454,10 +457,10 @@ namespace Pancake.Game.UI
             contentSlot.SetActive(true);
             block.SetActive(false);
 
-            App.StartCoroutine(PageSetup(pageData));
+            PageSetup(pageData);
         }
 
-        private IEnumerator PageSetup(List<LeaderboardEntry> pageData)
+        private async void PageSetup(List<LeaderboardEntry> pageData)
         {
             for (int i = 0; i < pageData.Count; i++)
             {
@@ -481,7 +484,7 @@ namespace Pancake.Game.UI
                     })
                     .BindToLocalScale(slots[i].transform);
 
-                yield return new WaitForSeconds(displayRankCurve.Evaluate(i / (float) pageData.Count));
+                await Awaitable.WaitForSecondsAsync(displayRankCurve.Evaluate(i / (float) pageData.Count));
             }
         }
     }

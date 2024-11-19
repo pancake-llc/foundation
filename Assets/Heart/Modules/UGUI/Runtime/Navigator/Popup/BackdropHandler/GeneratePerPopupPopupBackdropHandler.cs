@@ -1,4 +1,6 @@
-﻿using Pancake.Common;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 using UnityEngine;
 
 namespace Pancake.UI
@@ -12,24 +14,26 @@ namespace Pancake.UI
 
         public GeneratePerPopupPopupBackdropHandler(PopupBackdrop prefab) { _prefab = prefab; }
 
-        public AsyncProcessHandle BeforePopupEnter(Popup popup, int popupIndex, bool playAnimation)
+#if PANCAKE_UNITASK
+        public async UniTask BeforePopupEnterAsync(Popup popup, int popupIndex, bool playAnimation)
         {
             var parent = (RectTransform) popup.transform.parent;
             var backdrop = Object.Instantiate(_prefab);
             backdrop.Setup(parent, popupIndex);
             int backdropSiblingIndex = popupIndex * 2;
             backdrop.transform.SetSiblingIndex(backdropSiblingIndex);
-            return backdrop.Enter(playAnimation);
+            await backdrop.EnterAsync(playAnimation);
         }
 
-        public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation) { }
-
-        public AsyncProcessHandle BeforePopupExit(Popup popup, int popupIndex, bool playAnimation)
+        public async UniTask BeforePopupExitAsync(Popup popup, int popupIndex, bool playAnimation)
         {
             var backdropSiblingIndex = popupIndex * 2;
             var backdrop = popup.transform.parent.GetChild(backdropSiblingIndex).GetComponent<PopupBackdrop>();
-            return backdrop.Exit(playAnimation);
+            await backdrop.ExitAsync(playAnimation);
         }
+#endif
+
+        public void AfterPopupEnter(Popup popup, int popupIndex, bool playAnimation) { }
 
         public void AfterPopupExit(Popup popup, int popupIndex, bool playAnimation)
         {

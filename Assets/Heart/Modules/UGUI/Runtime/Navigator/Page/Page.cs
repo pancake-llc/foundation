@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 using Sirenix.OdinInspector;
 using Pancake.Common;
 using UnityEngine;
@@ -58,17 +59,19 @@ namespace Pancake.UI
 
         #region Implement
 
-        public virtual Task Initialize() { return Task.CompletedTask; }
+#if PANCAKE_UNITASK
+        public virtual UniTask Initialize() { return UniTask.CompletedTask; }
 
-        public virtual Task WillPushEnter() { return Task.CompletedTask; }
+        public virtual UniTask WillPushEnter() { return UniTask.CompletedTask; }
 
-        public virtual Task WillPushExit() { return Task.CompletedTask; }
+        public virtual UniTask WillPushExit() { return UniTask.CompletedTask; }
 
-        public virtual Task WillPopEnter() { return Task.CompletedTask; }
+        public virtual UniTask WillPopEnter() { return UniTask.CompletedTask; }
 
-        public virtual Task WillPopExit() { return Task.CompletedTask; }
+        public virtual UniTask WillPopExit() { return UniTask.CompletedTask; }
 
-        public virtual Task Cleanup() { return Task.CompletedTask; }
+        public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
+#endif
 
         public virtual void DidPushEnter() { }
 
@@ -104,7 +107,8 @@ namespace Pancake.UI
         public void AddLifecycleEvent(IPageLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
         public void RemoveLifecycleEvent(IPageLifecycleEvent lifecycleEvent) { _lifecycleEvents.RemoveItem(lifecycleEvent); }
 
-        internal AsyncProcessHandle AfterLoad(RectTransform parentTransform)
+#if PANCAKE_UNITASK
+        internal async UniTask AfterLoadAsync(RectTransform parentTransform)
         {
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
@@ -129,12 +133,10 @@ namespace Pancake.UI
 
             _canvasGroup.alpha = 0.0f;
 
-            return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize())));
+            await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize());
         }
 
-        internal AsyncProcessHandle BeforeEnter(bool push, Page partnerPage) { return App.StartCoroutine(BeforeEnterRoutine(push, partnerPage)); }
-
-        private IEnumerator BeforeEnterRoutine(bool push, Page partnerPage)
+        internal async UniTask BeforeEnterAsync(bool push, Page partnerPage)
         {
             IsTransitioning = true;
             TransitionType = push ? PageTransitionType.PushEnter : PageTransitionType.PopEnter;
@@ -143,29 +145,22 @@ namespace Pancake.UI
             SetTransitionProgress(0.0f);
             _canvasGroup.alpha = 0.0f;
 
-            var task = push
-                ? _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushEnter())
-                : _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopEnter());
-            var handle = App.StartCoroutine(CreateCoroutine(task));
-
-            while (!handle.IsTerminated) yield return null;
+            if (push) await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushEnter());
+            else await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopEnter());
         }
 
-        internal AsyncProcessHandle Enter(bool push, bool playAnimation, Page partnerPage) { return App.StartCoroutine(EnterRoutine(push, playAnimation, partnerPage)); }
-
-        private IEnumerator EnterRoutine(bool push, bool playAnimation, Page partnerPage)
+        internal async UniTask EnterAsync(bool push, bool playAnimation, Page partnerPage)
         {
             _canvasGroup.alpha = 1f;
             if (playAnimation)
             {
-                var anim = GetTransitionAnimation(push, true, partnerPage?.Id);
-                if (anim == null) anim = DefaultNavigatorSetting.GetDefaultPageTransition(push, true);
+                var anim = GetTransitionAnimation(push, true, partnerPage?.Id) ?? DefaultNavigatorSetting.GetDefaultPageTransition(push, true);
 
                 if (anim.Duration > 0f)
                 {
                     anim.SetPartner(partnerPage?.transform as RectTransform);
                     anim.Setup(_rectTransform);
-                    yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
+                    await anim.PlayWith(TransitionProgressReporter);
                 }
             }
 
@@ -182,9 +177,7 @@ namespace Pancake.UI
             TransitionType = null;
         }
 
-        internal AsyncProcessHandle BeforeExit(bool push, Page partnerPage) { return App.StartCoroutine(BeforeExitRoutine(push, partnerPage)); }
-
-        private IEnumerator BeforeExitRoutine(bool push, Page partnerPage)
+        internal async UniTask BeforeExitAsync(bool push, Page partnerPage)
         {
             IsTransitioning = true;
             TransitionType = push ? PageTransitionType.PushExit : PageTransitionType.PopExit;
@@ -193,28 +186,21 @@ namespace Pancake.UI
             SetTransitionProgress(0.0f);
             _canvasGroup.alpha = 1.0f;
 
-            var task = push
-                ? _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushExit())
-                : _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopExit());
-            var handle = App.StartCoroutine(CreateCoroutine(task));
-
-            while (!handle.IsTerminated) yield return null;
+            if (push) await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushExit());
+            else await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopExit());
         }
 
-        internal AsyncProcessHandle Exit(bool push, bool playAnimation, Page partnerPage) { return App.StartCoroutine(ExitRountine(push, playAnimation, partnerPage)); }
-
-        private IEnumerator ExitRountine(bool push, bool playAnimation, Page partnerPage)
+        internal async UniTask ExitAsync(bool push, bool playAnimation, Page partnerPage)
         {
             if (playAnimation)
             {
-                var anim = GetTransitionAnimation(push, false, partnerPage?.Id);
-                if (anim == null) anim = DefaultNavigatorSetting.GetDefaultPageTransition(push, false);
+                var anim = GetTransitionAnimation(push, false, partnerPage?.Id) ?? DefaultNavigatorSetting.GetDefaultPageTransition(push, false);
 
                 if (anim.Duration > 0.0f)
                 {
                     anim.SetPartner(partnerPage?.transform as RectTransform);
                     anim.Setup(_rectTransform);
-                    yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
+                    await anim.PlayWith(TransitionProgressReporter);
                 }
             }
 
@@ -232,31 +218,9 @@ namespace Pancake.UI
             TransitionType = null;
         }
 
-        internal void BeforeReleaseAndForget() { _ = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+        internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
 
-        internal AsyncProcessHandle BeforeRelease() { return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()))); }
-
-        private IEnumerator CreateCoroutine(IEnumerable<Task> targets)
-        {
-            foreach (var target in targets)
-            {
-                var handle = App.StartCoroutine(CreateCoroutine(target));
-                if (!handle.IsTerminated) yield return handle;
-            }
-        }
-
-        private IEnumerator CreateCoroutine(Task target)
-        {
-            var isCompleted = false;
-            WaitTaskAndCallback(target, () => { isCompleted = true; });
-
-            return new WaitUntil(() => isCompleted);
-
-            async void WaitTaskAndCallback(Task task, Action callback)
-            {
-                await task;
-                callback?.Invoke();
-            }
-        }
+        internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+#endif
     }
 }

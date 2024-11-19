@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 using Pancake.Common;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,7 +46,9 @@ namespace Pancake.UI
                 {
                     var popupContainer = PopupContainer.Of(transform);
                     if (popupContainer.IsInTransition) return;
-                    popupContainer.Pop(true);
+#if PANCAKE_UNITASK
+                    popupContainer.PopAsync(true).Forget();
+#endif
                 });
             }
         }
@@ -60,9 +64,8 @@ namespace Pancake.UI
 
         protected virtual void OnSetup(RectTransform parentTransform, int popupIndex) { }
 
-        internal AsyncProcessHandle Enter(bool playAnimation) { return App.StartCoroutine(EnterRoutine(playAnimation)); }
-
-        private IEnumerator EnterRoutine(bool playAnimation)
+#if PANCAKE_UNITASK
+        internal async UniTask EnterAsync(bool playAnimation)
         {
             gameObject.SetActive(true);
             _rectTransform.FillWithParent(_parentTransform);
@@ -76,16 +79,14 @@ namespace Pancake.UI
                 if (anim.Duration > 0)
                 {
                     anim.Setup(_rectTransform);
-                    yield return App.StartCoroutine(anim.CreateRoutine());
+                    await anim.PlayWith();
                 }
             }
 
             _rectTransform.FillWithParent(_parentTransform);
         }
 
-        internal AsyncProcessHandle Exit(bool playAnimation) { return App.StartCoroutine(ExitRoutine(playAnimation)); }
-
-        private IEnumerator ExitRoutine(bool playAnimation)
+        internal async UniTask ExitAsync(bool playAnimation)
         {
             gameObject.SetActive(true);
             _rectTransform.FillWithParent(_parentTransform);
@@ -99,12 +100,13 @@ namespace Pancake.UI
                 if (anim.Duration > 0)
                 {
                     anim.Setup(_rectTransform);
-                    yield return App.StartCoroutine(anim.CreateRoutine());
+                    await anim.PlayWith();
                 }
             }
 
             _canvasGroup.alpha = 0;
             gameObject.SetActive(false);
         }
+#endif
     }
 }

@@ -1,15 +1,19 @@
-﻿using System.Threading.Tasks;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
     public interface IPopupLifecycleEvent
     {
-        Task Initialize();
-        Task WillPushEnter();
-        Task WillPushExit();
-        Task WillPopEnter();
-        Task WillPopExit();
-        Task Cleanup();
+#if PANCAKE_UNITASK
+        UniTask Initialize();
+        UniTask WillPushEnter();
+        UniTask WillPushExit();
+        UniTask WillPopEnter();
+        UniTask WillPopExit();
+        UniTask Cleanup();
+#endif
         void DidPushEnter();
         void DidPushExit();
         void DidPopEnter();

@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
 using UnityEngine.Assertions;
+#endif
 
 namespace Pancake.UI
 {
@@ -11,7 +13,8 @@ namespace Pancake.UI
 
         protected virtual ViewInitMode InitMode => ViewInitMode.BeforeFirstEnter;
 
-        public override async Task Initialize()
+#if PANCAKE_UNITASK
+        public override async UniTask Initialize()
         {
             Assert.IsNotNull(view);
 
@@ -19,14 +22,12 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.Initialize && !_isInitialized)
             {
-#if PANCAKE_UNITASK
                 await view.InitializeAsync();
-#endif
                 _isInitialized = true;
             }
         }
 
-        public override async Task WillPushEnter()
+        public override async UniTask WillPushEnter()
         {
             Assert.IsNotNull(view);
 
@@ -34,11 +35,10 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.BeforeFirstEnter && !_isInitialized)
             {
-#if PANCAKE_UNITASK
                 await view.InitializeAsync();
-#endif
                 _isInitialized = true;
             }
         }
+#endif
     }
 }
