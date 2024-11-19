@@ -59,7 +59,7 @@ namespace PancakeEditor
             return true;
         }
 
-        [MenuItem("Tools/Pancake/Mulligan Renamer", false)]
+        [MenuItem("Tools/Pancake/Mulligan Renamer #R", false)]
         private static void MulliganRenamer() { EditorWindow.GetWindow<MulliganRenamerWindow>(false, "Mulligan Renamer", true); }
 
         [MenuItem("Tools/Pancake/BakingSheet/Runtime Csv Converter", validate = false)]
