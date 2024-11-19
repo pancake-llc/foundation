@@ -81,18 +81,6 @@ namespace Pancake.Common
         public static void RemoveQuitCallback(Action callback) { globalComponent.OnGameQuit -= callback; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AsyncProcessHandle StartCoroutine(IEnumerator routine) => globalComponent.StartCoroutineInternal(routine);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void StopCoroutine(AsyncProcessHandle handle) => globalComponent.StopCoroutineInternal(handle);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DisableThrowException() => globalComponent.ThrowException = false;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void EnableThrowException() => globalComponent.ThrowException = true;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Action ToMainThread(Action action) => globalComponent.ToMainThreadImpl(action);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -184,20 +172,6 @@ namespace Pancake.Common
         public static void PauseAllDelay() { globalComponent.PauseAllDelayHandle(); }
 
         public static void ResumeAllDelay() { globalComponent.ResumeAllDelayHandle(); }
-
-        public static void StopAndClean(ref AsyncProcessHandle handle)
-        {
-            if (handle is not {keepWaiting: true}) return;
-
-            StopCoroutine(handle);
-            handle = null;
-        }
-
-        public static void StopAndReassign(ref AsyncProcessHandle handle, IEnumerator enumerator)
-        {
-            if (handle is {keepWaiting: true}) StopCoroutine(handle);
-            handle = StartCoroutine(enumerator);
-        }
 
         public static void StopAndClean(ref DelayHandle handle)
         {
