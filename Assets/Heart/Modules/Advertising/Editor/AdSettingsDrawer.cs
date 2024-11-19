@@ -238,11 +238,11 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.BeginHorizontal();
 
                 bool googleMobileAdsInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.dll");
-                var contentInstallLabel = "Install Admob SDK v9.2.1 (1)";
+                var contentInstallLabel = "Install Admob SDK v9.4.0 (1)";
                 if (googleMobileAdsInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green_500;
-                    contentInstallLabel = "Admob SDK v9.2.1 Installed (1)";
+                    contentInstallLabel = "Admob SDK v9.4.0 Installed (1)";
                 }
                 else
                 {
