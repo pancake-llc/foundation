@@ -14,6 +14,7 @@ namespace Pancake.Common
         {
             var app = new GameObject("App") {hideFlags = HideFlags.HideInHierarchy};
             globalComponent = app.AddComponent<GlobalComponent>();
+            globalComponent.EntryPoint();
             UnityEngine.Object.DontDestroyOnLoad(app);
             Data.Init();
         }
@@ -79,6 +80,14 @@ namespace Pancake.Common
         }
 
         public static void RemoveQuitCallback(Action callback) { globalComponent.OnGameQuit -= callback; }
+
+        public static void AddLowMemoryCallback(Action callback)
+        {
+            globalComponent.OnLowMemory -= callback;
+            globalComponent.OnLowMemory += callback;
+        }
+
+        public static void RemoveLowMemoryCallback(Action callback) { globalComponent.OnLowMemory -= callback; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Action ToMainThread(Action action) => globalComponent.ToMainThreadImpl(action);

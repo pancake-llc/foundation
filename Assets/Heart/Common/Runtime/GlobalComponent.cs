@@ -15,12 +15,12 @@ namespace Pancake.Common
         internal event Action<bool> OnGamePause;
         internal event Action<bool> OnGameFocus;
         internal event Action OnGameQuit;
+        internal event Action OnLowMemory;
 
         private readonly List<Action> _toMainThreads = new();
         private volatile bool _isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
         private readonly List<Action> _localToMainThreads = new();
-
-
+        
         #region delay handle
 
         private List<DelayHandle> _timers = new();
@@ -75,9 +75,15 @@ namespace Pancake.Common
         }
 
         #endregion
-
-
+        
         #region event function
+
+        internal void EntryPoint()
+        {
+#if UNITY_ANDROID || UNITY_IOS
+            Application.lowMemory += OnLowMemoryInvoke;
+#endif
+        }
 
         private void Update()
         {
@@ -131,9 +137,13 @@ namespace Pancake.Common
         /// </remarks>
         private void OnApplicationQuit() { OnGameQuit?.Invoke(); }
 
+        /// <summary>
+        /// Called when application low memory
+        /// </summary>
+        private void OnLowMemoryInvoke() { OnLowMemory?.Invoke(); }
+
         #endregion
-
-
+        
         #region internal effective
 
         /// <summary>
