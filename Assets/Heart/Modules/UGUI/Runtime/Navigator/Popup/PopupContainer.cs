@@ -78,7 +78,7 @@ namespace Pancake.UI
                 var popup = _popups[popupId];
                 var assetLoadHandle = _assetLoadHandles[popupId];
 
-                if (DefaultNavigatorSetting.CallCleanupWhenDestroy) popup.BeforeReleaseAndForget();
+                if (DefaultNavigatorSetting.CallCleanupWhenDestroy) popup.BeforeRelease();
                 Destroy(popup.gameObject);
                 AssetLoader.Release(assetLoadHandle);
             }
@@ -300,7 +300,7 @@ namespace Pancake.UI
             if (popupId == null) popupId = Guid.NewGuid().ToString();
             _assetLoadHandles.Add(popupId, assetLoadHandle);
             onLoad?.Invoke((popupId, enterPopup));
-            await enterPopup.AfterLoad((RectTransform) transform);
+            await enterPopup.AfterLoadAsync((RectTransform) transform);
 
             var exitPopupId = _orderedPopupIds.Count == 0 ? null : _orderedPopupIds[_orderedPopupIds.Count - 1];
             var exitPopup = exitPopupId == null ? null : _popups[exitPopupId];
@@ -459,7 +459,7 @@ namespace Pancake.UI
             foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.AfterPop(enterPopup, exitPopup);
 
             // Unload Unused Page
-            await exitPopup.BeforeRelease();
+            await exitPopup.BeforeReleaseAsync();
 
             for (var i = 0; i < unusedPopupIds.Count; i++)
             {

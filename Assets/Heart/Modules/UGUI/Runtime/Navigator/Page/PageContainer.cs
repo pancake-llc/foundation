@@ -68,7 +68,7 @@ namespace Pancake.UI
                 var page = _pages[pageId];
                 var assetLoadHandle = _assetLoadHandles[pageId];
 
-                if (DefaultNavigatorSetting.CallCleanupWhenDestroy) page.BeforeReleaseAndForget();
+                if (DefaultNavigatorSetting.CallCleanupWhenDestroy) page.BeforeRelease();
                 Destroy(page.gameObject);
                 AssetLoader.Release(assetLoadHandle);
             }
@@ -324,7 +324,7 @@ namespace Pancake.UI
             var animationHandles = new List<UniTask>();
             if (exitPage != null) animationHandles.Add(exitPage.ExitAsync(true, playAnimation, enterPage));
 
-            animationHandles.Add(enterPage.Enter(true, playAnimation, exitPage));
+            animationHandles.Add(enterPage.EnterAsync(true, playAnimation, exitPage));
 
             foreach (var coroutineHandle in animationHandles)
             {
@@ -439,7 +439,7 @@ namespace Pancake.UI
 
             // Play Animations
             var animationHandles = new List<UniTask> {exitPage.ExitAsync(false, playAnimation, enterPage)};
-            if (enterPage != null) animationHandles.Add(enterPage.Enter(false, playAnimation, exitPage));
+            if (enterPage != null) animationHandles.Add(enterPage.EnterAsync(false, playAnimation, exitPage));
 
             foreach (var handle in animationHandles)
             {

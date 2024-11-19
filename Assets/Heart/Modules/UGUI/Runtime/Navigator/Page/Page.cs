@@ -145,8 +145,7 @@ namespace Pancake.UI
             else await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopEnter());
         }
 
-
-        internal async UniTask Enter(bool push, bool playAnimation, Page partnerPage)
+        internal async UniTask EnterAsync(bool push, bool playAnimation, Page partnerPage)
         {
             _canvasGroup.alpha = 1f;
             if (playAnimation)
@@ -215,31 +214,8 @@ namespace Pancake.UI
             TransitionType = null;
         }
 
-        internal void BeforeReleaseAndForget() { _ = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+        internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
 
         internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
-
-        private IEnumerator CreateCoroutine(IEnumerable<UniTask> targets)
-        {
-            foreach (var target in targets)
-            {
-                var handle = App.StartCoroutine(CreateCoroutine(target));
-                if (!handle.IsTerminated) yield return handle;
-            }
-        }
-
-        private IEnumerator CreateCoroutine(UniTask target)
-        {
-            var isCompleted = false;
-            WaitTaskAndCallback(target, () => { isCompleted = true; });
-
-            return new WaitUntil(() => isCompleted);
-
-            async void WaitTaskAndCallback(UniTask task, Action callback)
-            {
-                await task;
-                callback?.Invoke();
-            }
-        }
     }
 }

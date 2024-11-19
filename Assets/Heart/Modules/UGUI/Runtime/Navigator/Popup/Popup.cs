@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
@@ -82,12 +81,11 @@ namespace Pancake.UI
 
         public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
 
-
         public void AddLifecycleEvent(IPopupLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
 
         public void RemoveLifecycleEvent(IPopupLifecycleEvent lifecycleEvent) { _lifecycleEvents.RemoveItem(lifecycleEvent); }
 
-        internal async UniTask AfterLoad(RectTransform parentTransform)
+        internal async UniTask AfterLoadAsync(RectTransform parentTransform)
         {
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
@@ -116,7 +114,6 @@ namespace Pancake.UI
             if (push) await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushEnter());
             await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopEnter());
         }
-
 
         internal async UniTask EnterAsync(bool push, bool playAnimation, Popup partnerPopup)
         {
@@ -170,7 +167,6 @@ namespace Pancake.UI
             else await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopExit());
         }
 
-
         internal async UniTask ExitAsync(bool push, bool playAnimation, Popup partnerPopup)
         {
             if (!push)
@@ -194,7 +190,6 @@ namespace Pancake.UI
             SetTransitionProgress(1.0f);
         }
 
-
         internal void AfterExit(bool push, Popup partnerPopup)
         {
             if (push) _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidPushExit());
@@ -204,35 +199,9 @@ namespace Pancake.UI
             TransitionAnimationType = null;
         }
 
-        internal void BeforeReleaseAndForget() { _ = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+        internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
 
-        internal AsyncProcessHandle BeforeRelease()
-        {
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup())));
-        }
-
-        private IEnumerator CreateCoroutine(IEnumerable<UniTask> targets)
-        {
-            foreach (var target in targets)
-            {
-                var handle = App.StartCoroutine(CreateCoroutine(target));
-                if (!handle.IsTerminated) yield return handle;
-            }
-        }
-
-        private IEnumerator CreateCoroutine(UniTask target)
-        {
-            async void WaitTaskAndCallback(UniTask task, Action callback)
-            {
-                await task;
-                callback?.Invoke();
-            }
-
-            var isCompleted = false;
-            WaitTaskAndCallback(target, () => { isCompleted = true; });
-            return new WaitUntil(() => isCompleted);
-        }
+        internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
 
         private void SetTransitionProgress(float progress)
         {

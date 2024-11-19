@@ -406,7 +406,7 @@ namespace Pancake.UI
         {
             foreach (var sheet in _sheets.Values)
             {
-                if (DefaultNavigatorSetting.CallCleanupWhenDestroy) sheet.BeforeReleaseAndForget();
+                if (DefaultNavigatorSetting.CallCleanupWhenDestroy) sheet.BeforeRelease();
                 Destroy(sheet.gameObject);
             }
 

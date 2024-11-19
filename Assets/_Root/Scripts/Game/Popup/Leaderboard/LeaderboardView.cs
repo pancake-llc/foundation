@@ -93,7 +93,6 @@ namespace Pancake.Game.UI
         private int _countInOnePage;
         private MotionHandle[] _handles;
         private ELeaderboardTab _currentTab = ELeaderboardTab.AllTime;
-        private AsyncProcessHandle _handleAnimation;
         private bool _firstTimeEnterWeekly = true;
         private bool _firstTimeEnterWorld = true;
 

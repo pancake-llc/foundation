@@ -61,19 +61,15 @@ namespace Pancake.UI
 
         public virtual UniTask Initialize() { return UniTask.CompletedTask; }
 
-
         public virtual UniTask WillEnter() { return UniTask.CompletedTask; }
-
 
         public virtual void DidEnter() { }
 
         public virtual UniTask WillExit() { return UniTask.CompletedTask; }
 
-
         public virtual void DidExit() { }
 
         public virtual UniTask Cleanup() { return UniTask.CompletedTask; }
-
 
         public void AddLifecycleEvent(ISheetLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
 
@@ -187,8 +183,9 @@ namespace Pancake.UI
             TransitionAnimationType = null;
         }
 
-        internal void BeforeReleaseAndForget() { _ = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
+        internal void BeforeRelease() { _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()).Forget(); }
 
+        internal async UniTask BeforeReleaseAsync() { await _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
 
         private void SetTransitionProgress(float progress)
         {
