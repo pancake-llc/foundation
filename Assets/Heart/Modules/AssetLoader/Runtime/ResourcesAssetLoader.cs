@@ -1,7 +1,13 @@
 ﻿using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using Object = UnityEngine.Object;
+
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+
+#else
+using System.Threading.Tasks;
+#endif
 
 namespace Pancake.AssetLoader
 {
@@ -27,7 +33,12 @@ namespace Pancake.AssetLoader
             }
 
             setter.SetPercentCompleteFunc(() => 1.0f);
+#if PANCAKE_UNITASK
+            setter.SetTask(UniTask.FromResult(result));
+
+#else
             setter.SetTask(Task.FromResult(result));
+#endif
             return handle;
         }
 
@@ -37,7 +48,11 @@ namespace Pancake.AssetLoader
 
             var handle = new AssetLoadHandle<T>(controlId);
             var setter = (IAssetLoadHandleSetter<T>) handle;
+#if PANCAKE_UNITASK
+            var tcs = new UniTaskCompletionSource<T>();
+#else
             var tcs = new TaskCompletionSource<T>();
+#endif
 
             var req = Resources.LoadAsync<T>(key);
 
@@ -53,7 +68,11 @@ namespace Pancake.AssetLoader
                     setter.SetOperationException(exception);
                 }
 
+#if PANCAKE_UNITASK
+                tcs.TrySetResult(result);
+#else
                 tcs.SetResult(result);
+#endif
             };
 
             setter.SetPercentCompleteFunc(() => req.progress);
