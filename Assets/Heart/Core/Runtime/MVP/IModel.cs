@@ -1,9 +1,10 @@
-﻿using Pancake.Common;
+﻿using System;
 
 namespace Pancake
 {
     public interface IModel<TData>
     {
+        event Action OnDataChanged;
         void Initialize();
         TData GetData();
         void SetData(TData data);
@@ -12,7 +13,7 @@ namespace Pancake
     public abstract class BaseModel<TData> : IModel<TData>
     {
         protected TData data;
-        public event System.Action OnDataChanged;
+        public event Action OnDataChanged;
 
         public virtual void Initialize() { }
 

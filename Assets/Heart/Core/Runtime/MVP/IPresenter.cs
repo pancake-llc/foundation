@@ -1,13 +1,6 @@
 ﻿namespace Pancake
 {
-    public interface IPresenter<in TData>
-    {
-        void Initialize();
-        void Cleanup();
-        void HandleDataChange(TData data);
-    }
-
-    public abstract class BasePresenter<TData, TModel, TView> : IPresenter<TData> where TModel : IModel<TData> where TView : IView<TData>
+    public abstract class BasePresenter<TData, TModel, TView> where TModel : IModel<TData> where TView : IView<TData>
     {
         protected TModel Model { get; }
         protected TView View { get; }
@@ -16,27 +9,28 @@
         {
             Model = model;
             View = view;
+            Initialize();
         }
 
-        public virtual void Initialize()
+        protected void Initialize()
         {
             Model.Initialize();
             View.Initialize();
-            View.OnDataChanged += HandleDataChange;
-            UpdateView();
+            ConnectModel();
+            ConnectView();
         }
+
+        protected virtual void ConnectModel() { Model.OnDataChanged += HandleDataChange; }
+
+        protected virtual void ConnectView() { }
 
         public virtual void Cleanup()
         {
             View.Cleanup();
-            View.OnDataChanged -= HandleDataChange;
+            Model.OnDataChanged -= HandleDataChange;
         }
 
-        public virtual void HandleDataChange(TData data)
-        {
-            Model.SetData(data);
-            UpdateView();
-        }
+        public virtual void HandleDataChange() { UpdateView(); }
 
         protected void UpdateView() { View.UpdateView(Model.GetData()); }
     }
