@@ -1,5 +1,10 @@
 using System;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+
+#else
 using System.Threading.Tasks;
+#endif
 
 namespace Pancake.AssetLoader
 {
@@ -11,7 +16,11 @@ namespace Pancake.AssetLoader
 
         void SetPercentCompleteFunc(Func<float> percentComplete);
 
+#if PANCAKE_UNITASK
+        void SetTask(UniTask<T> task);
+#else
         void SetTask(Task<T> task);
+#endif
 
         void SetOperationException(Exception ex);
     }

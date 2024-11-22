@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pancake.StatModifier
+namespace Pancake.Common
 {
     public abstract class Timer
     {

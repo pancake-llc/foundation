@@ -1,6 +1,11 @@
 using System;
-using System.Threading.Tasks;
 using Object = UnityEngine.Object;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+
+#else
+using System.Threading.Tasks;
+#endif
 
 namespace Pancake.AssetLoader
 {
@@ -30,7 +35,11 @@ namespace Pancake.AssetLoader
 
         public T Result { get; private set; }
 
+#if PANCAKE_UNITASK
+        public UniTask<T> Task { get; private set; }
+#else
         public Task<T> Task { get; private set; }
+#endif
 
         void IAssetLoadHandleSetter<T>.SetStatus(AssetLoadStatus status) { Status = status; }
 
@@ -38,7 +47,11 @@ namespace Pancake.AssetLoader
 
         void IAssetLoadHandleSetter<T>.SetPercentCompleteFunc(Func<float> percentComplete) { percentCompleteFunc = percentComplete; }
 
+#if PANCAKE_UNITASK
+        void IAssetLoadHandleSetter<T>.SetTask(UniTask<T> task) { Task = task; }
+#else
         void IAssetLoadHandleSetter<T>.SetTask(Task<T> task) { Task = task; }
+#endif
 
         void IAssetLoadHandleSetter<T>.SetOperationException(Exception ex) { OperationException = ex; }
     }

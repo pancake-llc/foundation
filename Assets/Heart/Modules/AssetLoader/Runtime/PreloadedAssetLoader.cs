@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Object = UnityEngine.Object;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+
+#else
+using System.Threading.Tasks;
+#endif
 
 namespace Pancake.AssetLoader
 {
@@ -33,7 +38,11 @@ namespace Pancake.AssetLoader
             }
 
             setter.SetPercentCompleteFunc(() => 1.0f);
+#if PANCAKE_UNITASK
+            setter.SetTask(UniTask.FromResult(result));
+#else
             setter.SetTask(Task.FromResult(result));
+#endif
             return handle;
         }
 
