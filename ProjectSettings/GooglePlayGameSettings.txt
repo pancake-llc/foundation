@@ -1,5 +1,5 @@
-lastUpgrade=01101
-proj.pluginVersion=0.11.01
+lastUpgrade=20000
+proj.pluginVersion=2.0.0
 proj.AppId=550708970496
 and.BundleId=com.pancake.foundation
 proj.classDir=Assets

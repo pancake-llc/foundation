@@ -18,3 +18,8 @@ MonoBehaviour:
       code: en
       custom: 0
     value: RANK
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: "TH\u1EE8 H\u1EA0NG"

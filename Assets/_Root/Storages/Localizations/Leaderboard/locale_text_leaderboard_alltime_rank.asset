@@ -18,3 +18,8 @@ MonoBehaviour:
       code: en
       custom: 0
     value: All Time Rank
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: "To\xE0n Th\u1EDDi Gian"

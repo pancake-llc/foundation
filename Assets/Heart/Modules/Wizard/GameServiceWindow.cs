@@ -13,10 +13,10 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_LEADERBOARD
-            Uniform.DrawInstalled("Leaderboard 2.1.0");
+            Uniform.DrawInstalled("Leaderboard 2.2.0");
 #endif
 #if PANCAKE_CLOUDSAVE
-            Uniform.DrawInstalled("CloudSave 3.2.0");
+            Uniform.DrawInstalled("CloudSave 3.2.1");
 #endif
 
 #if PANCAKE_APPLE_SIGNIN
@@ -27,7 +27,7 @@ namespace PancakeEditor
 #if !PANCAKE_LEADERBOARD
             if (GUILayout.Button("Install Package Leaderboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.unity.services.leaderboards", "2.1.0");
+                RegistryManager.AddPackage("com.unity.services.leaderboards", "2.2.0");
                 RegistryManager.Resolve();
             }
 #endif
@@ -35,7 +35,7 @@ namespace PancakeEditor
 #if !PANCAKE_CLOUDSAVE
             if (GUILayout.Button("Install Package CloudSave", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.unity.services.cloudsave", "3.2.0");
+                RegistryManager.AddPackage("com.unity.services.cloudsave", "3.2.1");
                 RegistryManager.Resolve();
             }
 #endif
@@ -101,11 +101,11 @@ namespace PancakeEditor
 
             bool gpgsInstalled = File.Exists("Assets/GooglePlayGames/com.google.play.games/Runtime/Google.Play.Games.asmdef");
 
-            var contentInstallLabel = "Install GPGS v11.01 (1)";
+            var contentInstallLabel = "Install GPGS v2.0.0 (1)";
             if (gpgsInstalled)
             {
                 GUI.backgroundColor = Uniform.Green_500;
-                contentInstallLabel = "GPGS v11.01 Installed (1)";
+                contentInstallLabel = "GPGS v2.0.0 Installed (1)";
             }
             else
             {
@@ -114,7 +114,7 @@ namespace PancakeEditor
 
             if (GUILayout.Button(contentInstallLabel, GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                DebugEditor.Log("<color=#FF77C6>[Game Service]</color> importing google play game sdk 11.01");
+                DebugEditor.Log("<color=#FF77C6>[Game Service]</color> importing google play game sdk v2.0.0");
                 AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/gpgs.unitypackage"), false);
             }
 
@@ -138,7 +138,7 @@ namespace PancakeEditor
 #else
             GUI.backgroundColor = Uniform.Red_500;
 
-            if (GUILayout.Button("Uninstall GPGS v11.01", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            if (GUILayout.Button("Uninstall GPGS v2.0.0", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Google Play Game",
                     "" + "Are you sure you want to uninstall Google Play Game package ?\n" + "The GooglePlayGames folder will be deleted\n" +

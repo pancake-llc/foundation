@@ -3845,7 +3845,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: All Time Rank
+  m_text: Weekly Rank
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebd567123ceed8449a3a2cbda0e215be, type: 2}
   m_sharedMaterial: {fileID: 1872832085346666087, guid: ebd567123ceed8449a3a2cbda0e215be, type: 2}
@@ -7579,6 +7579,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0547c3eb96c79c24bbf68afdc6a38698, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   enabledSound: 0
   audioOpen:
     name: 
@@ -7682,6 +7691,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25c70357a3e09514e8e1c1219f5c2a12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   usePrefabNameAsId: 1
   <Id>k__BackingField: 
   enterAnimations: []

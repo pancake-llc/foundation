@@ -18,3 +18,8 @@ MonoBehaviour:
       code: en
       custom: 0
     value: NAME
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: "T\xCAN"

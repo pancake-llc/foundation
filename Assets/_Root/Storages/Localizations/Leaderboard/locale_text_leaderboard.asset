@@ -18,3 +18,8 @@ MonoBehaviour:
       code: en
       custom: 0
     value: Leaderboard
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: "B\u1EA3ng x\u1EBFp h\u1EA1ng"
