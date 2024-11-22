@@ -131,11 +131,6 @@
             "name": "com.lupidan.apple-signin-unity",
             "expression": "1.4.0",
             "define": "PANCAKE_APPLE_SIGNIN"
-        },
-        {
-            "name": "com.pancake.r3",
-            "expression": "1.1.11",
-            "define": "PANCAKE_R3"
         }
     ],
     "noEngineReferences": false

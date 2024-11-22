@@ -42,7 +42,7 @@ namespace PancakeEditor
             GUILayout.Space(4);
 
 #if PANCAKE_PARTICLE_EFFECT_UGUI
-            Uninstall("Particle Effect For UGUI 4.10.2", "com.coffee.ui-particle");
+            Uninstall("Particle Effect For UGUI 4.10.3", "com.coffee.ui-particle");
 #else
             InstallParticleEffectUGUI();
 #endif
@@ -53,14 +53,6 @@ namespace PancakeEditor
             Uninstall("UI Effect 5.0.0", "com.coffee.ui-effect");
 #else
             InstallUIEffect();
-#endif
-
-            GUILayout.Space(4);
-
-#if PANCAKE_R3
-            UninstallR3();
-#else
-            InstallR3();
 #endif
 
             GUILayout.Space(4);
@@ -89,7 +81,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.10.2");
+                RegistryManager.AddPackage("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.10.3");
                 RegistryManager.Resolve();
             }
 
@@ -239,51 +231,6 @@ namespace PancakeEditor
                     RegistryManager.RemovePackage("com.google.play.core");
                     RegistryManager.RemovePackage("com.google.play.common");
                     RegistryManager.RemovePackage("com.google.android.appbundle");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-        }
-
-        private static void InstallR3()
-        {
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install R3", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                RegistryManager.AddPackage("com.pancake.r3", "https://github.com/pancake-llc/R3.git#1.1.14");
-                RegistryManager.AddPackage("com.cysharp.r3", "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.14");
-                RegistryManager.AddPackage("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#6.0.0");
-                RegistryManager.AddPackage("com.pancake.threading.channels", "https://github.com/pancake-llc/system-threading-channels.git#8.0.0");
-                RegistryManager.AddPackage("com.pancake.component.annotations", "https://github.com/pancake-llc/system-componentmodel-annotations.git#5.0.0");
-                RegistryManager.AddPackage("com.pancake.bcl.timeprovider", "https://github.com/pancake-llc/microsoft-bcl-time-provider.git#8.0.0");
-                RegistryManager.AddPackage("com.pancake.bcl.asyncinterfaces", "https://github.com/pancake-llc/microsoft-bcl-async-interfaces.git#6.0.0");
-                RegistryManager.Resolve();
-            }
-
-            GUI.enabled = true;
-        }
-
-        private static void UninstallR3()
-        {
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("R3 1.1.14", new RectOffset(0, 0, 6, 0));
-
-            GUILayout.FlexibleSpace();
-            GUI.backgroundColor = Uniform.Red_500;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall R3", "Are you sure you want to uninstall R3 package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.RemovePackage("com.pancake.r3");
-                    RegistryManager.RemovePackage("com.cysharp.r3");
-                    RegistryManager.RemovePackage("com.pancake.unsafe");
-                    RegistryManager.RemovePackage("com.pancake.threading.channels");
-                    RegistryManager.RemovePackage("com.pancake.component.annotations");
-                    RegistryManager.RemovePackage("com.pancake.bcl.timeprovider");
-                    RegistryManager.RemovePackage("com.pancake.bcl.asyncinterfaces");
                     RegistryManager.Resolve();
                 }
             }
