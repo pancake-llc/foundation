@@ -45,7 +45,7 @@ namespace Pancake.MobileInput
                         return InputSystemTouchData.From(UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0]);
                     return InputSystemTouchData.FromMouse();
 #else
-                    return NewInputSystemTouchData.From(UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0]);
+                    return InputSystemTouchData.From(UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0]);
 #endif
                 }
                 return null;
