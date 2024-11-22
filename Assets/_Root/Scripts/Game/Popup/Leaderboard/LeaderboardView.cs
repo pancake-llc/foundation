@@ -244,7 +244,7 @@ namespace Pancake.Game.UI
                 if (string.IsNullOrEmpty(SignInEvent.ServerCode))
                 {
                     await MainUIContainer.In.GetMain<PopupContainer>()
-                        .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
+                        .PushAsync<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginGpgsFail, OnButtonClosePressed));
                     return;
                 }
             }
@@ -262,32 +262,36 @@ namespace Pancake.Game.UI
             if (string.IsNullOrEmpty(SignInEvent.ServerCode))
             {
                 await MainUIContainer.In.GetMain<PopupContainer>()
-                    .Push<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginAppleFail, OnButtonClosePressed));
+                    .PushAsync<NotificationPopup>(popupNotification, true, onLoad: tuple => tuple.popup.view.Setup(localeLoginAppleFail, OnButtonClosePressed));
                 return;
             }
 #endif
 
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (AuthenticationService.Instance.SessionTokenExists)
-            {
-                // signin cached
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            }
-            else
-            {
-                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(SignInEvent.ServerCode);
-            }
+                if (AuthenticationService.Instance.SessionTokenExists)
+                {
+                    // signin cached
+                    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                }
+                else
+                {
+                    await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(SignInEvent.ServerCode);
+                }
+
 #elif UNITY_IOS && !UNITY_EDITOR
-            if (AuthenticationService.Instance.SessionTokenExists)
-            {
-                // signin cached
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            }
-            else
-            {
-                await AuthenticationService.Instance.SignInWithAppleAsync(SignInEvent.ServerCode);
-            }
+                if (AuthenticationService.Instance.SessionTokenExists)
+                {
+                    // signin cached
+                    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                }
+                else
+                {
+                    await AuthenticationService.Instance.SignInWithAppleAsync(SignInEvent.ServerCode);
+                }
 #endif
+            }
 
             await Excute();
 
