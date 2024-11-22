@@ -212,10 +212,10 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install In-App-Review", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.google.play.review", "https://github.com/google-unity/in-app-review.git#1.8.3");
-                RegistryManager.AddPackage("com.google.play.core", "https://github.com/google-unity/google-play-core.git#1.8.5");
-                RegistryManager.AddPackage("com.google.play.common", "https://github.com/google-unity/google-play-common.git#1.9.2");
-                RegistryManager.AddPackage("com.google.android.appbundle", "https://github.com/google-unity/android-app-bundle.git#1.9.0");
+                RegistryManager.AddPackage("com.google.play.review", "https://github.com/pancake-llc/in-app-review.git#1.8.3");
+                RegistryManager.AddPackage("com.google.play.core", "https://github.com/pancake-llc/google-play-core.git#1.8.5");
+                RegistryManager.AddPackage("com.google.play.common", "https://github.com/pancake-llc/google-play-common.git#1.9.2");
+                RegistryManager.AddPackage("com.google.android.appbundle", "https://github.com/pancake-llc/android-app-bundle.git#1.9.0");
                 RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.183");
                 RegistryManager.Resolve();
             }
