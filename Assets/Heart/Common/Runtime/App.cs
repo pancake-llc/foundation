@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using System.Runtime.CompilerServices;
 
 namespace Pancake.Common
 {
-    public struct App
+    public static class App
     {
         private static GlobalComponent globalComponent;
 
