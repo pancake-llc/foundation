@@ -461,7 +461,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				using var tempSerializedObject = new SerializedObject(initializers);
 				if(tempSerializedObject.FindProperty("nullArgumentGuard") is { } nullArgumentGuardProperty)
 				{
-					nullArgumentGuardProperty.enumValueIndex = (int)value;
+					nullArgumentGuardProperty.intValue = (int)value;
 					tempSerializedObject.ApplyModifiedProperties();
 				}
 				else

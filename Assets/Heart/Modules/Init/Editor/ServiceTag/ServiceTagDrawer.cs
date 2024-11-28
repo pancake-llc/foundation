@@ -6,6 +6,10 @@ using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
+#endif
+
 namespace Sisus.Init.EditorOnly.Internal
 {
 	[InitializeOnLoad]
@@ -37,6 +41,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static float OnBeforeHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = beforeHeaderGUIMarker.Auto();
+#endif
+			
 			// Draw the Service tag for components that have a ServiceTag,
 			// components whose class has the ServiceAttribute
 			// components listed in a Services component,
@@ -85,6 +93,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static float OnAfterHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = afterHeaderGUIMarker.Auto();
+#endif
+			
 			var definingTypes = EditorServiceTagUtility.GetServiceDefiningTypes(component);
 			if(definingTypes.Length == 0)
 			{
@@ -243,7 +255,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			foreach(var referenceable in component.gameObject.GetComponentsNonAlloc<RefTag>())
 			{
-				if(referenceable.Target == component)
+				if(ReferenceEquals(referenceable.Target, component))
 				{
 					return true;
 				}
@@ -251,5 +263,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			return false;
 		}
+		
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker beforeHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.BeforeHeaderGUI");
+		private static readonly ProfilerMarker afterHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.AfterHeaderGUI");
+#endif
 	}
 }

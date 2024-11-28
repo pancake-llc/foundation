@@ -6,6 +6,10 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
 using UnityEngine;
 
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
+#endif
+
 namespace Sisus.Shared.EditorOnly
 {
 	/// <summary>
@@ -13,6 +17,11 @@ namespace Sisus.Shared.EditorOnly
 	/// </summary>
 	public static class SerializedPropertyExtensions
 	{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker getValueMarker = new(ProfilerCategory.Gui, "SerializedPropertyExtensions.GetValue");
+		private static readonly ProfilerMarker tryGetValueMarker = new(ProfilerCategory.Gui, "SerializedPropertyExtensions.TryGetValue");
+#endif
+		
 		private readonly ref struct NameOrIndex
 		{
 			public readonly string name;
@@ -36,9 +45,9 @@ namespace Sisus.Shared.EditorOnly
 
 		public static object GetValue([DisallowNull] this SerializedProperty serializedProperty)
 		{
-			#if DEV_MODE
-			using ProfilerScope x = new("SerializedPropertyExtensions.GetValue");
-			#endif
+#if DEV_MODE
+			using var x = getValueMarker.Auto();
+#endif
 
 			switch(serializedProperty.propertyType)
 			{
@@ -151,9 +160,9 @@ namespace Sisus.Shared.EditorOnly
 
 		public static bool TryGetValue<TValue>([DisallowNull] this SerializedProperty serializedProperty, out TValue value)
 		{
-			#if DEV_MODE
-			using ProfilerScope x = new("SerializedPropertyExtensions.TryGetValue");
-			#endif
+#if DEV_MODE
+			using var x = tryGetValueMarker.Auto();
+#endif
 
 			switch(serializedProperty.propertyType)
 			{

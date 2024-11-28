@@ -56,10 +56,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public override void OnGUI(Rect position, SerializedProperty anyProperty, GUIContent label)
 		{
-			#if DEV_MODE
+#if DEV_MODE
 			using ProfilerScope x = new("AnyPropertyDrawer.OnGUI");
-			#endif
-			
+#endif
+
 			var targetObject = anyProperty.serializedObject.targetObject;
 			if(!statesByTarget.TryGetValue(targetObject, out var states))
 			{
@@ -69,20 +69,20 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(!states.TryGetValue(anyProperty.propertyPath, out State state))
 			{
-				#if DEV_MODE && DEBUG_ENABLED
+#if DEV_MODE && DEBUG_ENABLED
 				Debug.Log($"states[{anyProperty.propertyPath}] = new State({TypeUtility.ToString(fieldInfo.ReflectedType)}.{fieldInfo.Name})");
-				#endif
+#endif
 
 				state = new State(anyProperty, fieldInfo);
 				states.Add(anyProperty.propertyPath, state);
 			}
 			else if(!state.IsValid() || state.ValueHasChanged() || state.anyProperty.serializedObject != anyProperty.serializedObject)
 			{
-				#if DEV_MODE && DEBUG_ENABLED
+#if DEV_MODE && DEBUG_ENABLED
 				if(!state.IsValid()) { Debug.LogWarning($"State.IsValid:false with Event.current:{Event.current?.type.ToString() ?? "None"}"); }
 				else if(state.anyProperty.serializedObject != anyProperty.serializedObject) { Debug.Log($"State.serializedObject has changed. Event.current:{Event.current?.type.ToString() ?? "None"}"); }
 				else { Debug.Log($"State.ValueHasChanged:true with Event.current:{Event.current?.type.ToString() ?? "None"}"); }
-				#endif
+#endif
 
 				state.Dispose();
 				state = new State(anyProperty, fieldInfo);
@@ -125,10 +125,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private float DrawValueField(Rect position, SerializedProperty anyProperty, State state, GUIContent label)
 		{
-			#if DEV_MODE
+#if DEV_MODE
 			using ProfilerScope x = new("AnyPropertyDrawer.DrawValueField");
-			#endif
-			
+#endif
+
 			// Repaint whenever dragged object references change because
 			// the controls can change in reaction to objects being dragged.
 			if(lastDraggedObjectCount != DragAndDrop.objectReferences.Length)
@@ -184,7 +184,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				return 0f; // GUI drawn using GUILayout does not count towards property height
 			}
 
-			#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 			if(state.odinDrawer is not null)
 			{
 				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
@@ -197,7 +197,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				GUI.color = guiColorWas;
 				return 0f;
 			}
-			#endif
+#endif
 
 			if(drawAsObjectField)
 			{
@@ -240,9 +240,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 					else if(CrossSceneReference.Detect(firstTargetObject, referenceValue))
 					{
-						#if DEV_MODE && DEBUG_CROSS_SCENE_REFERENCES
+#if DEV_MODE && DEBUG_CROSS_SCENE_REFERENCES
 						Debug.Log($"Cross scene reference detected.\nOwner {firstTargetObject.name} ({firstTargetObject.GetType().Name}) scene: {GetScene(firstTargetObject)}\nReference:{referenceValue.name} ({referenceValue.GetType().Name}) scene: {GetScene(referenceValue)}");
-						#endif
+#endif
 
 						var referenceGameObject = GetGameObject(referenceValue);
 						bool isCrossSceneReferenceable = false;
@@ -262,9 +262,9 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 
 						referenceProperty.objectReferenceValue = Create.Instance<CrossSceneReference, GameObject, Object>(GetGameObject(firstTargetObject), referenceValue);
-						#if DEV_MODE
+#if DEV_MODE
 						referenceProperty.objectReferenceValue.name = $"CrossSceneReference {firstTargetObject.name} <- {referenceValue?.name ?? "null"} ({referenceProperty.objectReferenceValue.GetInstanceID()})";
-						#endif
+#endif
 					}
 				}
 
@@ -289,9 +289,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					if(setReferenceValue != referenceValue && setReferenceValue && TryGetAssignableType(state, setReferenceValue, out _))
 					{
 						referenceValue = setReferenceValue;
-						#if DEV_MODE && DEBUG_CROSS_SCENE_REFERENCES
+#if DEV_MODE && DEBUG_CROSS_SCENE_REFERENCES
 						Debug.Log($"Cross scene reference detected.\nOwner {firstTargetObject.name} ({firstTargetObject.GetType().Name}) scene: {GetScene(firstTargetObject)}\nReference:{referenceValue.name} ({referenceValue.GetType().Name}) scene: {GetScene(referenceValue)}");
-						#endif
+#endif
 
 						var referenceGameObject = GetGameObject(referenceValue);
 						bool isCrossSceneReferenceable = false;
@@ -311,17 +311,17 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 
 						var crossSceneReference = Create.Instance<CrossSceneReference, GameObject, Object>(GetGameObject(firstTargetObject), referenceValue);
-						#if DEV_MODE
+#if DEV_MODE
 						Debug.Assert(crossSceneReference, "referenceProperty.objectReferenceValue null");
 						Debug.Assert(firstTargetObject, "firstTargetObject null");
 						Debug.Assert(referenceValue, "referenceValue null");
 						crossSceneReference.name = $"CrossSceneReference {firstTargetObject.name} <- {referenceValue.name ?? "null"} ({crossSceneReference.GetInstanceID()})";
-						#endif
+#endif
 
 						referenceProperty.objectReferenceValue = crossSceneReference;
-						#if DEV_MODE
+#if DEV_MODE
 						Debug.Assert(referenceProperty.objectReferenceValue, "referenceProperty.objectReferenceValue null");
-						#endif
+#endif
 					}
 				}
 				else
@@ -335,7 +335,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 					GUI.color = guiColorWas;
 				}
-				
+
 				EditorGUI.indentLevel = indentLevelWas;
 
 				EditorSceneManager.preventCrossSceneReferences = preventCrossSceneReferencesWas;
@@ -505,6 +505,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, new _Integer() { value = setInt }, "Set Int Value");
 						}
+
 						EditorGUI.EndProperty();
 						valueProperty.serializedObject.ApplyModifiedProperties();
 
@@ -539,6 +540,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, new _Boolean() { value = setBool }, "Set Boolean Value");
 						}
+
 						EditorGUI.EndProperty();
 						valueProperty.serializedObject.ApplyModifiedProperties();
 						GUI.color = guiColorWas;
@@ -592,6 +594,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, new _Double() { value = setDouble }, "Set Double Value");
 						}
+
 						EditorGUI.EndProperty();
 
 						GUI.color = guiColorWas;
@@ -618,6 +621,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, new _String() { value = setString }, "Set String Value");
 						}
+
 						EditorGUI.EndProperty();
 						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
@@ -655,6 +659,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, setVector2, "Set Vector2 Value");
 						}
+
 						EditorGUI.EndProperty();
 						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
@@ -673,6 +678,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, setVector3, "Set Vector3 Value");
 						}
+
 						EditorGUI.EndProperty();
 						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
@@ -691,6 +697,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, setVector4, "Set Vector4 Value");
 						}
+
 						EditorGUI.EndProperty();
 						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
@@ -709,6 +716,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, setVector2Int, "Set Vector2Int Value");
 						}
+
 						EditorGUI.EndProperty();
 						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
@@ -727,6 +735,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						{
 							SetManagedReference(valueProperty, setVector3Int, "Set Vector3Int Value");
 						}
+
 						EditorGUI.EndProperty();
 						GUI.color = guiColorWas;
 						EditorGUI.indentLevel = indentLevelWas;
@@ -898,14 +907,14 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 		static void DrawUsingOdin(State state)
 		{
 			state.odinDrawer.Tree.BeginDraw(true);
 			state.odinDrawer.Draw();
 			state.odinDrawer.Tree.EndDraw();
 		}
-		#endif
+#endif
 
 		private static bool IsDraggingObjectReferenceThatIsAssignableToProperty(Object targetObject, Type anyType, Type valueType)
 		{
@@ -1005,7 +1014,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				if(buttonLabel.text.Length > 0)
 				{
 					width = DropdownButton.TextStyle.CalcSize(buttonLabel).x + DROPDOWN_BUTTON_WIDTH + 3f;
-				} 
+				}
 				else
 				{
 					width = DROPDOWN_BUTTON_WIDTH;
@@ -1013,7 +1022,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				rect.width = width;
 			}
-			
+
 			bool showMixedValueWas = EditorGUI.showMixedValue;
 			if(state.valueProperty is not null && state.valueProperty.hasMultipleDifferentValues)
 			{
@@ -1080,10 +1089,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public static void UpdateValueBasedState(SerializedProperty anyProperty)
 		{
-			#if DEV_MODE
+#if DEV_MODE
 			using ProfilerScope x = new("AnyPropertyDrawer.UpdateValueBasedState");
-			#endif
-			
+#endif
+
 			if(statesByTarget.TryGetValue(anyProperty.serializedObject.targetObject, out var states)
 				&& states.TryGetValue(anyProperty.propertyPath, out var state))
 			{
@@ -1093,9 +1102,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public static void DisposeAllStaticState()
 		{
-			#if DEV_MODE && DEBUG_ENABLED
+#if DEV_MODE && DEBUG_ENABLED
 			Debug.Log($"AnyPropertyDrawer.DisposeAllStaticState() with Event.current.type:{Event.current?.type.ToString() ?? "None"}");
-			#endif
+#endif
 
 			foreach(var states in statesByTarget.Values.ToArray())
 			{
@@ -1144,20 +1153,20 @@ namespace Sisus.Init.EditorOnly.Internal
 			public CrossSceneReferenceGUI crossSceneReferenceDrawer;
 			public readonly PropertyDrawer propertyDrawerOverride;
 
-			#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 			public readonly InspectorProperty odinDrawer;
-			#endif
+#endif
 
 			public bool SkipWhenDrawing
 			{
 				get
 				{
-					#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 					if(odinDrawer?.GetActiveDrawerChain()?.Current?.SkipWhenDrawing ?? false)
 					{
 						return true;
 					}
-					#endif
+#endif
 
 					return false;
 				}
@@ -1173,21 +1182,21 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
 					label = value;
 
-					#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 					if(odinDrawer is not null)
 					{
 						odinDrawer.Label = value;
 					}
-					#endif
+#endif
 				}
 			}
 
 			public bool CanBeNull => !(InitParameterGUI.NowDrawing?.NullArgumentGuardActive ?? false);
 
-			#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 			public PropertyTree OdinPropertyTree => InitializerGUI.NowDrawing?.OdinPropertyTree;
-			#endif
-			
+#endif
+
 			static State()
 			{
 				EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
@@ -1206,19 +1215,19 @@ namespace Sisus.Init.EditorOnly.Internal
 				valueProperty = anyProperty.FindPropertyRelative(nameof(Any<object>.value));
 
 				bool valuePropertyIsNull = valueProperty is null;
-			
+
 				anyType = GetAnyTypeFromField(fieldInfo);
 				valueType = GetValueTypeFromAnyType(anyType);
 				label = InitializerEditorUtility.GetLabel(anyProperty, valueType, fieldInfo);
 
 				objectFieldConstraint = typeof(Object);
-				
+
 				isService = IsService(anyProperty.serializedObject.targetObject, valueType);
 				equalityComparer = typeof(EqualityComparer<>).MakeGenericType(valueType).GetProperty(nameof(EqualityComparer<object>.Default), BindingFlags.Static | BindingFlags.Public).GetValue(null, null) as IEqualityComparer;
 
-				#if DEV_MODE && DEBUG_ENABLED
+#if DEV_MODE && DEBUG_ENABLED
 				if(valuePropertyIsNull) { Debug.Log($"{anyProperty.propertyPath} value SerializedProperty is null. Probably because Unity can't serialize field of type {valueType} with the SerializeReferenceAttribute."); }
-				#endif
+#endif
 
 				valueHasChildProperties = !valuePropertyIsNull && valueProperty.hasChildren && valueProperty.propertyType != SerializedPropertyType.String;
 				canBeUnityObject = CanAssignUnityObjectToField(valueType);
@@ -1233,13 +1242,13 @@ namespace Sisus.Init.EditorOnly.Internal
 					InitializerEditorUtility.TryGetAttributeBasedPropertyDrawer(typeof(Object).IsAssignableFrom(valueType) ? referenceProperty : valueProperty, attributes, out propertyDrawerOverride);
 				}
 
-				#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 				odinDrawer = GetOdinInspectorProperty(label, anyProperty, valueType, OdinPropertyTree, attributes);
-				#endif
+#endif
 
 				Update(true);
 
-				#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
 				[return: MaybeNull]
 				static InspectorProperty GetOdinInspectorProperty(GUIContent label, [DisallowNull] SerializedProperty anyProperty, [DisallowNull] Type valueType, PropertyTree odinPropertyTree, [AllowNull] Attribute[] attributes)
 				{
@@ -1280,9 +1289,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					var result = odinPropertyTree.GetPropertyAtUnityPath(propertyPath);
 					if(result is null)
 					{
-						#if DEV_MODE
+#if DEV_MODE
 						Debug.LogWarning($"Failed to get InspectorProperty from {odinPropertyTree.TargetType.Name} path {propertyPath}.");
-						#endif
+#endif
 						return null;
 					}
 
@@ -1290,15 +1299,15 @@ namespace Sisus.Init.EditorOnly.Internal
 					result.AnimateVisibility = false;
 		  			return result;
 				}
-				#endif
+#endif
 			}
 
 			public void Update(bool forceDeepUpdate = false)
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.State.Update");
-				#endif
-				
+#endif
+
 				var nullGuardActive = InitParameterGUI.NowDrawing?.NullArgumentGuardActive ?? false;
 				if(nullGuardActive && anyProperty.GetValue() is INullGuard nullGuard)
 				{
@@ -1322,7 +1331,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					isService = setIsService;
 					shouldRebuildButtons = true;
 				}
-				
+
 				object managedValue = valueProperty is null || valueProperty.propertyType == SerializedPropertyType.ObjectReference ? null : valueProperty.GetValue();
 				bool managedValueIsNull = managedValue is null;
 				drawObjectField = GetShouldDrawObjectField(managedValueIsNull);
@@ -1331,9 +1340,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				if(shouldRebuildButtons)
 				{
 					RebuildDefiningTypeAndDiscardButtons(out drawTypeDropdownButton, out drawDiscardButton);
-					#if DEV_MODE && DEBUG_ENABLED
+#if DEV_MODE && DEBUG_ENABLED
 					Debug.Log($"{valueType.Name}.drawTypeDropdownButton:{drawTypeDropdownButton}, propertyType:{valueProperty.propertyType}, drawObjectField:{drawObjectField}");
-					#endif
+#endif
 				}
 
 				bool dragging = DragAndDrop.objectReferences.Length > 0;
@@ -1355,9 +1364,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 					else
 					{
-						#if DEV_MODE
+#if DEV_MODE
 						using ProfilerScope x2 = new("typeof(IValueProvider<>).MakeGenericType");
-						#endif
+#endif
 						var valueProviderType = typeof(IValueProvider<>).MakeGenericType(valueType);
 						objectFieldConstraint = !hasObjectReferenceValue || valueProviderType.IsAssignableFrom(objectReferenceValueType) ? valueProviderType : typeof(Object);
 					}
@@ -1372,9 +1381,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				bool GetShouldDrawObjectField(bool managedValueIsNull)
 				{
-					#if DEV_MODE
+#if DEV_MODE
 					using ProfilerScope x = new("AnyPropertyDrawer.GetShouldDrawObjectField");
-					#endif
+#endif
 
 					if(referenceProperty.objectReferenceValue)
 					{
@@ -1408,10 +1417,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			/// <returns> <see langword="false"/> if menu has no items. </returns>
 			private void RebuildDefiningTypeAndDiscardButtons(out bool drawTypeDropdownButton, out bool drawDiscardButton)
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.RebuildDefiningTypeAndDiscardButtons");
-				#endif
-				
+#endif
+
 				LayoutUtility.Repaint();
 				var typeOptions = GetTypeOptions();
 				var valueProviderOptions = GetAllInitArgMenuItemValueProviderTypes(valueType);
@@ -1477,7 +1486,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					drawDiscardButton = false;
 					return;
 				}
-				
+
 				drawTypeDropdownButton = false;
 				drawDiscardButton = true;
 				typeDropdownButton = null;
@@ -1491,10 +1500,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				(string fullPath, Texture icon) GetItemContent(Type type)
 				{
-					#if DEV_MODE
+#if DEV_MODE
 					using ProfilerScope x = new("AnyPropertyDrawer.GetItemContent");
-					#endif
-					
+#endif
+
 					const string noneLabel = "None";
 
 					if(type is null)
@@ -1522,7 +1531,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					if(ValueProviderUtility.IsValueProvider(type)
 					&& typeof(Object).IsAssignableFrom(type)
 					&& type.GetCustomAttribute<ValueProviderMenuAttribute>() is ValueProviderMenuAttribute attribute)
-					{ 
+					{
 						string itemName = !string.IsNullOrEmpty(attribute.ItemName)
 										? attribute.ItemName
 										: TypeUtility.ToStringNicified(type);
@@ -1536,10 +1545,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			private static IEnumerable<Type> GetAllInitArgMenuItemValueProviderTypes(Type valueType)
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.GetAllInitArgMenuItemValueProviderTypes");
-				#endif
-				
+#endif
+
 				return ValueProviderEditorUtility.GetAllValueProviderMenuItemTargetTypes()
 													.Where(t => t.GetCustomAttribute<ValueProviderMenuAttribute>() is ValueProviderMenuAttribute attribute
 													&& (attribute.IsAny.Length == 0 || Array.Exists(attribute.IsAny, t => t.IsAssignableFrom(valueType)))
@@ -1556,18 +1565,18 @@ namespace Sisus.Init.EditorOnly.Internal
 						return true;
 					}
 
-					if((whereAny.HasFlag(Is.Class)			&& valueType.IsClass) ||
-						(whereAny.HasFlag(Is.ValueType)		&& valueType.IsValueType) ||
-						(whereAny.HasFlag(Is.Concrete)		&& !valueType.IsAbstract) ||
-						(whereAny.HasFlag(Is.Abstract)		&& valueType.IsAbstract) ||
-						(whereAny.HasFlag(Is.BuiltIn)		&& (valueType.IsPrimitive || valueType == typeof(string) || valueType == typeof(object))) ||
-						(whereAny.HasFlag(Is.Interface)		&& valueType.IsInterface) ||
-						(whereAny.HasFlag(Is.Component)		&& Find.typesToComponentTypes.ContainsKey(valueType)) ||
-						(whereAny.HasFlag(Is.WrappedObject)	&& Find.typesToWrapperTypes.ContainsKey(valueType)) ||
-						(whereAny.HasFlag(Is.SceneObject)	&& Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject))) ||
-						(whereAny.HasFlag(Is.Asset)			&& Find.typesToFindableTypes.ContainsKey(valueType)) ||
-						(whereAny.HasFlag(Is.Service)		&& ServiceUtility.IsServiceDefiningType(valueType)) ||
-						(whereAny.HasFlag(Is.Collection)		&& TypeUtility.IsCommonCollectionType(valueType)))
+					if((whereAny.HasFlag(Is.Class) && valueType.IsClass) ||
+						(whereAny.HasFlag(Is.ValueType) && valueType.IsValueType) ||
+						(whereAny.HasFlag(Is.Concrete) && !valueType.IsAbstract) ||
+						(whereAny.HasFlag(Is.Abstract) && valueType.IsAbstract) ||
+						(whereAny.HasFlag(Is.BuiltIn) && (valueType.IsPrimitive || valueType == typeof(string) || valueType == typeof(object))) ||
+						(whereAny.HasFlag(Is.Interface) && valueType.IsInterface) ||
+						(whereAny.HasFlag(Is.Component) && Find.typesToComponentTypes.ContainsKey(valueType)) ||
+						(whereAny.HasFlag(Is.WrappedObject) && Find.typesToWrapperTypes.ContainsKey(valueType)) ||
+						(whereAny.HasFlag(Is.SceneObject) && Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject))) ||
+						(whereAny.HasFlag(Is.Asset) && Find.typesToFindableTypes.ContainsKey(valueType)) ||
+						(whereAny.HasFlag(Is.Service) && ServiceUtility.IsServiceDefiningType(valueType)) ||
+						(whereAny.HasFlag(Is.Collection) && TypeUtility.IsCommonCollectionType(valueType)))
 					{
 						return true;
 					}
@@ -1592,25 +1601,25 @@ namespace Sisus.Init.EditorOnly.Internal
 						var elementType = TypeUtility.GetCollectionElementType(valueType);
 						if(elementType is null)
 						{
-							#if DEV_MODE
+#if DEV_MODE
 							Debug.LogWarning($"Failed to get collection element type from {valueType}.");
-							#endif
+#endif
 							return false;
 						}
 
 						valueType = elementType;
 					}
 
-					if((!whereAll.HasFlag(Is.Class)			|| valueType.IsClass) &&
-					   (!whereAll.HasFlag(Is.ValueType)	|| valueType.IsValueType) &&
-					   (!whereAll.HasFlag(Is.Concrete)		|| !valueType.IsAbstract) &&
-					   (!whereAll.HasFlag(Is.Abstract)		|| valueType.IsAbstract) &&
-					   (!whereAll.HasFlag(Is.Interface)	|| valueType.IsInterface) &&
-					   (!whereAll.HasFlag(Is.Component)	|| Find.typesToComponentTypes.ContainsKey(valueType)) &&
-					   (!whereAll.HasFlag(Is.WrappedObject)|| Find.typesToWrapperTypes.ContainsKey(valueType)) &&
-					   (!whereAll.HasFlag(Is.SceneObject)	|| (Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject)))) &&
-					   (!whereAll.HasFlag(Is.Asset)		|| Find.typesToFindableTypes.ContainsKey(valueType)) &&
-					   (!whereAll.HasFlag(Is.Service)		|| ServiceUtility.IsServiceDefiningType(valueType)))
+					if((!whereAll.HasFlag(Is.Class) || valueType.IsClass) &&
+						(!whereAll.HasFlag(Is.ValueType) || valueType.IsValueType) &&
+						(!whereAll.HasFlag(Is.Concrete) || !valueType.IsAbstract) &&
+						(!whereAll.HasFlag(Is.Abstract) || valueType.IsAbstract) &&
+						(!whereAll.HasFlag(Is.Interface) || valueType.IsInterface) &&
+						(!whereAll.HasFlag(Is.Component) || Find.typesToComponentTypes.ContainsKey(valueType)) &&
+						(!whereAll.HasFlag(Is.WrappedObject) || Find.typesToWrapperTypes.ContainsKey(valueType)) &&
+						(!whereAll.HasFlag(Is.SceneObject) || (Find.typesToFindableTypes.ContainsKey(valueType) && (!typeof(Object).IsAssignableFrom(valueType) || typeof(Component).IsAssignableFrom(valueType) || valueType == typeof(GameObject)))) &&
+						(!whereAll.HasFlag(Is.Asset) || Find.typesToFindableTypes.ContainsKey(valueType)) &&
+						(!whereAll.HasFlag(Is.Service) || ServiceUtility.IsServiceDefiningType(valueType)))
 					{
 						return true;
 					}
@@ -1621,14 +1630,14 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			private void SetUserSelectedValueType(Type setType)
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.SetUserSelectedValueType");
-				#endif
+#endif
 
-				#if DEV_MODE
+#if DEV_MODE
 				Debug.Assert(setType is null || valueType.IsAssignableFrom(setType) || typeof(Object).IsAssignableFrom(setType));
-				#endif
-				
+#endif
+
 				if(setType is null)
 				{
 					valueProperty.managedReferenceValue = null;
@@ -1656,38 +1665,16 @@ namespace Sisus.Init.EditorOnly.Internal
 					else if(setType.GetCustomAttribute<ValueProviderMenuAttribute>() is ValueProviderMenuAttribute attribute
 							&& typeof(ScriptableObject).IsAssignableFrom(setType))
 					{
-						var instancesInProject = AssetDatabase.FindAssets("t:" + setType.Name)
-													.Select(guid => AssetDatabase.LoadAssetAtPath<ScriptableObject>(AssetDatabase.GUIDToAssetPath(guid)))
-													.Where(obj => obj.GetType() == setType && obj.name == attribute.ItemName)
-													.ToList();
-
 						// if exactly a single asset of the given type exists in the project,
 						// and said asset has no serialized fields, then reuse that instance
 						// across all clients (the flyweight pattern).
-						bool useSingleSharedInstance = false;
-						if(instancesInProject.Count == 1)
-						{
-							using(var serializedObject = new SerializedObject(instancesInProject[0]))
-							{
-								var firstProperty = serializedObject.GetIterator();
-								if(firstProperty.NextVisible(true) && !firstProperty.NextVisible(false))
-								{
-									useSingleSharedInstance = true;
+						bool useSingleSharedInstance = ValueProviderEditorUtility.TryGetSingleSharedInstanceSlow(setType, out var singleSharedInstance);
 
-									#if DEV_MODE
-									Debug.Log($"Use single shared instance: {instancesInProject[0]}", instancesInProject[0]);
-									#endif
-								}
-							}
-						}
+#if DEV_MODE
+						if(!useSingleSharedInstance) Debug.Log($"Creating new embedded instance of value provider {setType.Name}, because no shared single instance was found in the project.");
+#endif
 
-						#if DEV_MODE
-						if(!useSingleSharedInstance) Debug.Log($"Creating new instance of type {setType.Name}. Found assets: {instancesInProject.Count}.");
-						#endif
-
-						referenceProperty.objectReferenceValue = useSingleSharedInstance
-																? instancesInProject[0]
-																: ScriptableObject.CreateInstance(setType);
+						referenceProperty.objectReferenceValue = useSingleSharedInstance ? singleSharedInstance : ScriptableObject.CreateInstance(setType);
 					}
 				}
 				else if(valueProperty.propertyType != SerializedPropertyType.ManagedReference)
@@ -1724,14 +1711,14 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						valueProperty.vector2IntValue = Vector2Int.zero;
 					}
-					#if UNITY_LOCALIZATION
+#if UNITY_LOCALIZATION
 					else if(setType == typeof(LocalizedString))
 					{
 						var localizedString = ScriptableObject.CreateInstance<LocalizedString>();
 						localizedString.value.TableReference = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.DefaultTable;
 						referenceProperty.objectReferenceValue = localizedString;
 					}
-					#endif
+#endif
 				}
 				else if(typeof(Type).IsAssignableFrom(setType))
 				{
@@ -1754,17 +1741,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			/// <returns> -1 if no value, 0 if object value, 1 if Object reference.</returns>
 			private int TryGetValue(out object value, out Object reference)
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.TryGetValue");
-				#endif
-				
+#endif
+
 				reference = referenceProperty?.objectReferenceValue;
 				if(reference)
 				{
 					value = null;
 					return 1;
 				}
-			
+
 				value = valueProperty?.GetValue();
 				if(value is not null)
 				{
@@ -1785,10 +1772,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			private IEnumerable<Type> GetTypeOptions()
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.GetTypeOptions");
-				#endif
-				
+#endif
+
 				if(valueProperty is null || valueProperty.propertyType != SerializedPropertyType.ManagedReference || valueType.IsPrimitive || valueType == typeof(string) || valueType.IsEnum)
 				{
 					return new[] { valueType };
@@ -1862,10 +1849,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			public void UpdateValueBasedState()
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.UpdateValueBasedState");
-				#endif
-				
+#endif
+
 				UpdateValueProviderEditor();
 
 				if(crossSceneReferenceDrawer is not null)
@@ -1877,9 +1864,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			private void UpdateValueProviderEditor()
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.UpdateValueProviderEditor");
-				#endif
+#endif
 
 				if(valueProviderGUI is not null)
 				{
@@ -1893,23 +1880,23 @@ namespace Sisus.Init.EditorOnly.Internal
 					&& valueProvider.GetType().GetCustomAttribute<ValueProviderMenuAttribute>() is not null
 					&& valueProvider is not _Null
 					&& (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(valueProvider))
-					|| ValueProviderEditorUtility.IsSingleSharedInstance(valueProvider))
+					|| ValueProviderEditorUtility.IsSingleSharedInstanceSlow(valueProvider))
 				)
 				{
 					Editor valueProviderEditor = Editor.CreateEditor(valueProvider, null);
 					if(valueProviderEditor)
 					{
-						valueProviderGUI = new ValueProviderGUI(valueProviderEditor, label, anyProperty, referenceProperty, anyType:anyType, valueType:valueType, DiscardObjectReferenceValue);
+						valueProviderGUI = new ValueProviderGUI(valueProviderEditor, label, anyProperty, referenceProperty, anyType: anyType, valueType: valueType, DiscardObjectReferenceValue);
 					}
 				}
 			}
 
 			private void DiscardObjectReferenceValue()
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.DiscardObjectReferenceValue");
-				#endif
-				
+#endif
+
 				if(valueProviderGUI is not null)
 				{
 					valueProviderGUI.Dispose();
@@ -1943,10 +1930,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			private void OpenCustomContextMenu(Rect rect)
 			{
 				var menu = new GenericMenu();
-			
+
 				if(valueProperty.GetValue() is object value && !value.GetType().IsValueType)
 				{
-					menu.AddItem(new GUIContent("Set Null"), false, ()=>
+					menu.AddItem(new GUIContent("Set Null"), false, () =>
 					{
 						valueProperty.SetValue(null);
 						referenceProperty.objectReferenceValue = null;
@@ -1954,31 +1941,31 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 				else if(referenceProperty.objectReferenceValue)
 				{
-					menu.AddItem(new GUIContent("Set Null"), false, ()=>referenceProperty.objectReferenceValue = null);
+					menu.AddItem(new GUIContent("Set Null"), false, () => referenceProperty.objectReferenceValue = null);
 				}
 				else if(isService)
 				{
-					menu.AddItem(new GUIContent("Set Null"), false, ()=>referenceProperty.objectReferenceValue = ScriptableObject.CreateInstance<_Null>());
+					menu.AddItem(new GUIContent("Set Null"), false, () => referenceProperty.objectReferenceValue = ScriptableObject.CreateInstance<_Null>());
 				}
 
-				menu.AddItem(new GUIContent("Copy Property Path"), false, ()=> GUIUtility.systemCopyBuffer = valueProperty.propertyPath.Substring(valueProperty.propertyPath.LastIndexOf('.')));
+				menu.AddItem(new GUIContent("Copy Property Path"), false, () => GUIUtility.systemCopyBuffer = valueProperty.propertyPath.Substring(valueProperty.propertyPath.LastIndexOf('.')));
 
 				menu.DropDown(rect);
 			}
 
 			public void Dispose()
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				using ProfilerScope x = new("AnyPropertyDrawer.Dispose");
-				#endif
-				
-				#if DEV_MODE && DEBUG_ENABLED
-				Debug.Log($"AnyPropertyDrawer.State.Dispose() with Event.current.type:{Event.current?.type.ToString() ?? "None"}");
-				#endif
+#endif
 
-				#if ODIN_INSPECTOR
+#if DEV_MODE && DEBUG_ENABLED
+				Debug.Log($"AnyPropertyDrawer.State.Dispose() with Event.current.type:{Event.current?.type.ToString() ?? "None"}");
+#endif
+
+#if ODIN_INSPECTOR
 				odinDrawer?.Dispose();
-				#endif
+#endif
 
 				if(crossSceneReferenceDrawer is not null)
 				{

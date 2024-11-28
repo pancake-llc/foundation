@@ -26,7 +26,7 @@ namespace Sisus.Init.EditorOnly
 		public void Draw(Rect position)
 		{
 			var buttonPosition = prefixLabel.text.Length > 0 ? EditorGUI.PrefixLabel(position, prefixLabel) : position;
-            
+
 			var iconRect = buttonPosition;
 			iconRect.width = ADD_ICON_WIDTH;
 			iconRect.x -= 1f;
@@ -38,13 +38,9 @@ namespace Sisus.Init.EditorOnly
 			var clickableRect = iconRect;
 			clickableRect.width += 4f;
 
-			// this hack was needed to make the GUI.Button respond to clicks
-			if(clickableRect.Contains(Event.current.mousePosition) && LayoutUtility.NowDrawing)
-			{
-				LayoutUtility.Repaint();
-			}
-
-			bool clicked = GUI.Button(clickableRect, GUIContent.none, EditorStyles.label);
+			var clicked = GUI.Button(clickableRect, GUIContent.none, EditorStyles.label)
+			              // hack: fix issue where click event was eaten by adjascent Object field when inspecting a prefab asset in Unity 6.1
+			              || (clickableRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.MouseDown);
 
 			GUI.Label(iconRect, GUIContent.none, "PopupCurveDropdown");
 			if(buttonLabel.text.Length > 0)

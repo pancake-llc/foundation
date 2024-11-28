@@ -1,5 +1,4 @@
-﻿//#define DEBUG_REPAINT
-#define DEBUG_INJECT
+﻿#define DEBUG_INJECT
 #define DEBUG_REMOVE
 
 using System;
@@ -13,11 +12,20 @@ using UnityEngine;
 using static Sisus.Shared.EditorOnly.InspectorContents;
 using Object = UnityEngine.Object;
 
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
+#endif
+
 namespace Sisus.Init.EditorOnly.Internal
 {
 	[InitializeOnLoad]
 	internal static class EditorDecoratorInjector
 	{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker afterRootHeaderGUIMarker = new(ProfilerCategory.Gui, "EditorDecoratorInjector.AfterInspectorRootEditorHeaderGUI");
+		private static readonly ProfilerMarker processInspectorElementMarker = new(ProfilerCategory.Gui, "EditorDecoratorInjector.ProcessInspectorElement");
+#endif
+		
 		private static readonly Assembly sisusEditorAssembly = typeof(InitializableEditorDecorator).Assembly;
 		private static readonly List<EditorDecorator> activeDecorators = new();
 
@@ -42,6 +50,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static void AfterInspectorRootEditorHeaderGUI(Editor rootEditor)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = afterRootHeaderGUIMarker.Auto();
+#endif
+			
 			if(EditorApplication.isCompiling)
 			{
 				return;
@@ -55,6 +67,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static void ProcessInspectorElement(Editor rootEditor, InspectorElement inspectorElement)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = processInspectorElementMarker.Auto();
+#endif
+			
 			var editor = inspectorElement.GetEditor();
 			if(editor.GetType().Assembly == sisusEditorAssembly)
 			{
@@ -76,16 +92,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					activeDecorators[i].Dispose();
 					activeDecorators.RemoveAt(i);
 
-					#if DEV_MODE && DEBUG_REPAINT
-					Debug.Log(rootEditor.GetType().Name + "Repaint");
-					UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
-					#endif
-
-					rootEditor.Repaint();
-
-					#if DEV_MODE && DEBUG_REPAINT
-					UnityEngine.Profiling.Profiler.EndSample();
-					#endif
+					LayoutUtility.Repaint(rootEditor);
 				}
 			}
 
@@ -118,16 +125,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					decorator.visible = false;
 				}
 
-				#if DEV_MODE && DEBUG_REPAINT
-				Debug.Log(rootEditor.GetType().Name + "Repaint");
-				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
-				#endif
-
-				rootEditor.Repaint();
-
-				#if DEV_MODE && DEBUG_REPAINT
-				UnityEngine.Profiling.Profiler.EndSample();
-				#endif
+				LayoutUtility.Repaint(rootEditor);
 			}
 
 			if(IsMissingComponent(target))
@@ -152,16 +150,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					inspectorElement.Insert(0, beforeInspectorGUI);
 				}
 
-				#if DEV_MODE && DEBUG_REPAINT
-				Debug.Log(rootEditor.GetType().Name + $"({targetType.Name}).Repaint");
-				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
-				#endif
-
-				rootEditor.Repaint();
-
-				#if DEV_MODE && DEBUG_REPAINT
-				UnityEngine.Profiling.Profiler.EndSample();
-				#endif
+				LayoutUtility.Repaint(rootEditor);
 			}
 
 			if(EditorDecorator.ShouldCreateAfterInspectorGUI(editorDecoratorType))
@@ -173,24 +162,15 @@ namespace Sisus.Init.EditorOnly.Internal
 
 					activeDecorators.Add(afterInspectorGUI);
 
-						#if DEV_MODE && DEBUG_INJECT
+#if DEV_MODE && DEBUG_INJECT
 					Debug.Log($"Injecting {editorDecoratorType.Name}.{nameof(EditorDecorator.OnAfterInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
-						#endif
+#endif
 
 					afterInspectorGUI.name = nameof(EditorDecorator.OnAfterInspectorGUI);
 					inspectorElement.Insert(inspectorElement.childCount, afterInspectorGUI);
 				}
 
-				#if DEV_MODE && DEBUG_REPAINT
-				Debug.Log(rootEditor.GetType().Name + $"({targetType.Name}).Repaint");
-				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
-				#endif
-
-				rootEditor.Repaint();
-
-				#if DEV_MODE && DEBUG_REPAINT
-				UnityEngine.Profiling.Profiler.EndSample();
-				#endif
+				LayoutUtility.Repaint(rootEditor);
 			}
 		}
 
@@ -201,16 +181,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				var decorator = activeDecorators[i];
 				if(decorator.panel is not null)
 				{
-#if DEV_MODE && DEBUG_REPAINT
-					decorator.GetType().Name + "Repaint");
-					UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
-#endif
-
-					decorator.DecoratedEditor.Repaint();
-
-#if DEV_MODE && DEBUG_REPAINT
-					UnityEngine.Profiling.Profiler.EndSample();
-#endif
+					LayoutUtility.Repaint(decorator.DecoratedEditor);
 				}
 			}
 		}

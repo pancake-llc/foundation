@@ -12,11 +12,14 @@ using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 using static Sisus.Init.Internal.ServiceTagUtility;
 using static Sisus.NullExtensions;
+
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
+#endif
 
 namespace Sisus.Init.EditorOnly.Internal
 {
@@ -28,6 +31,11 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static readonly GUIContent blankLabel = new(" ");
 		private static readonly HashSet<Type> definingTypesBuilder = new();
 		private static readonly Dictionary<object, Type[]> objectDefiningTypesCache = new();
+		
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker getServiceDefiningTypesMarker = new(ProfilerCategory.Gui, "EditorServiceTagUtility.GetServiceDefiningTypes");
+		private static readonly ProfilerMarker repaintAllServiceEditorsMarker = new(ProfilerCategory.Gui, "EditorServiceTagUtility.RepaintAllServiceEditors");
+#endif
 
 		static EditorServiceTagUtility()
 		{
@@ -102,6 +110,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			static void RepaintAllServiceEditors()
 			{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+				using var x = repaintAllServiceEditorsMarker.Auto();
+#endif
+				
 				var gameObject = Selection.activeGameObject;
 				if(!gameObject)
 				{
@@ -121,6 +133,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static Span<Type> GetServiceDefiningTypes([DisallowNull] object serviceOrServiceProvider)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = getServiceDefiningTypesMarker.Auto();
+#endif
+			
 			if(objectDefiningTypesCache.TryGetValue(serviceOrServiceProvider, out var cachedResults))
 			{
 				if(cachedResults.Length <= 1)
@@ -132,8 +148,6 @@ namespace Sisus.Init.EditorOnly.Internal
 				return nullIndex is -1 ? cachedResults.AsSpan() : cachedResults.AsSpan(0, nullIndex);
 			}
 
-			Profiler.BeginSample("GetServiceDefiningTypes(object)");
-
 			Transform clientOrNull = Find.In<Transform>(serviceOrServiceProvider);
 			AddServiceDefiningTypes(clientOrNull, serviceOrServiceProvider, definingTypesBuilder);
 
@@ -141,8 +155,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				AddServiceProviderValueDefiningTypes(clientOrNull, valueProvider, definingTypesBuilder);
 			}
-
-			Profiler.EndSample();
 
 			int count = definingTypesBuilder.Count;
 			if(count == 0)

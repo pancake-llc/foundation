@@ -4,11 +4,20 @@ using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
+#endif
+
 namespace Sisus.Init.EditorOnly
 {
 	[InitializeOnLoad]
 	internal static class RefTagDrawer
 	{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker beforeHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.BeforeHeaderGUI");
+		private static readonly ProfilerMarker afterHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.AfterHeaderGUI");
+#endif
+		
 		static RefTagDrawer()
 		{
 			ComponentHeader.BeforeHeaderGUI -= OnBeforeComponentHeaderGUI;
@@ -30,8 +39,8 @@ namespace Sisus.Init.EditorOnly
 
 		private static void OnAfterGameObjectHeaderGUI([DisallowNull] Editor gameObjectEditor)
 		{
-			GameObject gameObject = gameObjectEditor.target as GameObject;
-			if(!TryGetRefTag(gameObject, gameObject, out RefTag referenceable))
+			var gameObject = gameObjectEditor.target as GameObject;
+			if(!TryGetRefTag(gameObject, gameObject, out var referenceable))
 			{
 				return;
 			}
@@ -48,6 +57,10 @@ namespace Sisus.Init.EditorOnly
 
 		private static float OnBeforeComponentHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = beforeHeaderGUIMarker.Auto();
+#endif
+			
 			if(!TryGetRefTag(component.gameObject, component, out RefTag referenceable))
 			{
 				return 0f;
@@ -61,6 +74,10 @@ namespace Sisus.Init.EditorOnly
 
 		private static float OnAfterComponentHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = afterHeaderGUIMarker.Auto();
+#endif
+			
 			if(!TryGetRefTag(component.gameObject, component, out var referenceable))
 			{
 				return 0f;
@@ -173,7 +190,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			foreach(var tag in gameObject.GetComponentsNonAlloc<RefTag>())
 			{
-				if(tag.Target == target)
+				if(ReferenceEquals(tag.Target, target))
 				{
 					result = tag;
 					return true;

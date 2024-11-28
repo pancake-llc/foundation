@@ -9,11 +9,21 @@ using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
+#endif
+
 namespace Sisus.Init.EditorOnly.Internal
 {
 	[InitializeOnLoad]
 	internal static class LayoutUtility
 	{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker repaintMarker = new(ProfilerCategory.Gui, "Sisus.Repaint");
+
+		internal static ProfilerMarker.AutoScope MarkRepaint() => repaintMarker.Auto();
+#endif
+		
 		public static Editor NowDrawing { get; internal set; }
 
 		private static readonly List<Action> deferredActions = new();
@@ -190,38 +200,36 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public static void Repaint([AllowNull] Editor editor = null)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var _ = repaintMarker.Auto();
+#endif
+			
 			GUI.changed = true;
 
 			if(editor)
 			{
 #if DEV_MODE && DEBUG_REPAINT
-				Debug.Log(editor.GetType().Name + "Repaint");
-				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+				Debug.Log(editor.GetType().Name + ".Repaint");
 #endif
 				
 				editor.Repaint();
 
-#if DEV_MODE && DEBUG_REPAINT
-				UnityEngine.Profiling.Profiler.EndSample();
-#endif
-				
 				if(NowDrawing != editor && NowDrawing)
 				{
+#if DEV_MODE && DEBUG_REPAINT
+					Debug.Log(NowDrawing.GetType().Name + ".Repaint");
+#endif
+
 					NowDrawing.Repaint();
 				}
 			}
 			else if(NowDrawing)
 			{
 #if DEV_MODE && DEBUG_REPAINT
-				Debug.Log(NowDrawing.GetType().Name + "Repaint");
-				UnityEngine.Profiling.Profiler.BeginSample("Sisus.Repaint");
+				Debug.Log(NowDrawing.GetType().Name + ".Repaint");
 #endif
 
 				NowDrawing.Repaint();
-
-#if DEV_MODE && DEBUG_REPAINT
-				UnityEngine.Profiling.Profiler.EndSample();
-#endif
 			}
 			else
 			{

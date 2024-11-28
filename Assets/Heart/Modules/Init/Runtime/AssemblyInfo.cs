@@ -10,6 +10,7 @@ using static Sisus.Init.AssemblyNames;
     InternalsVisibleTo(InitArgs.uGUI),
     InternalsVisibleTo(InitArgs.UIToolkit),
     InternalsVisibleTo(InitArgs.UIToolkitEditor),
+    InternalsVisibleTo(InitArgs.PancakeLocalization),
 
     InternalsVisibleTo(InitArgs.Tests.EditMode),
     InternalsVisibleTo(InitArgs.Tests.PlayMode)]
@@ -30,6 +31,7 @@ namespace Sisus.Init
 
             public const string Odin = "InitArgs.Odin";
             public const string Search = "InitArgs.Search";
+            public const string PancakeLocalization = "Pancake.Localization";
 
             public static class Tests
             {
