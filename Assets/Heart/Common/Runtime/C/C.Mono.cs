@@ -50,7 +50,7 @@ namespace Pancake.Common
             var v3 = transform.position;
             return new Vector2(v3.x, v3.y);
         }
-        
+
         public static void SetPositionXY(this Transform transform, in Vector2 v2) { transform.position = new Vector3(v2.x, v2.y, transform.position.z); }
 
 
@@ -1754,17 +1754,26 @@ namespace Pancake.Common
         /// <summary>
         /// Convert UI positon to world position
         /// </summary>
-        /// <param name="transform">transform is transform in canvas space (RectTransfom</param>
+        /// <param name="transform">transform is transform in canvas space [RectTransfom]</param>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public static Vector2 ToWorldPosition(this RectTransform transform, Camera camera = null)
+        public static Vector3 ToWorldPosition(this RectTransform transform, Camera camera = null)
         {
-            var cam = camera;
-            if (cam == null) cam = Camera.main;
-            if (cam == null) return Vector2.zero;
-            var pos = cam.ViewportToWorldPoint(transform.position);
-            var worldPosition = cam.WorldToViewportPoint(pos);
-            return worldPosition;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(transform, transform.position, camera, out var local);
+            var world = transform.TransformPoint(new Vector3(local.x, local.y));
+            return world;
+        }
+
+        /// <summary>
+        /// Convert GameObject positon to UI position
+        /// </summary>
+        /// <param name="transform">transform is transform in world space</param>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public static Vector2 ToUIPosition(this Transform transform, Camera camera = null)
+        {
+            var world = transform.TransformPoint(Vector3.zero);
+            return RectTransformUtility.WorldToScreenPoint(camera, world);
         }
 
         /// <summary>
@@ -1792,7 +1801,7 @@ namespace Pancake.Common
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static T OrNull<T>(this T source) where T : Object { return source == null ? null : source; }
-        
+
         /// <summary>
         /// Check if the transform is within a certain distance and optionally within a certain angle (FOV) from the target transform.
         /// </summary>
