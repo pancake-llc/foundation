@@ -1,15 +1,21 @@
 #if PANCAKE_SPINE
 using System;
+using UnityEngine;
 
 namespace Pancake.Spine
 {
-    using UnityEngine;
-
-    [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
+    /// <summary>
+    /// example: [SpineAnimPickup("Name file skeletonDataAsset without extension")] public string anim;
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field)]
     public class SpineAnimPickupAttribute : PropertyAttribute
     {
-        public string Name { get; set; }
+        internal string Name { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name">Name file skeletonDataAsset without extension</param>
         public SpineAnimPickupAttribute(string name) { Name = name; }
     }
 }

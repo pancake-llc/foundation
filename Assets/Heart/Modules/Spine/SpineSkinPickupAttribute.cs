@@ -4,11 +4,18 @@ using UnityEngine;
 
 namespace Pancake.Spine
 {
-    [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
+    /// <summary>
+    /// example: [SpineSkinPickup("Name file skeletonDataAsset without extension")] public string skin;
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field)]
     public class SpineSkinPickupAttribute : PropertyAttribute
     {
-        public string Name { get; set; }
+        internal string Name { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name">Name file skeletonDataAsset without extension</param>
         public SpineSkinPickupAttribute(string name) { Name = name; }
     }
 }
