@@ -6,6 +6,10 @@
 
 #if UNITY_EDITOR
 
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
+
 using UnityEngine;
 using UnityEditor.AddressableAssets;
 using Sirenix.OdinInspector.Editor.Validation;

@@ -1,6 +1,6 @@
 ManifestVersion: 1
 ModuleID: Unity.Addressables
-ModuleVersion: 1.1.0.10
+ModuleVersion: 1.1.0.11
 ModuleFiles:
   AddressablesInspectors.cs
   AddressablesInspectors.cs.meta

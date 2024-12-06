@@ -5,6 +5,11 @@
 //-----------------------------------------------------------------------
 
 #if UNITY_EDITOR
+
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
+
 using System.Reflection;
 using UnityEditor.AddressableAssets.Settings;
 

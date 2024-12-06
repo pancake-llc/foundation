@@ -6,6 +6,10 @@
 
 #if UNITY_EDITOR && ODIN_VALIDATOR_3_1
 
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
+
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

@@ -6,6 +6,10 @@
 
 #if UNITY_EDITOR
 
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
+
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

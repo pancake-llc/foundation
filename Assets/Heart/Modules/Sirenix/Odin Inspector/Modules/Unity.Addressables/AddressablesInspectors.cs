@@ -4,6 +4,10 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
+
 using System;
 using Sirenix.OdinInspector;
 
@@ -828,7 +832,6 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         private readonly string title;
         private readonly Type[] filterTypes;
         private readonly List<AssetReferenceUIRestriction> restrictions;
-        private readonly AssetReference assetReferenceForValidating;
 
         internal bool ShowNonAddressables;
 
@@ -869,8 +872,6 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 {
                     throw new ArgumentException("Cannot be abstract type.", nameof(assetReferenceType));
                 }
-
-                this.assetReferenceForValidating = (AssetReference)FormatterServices.GetUninitializedObject(assetReferenceType);
             }
         }
 
@@ -1696,8 +1697,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
     public static class OdinAddressableUtility
     {
         private readonly static Action openAddressableWindowAction;
-        private static bool hasLoggedPackablesMissingError = false;
-        
+
         static OdinAddressableUtility()
         {
             var type = TwoWaySerializationBinder.Default.BindToType("UnityEditor.AddressableAssets.GUI.AddressableAssetsWindow") ?? throw new Exception("");
