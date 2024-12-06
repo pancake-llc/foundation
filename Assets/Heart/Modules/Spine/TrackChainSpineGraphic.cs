@@ -1,7 +1,4 @@
 #if PANCAKE_SPINE
-using System;
-using System.Collections;
-using Pancake.Common;
 using Spine.Unity;
 using UnityEngine;
 
@@ -14,8 +11,6 @@ namespace Pancake.Spine
         [SerializeField] private bool loopLastestTrack;
         [SerializeField] private EStartupMode startupMode = EStartupMode.OnEnabled;
         [SerializeField] private TrackData[] datas;
-
-        private AsyncProcessHandle _handle;
 
         private void Awake()
         {
@@ -32,11 +27,9 @@ namespace Pancake.Spine
             if (startupMode == EStartupMode.OnEnabled) Play();
         }
 
-        protected void OnDisable() { App.StopAndClean(ref _handle); }
+        public void Play() { Playable(); }
 
-        public void Play() { _handle = App.StartCoroutine(IePlay()); }
-
-        private IEnumerator IePlay()
+        private async void Playable()
         {
             for (var i = 0; i < datas.Length; i++)
             {
@@ -50,15 +43,8 @@ namespace Pancake.Spine
                     while (count > 0)
                     {
                         skeleton.PlayOnly(datas[i].trackName, count != 1);
-                        if (datas[i].overrideDuration)
-                        {
-                            yield return new WaitForSeconds(datas[i].duration);
-                        }
-                        else
-                        {
-                            string trackName = datas[i].trackName;
-                            yield return new WaitForSeconds(skeleton.Duration(trackName));
-                        }
+                        if (datas[i].overrideDuration) await Awaitable.WaitForSecondsAsync(datas[i].duration);
+                        else await Awaitable.WaitForSecondsAsync(skeleton.Duration(datas[i].trackName));
 
                         count--;
                     }
