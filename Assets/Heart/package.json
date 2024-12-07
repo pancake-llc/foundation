@@ -22,7 +22,7 @@
     "com.unity.serialization": "3.1.2",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.addressables": "2.3.1",
-    "com.unity.mobile.notifications": "2.3.2",
+    "com.unity.mobile.notifications": "2.4.0",
     "com.unity.services.core": "1.13.0"
   },
   "repository": {
