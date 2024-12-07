@@ -159,7 +159,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.unity.mobile.notifications", "2.3.2");
+                RegistryManager.AddPackage("com.unity.mobile.notifications", "2.4.0");
                 RegistryManager.Resolve();
             }
 
@@ -169,7 +169,7 @@ namespace PancakeEditor
         private static void UninstallNotification()
         {
             EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Notification 2.3.2", new RectOffset(0, 0, 6, 0));
+            Uniform.DrawInstalled("Notification 2.4.0", new RectOffset(0, 0, 6, 0));
 
 
             GUILayout.FlexibleSpace();
