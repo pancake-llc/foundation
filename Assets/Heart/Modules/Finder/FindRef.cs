@@ -644,6 +644,9 @@ namespace PancakeEditor.Finder
         public Action<Rect, FindRef> beforeItemDraw;
         public Action<Rect, FindRef> afterItemDraw;
         public bool drawFullPath;
+        public bool drawExtension;
+        public bool drawFileSize;
+        public bool drawUsageType;
 
         internal List<FindRef> list;
         internal Dictionary<string, FindRef> refs;
@@ -813,7 +816,7 @@ namespace PancakeEditor.Finder
                     false,
                     false,
                     false,
-                    Window);
+                    Window, false);
                 r.y += 18f;
                 r.xMin += 18f;
             }
@@ -880,11 +883,12 @@ namespace PancakeEditor.Finder
                 rf.asset.Draw(r,
                     isHighlight,
                     drawFullPath,
-                    !forceHideDetails && FinderWindowBase.DisplayFileSize,
+                    !forceHideDetails && drawFileSize,
                     !forceHideDetails && FinderWindowBase.DisplayAssetBundleName,
                     !forceHideDetails && FinderWindowBase.DisplayAtlasName,
-                    !forceHideDetails && FinderWindowBase.ShowUsedByClassed,
-                    Window);
+                    !forceHideDetails && drawUsageType,
+                    Window,
+                    !forceHideDetails && drawExtension);
             }
 
             afterItemDraw?.Invoke(r, rf);
@@ -910,7 +914,7 @@ namespace PancakeEditor.Finder
 
             switch (_getGroupMode())
             {
-                case Mode.Extension: return rf.isSceneRef ? sr.targetType : rf.asset.Extension;
+                case Mode.Extension: return rf.isSceneRef ? sr.targetType : string.IsNullOrEmpty(rf.asset.Extension) ? "(no extension)" : rf.asset.Extension;
                 case Mode.Type: return rf.isSceneRef ? sr.targetType : AssetType.Filters[rf.type].name;
                 case Mode.Folder: return rf.isSceneRef ? sr.scenePath : rf.asset.AssetFolder;
                 case Mode.Dependency: return rf.depth == 1 ? "Direct Usage" : "Indirect Usage";
@@ -1112,8 +1116,7 @@ namespace PancakeEditor.Finder
 
                 if (item.asset == null) list.RemoveAt(i);
             }
-
-
+            
             groupDrawer.Reset(list,
                 rf =>
                 {

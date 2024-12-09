@@ -54,6 +54,7 @@ namespace PancakeEditor.Finder
 
         [NonSerialized] internal EnumInfo enumInfo;
         public int index;
+        public string tooltip;
 
         public bool DrawLayout<T>(ref T enumValue, params GUILayoutOption[] options)
         {
@@ -94,7 +95,9 @@ namespace PancakeEditor.Finder
             if (Event.current.type == EventType.Layout) return false;
             if (Event.current.type == EventType.Repaint)
             {
-                GUI.Label(rect, enumInfo.contents[index], EditorStyles.toolbarPopup);
+                var content = enumInfo.contents[index];
+                if (!string.IsNullOrEmpty(tooltip)) content.tooltip = tooltip;
+                GUI.Label(rect, content, EditorStyles.toolbarPopup);
                 return false;
             }
 

@@ -268,14 +268,6 @@ namespace PancakeEditor.Finder
             return false;
         }
 
-        internal static void DrawPriorityGUI()
-        {
-            float w = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 120f;
-            AssetCache.priority = EditorGUILayout.IntSlider("  Scan Priority", AssetCache.priority, 0, 5);
-            EditorGUIUtility.labelWidth = w;
-        }
-
         internal static void CreateCache()
         {
             cache = new UserSetting<AssetCache>();

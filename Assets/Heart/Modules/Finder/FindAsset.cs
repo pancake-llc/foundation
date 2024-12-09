@@ -645,7 +645,8 @@ namespace PancakeEditor.Finder
             bool showAbName = false,
             bool showAtlasName = false,
             bool showUsageIcon = true,
-            IWindow window = null)
+            IWindow window = null,
+            bool drawExtension = true)
         {
             bool singleLine = r.height <= 18f;
             float rw = r.width;
@@ -758,7 +759,7 @@ namespace PancakeEditor.Finder
                 lbRect.xMin += nameW - 2f;
                 lbRect.y += 1f;
 
-                if (!string.IsNullOrEmpty(Extension))
+                if (!string.IsNullOrEmpty(Extension) && drawExtension)
                 {
                     var c3 = GUI.color;
                     GUI.color = new Color(c3.r, c3.g, c3.b, c3.a * 0.5f);
@@ -909,7 +910,11 @@ namespace PancakeEditor.Finder
             if (!AssetBookmark.Contains(guid)) AssetBookmark.Add(guid);
         }
 
-        internal void Ping() { EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject))); }
+        internal void Ping()
+        {
+            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject)));
+            Event.current.Use();
+        }
 
         internal void Open() { AssetDatabase.OpenAsset(AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject))); }
 

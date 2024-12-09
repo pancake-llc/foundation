@@ -38,6 +38,9 @@ namespace PancakeEditor.Finder
         public bool bookmark;
         public bool toolMode;
         public bool showFullPath = true;
+        public bool showFileSize;
+        public bool showFileExtension;
+        public bool showUsageType = true;
         public FindRefDrawer.Mode toolGroupMode = FindRefDrawer.Mode.Type;
         public FindRefDrawer.Mode groupMode = FindRefDrawer.Mode.Dependency;
         public FindRefDrawer.Sort sortMode = FindRefDrawer.Sort.Path;
@@ -154,6 +157,9 @@ namespace PancakeEditor.Finder
             }
 
             RefreshShowFullPath();
+            RefreshShowFileSize();
+            RefreshShowFileExtension();
+            RefreshShowUsageType();
             Repaint();
         }
 
@@ -528,10 +534,8 @@ namespace PancakeEditor.Finder
             if (!HasCache)
             {
                 EditorGUILayout.HelpBox(
-                    "Finder cache not found!\nFirst scan may takes quite some time to finish but you would be able to work normally while the scan works in background...",
+                    "Finder cache not found!\nFinder will need a full refresh and according to your project's size this process may take several minutes to complete finish!",
                     MessageType.Warning);
-
-                DrawPriorityGUI();
 
                 if (GUILayout.Button("Scan project"))
                 {
@@ -541,8 +545,6 @@ namespace PancakeEditor.Finder
 
                 return false;
             }
-
-            DrawPriorityGUI();
 
             if (!DrawEnable()) return false;
             if (CacheSetting.workCount > 0)
@@ -625,7 +627,7 @@ namespace PancakeEditor.Finder
                 {
                     rect.width = iconW;
                     if (GUI2.ToolbarToggle(ref selection.isLock,
-                            selection.isLock ? Uniform.IconContent("LockIcon-On").image : Uniform.IconContent("LockIcon").image,
+                            selection.isLock ? Uniform.IconContent("LockIcon-On", "Click to unlock").image : Uniform.IconContent("LockIcon", "Click to lock").image,
                             Vector2.zero,
                             "Lock Selection",
                             rect))
@@ -711,6 +713,20 @@ namespace PancakeEditor.Finder
             };
         }
 
+        private (Rect left, Rect flex) ExtractLeft(Rect r, float leftWidth = 16f, float space = 0f)
+        {
+            float deltaW = leftWidth + space;
+            var (left, flex) = (new Rect(r.x, r.y, leftWidth, r.height), new Rect(r.x + deltaW, r.y, r.width - deltaW, r.height));
+            if (leftWidth < 0f) Debug.LogWarning($"Invalid:: r {r} | leftWidth = {leftWidth} | left = {left} | flex = {flex}");
+            return (left, flex);
+        }
+
+        private (Rect right, Rect flex) ExtractRight(Rect r, float rightWidth = 16f, float space = 0f)
+        {
+            float deltaW = rightWidth + space;
+            return (new Rect(r.x + r.width - deltaW, r.y, deltaW, r.height), new Rect(r.x, r.y, r.width - deltaW, r.height));
+        }
+
         protected bool DrawFooter()
         {
             _bottomTabs.DrawLayout();
@@ -718,47 +734,55 @@ namespace PancakeEditor.Finder
 
             bottomBar.xMin += 100f; // offset for left buttons
 
-            var (fullPathRect, flex) = (new Rect(bottomBar.x, bottomBar.y, 24, bottomBar.height),
-                new Rect(bottomBar.x + 24, bottomBar.y, bottomBar.width - 24, bottomBar.height));
-            var (buttonRect, _) = (new Rect(flex.x + flex.width - 24, flex.y, 24, flex.height), new Rect(flex.x, flex.y, flex.width - 24, flex.height));
+            var (fullPathRect, flex1) = ExtractLeft(bottomBar, 24f);
+            var (fileSizeRect, flex2) = ExtractLeft(flex1, 24f);
+            var (extensionRect, flex3) = ExtractLeft(flex2, 24f);
 
-            bottomBar = flex;
+            var (buttonRect, _) = ExtractRight(flex3, 24f);
+
+            bottomBar = flex3;
 
             var viewModeRect = bottomBar;
             viewModeRect.xMax -= 24f;
             viewModeRect.xMin = viewModeRect.xMax - 200f;
 
             DrawViewModes(viewModeRect);
-
-            var oColor = GUI.color;
-            if (settings.toolMode) GUI.color = Color.green;
+            DrawButton(buttonRect, ref settings.toolMode, Uniform.IconContent("CustomTool", "Advanced Tools"));
+            
+            if (DrawButton(fullPathRect, ref settings.showFullPath, Uniform.IconContent("UnityEditor.HierarchyWindow", "Show full asset path")))
             {
-                if (GUI.Button(buttonRect, MyGUIContent.From(Uniform.IconContent("CustomTool").image), EditorStyles.toolbarButton))
-                {
-                    settings.toolMode = !settings.toolMode;
-                    EditorUtility.SetDirty(this);
-                    WillRepaint = true;
-                }
+                RefreshShowFullPath();
             }
-            GUI.color = oColor;
-
-            if (settings.showFullPath) GUI.color = Color.green;
+            if (DrawButton(fileSizeRect, ref settings.showFileSize, Uniform.IconContent("Download-Available@2x", "Show File Size")))
             {
-                if (GUI.Button(fullPathRect, Uniform.IconContent("UnityEditor.HierarchyWindow"), EditorStyles.toolbarButton))
-                {
-                    settings.showFullPath = !settings.showFullPath;
-                    EditorUtility.SetDirty(this);
-                    WillRepaint = true;
-
-                    // update all panels
-                    RefreshShowFullPath();
-                }
+                RefreshShowFileSize();
             }
-            GUI.color = oColor;
-
+            if (DrawButton(extensionRect, ref settings.showFileExtension, Uniform.IconContent("d_curvekeyframeweighted", "Show File Extension")))
+            {
+                RefreshShowFileExtension();
+            }
+            
             return false;
         }
 
+        private bool DrawButton(Rect rect, ref bool show, GUIContent icon)
+        {
+            var changed = false;
+            var oColor = GUI.color;
+            if (show) GUI.color = new Color(0.7f, 1f, 0.7f, 1f);
+            {
+                if (GUI.Button(rect, icon, EditorStyles.toolbarButton))
+                {
+                    show = !show;
+                    EditorUtility.SetDirty(this);
+                    WillRepaint = true;
+                    changed = true;
+                }    
+            }
+            GUI.color = oColor;
+            return changed;
+        }
+        
         private void DrawAssetViewSettings()
         {
             bool isDisable = !sp2.splits[1].visible;
@@ -772,7 +796,6 @@ namespace PancakeEditor.Finder
                 GUI2.ToolbarToggle(ref Setting.Settings.displayAtlasName, Uniform.IconContent("SpriteAtlas Icon").image, Vector2.zero, "Show / Hide Atlas packing tags");
 #endif
                 GUI2.ToolbarToggle(ref Setting.Settings.showUsedByClassed, Uniform.IconContent("d_PreMatSphere").image, Vector2.zero, "Show / Hide usage icons");
-                GUI2.ToolbarToggle(ref Setting.Settings.displayFileSize, Uniform.IconContent("d_Audio Mixer").image, Vector2.zero, "Show / Hide file size");
             }
             EditorGUI.EndDisabledGroup();
         }
@@ -790,8 +813,8 @@ namespace PancakeEditor.Finder
             rect2.x += rect1.width;
 
             _toolModeEd ??= new EnumDrawer {enumInfo = new EnumDrawer.EnumInfo(FindRefDrawer.Mode.Type, FindRefDrawer.Mode.Folder, FindRefDrawer.Mode.Extension)};
-            _groupModeEd ??= new EnumDrawer();
-            _sortModeEd ??= new EnumDrawer();
+            _groupModeEd ??= new EnumDrawer {tooltip = "Group By"};
+            _sortModeEd ??= new EnumDrawer {tooltip = "Sort By"};
 
             if (settings.toolMode)
             {
@@ -971,6 +994,17 @@ namespace PancakeEditor.Finder
             WillRepaint = true;
         }
 
+        protected void RefreshShowFileExtension()
+        {
+            _refUnUse.drawExtension = settings.showFileExtension;
+            _usesDrawer.drawExtension = settings.showFileExtension;
+            _usedByDrawer.drawExtension = settings.showFileExtension;
+            _sceneToAssetDrawer.drawExtension = settings.showFileExtension;
+            _refInScene.drawExtension = settings.showFileExtension;
+            _sceneUsesDrawer.drawExtension = settings.showFileExtension;
+            _refSceneInScene.drawExtension = settings.showFileExtension;
+        }
+        
         protected void RefreshShowFullPath()
         {
             _refUnUse.drawFullPath = settings.showFullPath;
@@ -981,6 +1015,29 @@ namespace PancakeEditor.Finder
             _sceneUsesDrawer.drawFullPath = settings.showFullPath;
             _refSceneInScene.drawFullPath = settings.showFullPath;
         }
+        
+        protected void RefreshShowFileSize()
+        {
+            _refUnUse.drawFileSize = settings.showFileSize;
+            _usesDrawer.drawFileSize = settings.showFileSize;
+            _usedByDrawer.drawFileSize = settings.showFileSize;
+            _sceneToAssetDrawer.drawFileSize = settings.showFileSize;
+            _refInScene.drawFileSize = settings.showFileSize;
+            _sceneUsesDrawer.drawFileSize = settings.showFileSize;
+            _refSceneInScene.drawFileSize = settings.showFileSize;
+        }
+        
+        protected void RefreshShowUsageType()
+        {
+            _refUnUse.drawUsageType = settings.showUsageType;
+            _usesDrawer.drawUsageType = settings.showUsageType;
+            _usedByDrawer.drawUsageType = settings.showUsageType;
+            _sceneToAssetDrawer.drawUsageType = settings.showUsageType;
+            _refInScene.drawUsageType = settings.showUsageType;
+            _sceneUsesDrawer.drawUsageType = settings.showUsageType;
+            _refSceneInScene.drawUsageType = settings.showUsageType;
+        }
+
 
         protected void RefreshSort()
         {
