@@ -1,3 +1,5 @@
+#define DEBUG_SERVICE_PROVIDERS
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,12 +52,12 @@ namespace Sisus.Init
 		}
 
 		internal static event Action AnyChangedEditorOnly;
-		private static readonly List<ServiceInfo> activeInstancesEditorOnlyEditMode = new(64);
-		private static readonly List<ServiceInfo> activeInstancesEditorOnlyPlayMode = new(64);
+		private static readonly List<ActiveServiceInfo> activeInstancesEditorOnlyEditMode = new(64);
+		private static readonly List<ActiveServiceInfo> activeInstancesEditorOnlyPlayMode = new(64);
 		private static readonly ServiceInfoOrderer serviceInfoOrdererEditorOnly = new();
-		private static List<ServiceInfo> ActiveInstancesEditorOnly => Application.isPlaying ? activeInstancesEditorOnlyPlayMode : activeInstancesEditorOnlyEditMode;
+		private static List<ActiveServiceInfo> ActiveInstancesEditorOnly => Application.isPlaying ? activeInstancesEditorOnlyPlayMode : activeInstancesEditorOnlyEditMode;
 
-		internal static void UsingActiveInstancesEditorOnly(Action<List<ServiceInfo>> action)
+		internal static void UsingActiveInstancesEditorOnly(Action<List<ActiveServiceInfo>> action)
 		{
 			lock(ActiveInstancesEditorOnly)
 			{
@@ -186,7 +188,7 @@ namespace Sisus.Init
 			foreach(var instance in ScopedService<TService>.Instances)
 			{
 				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
+				if(!instance.registerer)
 				{
 					continue;
 				}
@@ -251,13 +253,11 @@ namespace Sisus.Init
 			Debug.Assert(client);
 			#endif
 
-			bool foundResult = false;
-			ScopedService<TService>.Instance nearest = default;
-
+			ScopedService<TService>.Instance? nearestInstance = default;
 			foreach(var instance in ScopedService<TService>.Instances)
 			{
 				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
+				if(!instance.registerer)
 				{
 					continue;
 				}
@@ -267,23 +267,10 @@ namespace Sisus.Init
 				{
 					continue;
 				}
-
-				var someService = instance.service;
-				if(someService is null)
+				
+				if(nearestInstance is not { } nearest)
 				{
-					continue;
-				}
-
-				var nearestService = nearest.service;
-				if(nearestService is null)
-				{
-					nearest = instance;
-					foundResult = true;
-					continue;
-				}
-
-				if(ReferenceEquals(someService, nearestService))
-				{
+					nearestInstance = instance;
 					continue;
 				}
 
@@ -299,26 +286,31 @@ namespace Sisus.Init
 					#if UNITY_EDITOR
 					// Prioritize scene objects over uninstantiated prefabs
 					var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-					if(!instance.Scene.IsValid() || (prefabStage && instance.Scene == prefabStage.scene))
+					var prefabStageScene = prefabStage ? prefabStage.scene : default;
+					if(!instance.Scene.IsValid() || (prefabStage && instance.Scene == prefabStageScene))
 					{
 						continue;
 					}
 
-					if(!nearest.Scene.IsValid() || (prefabStage && nearest.Scene == prefabStage.scene))
+					if(!nearest.Scene.IsValid() || (prefabStage && nearest.Scene == prefabStageScene))
 					{
-						nearest = instance;
-						foundResult = true;
 						continue;
 					}
 
 					// Don't spam warnings when services are requested in edit mode, for example in Inspector code.
-					if(!Application.isPlaying || !clientScene.IsValid() || clientScene == prefabStage.scene)
+					if(!Application.isPlaying || !clientScene.IsValid() || clientScene == prefabStageScene)
 					{
 						continue;
 					}
 					#endif
 
-					Debug.LogWarning($"AmbiguousMatchWarning: Client on GameObject \"{client.name}\" has access to both services {TypeUtility.ToString(instance.service.GetType())} and {TypeUtility.ToString(nearest.service.GetType())} via {nameof(Services)}s and unable to determine which one should be prioritized.", client);
+					#if DEV_MODE
+					Debug.Assert(!EqualityComparer<TService>.Default.Equals(instance.service, nearest.service) || !ReferenceEquals(instance.serviceProvider, nearest.serviceProvider));
+					#endif
+
+					Debug.LogWarning($"AmbiguousMatchWarning: Client on GameObject \"{client.name}\" has access to both services {TypeUtility.ToString(instance.service.GetType())} and {TypeUtility.ToString(nearest.service.GetType())} via {nameof(Services)}s and unable to determine which one should be prioritized." +
+					$"\nFirst option: {nearest.service}\nprovider:{TypeUtility.ToString(nearest.serviceProvider?.GetType())}\nregisterer:{nearest.registerer}\nclients:{nearest.clients}\nscene:{(nearest.Scene.IsValid() ? nearest.Scene.name : "n/a")}." +
+					$"\n\nSecond option {instance.service}\nprovider:{TypeUtility.ToString(instance.serviceProvider?.GetType())}\nregisterer:{instance.registerer}\nclients:{instance.clients}\nscene:{(instance.Scene.IsValid() ? instance.Scene.name : "n/a")}", client);
 					#endif
 
 					continue;
@@ -326,7 +318,7 @@ namespace Sisus.Init
 
 				if(nearest.Scene != clientScene)
 				{
-					nearest = instance;
+					nearestInstance = instance;
 					continue;
 				}
 
@@ -372,7 +364,7 @@ namespace Sisus.Init
 					{
 						continue;
 					}
-					
+
 					var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
 					if(prefabStage && clientScene == prefabStage.scene)
 					{
@@ -385,43 +377,59 @@ namespace Sisus.Init
 				#endif
 			}
 
-			service = nearest.service;
-			if(foundResult && service != Null)
+			if(nearestInstance.HasValue)
 			{
-				return true;
+				if(nearestInstance.Value.serviceProvider is { } serviceProvider)
+				{
+					if(serviceProvider.TryGetFor(client, out service))
+					{
+						#if DEV_MODE && DEBUG_SERVICE_PROVIDERS
+						Debug.Log($"Service.TryGetFor: {TypeUtility.ToString(serviceProvider.GetType())}.TryGetFor: {service}");
+						#endif
+						return true;
+					}
+					#if DEV_MODE && DEBUG_SERVICE_PROVIDERS
+					Debug.Log($"Service.TryGetFor: {TypeUtility.ToString(serviceProvider.GetType())}.TryGetFor: false");
+					#endif
+				}
+				else if((service = nearestInstance.Value.service) != Null)
+				{
+					return true;
+				}
 			}
+
+			#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
+			bool isUninitializedLazyOrTransientService = ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo);
+			if(isUninitializedLazyOrTransientService)
+			{
+				if(serviceInfo.LazyInit
+   				#if UNITY_EDITOR
+				&& Application.isPlaying
+				#endif
+				)
+				{
+					var task = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
+					if(task.IsCompleted)
+					{
+						if(task.Result is TService result)
+						{
+							service = result;
+							return service is not null;
+						}
+
+                 		#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+						if(task.IsFaulted)
+						{
+							throw task.Exception;
+						}
+                 		#endif
+					}
+				}
+			}
+			#endif
 
 			if(!typeof(TService).IsValueType)
 			{
-				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
-				if(ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo))
-				{
-					if(serviceInfo.LazyInit
-					#if UNITY_EDITOR
-					&& Application.isPlaying
-					#endif
-					)
-					{
-						var task = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
-						if(task.IsCompleted)
-						{
-							if(task.Result is TService result)
-							{
-								service = result;
-								return service is not null;
-							}
-
-							#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
-							if(task.IsFaulted)
-							{
-								throw task.Exception;
-							}
-							#endif
-						}
-					}
-				}
-				#endif
-
 				var globalService = Service<TService>.Instance;
 				if(globalService != Null)
 				{
@@ -430,7 +438,7 @@ namespace Sisus.Init
 				}
 
 				#if UNITY_EDITOR
-				if(ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TService), out GlobalServiceInfo info) && info.FindFromScene)
+				if(ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TService), out ServiceInfo info) && info.FindFromScene)
 				{
 					service = Find.Any<TService>();
 					return Find.Any(out service);
@@ -438,13 +446,8 @@ namespace Sisus.Init
 				#endif
 			}
 
-			if(!typeof(IValueProvider).IsAssignableFrom(typeof(TService)) && TryGetFor(client, out IValueProvider<TService> serviceProvider))
-			{
-				service = serviceProvider.Value;
-				return service != Null;
-			}
-
-			return ServiceProvider<TService>.TryGetValue(client, out service);
+			service = default;
+			return false;
 		}
 
 		/// <summary>
@@ -492,7 +495,7 @@ namespace Sisus.Init
 			foreach(var instance in ScopedService<TService>.Instances)
 			{
 				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
+				if(!instance.registerer)
 				{
 					continue;
 				}
@@ -541,10 +544,18 @@ namespace Sisus.Init
 				#endif
 			}
 
-			service = nearest.service;
-			if(foundResult && service != Null)
+			if(foundResult)
 			{
-				return true;
+				if(nearest.service != Null)
+				{
+					service = nearest.service;
+					return true;
+				}
+
+				if(nearest.serviceProvider != null && nearest.serviceProvider.TryGetFor(null, out service))
+				{
+					return nearest.serviceProvider.TryGetFor(null, out service);
+				}
 			}
 
 			if(!typeof(TService).IsValueType)
@@ -568,7 +579,7 @@ namespace Sisus.Init
 				}
 
 				#if UNITY_EDITOR
-				if(ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TService), out GlobalServiceInfo info) && info.FindFromScene)
+				if(ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TService), out ServiceInfo info) && info.FindFromScene)
 				{
 					service = Find.Any<TService>();
 					return Find.Any(out service);
@@ -576,13 +587,8 @@ namespace Sisus.Init
 				#endif
 			}
 
-			if(!typeof(IValueProvider).IsAssignableFrom(typeof(TService)) && TryGet(out IValueProvider<TService> serviceProvider))
-			{
-				service = serviceProvider.Value;
-				return service != Null;
-			}
-
-			return ServiceProvider<TService>.TryGetValue(null, out service);
+			service = default;
+			return false;
 		}
 
 		/// <summary>
@@ -605,7 +611,7 @@ namespace Sisus.Init
 			=> TryGetFor(client.gameObject, out TService result)
 			? result
 			: throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {TypeUtility.ToString(client.GetType())}.");
-		
+
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/> asynchrounously.
 		/// <para>
@@ -624,10 +630,10 @@ namespace Sisus.Init
 		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
 		public static async
 		#if UNITY_2023_1_OR_NEWER
-        Awaitable<TService>
-        #else
-        System.Threading.Tasks.Task<TService>
-        #endif
+		Awaitable<TService>
+		#else
+		System.Threading.Tasks.Task<TService>
+		#endif
 		GetForAsync<TService>([DisallowNull] Component client, Context context = Context.MainThread)
 		{
 			if(!context.IsUnitySafeContext())
@@ -651,7 +657,7 @@ namespace Sisus.Init
 			return await completionSource.Task;
 			#endif
 
-			void OnServiceChanged(Clients clients, TService oldinstance, TService newInstance)
+			void OnServiceChanged(Clients clients, TService oldInstance, TService newInstance)
 			{
 				if(!client)
 				{
@@ -719,7 +725,7 @@ namespace Sisus.Init
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/>.
 		/// <para>
@@ -884,36 +890,10 @@ namespace Sisus.Init
 			HandleInstanceChanged(Clients.Everywhere, oldInstance, default);
 		}
 
-		// #if DEV_MODE
-		// // Limitation: can only have a single defining type!
-		// public static void Set<TService, TInstance>
-		// (
-		// 	bool findFromScene = false,
-		// 	bool lazyInit = false
-		// )
-		// 	where TInstance : TService
-		// {
-		// 	Debug.Assert(!typeof(TInstance).IsAbstract, $"{nameof(Service)}.{nameof(Set)}<{TypeUtility.ToString(typeof(TService))}, {TypeUtility.ToString(typeof(TInstance))}> an abstract instance type: {TypeUtility.ToString(typeof(TInstance))}.");
-		// 	Debug.Assert(!typeof(TInstance).IsValueType, $"{nameof(Service)}.{nameof(Set)}<{TypeUtility.ToString(typeof(TService))}, {TypeUtility.ToString(typeof(TInstance))}> was with a instance type that was a struct: {TypeUtility.ToString(typeof(TInstance))}.");
-		//
-		// 	var attribute = new ServiceAttribute
-		// 	{
-		// 		FindFromScene = findFromScene,
-		// 		LazyInit = lazyInit
-		// 	};
-		//
-		// 	var concreteType = typeof(TService);
-		// 	var definingType = typeof(TInstance);
-		// 	var serviceInfo = new GlobalServiceInfo(concreteType, new[] { attribute }, concreteType, new [] { definingType });
-		// 	ServiceInjector.Register(serviceInfo);
-		// }
-		// #endif
-
 		#if DEV_MODE // TODO: Finish these up + add unit tests
 
 		public static TService CreateInstance<TInstance, TService>(bool lazyInit = false) where TInstance : class, TService => Register(typeof(TService), concreteType:typeof(TInstance), lazyInit:lazyInit, instantiate:true) as TInstance;
 		public static TService CreateInstance<TService>(bool lazyInit = false) where TService : class => Register(typeof(TService), concreteType:typeof(TService), lazyInit:lazyInit, instantiate:true) as TService;
-		//public static TService CreateInstance<TService>(IValueProvider<TService> valueProvider, bool lazyInit = false) where TService : class => Register(typeof(TService), concreteType:typeof(TService), lazyInit:lazyInit, instantiate:true) as TService;
 
 		private static object Register
 		(
@@ -948,7 +928,7 @@ namespace Sisus.Init
 				ResourcePath = resourcePath
 			};
 
-			var serviceInfo = new GlobalServiceInfo(concreteType ?? definingType, new[] { attribute }, concreteType, new [] { definingType });
+			var serviceInfo = new ServiceInfo(concreteType ?? definingType, new[] { attribute }, concreteType, new [] { definingType });
 			var task = ServiceInjector.Register(serviceInfo);
 			return task.IsCompleted ? task.Result : default;
 		}
@@ -1006,7 +986,7 @@ namespace Sisus.Init
 
 			var concreteType = typeof(TService);
 			var definingType = typeof(TInstance);
-			var serviceInfo = new GlobalServiceInfo(concreteType, new[] { attribute }, concreteType, new [] { definingType });
+			var serviceInfo = new ServiceInfo(concreteType, new[] { attribute }, concreteType, new [] { definingType });
 			ServiceInjector.Register(serviceInfo);
 		}
 		#endif
@@ -1064,7 +1044,50 @@ namespace Sisus.Init
 
 			if(newInstance is not null)
 			{
-				var serviceInfo = new ServiceInfo(typeof(TService), clients, newInstance);
+				var serviceInfo = new ActiveServiceInfo(typeof(TService), clients, newInstance);
+				lock(activeInstances)
+				{
+					int index = activeInstances.BinarySearch(serviceInfo, serviceInfoOrdererEditorOnly);
+					if(index >= 0)
+					{
+						activeInstances[index] = serviceInfo;
+					}
+					else
+					{
+						activeInstances.Insert(~index, serviceInfo);
+					}
+				}
+			}
+			#endif
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void HandleProviderChanged<TService>(Clients clients, object oldInstance, object newInstance)
+		{
+			#if DEV_MODE && DEBUG_SERVICE_CHANGED
+			Debug.Log($"Service Changed: {oldInstance?.GetType().Name} -> {newInstance?.GetType().Name})");
+			#endif
+
+			ServiceChanged<TService>.listeners?.Invoke(clients, default, default);
+
+			#if UNITY_EDITOR
+			if(!batchEditingServices)
+			{
+				AnyChangedEditorOnly?.Invoke();
+			}
+
+			var activeInstances = ActiveInstancesEditorOnly;
+			if(oldInstance is not null)
+			{
+				lock(activeInstances)
+				{
+					activeInstances.Remove(new(typeof(TService), clients, oldInstance));
+				}
+			}
+
+			if(newInstance is not null)
+			{
+				var serviceInfo = new ActiveServiceInfo(typeof(TService), clients, newInstance);
 				lock(activeInstances)
 				{
 					int index = activeInstances.BinarySearch(serviceInfo, serviceInfoOrdererEditorOnly);
@@ -1082,10 +1105,10 @@ namespace Sisus.Init
 		}
 
 		[Conditional("UNITY_EDITOR")]
-		internal static void HandleInitializationFailed(InitArgsException exception, [DisallowNull] GlobalServiceInfo globalServiceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper,  Type concreteType)
+		internal static void HandleInitializationFailed(InitArgsException exception, [DisallowNull] ServiceInfo globalServiceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType)
 		{
 			#if UNITY_EDITOR
-			var serviceInfo = new ServiceInfo(globalServiceInfo.definingTypes.FirstOrDefault() ?? concreteType, Clients.Everywhere, sceneObject ?? asset ?? initializerOrWrapper, exception.Message, reason);
+			var serviceInfo = new ActiveServiceInfo(globalServiceInfo.definingTypes.FirstOrDefault() ?? concreteType, Clients.Everywhere, sceneObject ?? asset ?? initializerOrWrapper, exception.Message, reason);
 
 			var activeInstances = ActiveInstancesEditorOnly;
 			lock(activeInstances)
@@ -1124,25 +1147,100 @@ namespace Sisus.Init
 		/// during their initialization.
 		/// </param>
 		/// <param name="service"> The service instance to add. </param>
-		/// <param name="serviceProvider">
+		/// <param name="registerer">
 		/// Component that is registering the service. This can also be the service itself, if it is a component.
 		/// <para>
-		/// This same argument should be passed when <see cref="RemoveFrom{TService}">removing the instance</see>.
+		/// This same argument should be passed when <see cref="RemoveFrom{TService}(Clients, TService)">removing the instance</see>.
 		/// </para>
 		/// </param>
-		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component serviceProvider)
+		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component registerer)
 		{
-#if DEV_MODE
+			#if DEV_MODE
 			Debug.Assert(service != Null);
-			Debug.Assert(serviceProvider);
-#endif
+			Debug.Assert(registerer);
+			#endif
 
-			if(ScopedService<TService>.Add(service, clients, serviceProvider))
+			if(ScopedService<TService>.Add(service, clients, registerer))
 			{
 				HandleInstanceChanged(clients, default, service);
 			}
 		}
-		
+
+		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProvider<TService> serviceProvider, [DisallowNull] Component registerer)
+		{
+			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
+			{
+				HandleInstanceChanged(clients, default, serviceProvider);
+			}
+		}
+
+		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProviderAsync<TService> serviceProvider, [DisallowNull] Component registerer)
+		{
+			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
+			{
+				HandleInstanceChanged(clients, default, serviceProvider);
+			}
+		}
+
+		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProvider serviceProvider, [DisallowNull] Component registerer)
+		{
+			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
+			{
+				HandleInstanceChanged(clients, default, serviceProvider);
+			}
+		}
+
+		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProviderAsync serviceProvider, [DisallowNull] Component registerer)
+		{
+			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
+			{
+				HandleInstanceChanged(clients, default, serviceProvider);
+			}
+		}
+
+		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueByTypeProvider serviceProvider, [DisallowNull] Component registerer)
+		{
+			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
+			{
+				HandleInstanceChanged(clients, default, serviceProvider);
+			}
+		}
+
+		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueByTypeProviderAsync serviceProvider, [DisallowNull] Component registerer)
+		{
+			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
+			{
+				HandleInstanceChanged(clients, default, serviceProvider);
+			}
+		}
+
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProvider<TService> serviceProvider, [DisallowNull] Component registerer)
+			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
+
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProviderAsync<TService> serviceProvider, [DisallowNull] Component registerer)
+			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
+
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProvider serviceProvider, [DisallowNull] Component registerer)
+			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
+
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProviderAsync serviceProvider, [DisallowNull] Component registerer)
+			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
+
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueByTypeProvider serviceProvider, [DisallowNull] Component registerer)
+			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
+
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueByTypeProviderAsync serviceProvider, [DisallowNull] Component registerer)
+			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static void RemoveFrom<TService>(Clients clients, [DisallowNull] ServiceProvider<TService> serviceProvider, [DisallowNull] Component registerer)
+		{
+			if(ScopedService<TService>.Add(serviceProvider, clients, registerer))
+			{
+				HandleInstanceChanged(clients, serviceProvider, default);
+			}
+		}
+
 		/// <summary>
 		/// Registers a service with the defining type <typeparamref name="TService"/>
 		/// available to a limited set of clients.
@@ -1171,9 +1269,9 @@ namespace Sisus.Init
 		/// <param name="service"> The service component to add. </param>
 		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service) where TService : Component
 		{
-#if DEV_MODE
+			#if DEV_MODE
 			Debug.Assert(!service);
-#endif
+			#endif
 
 			if(ScopedService<TService>.Add(service, clients, service))
 			{
@@ -1265,7 +1363,7 @@ namespace Sisus.Init
 				HandleInstanceChanged(clients, service, default);
 			}
 		}
-		
+
 		/// <summary>
 		/// Subscribes the provided <paramref name="method"/> to listen for changes made to the shared instance of service of type <typeparamref name="TService"/>.
 		/// <para>
@@ -1297,7 +1395,7 @@ namespace Sisus.Init
 			foreach(var instance in ScopedService<TService>.Instances)
 			{
 				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
+				if(!instance.registerer)
 				{
 					continue;
 				}
@@ -1448,7 +1546,7 @@ namespace Sisus.Init
 		{
 			#if DEV_MODE
 			Debug.Assert(clientTransform);
-			Debug.Assert(instance.serviceProvider);
+			Debug.Assert(instance.registerer);
 			#endif
 
 			#if UNITY_EDITOR
@@ -1496,83 +1594,87 @@ namespace Sisus.Init
 			}
 		}
 
-		internal static bool IsAccessibleTo([DisallowNull] Transform serviceTransform, Clients clients, [AllowNull] Transform clientTransform)
+		internal static bool IsAccessibleTo([AllowNull] Component client, [DisallowNull] Component service, Clients accessibility)
 		{
-			if(!clientTransform)
+			if(!client)
 			{
-				return clients == Clients.Everywhere;
+				return accessibility == Clients.Everywhere;
 			}
 
 			#if UNITY_EDITOR
 			// Skip services from prefabs. This can help avoid AmbiguousMatchWarning issues.
-			if(clientTransform.gameObject.scene.IsValid() && (!serviceTransform.gameObject.scene.IsValid() || (UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() is var prefabStage && prefabStage && serviceTransform.gameObject.scene == prefabStage.scene)))
+			if(client.gameObject.scene.IsValid() && (!service.gameObject.scene.IsValid() || (UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() is var prefabStage && prefabStage && service.gameObject.scene == prefabStage.scene)))
 			{
 				return false;
 			}
 			#endif
 
-			switch(clients)
+			switch(accessibility)
 			{
 				case Clients.InGameObject:
-					return serviceTransform == clientTransform;
+					return service.transform == client.transform;
 				case Clients.InChildren:
-					for(var parent = clientTransform.transform; parent; parent = parent.parent)
+					var serviceTransform = service.transform;
+					for(var t = client.transform; t; t = t.parent)
 					{
-						if(parent == serviceTransform)
+						if(ReferenceEquals(t, serviceTransform))
 						{
 							return true;
 						}
 					}
+
 					return false;
 				case Clients.InParents:
-					for(var parent = serviceTransform; parent; parent = parent.parent)
+					var clientTransform = service.transform;
+					for(var t = service.transform; t; t = t.parent)
 					{
-						if(parent == clientTransform)
+						if(ReferenceEquals(t, clientTransform))
 						{
 							return true;
 						}
 					}
+
 					return false;
 				case Clients.InHierarchyRootChildren:
-					return serviceTransform.root == clientTransform.root;
+					return ReferenceEquals(service.transform.root, client.transform.root);
 				case Clients.InScene:
-					return clientTransform.gameObject.scene == serviceTransform.gameObject.scene;
+					return client.gameObject.scene.handle == service.gameObject.scene.handle;
 				case Clients.InAllScenes:
 				case Clients.Everywhere:
 					return true;
 				default:
-					Debug.LogError($"Unrecognized {nameof(Clients)} value: {clients}.", serviceTransform);
+					Debug.LogError($"Unrecognized {nameof(Clients)} value: {accessibility}.", service);
 					return false;
 			}
 		}
 
 		#if UNITY_EDITOR
-		internal struct ServiceInfo : IEquatable<ServiceInfo>
+		internal struct ActiveServiceInfo : IEquatable<ActiveServiceInfo>
 		{
 			[MaybeNull]
 			public readonly Type ConcreteType;
 			public readonly Clients ToClients;
 			[MaybeNull]
-			public readonly object Service;
+			public readonly object ServiceOrProvider;
 			public readonly string ClientsText;
 			private bool? isAsset;
 			private readonly Type definingType;
 
 			public readonly GUIContent Label; // text will be empty until Setup has been called
-			public bool IsAsset => isAsset ??= IsPrefabAsset(Service);
+			public bool IsAsset => isAsset ??= IsPrefabAsset(ServiceOrProvider);
 			public readonly ServiceInitFailReason InitFailReason;
 
 			public bool IsSetupDone => Label.text.Length > 0;
 
-			public ServiceInfo(Type definingType, Clients toClients, [AllowNull] object service, string tooltip = "", ServiceInitFailReason initFailReason = ServiceInitFailReason.None)
+			public ActiveServiceInfo(Type definingType, Clients toClients, [AllowNull] object serviceOrProvider, string tooltip = "", ServiceInitFailReason initFailReason = ServiceInitFailReason.None)
 			{
 				Label = new("", tooltip);
 				ToClients = toClients;
-				Service = service;
+				ServiceOrProvider = serviceOrProvider;
 				//this.tooltip = tooltip;
 				InitFailReason = initFailReason;
 
-				ConcreteType = service?.GetType();
+				ConcreteType = serviceOrProvider?.GetType();
 				if(ConcreteType?.IsGenericType ?? false)
 				{
 					var typeDefinition = ConcreteType.GetGenericTypeDefinition();
@@ -1593,7 +1695,6 @@ namespace Sisus.Init
 				if(ConcreteType is not null)
 				{
 					sb.Append(TypeUtility.ToString(ConcreteType));
-
 
 					int count = definingTypes.Length;
 					if(count == 0 || (count == 1 && definingTypes[0] == ConcreteType))
@@ -1625,16 +1726,16 @@ namespace Sisus.Init
 				}
 			}
 
-			public bool Equals(ServiceInfo other) => ReferenceEquals(Service, other.Service);
-			public override bool Equals(object obj) => obj is ServiceInfo serviceInfo && Equals(serviceInfo);
-			public override int GetHashCode() => Service.GetHashCode();
+			public bool Equals(ActiveServiceInfo other) => ReferenceEquals(ServiceOrProvider, other.ServiceOrProvider);
+			public override bool Equals(object obj) => obj is ActiveServiceInfo serviceInfo && Equals(serviceInfo);
+			public override int GetHashCode() => ServiceOrProvider.GetHashCode();
 
 			private static bool IsPrefabAsset([AllowNull] object obj) => obj != NullExtensions.Null && Find.In(obj, out Transform transform) && transform.gameObject.IsPartOfPrefabAsset();
 		}
 
-		internal sealed class ServiceInfoOrderer : IComparer<ServiceInfo>
+		internal sealed class ServiceInfoOrderer : IComparer<ActiveServiceInfo>
 		{
-			public int Compare(ServiceInfo x, ServiceInfo y) => x.Label.text.CompareTo(y.Label.text);
+			public int Compare(ActiveServiceInfo x, ActiveServiceInfo y) => x.Label.text.CompareTo(y.Label.text);
 		}
 		#endif
 	}

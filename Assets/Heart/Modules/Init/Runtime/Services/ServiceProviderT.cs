@@ -1,161 +1,72 @@
 ﻿#pragma warning disable CS8524
 
-using System;
 using System.Diagnostics.CodeAnalysis;
-using Sisus.Init.Internal;
-using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using static Sisus.Init.ValueProviders.ValueProviderUtility;
 
 namespace Sisus.Init
 {
-	internal static class ServiceProvider<TService>
+	internal class ServiceProvider<TService>
 	{
-		private enum ValueType
+		private readonly ServiceProviderType providerType;
+		private readonly IValueProvider<TService> valueProviderT;
+		private readonly IValueProviderAsync<TService> valueProviderAsyncT;
+		private readonly IValueByTypeProvider valueByTypeProvider;
+		private readonly IValueByTypeProviderAsync valueByTypeProviderAsync;
+		private readonly IValueProviderAsync valueProviderAsync;
+		private readonly IValueProvider valueProvider;
+
+		internal ServiceProvider(IValueProvider<TService> provider)
 		{
-			Null = 0,
-			DirectReference,
-			IValueProvider,
-			IValueProviderT,
-			IValueByTypeProvider,
-			IValueByTypeProviderAsync,
-			IValueProviderAsync,
-			IValueProviderAsyncT,
+			providerType = ServiceProviderType.IValueProviderT;
+			valueProviderT = provider;
 		}
 
-		private static ValueType valueType = ValueType.Null;
-		private static object valueProvider = default;
-
-		public static TService GetValue([AllowNull] Component client) => valueType switch
+		internal ServiceProvider(IValueProviderAsync<TService> provider)
 		{
-			ValueType.Null => default,
-			ValueType.DirectReference => (TService)(object)Object.Instantiate((Object)valueProvider),
-			ValueType.IValueProvider => ((IValueProvider)valueProvider).TryGetFor(client, out object objectValue) ? Find.In<TService>(objectValue) : default,
-			ValueType.IValueProviderT => ((IValueProvider<TService>)valueProvider).TryGetFor(client, out TService result) ? result : default,
-			ValueType.IValueByTypeProvider => ((IValueByTypeProvider)valueProvider).TryGetFor(client, out TService result) ? result : default,
-			ValueType.IValueByTypeProviderAsync => GetFromAwaitableIfCompleted<TService>(((IValueByTypeProviderAsync)valueProvider).GetForAsync<TService>(client)),
-			ValueType.IValueProviderAsync => GetFromAwaitableIfCompleted<TService>(((IValueProviderAsync)valueProvider).GetForAsync(client)),
-			ValueType.IValueProviderAsyncT => GetFromAwaitableIfCompleted<TService>(((IValueProviderAsync<TService>)valueProvider).GetForAsync(client)),
-		};
+			providerType = ServiceProviderType.IValueProviderAsyncT;
+			valueProviderAsyncT = provider;
+		}
 
-		public static bool TryGetValue([AllowNull] Component client, out TService result) => valueType switch
+		internal ServiceProvider(IValueByTypeProvider provider)
 		{
-			ValueType.Null => None(out result),
-			ValueType.DirectReference => TryInstantiate(out result),
-			ValueType.IValueProvider => ((IValueProvider)valueProvider).TryGetFor(client, out object objectValue) ? Find.In(objectValue, out result) : None(out result),
-			ValueType.IValueProviderT => ((IValueProvider<TService>)valueProvider).TryGetFor(client, out result),
-			ValueType.IValueByTypeProvider => ((IValueByTypeProvider)valueProvider).TryGetFor(client, out result),
-			ValueType.IValueByTypeProviderAsync => TryGetFromAwaitableIfCompleted<TService>(((IValueByTypeProviderAsync)valueProvider).GetForAsync<TService>(client), out result),
-			ValueType.IValueProviderAsync => TryGetFromAwaitableIfCompleted<TService>(((IValueProviderAsync)valueProvider).GetForAsync(client), out result),
-			ValueType.IValueProviderAsyncT => TryGetFromAwaitableIfCompleted<TService>(((IValueProviderAsync<TService>)valueProvider).GetForAsync(client), out result),
+			providerType = ServiceProviderType.IValueByTypeProvider;
+			valueByTypeProvider = provider;
+		}
+
+		internal ServiceProvider(IValueByTypeProviderAsync provider)
+		{
+			providerType = ServiceProviderType.IValueByTypeProviderAsync;
+			valueByTypeProviderAsync = provider;
+		}
+
+		internal ServiceProvider(IValueProvider provider)
+		{
+			providerType = ServiceProviderType.IValueProvider;
+			valueProvider = provider;
+		}
+
+		internal ServiceProvider(IValueProviderAsync provider)
+		{
+			providerType = ServiceProviderType.IValueProviderAsync;
+			valueProviderAsync = provider;
+		}
+
+		public bool TryGetFor([AllowNull] Component client, out TService result) => providerType switch
+		{
+			ServiceProviderType.IValueProviderT => valueProviderT.TryGetFor(client, out result),
+			ServiceProviderType.IValueProviderAsyncT => TryGetFromAwaitableIfCompleted(valueProviderAsyncT.GetForAsync(client), out result),
+			ServiceProviderType.IValueByTypeProvider => valueByTypeProvider.TryGetFor(client, out result),
+			ServiceProviderType.IValueByTypeProviderAsync => TryGetFromAwaitableIfCompleted(valueByTypeProviderAsync.GetForAsync<TService>(client), out result),
+			ServiceProviderType.IValueProvider => valueProvider.TryGetFor(client, out object objectValue) ? Find.In(objectValue, out result) : None(out result),
+			ServiceProviderType.IValueProviderAsync => TryGetFromAwaitableIfCompleted(valueProviderAsync.GetForAsync(client), out result),
+			_ => None(out result)
 		};
 
 		private static bool None(out TService result)
 		{
 			result = default;
 			return false;
-		}
-
-		private static bool TryInstantiate(out TService instance)
-		{
-			Object prefab = (Object)valueProvider;
-			if(prefab)
-			{
-				instance = (TService)(object)Object.Instantiate((Object)valueProvider);
-				return true;
-			}
-
-			instance = default;
-			return false;
-		}
-
-		public static object Unset()
-		{
-			var result = valueProvider;
-			valueProvider = default;
-			return result;
-		}
-
-		public static void Dispose()
-		{
-			var dispose = valueProvider;
-			if(dispose is null)
-			{
-				return;
-			}
-
-			valueProvider = default;
-
-			if(dispose is Object unityObject)
-			{
-				if(unityObject)
-				{
-					Object.Destroy(unityObject);
-				}
-			}
-			else if(dispose is IDisposable disposable)
-			{
-				disposable.Dispose();
-			}
-		}
-
-		static ServiceProvider()
-		{
-			#if UNITY_EDITOR
-			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-			#else
-			UnityEngine.Application.quitting -= OnExitingApplicationOrPlayMode;
-			UnityEngine.Application.quitting += OnExitingApplicationOrPlayMode;
-			#endif
-
-			#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
-			if(Service.nowSettingInstance != typeof(TService) && ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo))
-			{
-				#if UNITY_EDITOR
-				if(!EditorOnly.ThreadSafe.Application.IsPlaying)
-				{
-					return;
-				}
-				#endif
-
-				_ = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
-			}
-			#endif
-		}
-
-		#if UNITY_EDITOR
-		private static void OnPlayModeStateChanged(PlayModeStateChange state)
-		{
-			if(state == PlayModeStateChange.ExitingPlayMode)
-			{
-				OnExitingApplicationOrPlayMode();
-			}
-		}
-		#endif
-
-		private static void OnExitingApplicationOrPlayMode()
-		{
-			if(valueProvider is null || valueProvider is Object || Find.typesToWrapperTypes.ContainsKey(valueProvider.GetType()))
-			{
-				return;
-			}
-
-			if(valueProvider is IOnDisable onDisable)
-			{
-				onDisable.OnDisable();
-			}
-
-			if(valueProvider is IOnDestroy onDestroy)
-			{
-				onDestroy.OnDestroy();
-			}
-
-			if(valueProvider is IDisposable disposable)
-			{
-				disposable.Dispose();
-			}
 		}
 
 		#if (ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT

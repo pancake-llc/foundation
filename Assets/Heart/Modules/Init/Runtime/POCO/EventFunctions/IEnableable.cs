@@ -85,11 +85,21 @@ namespace Sisus.Init
 
 			if(value)
 			{
+				if(enableable is IOnEnable onEnable)
+				{
+					onEnable.OnEnable();
+				}
+				
 				Updater.Subscribe(enableable);
 			}
 			else
 			{
 				Updater.Unsubscribe(enableable);
+				
+				if(enableable is IOnDisable onDisable)
+				{
+					onDisable.OnDisable();
+				}
 			}
 		}
     }

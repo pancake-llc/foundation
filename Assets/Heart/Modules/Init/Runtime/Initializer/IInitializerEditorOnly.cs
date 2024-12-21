@@ -24,7 +24,7 @@ namespace Sisus.Init.EditorOnly
 		NullGuardResult EvaluateNullGuard();
 		bool MultipleInitializersPerTargetAllowed { get; }
 		void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease);
-		void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider);
+		void SetIsArgumentAsync(Arguments argument, bool isAsync);
 	}
 
 	internal interface IInitializerEditorOnly<TClient> : IInitializerEditorOnly { }

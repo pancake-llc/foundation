@@ -29,10 +29,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			ComponentHeader.AfterHeaderGUI += OnAfterHeaderGUI;
 		}
 
-		static float OnAfterHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
+		static void OnAfterHeaderGUI(Component[] targets, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
-			float height = 0f;
-
+			var component = targets[0];
 			if(component is Services servicesComponent)
 			{
 				foreach(var serviceDefinition in servicesComponent.providesServices)
@@ -43,23 +42,17 @@ namespace Sisus.Init.EditorOnly.Internal
 						continue;
 					}
 
-					var serviceConcreteType = service.GetType();
-					if(serviceConcreteType is null)
-					{
-						continue;
-					}
-
 					Type definingType = serviceDefinition.definingType;
 					definingType ??= service.GetType();
-					if(TryGetServiceAttributeInfo(definingType, out _))
+					if(IsServiceAttributeDefiningType(definingType))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, servicesComponent.toClients);
-						height += DrawHelpBox(MessageType.Info, content);
+						DrawHelpBox(MessageType.Info, content);
 					}
-					else if(service is Component serviceComponent && TryGetServiceTag(serviceComponent, serviceDefinition.definingType, out ServiceTag serviceTag))
+					else if(service is Component serviceComponent && TryGetServiceTag(serviceComponent, serviceDefinition.definingType, out _))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, servicesComponent.toClients);
-						height += DrawHelpBox(MessageType.Info, content);
+						DrawHelpBox(MessageType.Info, content);
 					}
 				}
 			}
@@ -67,20 +60,16 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				foreach(var serviceTag in ServiceTagUtility.GetServiceTags(component))
 				{
-					if(serviceTag.DefiningType is Type definingType
-					&& TryGetServiceAttributeInfo(definingType, out _))
+					if(serviceTag.DefiningType is Type definingType && IsServiceAttributeDefiningType(definingType))
 					{
 						content.text = GetReplacesDefaultServiceText(definingType, serviceTag.ToClients);
-						height += DrawHelpBox(MessageType.Info, content);
+						DrawHelpBox(MessageType.Info, content);
 					}
 				}
 			}
-
-			return height;
 		}
 
-		static bool TryGetServiceAttributeInfo([DisallowNull] Type definingType, out GlobalServiceInfo serviceAttributeInfo)
-			=> ServiceAttributeUtility.definingTypes.TryGetValue(definingType, out serviceAttributeInfo);
+		static bool IsServiceAttributeDefiningType([DisallowNull] Type definingType) => ServiceAttributeUtility.definingTypes.ContainsKey(definingType);
 		
 		static bool TryGetServiceTag(Component component, Type matchingDefiningType, out ServiceTag result)
 		{
@@ -112,7 +101,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			};
 		}
 
-		static float DrawHelpBox(MessageType messageType, GUIContent label)
+		static void DrawHelpBox(MessageType messageType, GUIContent label)
 		{
 			GUILayout.Space(3f);
 
@@ -126,8 +115,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			EditorGUI.HelpBox(rect, label.text, messageType);
 
 			GUILayout.Space(5f);
-
-			return size.y + topPadding + bottomPadding;
 		}
 	}
 }

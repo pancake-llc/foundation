@@ -30,9 +30,7 @@ namespace Sisus.Init.Internal
 	public static class InitializerUtility
 	{
 		internal const int MAX_INIT_ARGUMENT_COUNT = 12;
-
 		internal const string InitArgumentMetadataClassName = "Init";
-
 		internal const NullArgumentGuard DefaultNullArgumentGuardFlags = NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException;
 
 		internal const string TargetTooltip = "Existing target instance to initialize.\n\n" +
@@ -50,7 +48,7 @@ namespace Sisus.Init.Internal
 					"Note that this option only affects prefab assets; prefab instances in scenes will still give warnings about null arguments in Edit Mode if the 'Edit Mode Warning' flag is enabled.";
 
 		internal const string NullGuardFailedDefaultMessage = "A missing argument was detected.\n\nIf the argument is allowed to be null set the Null Argument Guard to None.\n\nIf the argument is a service that only becomes available at runtime configure the Null Argument Guard to Runtime Exception only.";
-		
+
 		internal static readonly Dictionary<Type, int> argumentCountsByIInitializerTypeDefinition = new(12)
 		{
 			{ typeof(IInitializer<,>), 1 },
@@ -69,6 +67,7 @@ namespace Sisus.Init.Internal
 
 		internal static readonly Dictionary<Type, int> argumentCountsByIServiceInitializerTypeDefinition = new(12)
 		{
+			{ typeof(IServiceInitializer<>), 0 },
 			{ typeof(IServiceInitializer<,>), 1 },
 			{ typeof(IServiceInitializer<,,>), 2 },
 			{ typeof(IServiceInitializer<,,,>), 3 },
@@ -81,6 +80,7 @@ namespace Sisus.Init.Internal
 			{ typeof(IServiceInitializer<,,,,,,,,,,>), 10 },
 			{ typeof(IServiceInitializer<,,,,,,,,,,,>), 11 },
 			{ typeof(IServiceInitializer<,,,,,,,,,,,,>), 12 },
+			{ typeof(IServiceInitializerAsync<>), 0 },
 			{ typeof(IServiceInitializerAsync<,>), 1 },
 			{ typeof(IServiceInitializerAsync<,,>), 2 },
 			{ typeof(IServiceInitializerAsync<,,,>), 3 },
@@ -110,7 +110,7 @@ namespace Sisus.Init.Internal
 			{ typeof(IElevenArguments), 11 },
 			{ typeof(ITwelveArguments), 12 }
 		};
-		
+
 		private static Type[] typeArray = new Type[3];
 
 		public static bool TryGetClientAndInitArgumentTypes(Type initializerType, out Type clientType, out Type[] initArgumentTypes)
@@ -128,6 +128,22 @@ namespace Sisus.Init.Internal
 
 			clientType = null;
 			initArgumentTypes = null;
+			return false;
+		}
+
+		public static bool TryGetClientType(Type initializerType, out Type clientType)
+		{
+			foreach(var interfaceType in initializerType.GetInterfaces())
+			{
+				if(interfaceType.IsGenericType && argumentCountsByIInitializerTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition()))
+				{
+					var genericArguments = interfaceType.GetGenericArguments();
+					clientType = genericArguments[0];
+					return true;
+				}
+			}
+
+			clientType = null;
 			return false;
 		}
 
@@ -159,11 +175,11 @@ namespace Sisus.Init.Internal
 			var requiredInterfaceType = typeof(IInitializer<>).MakeGenericType(clientType);
 			int count = 0;
 
-#if UNITY_EDITOR
+			#if UNITY_EDITOR
 			foreach(var type in TypeCache.GetTypesDerivedFrom<IInitializer>())
-#else
+			#else
 			foreach(var type in TypeUtility.GetAllTypesThreadSafe(typeof(CustomInitializer<Component, object>).Assembly, false))
-#endif
+			#endif
 			{
 				if (!requiredInterfaceType.IsAssignableFrom(type) || type.IsAbstract)
 				{
@@ -284,19 +300,6 @@ namespace Sisus.Init.Internal
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void InvokeAtEndOfFrameIfNotAsset([DisallowNull] Component target, [DisallowNull] Action action)
-		{
-			#if UNITY_EDITOR
-			if(target.gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
-			{
-				return;
-			}
-			#endif
-
-			Updater.InvokeAtEndOfFrame(action);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void HandleDisposeValue<TArgument>([AllowNull] Component initializer, Arguments argumentsToDispose, Arguments flag, ref Any<TArgument> argument)
 		{
 			if(!argumentsToDispose.ContainsFlag(flag))
@@ -335,6 +338,21 @@ namespace Sisus.Init.Internal
 		}
 
 		#if DEBUG
+		internal static bool ShouldSelfGuardAgainstNull([DisallowNull] object target)
+		{
+			if(target is MonoBehaviour monoBehaviour)
+			{
+				return ShouldSelfGuardAgainstNull(monoBehaviour);
+			}
+
+			if(target is ScriptableObject scriptableObject)
+			{
+				return ShouldSelfGuardAgainstNull(scriptableObject);
+			}
+
+			return true;
+		}
+		
 		/// <summary>
 		/// Gets a value indicating whether the target itself should validate that initialization arguments it receives
 		/// at runtime are not null?
@@ -490,7 +508,7 @@ namespace Sisus.Init.Internal
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static void UpdateIsArgumentAsyncValueProvider<TInitializer, TArgument>(TInitializer initializer, Arguments flag, Any<TArgument> argument) where TInitializer : Object, IInitializerEditorOnly
-			=> initializer.SetIsArgumentAsyncValueProvider(flag, IsAsyncValueProviderOrService(argument));
+			=> initializer.SetIsArgumentAsync(flag, IsAsyncValueProviderOrService(argument));
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static bool ShouldReleaseValueOnDestroy<TArgument>(Any<TArgument> argument)
@@ -500,7 +518,20 @@ namespace Sisus.Init.Internal
 				(argument.reference is IValueProvider && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(scriptableObject))));
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static bool IsAsyncValueProviderOrService<TArgument>(Any<TArgument> argument) => (ValueProviderUtility.IsAsyncValueProvider(argument.reference) && argument.reference) || (ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TArgument), out var serviceInfo) && serviceInfo.LoadAsync);
+		private static bool IsAsyncValueProviderOrService<TArgument>(Any<TArgument> argument)
+		{
+			if(argument.reference)
+			{
+				return ValueProviderUtility.IsAsyncValueProvider(argument.reference);
+			}
+			
+			if(ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TArgument), out var serviceInfo) && serviceInfo.LoadAsync)
+			{
+				return true;
+			}
+
+			return false;
+		}
 		#endif
 
 		internal static MissingInitArgumentsException GetMissingInitArgumentsException<TClient>([DisallowNull] IInitializer<TClient> initializer, Type argumentType = null)
@@ -514,10 +545,11 @@ namespace Sisus.Init.Internal
 				return new($"{initializerType.Name} failed to initialize {clientType.Name}.", context);
 			}
 
-			if(argumentType.GetCustomAttributes<ServiceAttribute>().FirstOrDefault() is ServiceAttribute serviceAttribute)
+			var serviceAttributes = argumentType.GetCustomAttributes<ServiceAttribute>().ToArray();
+			if(serviceAttributes.Length > 0)
 			{
-				var definingType = serviceAttribute.definingType;
-				if(definingType is not null)
+				var definingTypes = argumentType.GetCustomAttributes<ServiceAttribute>().SelectMany(att => att.definingTypes).ToArray();
+				foreach(var definingType in definingTypes)
 				{
 					if(!definingType.IsAssignableFrom(argumentType))
 					{
@@ -533,8 +565,11 @@ namespace Sisus.Init.Internal
 
 						return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but does not derive from {definingType.Name}.", context);
 					}
+				}
 
-					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but its instance was still null.", context);
+				if(definingTypes.Length > 0)
+				{
+					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service({string.Join(", ", definingTypes.Select(t => "typeof(" + TypeUtility.ToString(t) + ")" ))})] attribute but its instance was still null.", context);
 				}
 
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its instance was still null.", context);
@@ -570,10 +605,11 @@ namespace Sisus.Init.Internal
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name}.");
 			}
 
-			if(argumentType.GetCustomAttributes<ServiceAttribute>().FirstOrDefault() is ServiceAttribute serviceAttribute)
+			var serviceAttributes = argumentType.GetCustomAttributes<ServiceAttribute>().ToArray();
+			if(serviceAttributes.Length > 0)
 			{
-				var definingType = serviceAttribute.definingType;
-				if(definingType is not null)
+				var definingTypes = argumentType.GetCustomAttributes<ServiceAttribute>().SelectMany(att => att.definingTypes).ToArray();
+				foreach(var definingType in definingTypes)
 				{
 					if(!definingType.IsAssignableFrom(argumentType))
 					{
@@ -589,8 +625,11 @@ namespace Sisus.Init.Internal
 
 						return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but does not derive from {definingType.Name}.");
 					}
+				}
 
-					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but its instance was still null.");
+				if(definingTypes.Length > 0)
+				{
+					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service({string.Join(", ", definingTypes.Select(t => "typeof(" + TypeUtility.ToString(t) + ")"))})] attribute but its instance was still null.");
 				}
 
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its instance was still null.");
@@ -610,7 +649,8 @@ namespace Sisus.Init.Internal
 
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a value using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {derivesFromImplementsOrIs} {argumentType.Name}.\nIf you have already done one of these things, initialization could also be failing due to circular dependencies (e.g. ({clientType.Name} depends on {argumentType.Name}, and {argumentType.Name} depends on {clientType.Name}).");
 			}
-			else if(!userCanModifyClass)
+
+			if(!userCanModifyClass)
 			{
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector.");
 			}
@@ -619,7 +659,7 @@ namespace Sisus.Init.Internal
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal static void OnAfterUnitializedWrappedObjectArgumentRetrieved<TArgument>(Component wrapperInitializer, ref TArgument argument)
+		internal static void OnAfterUninitializedWrappedObjectArgumentRetrieved<TArgument>(Component wrapperInitializer, ref TArgument argument)
 		{
 			if(argument == Null && wrapperInitializer.TryGetComponent(out IInitializer<TArgument> argumentInitializer) && argumentInitializer as Component != wrapperInitializer)
 			{
@@ -1156,7 +1196,7 @@ namespace Sisus.Init.Internal
 			#endif
 		}
 
-		#if UNITY_2022_3_OR_NEWER
+		#if UNITY_2022_2_OR_NEWER
 		[HideInCallstack]
 		#endif
 		private static void HandleNullGuardFailedMessage<TInitializer>(TInitializer initializer, GameObject gameObject, List<string> missingArgumentTypes) where TInitializer : Object, IInitializerEditorOnly
@@ -2051,11 +2091,11 @@ namespace Sisus.Init.Internal
 			// then attach it to GameObjects alongside the Initializable by default...
 			if(initializerTypes.Length == 1
 
-			   // ...however, only do this if the user is (likely) doing this via the Inspector.
-			   // If the component was added in code, we should skip doing this, because
-			   // this could be done as part of a unit test, and there were crashing issues
-			   // (in Unity 2021.3.4f1) when this was done.
-			   && Array.IndexOf(Selection.gameObjects, initializable.gameObject) != -1)
+			// ...however, only do this if the user is (likely) doing this via the Inspector.
+			// If the component was added in code, we should skip doing this, because
+			// this could be done as part of a unit test, and there were crashing issues
+			// (in Unity 2021.3.4f1) when this was done.
+			&& Array.IndexOf(Selection.gameObjects, initializable.gameObject) != -1)
 			{
 				var initializerType = initializerTypes[0];
 				var newInitializer = initializable.gameObject.IsAsset(true)

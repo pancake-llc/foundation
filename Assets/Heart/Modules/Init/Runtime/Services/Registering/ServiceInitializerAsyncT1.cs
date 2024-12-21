@@ -27,14 +27,14 @@ namespace Sisus.Init
 	/// <seealso cref="ServiceInitializer{TService}"/>
 	public abstract class ServiceInitializerAsync<TService, TArgument> : IServiceInitializerAsync<TService, TArgument> where TService : class
 	{
-		Task IServiceInitializerAsync.InitTargetAsync(params object[] arguments)
+		async Task<object> IServiceInitializerAsync.InitTargetAsync(params object[] arguments)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(arguments is null) Debug.LogWarning($"{GetType().Name}.{nameof(InitTargetAsync)} was provided no services, when one was expected.");
 			else if(arguments.Length != 1) Debug.LogWarning($"{GetType().Name}.{nameof(InitTargetAsync)} was provided {arguments.Length} services, when one was expected.");
 			#endif
 
-			return InitTargetAsync((TArgument)arguments[0]);
+			return await InitTargetAsync((TArgument)arguments[0]);
 		}
 
 		/// <summary>

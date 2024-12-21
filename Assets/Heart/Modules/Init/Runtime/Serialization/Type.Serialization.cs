@@ -181,6 +181,8 @@ namespace Sisus.Init.Serialization
 		public static bool operator ==(_Type a, _Type b) => a?.Equals(b) ?? b is null;
 
 		public static bool operator !=(_Type a, _Type b) => !(a == b);
+		public static bool operator ==(_Type a, Type b) => a?.Value?.Equals(b) ?? b is null;
+		public static bool operator !=(_Type a, Type b) => !(a == b);
 
 		public override bool Equals(object obj) => Equals(obj as _Type);
 

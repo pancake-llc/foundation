@@ -12,7 +12,7 @@ namespace Sisus.Init.EditorOnly
 	internal abstract class BaseConstructorBehaviourEditorDecorator : InitializableEditorDecorator
 	{
 		private const string sceneObjectWarningBoxTextSuffix = " has non-service dependencies which it might not be able to receive when the scene is loaded unless they have been provided manually using InitArgs.Set.";
-		private static Type[] serviceTypes;
+		private static Type[] allServiceDefiningTypes;
 
 		private bool mightNotHaveDependencies;
 		private GUIContent sceneObjectWarningBoxContent;
@@ -52,7 +52,7 @@ namespace Sisus.Init.EditorOnly
 					if(!IsService(argumentTypes[i]))
 					{
 						#if DEV_MODE && DEBUG_DEPENDENCY_WARNING_BOX
-						Debug.Log($"{argumentTypes[i].Name} not found among {serviceTypes.Length} services.");
+						Debug.Log($"{argumentTypes[i].Name} not found among {allServiceDefiningTypes.Length} services.");
 						#endif
 						return true;
 					}
@@ -67,9 +67,9 @@ namespace Sisus.Init.EditorOnly
 			return false;
 		}
 
-		private static Type[] GetAllServices()
+		private static Type[] GetAllServiceDefiningTypes()
 		{
-			var list = new HashSet<Type>();
+			var results = new HashSet<Type>();
 
 			foreach(var type in TypeCache.GetTypesWithAttribute<ServiceAttribute>())
 			{
@@ -79,28 +79,36 @@ namespace Sisus.Init.EditorOnly
 					continue;
 				}
 
-				foreach(var serviceAttribute in type.GetCustomAttributes<ServiceAttribute>())
+				var implicitDefiningType = true; 
+
+				foreach(var serviceAttribute in CustomAttributeExtensions.GetCustomAttributes<ServiceAttribute>(type))
 				{
-					var definingType = serviceAttribute.definingType;
-
-					if(definingType is null)
+					var definingTypes = serviceAttribute.definingTypes;
+					if(definingTypes.Length > 0)
 					{
-						definingType = type;
+						implicitDefiningType = false;
+						foreach(var definingType in definingTypes)
+						{
+							results.Add(definingType);
+						}
 					}
-
-					list.Add(definingType);
+				}
+				
+				if(implicitDefiningType)
+				{
+					results.Add(type);
 				}
 			}
 
-			var array = new Type[list.Count];
-			list.CopyTo(array);
+			var array = new Type[results.Count];
+			results.CopyTo(array);
 			return array;
 		}
 
 		private bool IsService(Type type)
 		{
-			serviceTypes ??= GetAllServices();
-			return Array.IndexOf(serviceTypes ??= GetAllServices(), type) != -1;
+			allServiceDefiningTypes ??= GetAllServiceDefiningTypes();
+			return Array.IndexOf(allServiceDefiningTypes, type) != -1;
 		}
 
 		public override void OnBeforeInspectorGUI()

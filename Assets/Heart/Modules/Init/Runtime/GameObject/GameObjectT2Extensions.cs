@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
 namespace Sisus.Init
 {
@@ -87,7 +89,7 @@ namespace Sisus.Init
 				components.first = @this.gameObject.AddComponent<TFirstComponent>();
 			}
 
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -113,7 +115,7 @@ namespace Sisus.Init
 			{
 				first = AddAndInit.Component<TFirstComponent, TArgument>(@this.gameObject, argument, !@this.leaveInactive)
 			};
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -144,7 +146,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			components.first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent>(@this.gameObject, firstArgument, components.second, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -175,7 +177,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument>(@this.gameObject, components.second, secondArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -203,7 +205,7 @@ namespace Sisus.Init
 			{
 				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument>(@this.gameObject, firstArgument, secondArgument, !@this.leaveInactive)
 			};
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -233,7 +235,7 @@ namespace Sisus.Init
 			{
 				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, !@this.leaveInactive)
 			};
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -265,7 +267,7 @@ namespace Sisus.Init
 			{
 				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, !@this.leaveInactive)
 			};
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -299,7 +301,7 @@ namespace Sisus.Init
 			{
 				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive)
 			};
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -335,7 +337,7 @@ namespace Sisus.Init
 			{
 				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, !@this.leaveInactive)
 			};
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -370,7 +372,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TSecondComponent>(@this.gameObject, firstArgument, secondArgument, thirdArgument, components.second, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -406,7 +408,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TSecondComponent, TFifthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, components.second, fifthArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -443,7 +445,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TSecondComponent>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, components.second, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -476,7 +478,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TSecondComponent>(@this.gameObject, firstArgument, secondArgument, components.second, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -511,7 +513,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument>(@this.gameObject, firstArgument, secondArgument, components.second, fourthArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -548,7 +550,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, secondArgument, components.second, fourthArgument, fifthArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -581,7 +583,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent, TThirdArgument>(@this.gameObject, firstArgument, components.second, thirdArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -616,7 +618,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument>(@this.gameObject, firstArgument, components.second, thirdArgument, fourthArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -653,7 +655,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, components.second, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -686,7 +688,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument>(@this.gameObject, components.second, secondArgument, thirdArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -721,7 +723,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, components.second, secondArgument, thirdArgument, fourthArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -758,7 +760,7 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, components.second, secondArgument, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -785,7 +787,29 @@ namespace Sisus.Init
 				components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent>(@this.gameObject, components.second, !@this.leaveInactive);
-			return new UninitializedGameObject<TFirstComponent, TSecondComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
+		}
+		
+		/// <summary>
+		/// Initialize the first added component of type <typeparamref name="TThirdComponent"/> using a delegate.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="init"> Delegate pointing to a function that accepts the second added component and handles initializing it. </param>
+		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> to be called until it is ready for usage. </returns>
+		public static UninitializedGameObject<TFirstComponent, TSecondComponent> Init1<TFirstComponent, TSecondComponent>(this GameObject<TFirstComponent, TSecondComponent> @this, [DisallowNull] Action<TFirstComponent> init)
+			where TFirstComponent : Component
+			where TSecondComponent : Component
+		{
+			@this.OnBeforeFirstInit();
+			var components = new Components<TFirstComponent, TSecondComponent>();
+			if(!@this.gameObject.TryGetComponent(out components.second))
+			{
+				components.second = @this.gameObject.AddComponent<TSecondComponent>();
+			}
+			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent>(@this.gameObject, components.second, !@this.leaveInactive);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		#endregion
@@ -1452,6 +1476,33 @@ namespace Sisus.Init
 				where TSecondComponent : Component, IFiveArguments, IFirstArgument<TFirstArgument>, IThirdArgument<TThirdArgument>, IFourthArgument<TFourthArgument>, IFifthArgument<TFifthArgument>
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstArgument, TFirstComponent, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, @this.components.first, thirdArgument, fourthArgument, fifthArgument, @this.setActive);
+			@this.OnAfterInitialized();
+			return @this.components;
+		}
+		
+		/// <summary>
+		/// Initialize the second added component of type <typeparamref name="TSecondComponent"/> using a delegate.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="init"> Delegate pointing to a function that accepts the second added component and handles initializing it. </param>
+		/// <returns>
+		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
+		/// <typeparamref name="TSecondComponent"/>
+		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent}"/>.
+		/// </returns>
+		public static Components<TFirstComponent, TSecondComponent> Init2<TFirstComponent, TSecondComponent>(this UninitializedGameObject<TFirstComponent, TSecondComponent> @this, [DisallowNull] Action<TSecondComponent> init)
+			where TFirstComponent : Component
+			where TSecondComponent : Component
+		{
+			if(!@this.gameObject.TryGetComponent(out @this.components.second))
+			{
+				@this.components.second = @this.gameObject.AddComponent<TSecondComponent>();
+			}
+			
+			init(@this.components.second);
+
 			@this.OnAfterInitialized();
 			return @this.components;
 		}

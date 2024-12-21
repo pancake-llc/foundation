@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
 namespace Sisus.Init
 {
@@ -100,7 +102,7 @@ namespace Sisus.Init
 				components.first = @this.gameObject.AddComponent<TFirstComponent>();
 			}
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -111,11 +113,11 @@ namespace Sisus.Init
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
 		/// <typeparam name="TArgument"> Type of the argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="argument"> The argument used when <see cref="IInitializable{TArgument}.Init">initializing</see> first added component.
+		/// <param name="argument"> The argument used when <see cref="IInitializable{TArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TArgument argument)
@@ -130,7 +132,7 @@ namespace Sisus.Init
 				first = AddAndInit.Component<TFirstComponent, TArgument>(@this.gameObject, argument, !@this.leaveInactive)
 			};
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -141,7 +143,7 @@ namespace Sisus.Init
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent}.Init">initializing</see> first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent}.Init">initializing</see> the first added component. </param>
 		/// <param name="secondArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondComponent}.Init">initializing</see> the first added component.
@@ -149,7 +151,7 @@ namespace Sisus.Init
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, Second secondArgument)
@@ -174,7 +176,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent>(@this.gameObject, firstArgument, components.second, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -189,11 +191,11 @@ namespace Sisus.Init
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the first argument when
 		/// <see cref="IInitializable{TSecondComponent, TSecondArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TSecondComponent, TSecondArgument}.Init">initializing</see> the first added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TSecondComponent, TSecondArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TSecondArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, TSecondArgument secondArgument)
@@ -218,7 +220,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument>(@this.gameObject, components.second, secondArgument, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -230,12 +232,12 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the first added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument)
@@ -248,7 +250,7 @@ namespace Sisus.Init
 			{
 				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument>(@this.gameObject, firstArgument, secondArgument, !@this.leaveInactive)
 			};
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -261,13 +263,13 @@ namespace Sisus.Init
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component.
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
@@ -282,7 +284,7 @@ namespace Sisus.Init
 				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, !@this.leaveInactive)
 			};
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -294,8 +296,8 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent}.Init">initializing</see> the first added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent}.Init">initializing</see> the first added component. </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the third argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent}.Init">initializing</see> the first added component.
@@ -303,7 +305,7 @@ namespace Sisus.Init
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, Second thirdArgument)
@@ -328,7 +330,7 @@ namespace Sisus.Init
 
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TSecondComponent>(@this.gameObject, firstArgument, secondArgument, components.second, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -341,17 +343,17 @@ namespace Sisus.Init
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the third argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TFourthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, Second thirdArgument, TFourthArgument fourthArgument)
@@ -376,7 +378,7 @@ namespace Sisus.Init
 
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument>(@this.gameObject, firstArgument, secondArgument, components.second, fourthArgument, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -390,18 +392,18 @@ namespace Sisus.Init
 		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
 		/// <typeparam name="TFifthArgument"> Type of the fifth argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the third argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
-		/// <param name="fifthArgument"> The fifth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fifthArgument"> The fifth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument, TFifthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TFourthArgument, TFifthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, Second thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
@@ -426,7 +428,7 @@ namespace Sisus.Init
 
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TSecondComponent, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, secondArgument, components.second, fourthArgument, fifthArgument, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -438,16 +440,16 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component. </param>
 		/// <param name="secondArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TThirdArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, Second secondArgument, TThirdArgument thirdArgument)
@@ -472,7 +474,7 @@ namespace Sisus.Init
 
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent, TThirdArgument>(@this.gameObject, firstArgument, components.second, thirdArgument, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -485,17 +487,17 @@ namespace Sisus.Init
 		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
 		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <param name="secondArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
-		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TThirdArgument, TFourthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, Second secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
@@ -520,7 +522,7 @@ namespace Sisus.Init
 
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument>(@this.gameObject, firstArgument, components.second, thirdArgument, fourthArgument, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -534,18 +536,18 @@ namespace Sisus.Init
 		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
 		/// <typeparam name="TFifthArgument"> Type of the fifth argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
 		/// <param name="secondArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
-		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
-		/// <param name="fifthArgument"> The fifth argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fifthArgument"> The fifth argument used when <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TThirdArgument, TFourthArgument, TFifthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, Second secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
@@ -563,7 +565,7 @@ namespace Sisus.Init
 
 			AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, components.second, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -579,12 +581,12 @@ namespace Sisus.Init
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the first argument when
 		/// <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component.
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
@@ -609,7 +611,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument>(@this.gameObject, components.second, secondArgument, thirdArgument, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -619,11 +621,11 @@ namespace Sisus.Init
 		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="argument"> The argument used when <see cref="IInitializable{TSecondComponent}.Init">initializing</see> first added component.
+		/// <param name="argument"> The argument used when <see cref="IInitializable{TSecondComponent}.Init">initializing</see> the first added component. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TSecondComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second argument)
@@ -648,7 +650,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent>(@this.gameObject, components.second, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -674,7 +676,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TThirdComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, Third secondArgument)
@@ -705,7 +707,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, components.second, components.third, !@this.leaveInactive);
 
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -731,7 +733,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, Second secondArgument)
@@ -761,7 +763,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TThirdComponent, TSecondComponent>(@this.gameObject, components.third, components.second, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -780,7 +782,7 @@ namespace Sisus.Init
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the second argument when
 		/// <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -788,7 +790,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, Second secondArgument, TThirdArgument thirdArgument)
@@ -818,7 +820,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TThirdComponent, TSecondComponent, TThirdArgument>(@this.gameObject, components.third, components.second, thirdArgument, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -828,17 +830,18 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
 		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument passed to the first added component. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
 		/// <param name="firstArgument">
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the first added component.
+		/// </param>
 		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TFirstComponent}.Init">initializing</see> the first added component.
 		/// </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the third argument when
 		/// <see cref="IInitializable{TThirdComponent, TSecondArgument, TFirstComponent}.Init">initializing</see> the first added component.
 		/// </param>
-		/// 
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -846,7 +849,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TSecondArgument, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, TSecondArgument secondArgument, Second thirdArgument)
@@ -876,7 +879,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TThirdComponent, TSecondArgument, TSecondComponent>(@this.gameObject, components.third, secondArgument, components.second, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -896,7 +899,7 @@ namespace Sisus.Init
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -904,7 +907,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, Third secondArgument, TThirdArgument thirdArgument)
@@ -934,7 +937,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument>(@this.gameObject, components.second, components.third, thirdArgument, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -955,7 +958,7 @@ namespace Sisus.Init
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -963,7 +966,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument, TFourthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, Third secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
@@ -993,7 +996,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument, TFourthArgument>(@this.gameObject, components.second, components.third, thirdArgument, fourthArgument, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -1015,7 +1018,7 @@ namespace Sisus.Init
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -1023,7 +1026,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument, TFourthArgument, TFifthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument, TFourthArgument, TFifthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, Third secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
@@ -1053,7 +1056,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, components.second, components.third, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -1075,7 +1078,7 @@ namespace Sisus.Init
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -1083,7 +1086,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdArgument, TFourthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TSecondArgument, TThirdComponent, TThirdArgument, TFourthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
@@ -1108,7 +1111,7 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, components.second, secondArgument, thirdArgument, fourthArgument, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
 		/// <summary>
@@ -1123,7 +1126,7 @@ namespace Sisus.Init
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the first added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the first added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the first added component. </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the first added component.
@@ -1135,7 +1138,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TSecondArgument, TThirdComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, TSecondArgument secondArgument, Third thirdArgument)
@@ -1165,9 +1168,141 @@ namespace Sisus.Init
 
 			components.first = AddAndInit.Component<TFirstComponent, TSecondComponent, TSecondArgument, TThirdComponent>(@this.gameObject, components.second, secondArgument, components.third, !@this.leaveInactive);
 			
-			return new GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, !@this.leaveInactive, components);
+			return new(@this.gameObject, !@this.leaveInactive, components);
+		}
+		
+		/// <summary>
+		/// Initialize the first added component of type <typeparamref name="TFirstComponent"/> using the four provided arguments.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the first added component. </param>
+		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
+		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
+		/// and did not receive the arguments during its initialization. 
+		/// </exception>
+		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
+			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+			where TFirstComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
+			where TSecondComponent : Component
+			where TThirdComponent : Component
+		{
+			@this.OnBeforeFirstInit();
+
+			var components = new Components<TFirstComponent, TSecondComponent, TThirdComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, !@this.leaveInactive)
+			};
+
+			return new(@this.gameObject, !@this.leaveInactive, components);
+		}
+		
+		/// <summary>
+		/// Initialize the first added component of type <typeparamref name="TFirstComponent"/> using the five provided arguments.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fifthArgument"> The fifth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializing</see> the first added component. </param>
+		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
+		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>
+		/// and did not receive the arguments during its initialization. 
+		/// </exception>
+		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
+			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
+			where TFirstComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
+			where TSecondComponent : Component
+			where TThirdComponent : Component
+		{
+			@this.OnBeforeFirstInit();
+
+			var components = new Components<TFirstComponent, TSecondComponent, TThirdComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, !@this.leaveInactive)
+			};
+
+			return new(@this.gameObject, !@this.leaveInactive, components);
+		}
+		
+		/// <summary>
+		/// Initialize the first added component of type <typeparamref name="TFirstComponent"/> using the six provided arguments.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSixthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="fifthArgument"> The fifth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}.Init">initializing</see> the first added component. </param>
+		/// <param name="sixthArgument"> The sixth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}.Init">initializing</see> the first added component. </param>
+		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
+		/// Thrown if <typeparamref name="TFirstComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>
+		/// and did not receive the arguments during its initialization. 
+		/// </exception>
+		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this,
+			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
+			where TFirstComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
+			where TSecondComponent : Component
+			where TThirdComponent : Component
+		{
+			@this.OnBeforeFirstInit();
+
+			var components = new Components<TFirstComponent, TSecondComponent, TThirdComponent>
+			{
+				first = AddAndInit.Component<TFirstComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, !@this.leaveInactive)
+			};
+
+			return new(@this.gameObject, !@this.leaveInactive, components);
 		}
 
+		/// <summary>
+		/// Initialize the first added component of type <typeparamref name="TFirstComponent"/> using a delegate.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="init"> Delegate pointing to a function that accepts the first added component and handles initializing it. </param>
+		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init2"/> and <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		public static GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init1<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObject<TFirstComponent, TSecondComponent, TThirdComponent> @this, [DisallowNull] Action<TFirstComponent> init)
+			where TFirstComponent : Component
+			where TSecondComponent : Component
+			where TThirdComponent : Component
+		{
+			var result = @this.Init1();
+			init(result.components.first);
+			return result;
+		}
 		#endregion
 
 		#region Init2
@@ -1190,7 +1325,7 @@ namespace Sisus.Init
 				@this.components.second = @this.gameObject.AddComponent<TSecondComponent>();
 			}
 
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1205,7 +1340,7 @@ namespace Sisus.Init
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TArgument argument)
@@ -1215,7 +1350,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TArgument>(@this.gameObject, argument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1230,8 +1365,9 @@ namespace Sisus.Init
 		/// <param name="firstArgument"> The first argument passed to the second added component's Init function. </param>
 		/// <param name="secondArgument"> The second argument passed to the second added component's Init function. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument)
@@ -1241,7 +1377,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstArgument, TSecondArgument>(@this.gameObject, firstArgument, secondArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1258,8 +1394,9 @@ namespace Sisus.Init
 		/// <param name="secondArgument"> The second argument passed to the second added component's Init function. </param>
 		/// <param name="thirdArgument"> The third argument passed to the second added component's Init function. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
@@ -1269,7 +1406,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstArgument, TSecondArgument, TThirdArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1284,8 +1421,9 @@ namespace Sisus.Init
 		/// <see cref="IInitializable{TFirstComponent}.Init">initializing</see> the second added component.
 		/// </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First argument)
@@ -1295,7 +1433,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstComponent>(@this.gameObject, @this.components.first, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1310,8 +1448,9 @@ namespace Sisus.Init
 		/// <see cref="IInitializable{TFirstComponent}.Init">initializing</see> the second added component.
 		/// </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TThirdComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third argument)
@@ -1326,7 +1465,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TThirdComponent>(@this.gameObject, @this.components.third, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1343,8 +1482,9 @@ namespace Sisus.Init
 		/// <see cref="IInitializable{TFirstArgument, TFirstComponent}.Init">initializing</see> the second added component.
 		/// </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, First secondArgument)
@@ -1354,7 +1494,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstArgument, TFirstComponent>(@this.gameObject, firstArgument, @this.components.first, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1368,8 +1508,9 @@ namespace Sisus.Init
 		/// <param name="firstArgument"> The first argument passed to the second added component's Init function. </param>
 		/// <param name="secondArgument"> The second argument passed to the second added component's Init function. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, TSecondArgument secondArgument)
@@ -1379,7 +1520,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstComponent, TSecondArgument>(@this.gameObject, @this.components.first, secondArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1395,8 +1536,9 @@ namespace Sisus.Init
 		/// <param name="secondArgument"> The second argument passed to the second added component's Init function. </param>
 		/// <param name="thirdArgument"> The third argument passed to the second added component's Init function. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
@@ -1406,7 +1548,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstComponent, TSecondArgument, TThirdArgument>(@this.gameObject, @this.components.first, secondArgument, thirdArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1422,8 +1564,9 @@ namespace Sisus.Init
 		/// <param name="secondArgument"> The second argument passed to the second added component's Init function. </param>
 		/// <param name="thirdArgument"> The third argument passed to the second added component's Init function. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, First thirdArgument)
@@ -1433,7 +1576,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstArgument, TSecondArgument, TFirstComponent>(@this.gameObject, firstArgument, secondArgument, @this.components.first, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1449,8 +1592,9 @@ namespace Sisus.Init
 		/// <param name="secondArgument"> The second argument passed to the second added component's Init function. </param>
 		/// <param name="thirdArgument"> The third argument passed to the second added component's Init function. </param>
 		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TFirstComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TThirdArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, First secondArgument, TThirdArgument thirdArgument)
@@ -1460,7 +1604,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstArgument, TFirstComponent, TThirdArgument>(@this.gameObject, firstArgument, @this.components.first, thirdArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1484,8 +1628,9 @@ namespace Sisus.Init
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TThirdComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, Third secondArgument)
@@ -1500,7 +1645,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstComponent, TThirdComponent>(@this.gameObject, @this.components.first, @this.components.third, @this.setActive);
 
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1524,8 +1669,9 @@ namespace Sisus.Init
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, First secondArgument)
@@ -1540,7 +1686,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TThirdComponent, TFirstComponent>(@this.gameObject, @this.components.third, @this.components.first, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1559,14 +1705,15 @@ namespace Sisus.Init
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the second argument when
 		/// <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the second added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the second added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the second added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TFirstComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, First secondArgument, TThirdArgument thirdArgument)
@@ -1581,7 +1728,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TThirdComponent, TFirstComponent, TThirdArgument>(@this.gameObject, @this.components.third, @this.components.first, thirdArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1595,6 +1742,7 @@ namespace Sisus.Init
 		/// <param name="firstArgument">
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the second added component.
+		/// </param>
 		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TFirstComponent}.Init">initializing</see> the second added component.
 		/// </param>
 		/// <param name="thirdArgument">
@@ -1606,8 +1754,9 @@ namespace Sisus.Init
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TSecondArgument, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, TSecondArgument secondArgument, First thirdArgument)
@@ -1622,7 +1771,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TThirdComponent, TSecondArgument, TFirstComponent>(@this.gameObject, @this.components.third, secondArgument, @this.components.first, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1639,15 +1788,16 @@ namespace Sisus.Init
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the first argument when
 		/// <see cref="IInitializable{TThirdComponent, TSecondComponent, TThirdComponent}.Init">initializing</see> the second added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TThirdComponent, TSecondComponent, TThirdComponent}.Init">initializing</see> the second added component.
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TSecondComponent, TThirdComponent}.Init">initializing</see> the second added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TThirdComponent, TSecondComponent, TThirdComponent}.Init">initializing</see> the second added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TSecondComponent, TThirdComponent}.Init">initializing</see> the second added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
@@ -1662,7 +1812,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument>(@this.gameObject, @this.components.third, secondArgument, thirdArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1674,22 +1824,23 @@ namespace Sisus.Init
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> Type of the fourth argument. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
 		/// <param name="firstArgument">
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the first argument when
 		/// <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component.
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component.
-		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component. </param>
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Third firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
@@ -1704,7 +1855,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, @this.components.third, secondArgument, thirdArgument, fourthArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1716,11 +1867,12 @@ namespace Sisus.Init
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> Type of the fourth argument. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
 		/// <param name="firstArgument">
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component.
+		/// </param>
 		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the second added component.
 		/// </param>
 		/// <param name="thirdArgument">
@@ -1732,8 +1884,9 @@ namespace Sisus.Init
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument, TFourthArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument, TFourthArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
@@ -1743,7 +1896,7 @@ namespace Sisus.Init
 		{
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstComponent, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, @this.components.first, secondArgument, thirdArgument, fourthArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1753,6 +1906,7 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
 		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
 		/// <param name="firstArgument">
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the first argument when
@@ -1762,14 +1916,15 @@ namespace Sisus.Init
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the second added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the second added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the second added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TThirdComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, Third secondArgument, TThirdArgument thirdArgument)
@@ -1784,7 +1939,7 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstComponent, TThirdComponent, TThirdArgument>(@this.gameObject, @this.components.first, @this.components.third, thirdArgument, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		/// <summary>
@@ -1799,7 +1954,7 @@ namespace Sisus.Init
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the second added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the second added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the second added component. </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="Third.Component"/> token informing that the third added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}.Init">initializing</see> the second added component.
@@ -1809,8 +1964,9 @@ namespace Sisus.Init
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
 		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
 		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, TSecondArgument secondArgument, Third thirdArgument)
@@ -1825,7 +1981,61 @@ namespace Sisus.Init
 
 			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstComponent, TSecondArgument, TThirdComponent>(@this.gameObject, @this.components.first, secondArgument, @this.components.third, @this.setActive);
 			
-			return new GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent>(@this.gameObject, @this.setActive, @this.components);
+			return new(@this.gameObject, @this.setActive, @this.components);
+		}
+		
+		/// <summary>
+		/// Initialize the second added component of type <typeparamref name="TSecondComponent"/> using a delegate.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="init"> Delegate pointing to a function that accepts the second added component and handles initializing it. </param>
+		/// <returns> Partially initialized <see cref="GameObject"/> still <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this, [DisallowNull] Action<TSecondComponent> init)
+			where TFirstComponent : Component
+			where TSecondComponent : Component
+			where TThirdComponent : Component
+		{
+			if(!@this.gameObject.TryGetComponent(out @this.components.second))
+			{
+				@this.components.second = @this.gameObject.AddComponent<TSecondComponent>();
+			}
+			
+			init(@this.components.second);
+			return new(@this.gameObject, @this.setActive, @this.components);
+		}
+
+		/// <summary>
+		/// Initialize the second added component of type <typeparamref name="TSecondComponent"/> using the four provided arguments.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="firstArgument"> The first argument passed to the second added component's Init function. </param>
+		/// <param name="secondArgument"> The second argument passed to the second added component's Init function. </param>
+		/// <param name="thirdArgument"> The third argument passed to the second added component's Init function. </param>
+		/// <param name="fourthArgument"> The fourth argument passed to the second added component's Init function. </param>
+		/// <returns> Partially initialized <see cref="GameObject"/> still requiring <see cref="Init3"/> to be called until it is ready for usage. </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
+		/// Thrown if <typeparamref name="TSecondComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
+		/// and did not receive the arguments during its initialization. 
+		/// </exception>
+		public static GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> Init2<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this GameObjectWithInit1Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
+			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+				where TFirstComponent : Component
+				where TSecondComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
+				where TThirdComponent : Component
+		{
+			@this.components.second = AddAndInit.Component<TSecondComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, @this.setActive);
+			
+			return new(@this.gameObject, @this.setActive, @this.components);
 		}
 
 		#endregion
@@ -1874,7 +2084,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TArgument argument)
@@ -1897,8 +2107,8 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the third added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the third added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the third added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the third added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -1906,7 +2116,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument)
@@ -1930,9 +2140,9 @@ namespace Sisus.Init
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component.
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -1940,7 +2150,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
@@ -1962,7 +2172,7 @@ namespace Sisus.Init
 		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TFirstComponent}.Init">initializing</see> the third added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TFirstComponent}.Init">initializing</see> the third added component. </param>
 		/// <param name="secondArgument">
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstArgument, TFirstComponent}.Init">initializing</see> the third added component.
@@ -1974,7 +2184,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, First secondArgument)
@@ -2000,7 +2210,7 @@ namespace Sisus.Init
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument}.Init">initializing</see> the third added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument}.Init">initializing</see> the third added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument}.Init">initializing</see> the third added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -2008,7 +2218,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, TSecondArgument secondArgument)
@@ -2035,8 +2245,8 @@ namespace Sisus.Init
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component.
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument}.Init">initializing</see> the third added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -2044,7 +2254,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondArgument, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument, TThirdArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
@@ -2073,7 +2283,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First argument)
@@ -2096,8 +2306,8 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TFirstComponent}.Init">initializing</see> the third added component.
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TFirstComponent}.Init">initializing</see> the third added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TFirstComponent}.Init">initializing</see> the third added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TFirstComponent}.Init">initializing</see> the third added component. </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the third argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TFirstComponent}.Init">initializing</see> the third added component.
@@ -2109,7 +2319,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, TSecondArgument secondArgument, First thirdArgument)
@@ -2132,12 +2342,12 @@ namespace Sisus.Init
 		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
 		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
 		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
-		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component.
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component. </param>
 		/// <param name="secondArgument">
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstArgument, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -2145,7 +2355,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TFirstComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TThirdArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			TFirstArgument firstArgument, First secondArgument, TThirdArgument thirdArgument)
@@ -2182,7 +2392,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, Second secondArgument)
@@ -2219,7 +2429,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, First secondArgument)
@@ -2249,7 +2459,7 @@ namespace Sisus.Init
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the second argument when
 		/// <see cref="IInitializable{TSecondComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TSecondComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TSecondComponent, TFirstComponent, TThirdArgument}.Init">initializing</see> the third added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -2257,7 +2467,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TFirstComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, First secondArgument, TThirdArgument thirdArgument)
@@ -2282,13 +2492,13 @@ namespace Sisus.Init
 		/// <param name="firstArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializing</see> the third added component.
+		/// </param>
 		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TSecondComponent, TSecondArgument, TFirstComponent}.Init">initializing</see> the third added component.
 		/// </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the third argument when
 		/// <see cref="IInitializable{TSecondComponent, TSecondArgument, TFirstComponent}.Init">initializing</see> the third added component.
 		/// </param>
-		/// 
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -2296,7 +2506,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TSecondComponent, TSecondArgument, TFirstComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			Second firstArgument, TSecondArgument secondArgument, First thirdArgument)
@@ -2326,7 +2536,7 @@ namespace Sisus.Init
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the third added component.
 		/// </param>
-		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the third added component.
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}.Init">initializing</see> the third added component. </param>
 		/// <returns>
 		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
 		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
@@ -2334,7 +2544,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondComponent, TThirdArgument}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TThirdArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, Second secondArgument, TThirdArgument thirdArgument)
@@ -2360,7 +2570,7 @@ namespace Sisus.Init
 		/// The <see cref="First.Component"/> token informing that the first added component should be used as the first argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TSecondComponent}.Init">initializing</see> the third added component.
 		/// </param>
-		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TSecondComponent}.Init">initializing</see> the third added component.
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstComponent, TSecondArgument, TSecondComponent}.Init">initializing</see> the third added component. </param>
 		/// <param name="thirdArgument">
 		/// The <see cref="Second.Component"/> token informing that the second added component should be used as the second argument when
 		/// <see cref="IInitializable{TFirstComponent, TSecondArgument, TSecondComponent}.Init">initializing</see> the third added component.
@@ -2372,7 +2582,7 @@ namespace Sisus.Init
 		/// </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstComponent, TSecondArgument, TSecondComponent}"/>
-		/// and did receive the arguments during initialization. 
+		/// and did not receive the arguments during its initialization. 
 		/// </exception>
 		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TSecondArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
 			First firstArgument, TSecondArgument secondArgument, Second thirdArgument)
@@ -2386,6 +2596,72 @@ namespace Sisus.Init
 			return @this.components;
 		}
 
+		/// <summary>
+		/// Initialize the third added component of type <typeparamref name="TSecondComponent"/> using four arguments.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <typeparam name="TFirstArgument"> Type of the first argument. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="firstArgument"> The first argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the third added component. </param>
+		/// <param name="secondArgument"> The second argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the third added component. </param>
+		/// <param name="thirdArgument"> The third argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the third added component. </param>
+		/// <param name="fourthArgument"> The fourth argument used when <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializing</see> the third added component. </param>
+		/// <returns>
+		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
+		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
+		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
+		/// </returns>
+		/// <exception cref="InitArgumentsNotReceivedException">
+		/// Thrown if <typeparamref name="TThirdComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
+		/// and did not receive the arguments during its initialization. 
+		/// </exception>
+		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this,
+			TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+				where TFirstComponent : Component
+				where TSecondComponent : Component
+				where TThirdComponent : Component, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
+		{
+			@this.components.third = AddAndInit.Component<TThirdComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(@this.gameObject, firstArgument, secondArgument, thirdArgument, fourthArgument, @this.setActive);
+
+			@this.OnAfterInitialized();
+			return @this.components;
+		}
+
+		/// <summary>
+		/// Initialize the third added component of type <typeparamref name="TThirdComponent"/> using a delegate.
+		/// </summary>
+		/// <typeparam name="TFirstComponent"> Type of the first added component. </typeparam>
+		/// <typeparam name="TSecondComponent"> Type of the second added component. </typeparam>
+		/// <typeparam name="TThirdComponent"> Type of the third added component. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="init"> Delegate pointing to a function that accepts the second added component and handles initializing it. </param>
+		/// <returns>
+		/// Created object which can be cast to <see cref="GameObject"/>, <typeparamref name="TFirstComponent"/>,
+		/// <typeparamref name="TSecondComponent"/>, <typeparamref name="TThirdComponent"/>
+		/// or <see cref="System.ValueTuple{TFirstComponent, TSecondComponent, TThirdComponent}"/>.
+		/// </returns>
+		public static Components<TFirstComponent, TSecondComponent, TThirdComponent> Init3<TFirstComponent, TSecondComponent, TThirdComponent>(this GameObjectWithInit2Of3Done<TFirstComponent, TSecondComponent, TThirdComponent> @this, [DisallowNull] Action<TThirdComponent> init)
+			where TFirstComponent : Component
+			where TSecondComponent : Component
+			where TThirdComponent : Component
+		{
+			if(!@this.gameObject.TryGetComponent(out @this.components.third))
+			{
+				@this.components.third = @this.gameObject.AddComponent<TThirdComponent>();
+			}
+			
+			init(@this.components.third);
+
+			@this.OnAfterInitialized();
+			return @this.components;
+		}
+
 		#endregion
+		
 	}
 }

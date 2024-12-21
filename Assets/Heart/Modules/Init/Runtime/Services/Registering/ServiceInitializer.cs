@@ -36,8 +36,8 @@ namespace Sisus.Init
 		object IServiceInitializer.InitTarget(params object[] arguments)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(arguments is null) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given no services, when none were expected.");
-			else if(arguments.Length != 0) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given {arguments.Length} services, when none were expected.");
+			if(arguments is null) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given no services, when none were expected.", this as Object);
+			else if(arguments.Length != 0) Debug.LogWarning($"{GetType().Name}.{nameof(InitTarget)} was given {arguments.Length} services, when none were expected.", this as Object);
 			#endif
 
 			return InitTarget();
@@ -50,7 +50,7 @@ namespace Sisus.Init
 		/// will take care of creating the instance internally.
 		/// </para>
 		/// <para>
-		/// If more control is needed, this method can be override to manually create the service instance.
+		/// If more control is needed, this method can be overridden to manually create the service instance.
 		/// </para>
 		/// </summary>
 		/// <returns>

@@ -132,7 +132,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private void DrawServicesList() => Service.UsingActiveInstancesEditorOnly(DrawServicesList);
 
-		private void DrawServicesList(List<Service.ServiceInfo> services)
+		private void DrawServicesList(List<Service.ActiveServiceInfo> services)
 		{
 			if(services.Count == 0)
 			{
@@ -142,7 +142,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			GUIContent label = new();
 			foreach(var serviceInfo in services)
 			{
-				object service = serviceInfo.Service;
+				object service = serviceInfo.ServiceOrProvider;
 
 				if(service == Null || serviceInfo.IsAsset)
 				{
@@ -424,7 +424,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return false;
 		}
 
-		private static void OnServiceInitializationFailed(GlobalServiceInfo serviceInfo)
+		private static void OnServiceInitializationFailed(ServiceInfo serviceInfo)
 		{
 			#if DEV_MODE
 			Debug.Log($"ServicesWindow.OnServiceInitializationFailed({serviceInfo.ConcreteOrDefiningType.Name})");

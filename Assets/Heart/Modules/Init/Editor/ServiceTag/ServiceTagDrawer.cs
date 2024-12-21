@@ -39,7 +39,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			ComponentHeader.AfterHeaderGUI += OnAfterHeaderGUI;
 		}
 
-		private static float OnBeforeHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
+		private static void OnBeforeHeaderGUI(Component[] targets, Rect headerRect, bool headerIsSelected, bool supportsRichText)
 		{
 #if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 			using var x = beforeHeaderGUIMarker.Auto();
@@ -49,10 +49,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			// components whose class has the ServiceAttribute
 			// components listed in a Services component,
 			// and wrappers.
+			var component = targets[0];
 			var definingTypes = EditorServiceTagUtility.GetServiceDefiningTypes(component);
 			if(definingTypes.Length == 0 && EditorServiceTagUtility.openSelectTagsMenuFor != component)
 			{
-				return 0f;
+				return;
 			}
 
 			Component serviceOrServiceProvider = component;
@@ -69,7 +70,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				EditorServiceTagUtility.openSelectTagsMenuFor = null;
 				EditorServiceTagUtility.OpenSelectTagsMenu(serviceOrServiceProvider, tagRect);
-				return 0f;
+				return;
 			}
 
 			if(GUI.Button(tagRect, GUIContent.none, EditorStyles.label))
@@ -87,20 +88,19 @@ namespace Sisus.Init.EditorOnly.Internal
 						break;
 				}
 			}
-
-			return 0f;
 		}
 
-		private static float OnAfterHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
+		private static void OnAfterHeaderGUI(Component[] targets, Rect headerRect, bool headerIsSelected, bool supportsRichText)
 		{
 #if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 			using var x = afterHeaderGUIMarker.Auto();
 #endif
 			
+			var component = targets[0];
 			var definingTypes = EditorServiceTagUtility.GetServiceDefiningTypes(component);
 			if(definingTypes.Length == 0)
 			{
-				return 0f;
+				return;
 			}
 
 			var tagLabel = GetTagLabel(component, headerRect, definingTypes);
@@ -117,7 +117,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			GUI.backgroundColor = backgroundColorWas;
 
 			GUI.EndClip();
-			return 0f;
 		}
 
 		private static GUIContent GetTagLabel(Component serviceOrServiceProvider, Rect headerRect, Span<Type> definingTypes)

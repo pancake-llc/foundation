@@ -79,13 +79,16 @@ namespace Sisus.Init
 		/// This must be an interface that the service implement, a base type that the service derives from, or the exact type of the service.
 		/// </para>
 		/// </summary>
-		[MaybeNull]
-		public readonly Type definingType;
+		[DisallowNull]
+		public readonly Type[] definingTypes;
 
-		private LoadMethod loadMethod;
+		internal LoadMethod loadMethod { get; private set; }
+		internal ReferenceType referenceType { get; private set; }
 
 		[MaybeNull]
-		private string loadData;
+		internal string loadData;
+
+		private bool? lazyInit;
 
 		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
 		/// <summary>
@@ -97,26 +100,13 @@ namespace Sisus.Init
 		[DisallowNull]
 		public string AddressableKey
 		{
-			get => loadMethod is LoadMethod.Addressable or LoadMethod.AddressableAsync
-							  or LoadMethod.LoadAddressable or LoadMethod.LoadAddressableAsync
-							  or LoadMethod.InstantiateAddressable or LoadMethod.InstantiateAddressableAsync
-							  ? loadData : null;
+			get => referenceType is ReferenceType.AddressableKey ? loadData : null;
 
 			set
 			{
 				if(!string.IsNullOrEmpty(value))
 				{
-					loadMethod = loadMethod switch
-					{
-						LoadMethod.Default => LoadMethod.Addressable,
-						LoadMethod.Async => LoadMethod.AddressableAsync,
-						LoadMethod.Load => LoadMethod.LoadAddressable,
-						LoadMethod.Instantiate => LoadMethod.InstantiateAddressable,
-						LoadMethod.LoadAsync =>  LoadMethod.LoadAddressableAsync,
-						LoadMethod.InstantiateAsync => LoadMethod.InstantiateAddressableAsync,
-						_ => loadMethod
-					};
-
+					referenceType = ReferenceType.AddressableKey;
 					loadData = value;
 				}
 			}
@@ -132,26 +122,13 @@ namespace Sisus.Init
 		[DisallowNull]
 		public string ResourcePath
 		{
-			get => loadMethod is LoadMethod.Resource or LoadMethod.ResourceAsync
-							  or LoadMethod.LoadResource or LoadMethod.LoadResourceAsync
-							  or LoadMethod.InstantiateResource or LoadMethod.InstantiateResourceAsync
-							  ? loadData : null;
+			get => referenceType is ReferenceType.ResourcePath ? loadData : null;
 
 			set
 			{
 				if(!string.IsNullOrEmpty(value))
 				{
-					loadMethod = loadMethod switch
-					{
-						LoadMethod.Default => LoadMethod.Resource,
-						LoadMethod.Async => LoadMethod.ResourceAsync,
-						LoadMethod.Load => LoadMethod.LoadResource,
-						LoadMethod.Instantiate => LoadMethod.InstantiateResource,
-						LoadMethod.LoadAsync =>  LoadMethod.LoadResourceAsync,
-						LoadMethod.InstantiateAsync => LoadMethod.InstantiateResourceAsync,
-						_ => loadMethod
-					};
-
+					referenceType = ReferenceType.ResourcePath;
 					loadData = value;
 				}
 			}
@@ -164,13 +141,14 @@ namespace Sisus.Init
 		/// <seealso cref="UnityEngine.Object.FindObjectOfType(true)"/>
 		public bool FindFromScene
 		{
-			get => loadMethod == LoadMethod.FindObjectOfType;
+			get => loadMethod == LoadMethod.FindFromScene;
 
 			set
 			{
 				if(value)
 				{
-					loadMethod = LoadMethod.FindObjectOfType;
+					referenceType = ReferenceType.None;
+					loadMethod = LoadMethod.FindFromScene;
 				}
 			}
 		}
@@ -191,21 +169,13 @@ namespace Sisus.Init
 		{
 			get
 			{
-				if(loadMethod is LoadMethod.Instantiate or LoadMethod.InstantiateAsync
-							  or LoadMethod.InstantiateResource or LoadMethod.InstantiateResourceAsync
-							  #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-							  or LoadMethod.InstantiateAddressable or LoadMethod.InstantiateAddressableAsync
-							  #endif
-				){
+				if(loadMethod is LoadMethod.Instantiate)
+				{
 					return true;
 				}
 
-				if(loadMethod is LoadMethod.Load or LoadMethod.LoadAsync
-							  or LoadMethod.LoadResource or LoadMethod.LoadResourceAsync
-							  #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-							  or LoadMethod.LoadAddressable or LoadMethod.LoadAddressableAsync
-							  #endif
-				){
+				if(loadMethod is LoadMethod.Load)
+				{
 					return false;
 				}
 
@@ -214,74 +184,9 @@ namespace Sisus.Init
 
 			set
 			{
-				if(value is not bool instantiate)
+				if(value is bool instantiate)
 				{
-					return;
-				}
-
-				if(instantiate)
-				{
-					switch(loadMethod)
-					{
-						case LoadMethod.Default:
-						case LoadMethod.Load:
-							loadMethod = LoadMethod.Instantiate;
-							return;
-						case LoadMethod.Async:
-						case LoadMethod.LoadAsync:
-							loadMethod = LoadMethod.InstantiateAsync;
-							return;
-						case LoadMethod.Resource:
-						case LoadMethod.LoadResource:
-							loadMethod = LoadMethod.InstantiateResource;
-							return;
-						case LoadMethod.ResourceAsync:
-						case LoadMethod.LoadResourceAsync:
-							loadMethod = LoadMethod.InstantiateResourceAsync;
-							return;
-						#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-						case LoadMethod.Addressable:
-						case LoadMethod.LoadAddressable:
-							loadMethod = LoadMethod.InstantiateAddressable;
-							return;
-						case LoadMethod.AddressableAsync:
-						case LoadMethod.LoadAddressableAsync:
-							loadMethod = LoadMethod.InstantiateAddressableAsync;
-							return;
-						#endif
-					}
-				}
-				else
-				{
-					switch(loadMethod)
-					{
-						case LoadMethod.Default:
-						case LoadMethod.Instantiate:
-							loadMethod = LoadMethod.Load;
-							return;
-						case LoadMethod.Async:
-						case LoadMethod.InstantiateAsync:
-							loadMethod = LoadMethod.LoadAsync;
-							return;
-						case LoadMethod.Resource:
-						case LoadMethod.InstantiateResource:
-							loadMethod = LoadMethod.LoadResource;
-							return;
-						case LoadMethod.ResourceAsync:
-						case LoadMethod.InstantiateResourceAsync:
-							loadMethod = LoadMethod.LoadResourceAsync;
-							return;
-						#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-						case LoadMethod.Addressable:
-						case LoadMethod.InstantiateAddressable:
-							loadMethod = LoadMethod.LoadAddressable;
-							return;
-						case LoadMethod.AddressableAsync:
-						case LoadMethod.InstantiateAddressableAsync:
-							loadMethod = LoadMethod.LoadAddressableAsync;
-							return;
-						#endif
-					}
+					loadMethod = instantiate ? LoadMethod.Instantiate : LoadMethod.Load;
 				}
 			}
 		}
@@ -290,8 +195,11 @@ namespace Sisus.Init
 		/// If set to <see langword="true"/> then an instance of the service will only
 		/// be created on demand when the first client requests and instance.
 		/// <para>
-		/// If <see langword="false"/>, which is the default value of this property,
-		/// then the instance will be created immediately when the game loads.
+		/// If set to <see langword="false"/>, then the instance will be created immediately when the game loads.
+		/// </para>
+		/// <para>
+		/// The default value of this property is <see langword="false"/>, except when <see cref="FindFromScene"/>
+		/// is set to <see langword="true"/>, in which case the default will be <see langword="true"/> instead.
 		/// </para>
 		/// <para>
 		/// Note that the initialization of service instances of some types is not a
@@ -300,7 +208,11 @@ namespace Sisus.Init
 		/// thread the initialization of the service might fail.
 		/// </para>
 		/// </summary>
-		public bool LazyInit { get; set; }
+		public bool LazyInit
+		{
+			get => lazyInit ?? FindFromScene;
+			set => lazyInit = value;
+		}
 
 		/// <summary>
 		/// If set to <see langword="true"/> then the service will be loaded asynchronously if possible.
@@ -313,58 +225,7 @@ namespace Sisus.Init
 		/// then <see cref="Addressables.LoadAssetAsync"/> will be used to load the asset.
 		/// </para>
 		/// </summary>
-		public bool LoadAsync
-		{
-			get => loadMethod is LoadMethod.Async or LoadMethod.LoadAsync or LoadMethod.InstantiateAsync
-							  or LoadMethod.LoadResourceAsync or LoadMethod.InstantiateResourceAsync
-							  #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-							  or LoadMethod.AddressableAsync
-							  or LoadMethod.LoadAddressableAsync
-							  or LoadMethod.InstantiateAddressableAsync
-								#endif
-								;
-
-			set
-			{
-				if(!value)
-				{
-					return;
-				}
-
-				switch(loadMethod)
-				{
-					case LoadMethod.Default:
-						loadMethod = LoadMethod.Async;
-						return;
-					case LoadMethod.Instantiate:
-						loadMethod = LoadMethod.InstantiateAsync;
-						return;
-					case LoadMethod.Load:
-						loadMethod = LoadMethod.LoadAsync;
-						return;
-					case LoadMethod.Resource:
-						loadMethod = LoadMethod.ResourceAsync;
-						return;
-					case LoadMethod.LoadResource:
-						loadMethod = LoadMethod.LoadResourceAsync;
-						return;
-					case LoadMethod.InstantiateResource:
-						loadMethod = LoadMethod.InstantiateResourceAsync;
-						return;
-					#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-					case LoadMethod.Addressable:
-						loadMethod = LoadMethod.AddressableAsync;
-						return;
-					case LoadMethod.LoadAddressable:
-						loadMethod = LoadMethod.LoadAddressableAsync;
-						return;
-					case LoadMethod.InstantiateAddressable:
-						loadMethod = LoadMethod.InstantiateAddressableAsync;
-						return;
-					#endif
-				}
-			}
-		}
+		public bool LoadAsync { get; set; }
 
 		#if DEV_MODE
 		/// <summary>
@@ -373,25 +234,6 @@ namespace Sisus.Init
 		/// </summary>
 		public bool RegisterAsAllInterfaces { get; set; }
 		#endif
-		
-		/// <summary>
-		/// Classes that have the <see cref="ServiceAttribute"/> can provide services
-		/// for one or more client objects.
-		/// <para>
-		/// A single instance of each class that has the attribute will automatically
-		/// get cached behind the scenes making them ready for clients to retrieve as needed.
-		/// </para>
-		/// <para>
-		/// The type of the class that contains the attribute will be used as the
-		/// defining type for the service unless a <see cref="definingType"/> argument is provided.
-		/// </para>
-		/// <para>
-		/// A fresh instance of the service will be created unless <see cref="ResourcePath"/> or
-		/// <see cref="AddressableKey"/> is used to specify a location from which an existing
-		/// instance of the service can be loaded.
-		/// </para>
-		/// </summary>
-		public ServiceAttribute() : this(null) { }
 
 		/// <summary>
 		/// Classes that have the <see cref="ServiceAttribute"/> can provide services
@@ -406,118 +248,123 @@ namespace Sisus.Init
 		/// instance of the service can be loaded.
 		/// </para>
 		/// </summary>
-		/// <param name="definingType">
-		/// Class or interface type that uniquely defines the service and can be used to retrieve an instance of it.
+		/// <param name="definingTypes">
+		/// Class or interface types that can be used to retrieve an instance of it.
 		/// <para>
-		/// This should be an interface that the service implement, a base type that the service derives from, or the exact type of the service.
+		/// These should be interfaces that the service implement, bases type that the service derives from, or the exact type of the service.
 		/// </para>
 		/// </param>
-		public ServiceAttribute([AllowNull] Type definingType)
+		public ServiceAttribute(params Type[] definingTypes)
 		{
-			this.definingType = definingType;
+			this.definingTypes = definingTypes ?? Array.Empty<Type>();
 			loadMethod = LoadMethod.Default;
 			loadData = null;
 		}
+	}
 
-		private enum LoadMethod
-		{
-			/// <summary>
-			/// Uses <see cref="Instantiate"/> for prefabs and <see cref="Load"/> for other assets.
-			/// </summary>
-			Default,
+	/*
+	internal enum LoadMethod
+	{
+		/// <summary>
+		/// Uses <see cref="Instantiate"/> for prefabs and <see cref="Load"/> for other assets.
+		/// </summary>
+		Default = 0,
 
-			/// <summary>
-			/// Loads an asset using either resources or addressables, and registers it as a service directly.
-			/// </summary>
-			Load,
+		/// <summary>
+		/// Loads an asset using either resources or addressables, and registers it as a service directly.
+		/// </summary>
+		Load = 1,
 
-			/// <summary>
-			/// Creates a new instance from scratch or by cloning an asset.
-			/// </summary>
-			Instantiate,
+		/// <summary>
+		/// Creates a new instance from scratch or by cloning an asset.
+		/// </summary>
+		Instantiate = 2,
 
-			/// <summary>
-			/// Finds an object from the initial scene, and registers it as a service.
-			/// </summary>
-			FindObjectOfType,
+		/// <summary>
+		/// Finds an object from the initial scene, and registers it as a service.
+		/// </summary>
+		FindFromScene,
 
-			/// <summary>
-			/// Loads or instantiates an asset using resources, and registers it as a service directly.
-			/// </summary>
-			Resource,
+		/// <summary>
+		/// Loads or instantiates an asset using resources, and registers it as a service directly.
+		/// </summary>
+		Resource,
 
-			/// <summary>
-			/// Loads an asset using resources, and registers it as a service directly.
-			/// </summary>
-			LoadResource,
+		/// <summary>
+		/// Loads an asset using resources, and registers it as a service directly.
+		/// </summary>
+		LoadResource,
 			
-			/// <summary>
-			/// Loads an asset using resources, clones it, and registers the clone as a service.
-			/// </summary>
-			InstantiateResource,
+		/// <summary>
+		/// Loads an asset using resources, clones it, and registers the clone as a service.
+		/// </summary>
+		InstantiateResource,
 
-			/// <summary>
-			/// Asynchronously loads or instantiates an asset using either resources or addressables.
-			/// </summary>
-			Async,
+		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+		/// <summary>
+		/// Loads or instantiates an asset using addressables, and registers it as a service directly.
+		/// </summary>
+		Addressable,
 
-			/// <summary>
-			/// Asynchronously loads an asset using either resources or addressables, and registers it as a service directly.
-			/// </summary>
-			LoadAsync,
-
-			/// <summary>
-			/// Asynchronously loads an asset using either resources or addressables, clones it,
-			/// and registers the clone as a service.
-			/// </summary>
-			InstantiateAsync,
-
-			/// <summary>
-			/// Asynchronously loads or instantiates an asset using resources.
-			/// </summary>
-			ResourceAsync,
-
-			/// <summary>
-			/// Asynchronously loads an asset using resources, and registers it as a service directly.
-			/// </summary>
-			LoadResourceAsync,
-
-			/// <summary>
-			/// Asynchronously loads an asset using resources, clones it, and registers the clone as a service.
-			/// </summary>
-			InstantiateResourceAsync,
-
-			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-			/// <summary>
-			/// Loads or instantiates an asset using addressables, and registers it as a service directly.
-			/// </summary>
-			Addressable,
-
-			/// <summary>
-			/// Asynchronously loads or instantiates an asset using addressables.
-			/// </summary>
-			AddressableAsync,
-
-			/// <summary>
-			/// Loads an asset using addressables, and registers it as a service directly.
-			/// </summary>
-			LoadAddressable,
+		/// <summary>
+		/// Loads an asset using addressables, and registers it as a service directly.
+		/// </summary>
+		LoadAddressable,
 			
-			/// <summary>
-			/// Asynchronously loads an asset using addressables, and registers it as a service directly.
-			/// </summary>
-			LoadAddressableAsync,
-			
-			/// <summary>
-			/// Loads an asset using addressables, clones it, and registers the clone as a service.
-			/// </summary>
-			InstantiateAddressable,
+		/// <summary>
+		/// Loads an asset using addressables, clones it, and registers the clone as a service.
+		/// </summary>
+		InstantiateAddressable,
+		#endif
+	}
+	*/
 
-			/// <summary>
-			/// Asynchronously loads an asset using addressables, clones it, and registers the clone as a service.
-			/// </summary>
-			InstantiateAddressableAsync
-			#endif
-		}
+	internal enum ReferenceType
+	{
+		/// <summary>
+		/// No reference; create a new instance or find by type.
+		/// </summary>
+		None,
+
+		/// <summary>
+		/// A direct reference to a prefab or a scene object.
+		/// </summary>
+		DirectReference,
+
+		/// <summary>
+		/// Loads or instantiates an asset using resources.
+		/// </summary>
+		ResourcePath,
+
+		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+		/// <summary>
+		/// Loads or instantiates an asset using addressables.
+		/// </summary>
+		AddressableKey
+		#endif
+	}
+
+
+	internal enum LoadMethod
+	{
+		/// <summary>
+		/// Uses <see cref="Instantiate"/> for prefabs and <see cref="Load"/> for other assets.
+		/// </summary>
+		Default,
+
+		/// <summary>
+		/// Loads an asset using either resources or addressables, and registers it as a service directly.
+		/// </summary>
+		Load,
+
+		/// <summary>
+		/// Creates a new instance from scratch or by cloning an asset.
+		/// </summary>
+		Instantiate,
+
+		/// <summary>
+		/// Finds an object from the initial scene, and registers it as a service.
+		/// </summary>
+		FindFromScene
 	}
 }

@@ -35,10 +35,9 @@ namespace Sisus.Init.EditorOnly
 				return false;
 			}
 
-			var attribute = valueProviderType.GetCustomAttribute<ValueProviderMenuAttribute>();
 			singleSharedInstance = guidsOfPotentialInstancesInProject
 									.Select(guid => AssetDatabase.LoadAssetAtPath<ScriptableObject>(AssetDatabase.GUIDToAssetPath(guid)))
-									.Where(asset => asset && asset.GetType() == valueProviderType && AssetNameEqualsItemName(asset.name, attribute.ItemName))
+									.Where(asset => asset && asset.GetType() == valueProviderType)
 									.SingleOrDefault();
 
 			if(!singleSharedInstance)
@@ -69,8 +68,6 @@ namespace Sisus.Init.EditorOnly
 
 			return false;
 		}
-
-		private static bool AssetNameEqualsItemName(string assetName, string menuPath) => string.Equals(assetName, Path.GetFileName(menuPath));
 
 		public static IEnumerable<Type> GetAllValueProviderMenuItemTargetTypes()
 			=> TypeCache.GetTypesWithAttribute<ValueProviderMenuAttribute>()

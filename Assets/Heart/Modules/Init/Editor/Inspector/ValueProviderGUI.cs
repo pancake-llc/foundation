@@ -204,74 +204,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(GUI.Button(valueProviderLabelClickableRect, GUIContent.none, EditorStyles.label))
 			{
-				if(clearValueButtonRect.Contains(Event.current.mousePosition))
-				{
-					onDiscardButtonPressed.Invoke();
-				}
-				else if(editor.target is IValueProvider valueProvider)
-				{
-					var value = valueProvider.Value as Object;
-					if(value != null)
-					{
-						if(value is Component component)
-						{
-							EditorGUIUtility.PingObject(component.gameObject);
-						}
-						else
-						{
-							EditorGUIUtility.PingObject(value);
-						}
-					}
-					else
-					{
-						Debug.Log($"{valueProvider.GetType().Name} could not locate value of type {TypeUtility.ToString(valueType)} at this time.", referenceProperty.serializedObject.targetObject);
-					}
-				}
-				else if(editor.target is IValueByTypeProvider valueByTypeProvider && valueType != null)
-				{
-					var args = new object[] { referenceProperty.serializedObject.targetObject, null };
-					bool found = (bool)valueByTypeProvider.GetType()
-						.GetMethod(nameof(IValueByTypeProvider.TryGetFor))
-						.MakeGenericMethod(valueType)
-						.Invoke(valueByTypeProvider, args);
-
-					if(found && args[1] is Object value && value != null)
-					{
-						if(value is Component component)
-						{
-							EditorGUIUtility.PingObject(component.gameObject);
-						}
-						else if(value is Object obj)
-						{
-							EditorGUIUtility.PingObject(value);
-						}
-						else if(value is IEnumerable<Object> enumerable)
-						{
-							switch(enumerable.Count())
-							{
-								case 0:
-									break;
-								case 1:
-									EditorGUIUtility.PingObject(enumerable.First());
-									break;
-								default:
-									if(enumerable.First() is Component)
-									{
-										Selection.objects = enumerable.Select(x => (x as Component)?.gameObject).ToArray();
-									}
-									else
-									{
-										Selection.objects = enumerable.ToArray();
-									}
-									break;
-							}
-						}
-					}
-					else
-					{
-						Debug.Log($"{valueByTypeProvider.GetType().Name} could not locate value of type {TypeUtility.ToString(valueType)} at this time.", referenceProperty.serializedObject.targetObject);
-					}
-				}
+				OnClicked();
 			}
 
 			var nullGuardResult = (NullGuardResult)evaluateNullGuard.Invoke(anyProperty.GetValue(), evaluateNullGuardArgs);
@@ -308,6 +241,91 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(GUI.Button(clearValueButtonRect, GUIContent.none, Styles.Discard))
 			{
 				onDiscardButtonPressed.Invoke();
+			}
+
+			void OnClicked()
+			{
+				if(clearValueButtonRect.Contains(Event.current.mousePosition))
+				{
+					onDiscardButtonPressed.Invoke();
+					return;
+				}
+
+				if(Event.current.button is 1)
+				{
+					var menu = new GenericMenu();
+					menu.AddItem(new("Edit Script"), false, () =>
+					{
+						if(Find.Script(editor.target.GetType(), out MonoScript script))
+						{
+							AssetDatabase.OpenAsset(script);
+						}
+					});
+					menu.ShowAsContext();
+				}
+				
+				if(editor.target is IValueProvider valueProvider)
+				{
+					var value = valueProvider.Value as Object;
+					if(value)
+					{
+						if(value is Component component)
+						{
+							EditorGUIUtility.PingObject(component.gameObject);
+							return;
+						}
+						
+						EditorGUIUtility.PingObject(value);
+						return;
+					}
+					
+					Debug.Log($"{valueProvider.GetType().Name} could not locate value of type {TypeUtility.ToString(valueType)} at this time.", referenceProperty.serializedObject.targetObject);
+					return;
+				}
+				
+				if(editor.target is IValueByTypeProvider valueByTypeProvider && valueType != null)
+				{
+					var args = new object[] { referenceProperty.serializedObject.targetObject, null };
+					bool found = (bool)valueByTypeProvider.GetType()
+						.GetMethod(nameof(IValueByTypeProvider.TryGetFor))
+						.MakeGenericMethod(valueType)
+						.Invoke(valueByTypeProvider, args);
+
+					if(found && args[1] is Object value && value)
+					{
+						if(value is Component component)
+						{
+							EditorGUIUtility.PingObject(component.gameObject);
+							return;
+						}
+						
+						EditorGUIUtility.PingObject(value);
+						return;
+					}
+					
+					if(found && args[1] is IEnumerable<Object> enumerable)
+					{
+						switch(enumerable.Count())
+						{
+							case 0:
+								break;
+							case 1:
+								EditorGUIUtility.PingObject(enumerable.First());
+								return;
+							default:
+								if(enumerable.First() is Component)
+								{
+									Selection.objects = enumerable.Select(x => (x as Component)?.gameObject).ToArray();
+									return;
+								}
+
+								Selection.objects = enumerable.ToArray();
+								return;
+						}
+					}
+						
+					Debug.Log($"{valueByTypeProvider.GetType().Name} could not locate value of type {TypeUtility.ToString(valueType)} at this time.", referenceProperty.serializedObject.targetObject);
+				}
 			}
 		}
 

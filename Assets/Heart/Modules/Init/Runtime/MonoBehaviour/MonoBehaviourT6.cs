@@ -6,7 +6,6 @@ using Sisus.Init.Internal;
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 using static Sisus.Init.Reflection.InjectionUtility;
-using Debug = UnityEngine.Debug;
 
 namespace Sisus.Init
 {
@@ -35,19 +34,8 @@ namespace Sisus.Init
 	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> function. </typeparam>
 	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> function. </typeparam>
 	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> function. </typeparam>
-	public abstract class MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : MonoBehaviour, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, IInitializable
-		#if UNITY_EDITOR
-		, EditorOnly.IInitializableEditorOnly
-		#endif
+	public abstract class MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : InitializableBaseInternal, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 	{
-		private InitState initState;
-
-		#if UNITY_EDITOR
-		IInitializer EditorOnly.IInitializableEditorOnly.Initializer { get => TryGetInitializer(this, out IInitializer Initializer) ? Initializer : null; set { if(value != Null) value.Target = this; } }
-		bool EditorOnly.IInitializableEditorOnly.CanInitSelfWhenInactive => false;
-		InitState EditorOnly.IInitializableEditorOnly.InitState => initState;
-		#endif
-
 		/// <summary>
 		/// Provides the <see cref="Component"/> with the objects that it depends on.
 		/// <para>
@@ -106,47 +94,6 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// A value against which any <see cref="object"/> can be compared to determine whether or not it is
-		/// <see langword="null"/> or an <see cref="Object"/> which has been <see cref="Object.Destroy">destroyed</see>.
-		/// </summary>
-		/// <example>
-		/// <code>
-		/// private IEvent trigger;
-		/// 
-		///	private void OnDisable()
-		///	{
-		///		if(trigger != Null)
-		///		{
-		///			trigger.RemoveListener(this);
-		///		}
-		///	}
-		/// </code>
-		/// </example>
-		[NotNull]
-		protected static NullExtensions.NullComparer Null => NullExtensions.Null;
-
-		/// <summary>
-		/// A value against which any <see cref="object"/> can be compared to determine whether or not it is
-		/// <see langword="null"/> or an <see cref="Object"/> which is <see cref="GameObject.activeInHierarchy">inactive</see>
-		/// or has been <see cref="Object.Destroy">destroyed</see>.
-		/// </summary>
-		/// <example>
-		/// <code>
-		/// private ITrackable target;
-		/// 
-		/// private void Update()
-		/// {
-		/// 	if(target != NullOrInactive)
-		/// 	{
-		/// 		transform.LookAt(target.Position);
-		/// 	}
-		/// }
-		/// </code>
-		/// </example>
-		[NotNull]
-		protected static NullExtensions.NullOrInactiveComparer NullOrInactive => NullExtensions.NullOrInactive;
-
-		/// <summary>
 		/// Reset state to default values.
 		/// <para>
 		/// <see cref="OnReset"/> is called when the user selects Reset in the Inspector context menu or when adding the component the first time.
@@ -157,40 +104,6 @@ namespace Sisus.Init
 		/// </summary>
 		protected virtual void OnReset() { }
 
-		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
-		/// <para>
-		/// <see cref="OnAwake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
-		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>
-		/// is initialized.
-		/// </para>
-		/// <para>
-		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script instance. A script's lifetime lasts until the Scene that contains it is unloaded.
-		/// If the Scene is loaded again, Unity loads the script instance again, so <see cref="OnAwake"/> will be called again.
-		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="OnAwake"/> will be called several times (once on each instance).
-		/// </para>
-		/// <para>
-		/// For active <see cref="GameObject">GameObjects</see> placed in a Scene, Unity calls <see cref="OnAwake"/> after all active <see cref="GameObject">GameObjects</see>
-		/// in the Scene are initialized, so you can safely use methods such as <see cref="GameObject.FindWithTag"/> to query other <see cref="GameObject">GameObjects</see>.
-		/// </para>
-		/// <para>
-		/// The order that Unity calls each <see cref="GameObject"/>'s Awake (and by extension <see cref="OnAwake"/>) is not deterministic.
-		/// Because of this, you should not rely on one <see cref="GameObject"/>'s Awake being called before or after another
-		/// (for example, you should not assume that a reference assigned by one GameObject's <see cref="OnAwake"/> will be usable in another GameObject's <see cref="Awake"/>).
-		/// Instead, you should use <see cref="Awake"/>/<see cref="OnAwake"/> to set up references between scripts, and use Start, which is called after all <see cref="Awake"/>
-		/// and <see cref="OnAwake"/> calls are finished, to pass any information back and forth.
-		/// </para>
-		/// <para>
-		/// <see cref="OnAwake"/> is always called before any Start functions. This allows you to order initialization of scripts.
-		/// <see cref="OnAwake"/> is called even if the script is a disabled component of an active GameObject.
-		/// <see cref="OnAwake"/> can not act as a coroutine.
-		/// </para>
-		/// <para>
-		/// Note: Use <see cref="OnAwake"/> instead of the constructor for initialization, as the serialized state of the <see cref="Component"/> is undefined at construction time.
-		/// </para>
-		/// </summary>
-		protected virtual void OnAwake() { }
-
 		#if UNITY_EDITOR
 		private protected void Reset()
 		{
@@ -200,32 +113,8 @@ namespace Sisus.Init
 		}
 		#endif
 
-		private protected void Awake()
-		{
-			if(initState == InitState.Uninitialized)
-			{
-				#if UNITY_EDITOR
-				bool isInitialized =
-				#endif
-
-				Init(Context.Awake);
-
-				#if UNITY_EDITOR
-				if(!isInitialized && ShouldSelfGuardAgainstNull(this))
-				{
-					throw new MissingInitArgumentsException(this);
-				}
-				#endif
-			}
-
-			OnAwake();
-		}
-
-		bool IInitializable.HasInitializer => HasInitializer(this);
-		bool IInitializable.Init(Context context) => Init(context);
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool Init(Context context)
+		private protected override bool Init(Context context)
 		{
 			if(initState != InitState.Uninitialized)
 			{
@@ -356,36 +245,6 @@ namespace Sisus.Init
 			{
 				ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 			}
-			#endif
-		}
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and throws an <see cref="ArgumentNullException"/> if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected void ThrowIfNull<TArgument>(TArgument argument)
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(argument == Null) throw new ArgumentNullException(typeof(TArgument).Name, $"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.");
-			#endif
-		}
-
-		/// <summary>
-		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs an assertion message to the console if it is.
-		/// <para>
-		/// This method call is ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The argument to test. </param>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected void AssertNotNull<TArgument>(TArgument argument)
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(argument == Null) Debug.LogAssertion($"Init argument of type {typeof(TArgument).Name} passed to {GetType().Name} was null.", this);
 			#endif
 		}
 	}

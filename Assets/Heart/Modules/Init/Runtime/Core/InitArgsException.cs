@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Object = UnityEngine.Object;
 
 namespace Sisus.Init
@@ -18,5 +19,7 @@ namespace Sisus.Init
         }
 
         public void LogAsError() => UnityEngine.Debug.LogException(this, Context);
+
+        internal static void AppendMoreHelpUrl(StringBuilder sb) => sb.Append("\n\nMore Help: docs.sisus.co/init-args/common-problems-solutions/");
     }
 }

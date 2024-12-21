@@ -44,7 +44,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static bool TryGetTypeAndScript(MenuCommand command, out Type initializableType, out MonoScript script)
 		{
-			if(command.context == null)
+			if(!command.context)
 			{
 				script = null;
 				initializableType = null;

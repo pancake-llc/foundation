@@ -132,7 +132,7 @@ namespace Sisus.Init
 		bool CompareTag(TagHandle tag) => this is MonoBehaviour monoBehaviour && monoBehaviour.CompareTag(tag);
 		#endif
 
-		#if UNITY_2022_3_OR_NEWER
+		#if UNITY_6000_0_OR_NEWER
 		/// <summary>
 		/// Cancellation token raised when the wrapper is destroyed.
 		/// </summary>

@@ -7,8 +7,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
 using Unity.Profiling;
 #endif
 
@@ -17,7 +16,7 @@ namespace Sisus.Shared.EditorOnly
 	public static class InspectorContents
 	{
 		private static readonly List<(Editor, IMGUIContainer)> headersList = new();
-		private static readonly List<InspectorElement> inspectorElementsList = new();
+		private static readonly List<(InspectorType inspectorType, InspectorElement inspectorElement)> inspectorElementsList = new();
 
 		/// <summary>
 		/// All 'Inspector' and 'Properties...' windows.
@@ -28,32 +27,24 @@ namespace Sisus.Shared.EditorOnly
 		#else
 		IEnumerable<PropertyEditor> allPropertyEditors => System.Linq.Enumerable.Where(Resources.FindObjectsOfTypeAll<PropertyEditor>(), e => e);
 		#endif
-		
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-		private static readonly ProfilerMarker repaintMarker = new(ProfilerCategory.Gui, "InspectorContents.Repaint");
-		private static readonly ProfilerMarker repaintEditorsWithTargetMarker = new(ProfilerCategory.Gui, "InspectorContents.RepaintEditorsWithTarget");
-		private static readonly ProfilerMarker tryFindEditorElementMarker = new(ProfilerCategory.Gui, "InspectorContents.TryFindEditorElement");
-		private static readonly ProfilerMarker getAllHeaderElementsMarker = new(ProfilerCategory.Gui, "InspectorContents.GetAllHeaderElements");
-		private static readonly ProfilerMarker getAllComponentHeaderElementsMarker = new(ProfilerCategory.Gui, "InspectorContents.GetAllComponentHeaderElements");
-#endif
 
 		public static void Repaint()
 		{
-#if DEV_MODE && DEBUG_REPAINT
-			Debug.Log("InspectorContents.Repaint");
-#endif
+			#if DEV_MODE && DEBUG_REPAINT
+			Debug.Log("InitArgs.Repaint");
+			#endif
 
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
 			using var x = repaintMarker.Auto();
-#endif
-			
+			#endif
+
 			foreach(var propertyEditor in allPropertyEditors)
 			{
 				propertyEditor.Repaint();
 			}
 		}
 
-		public static List<InspectorElement> GetAllInspectorElements(Editor editor)
+		public static List<(InspectorType inspectorType, InspectorElement inspectorElement)> GetAllInspectorElements(Editor editor)
 		{
 			inspectorElementsList.Clear();
 
@@ -64,13 +55,19 @@ namespace Sisus.Shared.EditorOnly
 					continue;
 				}
 
+				var inspectorType = propertyEditor switch
+				{
+					InspectorWindow inspector => inspector.inspectorMode is InspectorMode.Normal ? InspectorType.InspectorWindow : InspectorType.InspectorWindowDebugMode,
+					_ => InspectorType.PropertiesWindow
+				};
+
 				if(TryFindEditorElement(propertyEditor.rootVisualElement, editor, out var editorElement)
 				// All EditorElements should be parented under the same editors list element
 				&& editorElement.parent is { } editorsListElement)
 				{
 					foreach(var inspectorElement in editorsListElement.Query<InspectorElement>().Build())
 					{
-						inspectorElementsList.Add(inspectorElement);
+						inspectorElementsList.Add((inspectorType, inspectorElement));
 					}
 				}
 			}
@@ -86,13 +83,13 @@ namespace Sisus.Shared.EditorOnly
 				{
 					if(editor.target == target)
 					{
-#if DEV_MODE && DEBUG_REPAINT
+						#if DEV_MODE && DEBUG_REPAINT
 						Debug.Log(editor.target.GetType().Name + ".Repaint");
-#endif
+						#endif
 
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+						#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
 						using var x = repaintEditorsWithTargetMarker.Auto();
-#endif
+						#endif
 
 						editor.Repaint();
 						break;
@@ -101,12 +98,50 @@ namespace Sisus.Shared.EditorOnly
 			}
 		}
 		
-		internal static List<(Editor editor, IMGUIContainer header)> GetAllHeaderElements(Editor editor)
+		internal static bool TryGetGameObjectHeaderElement([DisallowNull] Editor editor, [MaybeNullWhen(false), NotNullWhen(true)] out IMGUIContainer headerGUIContainer)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-			using var x = getAllHeaderElementsMarker.Auto();
-#endif
+			if(editor.target is not GameObject)
+			{
+				headerGUIContainer = null;
+				return false;
+			}
 			
+			#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
+			using var x = getGameObjectHeaderElementMarker.Auto();
+			#endif
+
+			foreach(var propertyEditor in allPropertyEditors)
+			{
+				if(Array.IndexOf(propertyEditor.tracker.activeEditors, editor) == -1)
+				{
+					continue;
+				}
+
+				if(!TryFindEditorElement(propertyEditor.rootVisualElement, editor, out var editorElement))
+				{
+					continue;
+				}
+
+				foreach(var child in editorElement.Children())
+				{
+					headerGUIContainer = child as IMGUIContainer; 
+					if(headerGUIContainer?.name.Contains("Header") ?? false)
+					{
+						return true;
+					}
+				}
+			}
+
+			headerGUIContainer = null;
+			return false;
+		}
+
+		internal static List<(Editor editor, IMGUIContainer header)> GetAllComponentHeaderElements(Editor editor)
+		{
+			#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
+			using var x = getAllHeaderElementsMarker.Auto();
+			#endif
+
 			headersList.Clear();
 
 			foreach(var propertyEditor in allPropertyEditors)
@@ -129,10 +164,10 @@ namespace Sisus.Shared.EditorOnly
 
 		private static bool TryFindEditorElement(VisualElement rootVisualElement, Editor editor, [MaybeNullWhen(false), NotNullWhen(true)] out EditorElement editorElement)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
 			using var x = tryFindEditorElementMarker.Auto();
-#endif
-			
+			#endif
+
 			editorElement = rootVisualElement?.Query<EditorElement>()
 				.Where(editorElement => editorElement.editor == editor)
 				.First();
@@ -142,10 +177,10 @@ namespace Sisus.Shared.EditorOnly
 
 		private static void GetAllComponentHeaderElements([DisallowNull] VisualElement editorsListElement, List<(Editor, IMGUIContainer)> results)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
 			using var x = getAllComponentHeaderElementsMarker.Auto();
-#endif
-			
+			#endif
+
 			foreach(var child in editorsListElement.Children())
 			{
 				if(child is not EditorElement editorElement)
@@ -198,5 +233,14 @@ namespace Sisus.Shared.EditorOnly
 				}
 			}
 		}
+		
+		#if DEV_MODE && DEBUG && !SISUS_DISABLE_PROFILING
+		private static readonly ProfilerMarker repaintMarker = new(ProfilerCategory.Gui, "InspectorContents.Repaint");
+		private static readonly ProfilerMarker repaintEditorsWithTargetMarker = new(ProfilerCategory.Gui, "InspectorContents.RepaintEditorsWithTarget");
+		private static readonly ProfilerMarker tryFindEditorElementMarker = new(ProfilerCategory.Gui, "InspectorContents.TryFindEditorElement");
+		private static readonly ProfilerMarker getGameObjectHeaderElementMarker = new(ProfilerCategory.Gui, "InspectorContents.GetGameObjectHeaderElement");
+		private static readonly ProfilerMarker getAllHeaderElementsMarker = new(ProfilerCategory.Gui, "InspectorContents.GetAllHeaderElements");
+		private static readonly ProfilerMarker getAllComponentHeaderElementsMarker = new(ProfilerCategory.Gui, "InspectorContents.GetAllComponentHeaderElements");
+		#endif
 	}
 }

@@ -20,38 +20,39 @@ namespace Sisus.Init
 	/// </para>
 	/// </summary>
 	[RequireImplementors]
-	public interface IServiceProvider
+	public interface IServiceProvider : INullGuardByType
 	{
 		/// <summary>
-		/// Tries to get a shared instance of <typeparamref name="TService"/> service for the <paramref name="client"/>.
+		/// Tries to get a service of type <typeparamref name="TService"/> that is accessible to clients <see cref="Clients.Everywhere"/> .
 		/// </summary>
 		/// <typeparam name="TService">
-		/// Interface or class type that defines the service.
+		/// Type of the requested service.
 		/// <para>
-		/// This should be an interface that the service implements, a base type that the service derives from, or the exact type of the service.
+		/// This can be an interface that the returned <see paramref="service"/> implements, a base type that it derives
+		/// from, or its exact concrete type.
 		/// </para>
 		/// </typeparam>
-		/// <typeparam name="TService"></typeparam>
 		/// <param name="service">
-		/// When this method returns, contains service of type <typeparamref name="TService"/>,
-		/// if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+		/// When this method returns, contains the service of type <typeparamref name="TService"/>,
+		/// if available; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
 		/// </param>
-		/// <returns> <see langword="true"/> if service was found; otherwise, <see langword="false"/>. </returns>
+		/// <returns> <see langword="true"/> if a service was provided; otherwise, <see langword="false"/>. </returns>
 		public bool TryGet<TService>([NotNullWhen(true), MaybeNullWhen(false)] out TService service);
 
 		/// <summary>
-		/// Tries to get a shared instance of <typeparamref name="TService"/> service for the <paramref name="client"/>.
+		/// Tries to get a service of type <typeparamref name="TService"/> for the given <paramref name="client"/>.
 		/// </summary>
 		/// <typeparam name="TService">
-		/// Interface or class type that defines the service.
+		/// Type of the service that the client needs.
 		/// <para>
-		/// This should be an interface that the service implements, a base type that the service derives from, or the exact type of the service.
+		/// This can be an interface that the returned <see paramref="service"/> implements, a base type that it derives
+		/// from, or its exact concrete type.
 		/// </para>
 		/// </typeparam>
 		/// <param name="client"> The client that needs the service. </param>
 		/// <param name="service">
-		/// When this method returns, contains service of type <typeparamref name="TService"/>,
-		/// if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+		/// When this method returns, contains the service of type <typeparamref name="TService"/>,
+		/// if available for the client; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
 		/// </param>
 		/// <returns> <see langword="true"/> if service was found; otherwise, <see langword="false"/>. </returns>
 		public bool TryGetFor<TService>([DisallowNull] Component client, [NotNullWhen(true), MaybeNullWhen(false)] out TService service);

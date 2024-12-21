@@ -11,6 +11,12 @@ using UnityEditor;
 
 namespace Sisus.Init.Internal
 {
+	/// <summary>
+	/// Returns a reference to a component or game object that can located in a different scene than the client.
+	/// <para>
+	/// Can be used to retrieve an Init argument at runtime.
+	/// </para>
+	/// </summary>
 	public sealed class CrossSceneReference : ScriptableObject<GameObject, Object>, IValueByTypeProvider
 		#if UNITY_EDITOR
 		, INullGuard

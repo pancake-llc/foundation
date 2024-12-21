@@ -153,7 +153,7 @@
 		public const int _25 = 1 << 24;
 
 		/// <summary>
-		/// Value of 33554432 (32 MiB).
+		/// Value of 33 554 432 (32 MiB).
 		/// </summary>
 		public const int _26 = 1 << 25;
 

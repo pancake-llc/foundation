@@ -71,7 +71,7 @@ namespace Sisus.Init
 			}
 
 			typesWithDefaultExecutionOrderAttribute = new HashSet<Type>(TypeCache.GetTypesWithAttribute<DefaultExecutionOrder>());
-			serviceTypes = new HashSet<Type>(GetAllTypesWithServiceAttributeAndServiceDefiningTypes());
+			serviceTypes = new HashSet<Type>(GetAllTypesWithServiceAttributeAndServiceDefiningTypesThreadSafe());
 
 			const int DefaultOrder = ExecutionOrder.Initializer + (int)Order.Default;
 			const int ServiceOrder = ExecutionOrder.ServiceInitializer;
@@ -92,6 +92,22 @@ namespace Sisus.Init
 			sortingStates = new Dictionary<Type, SortingState>(initializerCount);
 			currentExecutionOrders = new Dictionary<Type, int>(initializerCount);
 			scriptAssets = new Dictionary<Type, MonoScript>(initializerCount);
+			
+			static IEnumerable<Type> GetAllTypesWithServiceAttributeAndServiceDefiningTypesThreadSafe()
+			{
+				foreach(var type in TypeCache.GetTypesWithAttribute<ServiceAttribute>())
+				{
+					yield return type;
+
+					foreach(var attribute in type.GetCustomAttributes<ServiceAttribute>())
+					{
+						foreach(var definingType in attribute.definingTypes)
+						{
+							yield return definingType;
+						}
+					}
+				}
+			}
 		}
 
 		public void UpdateExecutionOrderOfAllInitializers()
@@ -251,22 +267,6 @@ namespace Sisus.Init
 			}
 
 			return results;
-		}
-
-		private IEnumerable<Type> GetAllTypesWithServiceAttributeAndServiceDefiningTypes()
-		{
-			foreach(var type in TypeCache.GetTypesWithAttribute<ServiceAttribute>())
-			{
-				yield return type;
-
-				foreach(var attribute in type.GetCustomAttributes<ServiceAttribute>())
-				{
-					if(attribute.definingType != null)
-					{
-						yield return attribute.definingType;
-					}
-				}
-			}
 		}
 
 		private int GetScriptExecutionOrder(Type classType)

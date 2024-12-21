@@ -29,7 +29,7 @@ namespace Sisus.Init.Internal
 	/// </summary>
 	/// <typeparam name="TWrapper"> Type of the initialized wrapper component. </typeparam>
 	/// <typeparam name="TWrapped"> Type of the object wrapped by the wrapper. </typeparam>
-	public abstract class WrapperInitializerBaseInternal<TWrapper, TWrapped> : InitializerBaseInternal, IInitializer<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider
+	public abstract class WrapperInitializerBaseInternal<TWrapper, TWrapped> : Initializer, IInitializer<TWrapped>, IValueProvider<TWrapped>, IValueByTypeProvider //, IServiceProvider
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly<TWrapped>
 		#endif
@@ -38,6 +38,9 @@ namespace Sisus.Init.Internal
 		[SerializeField, HideInInspector, Tooltip(TargetTooltip)]
 		protected TWrapper target = default;
 
+		private protected InitState initState = InitState.Uninitialized;
+		private TWrapper initTargetResult = default;
+
 		[SerializeField, HideInInspector, Tooltip(NullArgumentGuardTooltip)]
 		private protected NullArgumentGuard nullArgumentGuard = DefaultNullArgumentGuardFlags;
 
@@ -45,12 +48,14 @@ namespace Sisus.Init.Internal
 		private protected virtual bool IsAsync => false;
 
 		/// <inheritdoc/>
-		TWrapped IValueProvider<TWrapped>.Value => target != null ? target.WrappedObject : default;
+		TWrapped IValueProvider<TWrapped>.Value => initTargetResult ? initTargetResult.WrappedObject : default;
+
+		internal override Object GetTarget() => initTargetResult ? initTargetResult : target;
 
 		/// <inheritdoc/>
 		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
 		{
-			if(target && target.WrappedObject is TValue result)
+			if(initTargetResult && initTargetResult.WrappedObject is TValue result)
 			{
 				value = result;
 				return true;
@@ -64,7 +69,11 @@ namespace Sisus.Init.Internal
 		bool IValueByTypeProvider.CanProvideValue<TValue>(Component client) => typeof(TValue).IsAssignableFrom(typeof(TWrapped));
 
 		/// <inheritdoc/>
-		Object IInitializer.Target { get => target; set => target = (TWrapper)value; }
+		Object IInitializer.Target
+		{
+			get => initTargetResult ? initTargetResult : target;
+			set => target = value as TWrapper;
+		}
 
 		/// <inheritdoc/>
 		bool IInitializer.TargetIsAssignableOrConvertibleToType(Type type) => type.IsAssignableFrom(typeof(TWrapper)) || type.IsAssignableFrom(typeof(TWrapped));
@@ -89,19 +98,67 @@ namespace Sisus.Init.Internal
 		#endif
 		InitTargetAsync()
 		{
+			if(initState != InitState.Uninitialized)
+			{
+				return initTargetResult;
+			}
+
 			if(!this)
 			{
-				return target;
+				return default;
 			}
 
-			target = await InitTargetAsync(target);
-
-			if(IsRemovedAfterTargetInitialized)
+			try
 			{
-				InvokeAtEndOfFrameIfNotAsset(this, DestroySelf);
-			}
+				initState = InitState.Initializing;
+				
+				var task = InitTargetAsync(target);
+				bool disableUntilReady;
+				if(!task.GetAwaiter().IsCompleted)
+				{
+					disableUntilReady = target && target.enabled && target.gameObject.activeInHierarchy;
+					if(disableUntilReady)
+					{
+						target.enabled = false;
+					}
+				}
+				else
+				{
+					disableUntilReady = false;
+				}
+				
+				initTargetResult = await InitTargetAsync(target);
+				initState = InitState.Initialized;
+				
+				if(disableUntilReady && target)
+				{
+					target.enabled = true;
+					
+					if(!ReferenceEquals(initTargetResult, target) && initTargetResult)
+					{
+						initTargetResult.enabled = true;
+					}
+				}
 
-			return target;
+				if(IsRemovedAfterTargetInitialized && this)
+				{
+					Updater.InvokeAtEndOfFrame(DestroySelfIfNotAsset);
+				}
+
+				return initTargetResult;
+			}
+			catch(Exception
+			#if UNITY_EDITOR
+			exception
+			#endif
+			)
+			{
+				initState = InitState.Failed;
+				#if UNITY_EDITOR
+				((IInitializerEditorOnly)this).NullGuardFailedMessage = exception.ToString();
+				#endif
+				throw;
+			}
 		}
 
 		/// <summary>
@@ -145,17 +202,41 @@ namespace Sisus.Init.Internal
 		/// <inheritdoc/>
 		public TWrapped InitTarget()
 		{
+			if(initState != InitState.Uninitialized)
+			{
+				return initTargetResult;
+			}
+
 			if(!this)
 			{
-				return target;
+				return default;
 			}
 
-			if(IsRemovedAfterTargetInitialized)
+			try
 			{
-				InvokeAtEndOfFrameIfNotAsset(this, DestroySelf);
-			}
+				initState = InitState.Initializing;
+				initTargetResult = InitTarget(target);
+				initState = InitState.Initialized;
 
-			return InitTarget(target).WrappedObject;
+				if(IsRemovedAfterTargetInitialized && this)
+				{
+					Updater.InvokeAtEndOfFrame(DestroySelfIfNotAsset);
+				}
+
+				return initTargetResult.WrappedObject;
+			}
+			catch(Exception
+			#if UNITY_EDITOR
+			exception
+			#endif
+			)
+			{
+				initState = InitState.Failed;
+				#if UNITY_EDITOR
+				((IInitializerEditorOnly)this).NullGuardFailedMessage = exception.ToString();
+				#endif
+				throw;
+			}
 		}
 
 		/// <summary>
@@ -179,10 +260,7 @@ namespace Sisus.Init.Internal
 		[return: NotNull]
 		private protected abstract TWrapper InitTarget([AllowNull] TWrapper target);
 
-		#if DEBUG || INIT_ARGS_SAFE_MODE
-		async
-		#endif
-		private protected void Awake()
+		async private protected void Awake()
 		{
 			#if UNITY_EDITOR
 			ThreadSafe.Application.IsPlaying = Application.isPlaying;
@@ -197,16 +275,28 @@ namespace Sisus.Init.Internal
 
 			if(
 			#if UNITY_EDITOR
-			Application.isPlaying &&
-			#endif
+			!gameObject.IsAsset(resultIfSceneObjectInEditMode: true) &&
+			#endif	
 			IsAsync)
 			{
-				#if DEBUG || INIT_ARGS_SAFE_MODE
-				await
-				#else
-				_ = 
+				#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+				try
+				{
 				#endif
-				InitTargetAsync();
+					
+					await InitTargetAsync();
+
+				#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+				}
+				catch(Exception e)
+				{
+					if(e is not OperationCanceledException)
+					{
+						throw;
+					}
+				}
+				#endif
+
 				return;
 			}
 
@@ -217,7 +307,7 @@ namespace Sisus.Init.Internal
 		/// Creates a new instance of <see cref="TWrapped"/> initialized using the configured initialization arguments and returns it.
 		/// <para>
 		/// Note: If you need support circular dependencies between your objects then you need to also override
-		/// <see cref="GetOrCreateUnitializedWrappedObject()"/>.
+		/// <see cref="GetOrCreateUninitializedWrappedObject"/>.
 		/// </para>
 		/// </summary>
 		/// <returns> Instance of the <see cref="TWrapped"/> class. </returns>
@@ -228,7 +318,7 @@ namespace Sisus.Init.Internal
 		/// Creates a new instance of <see cref="TWrapped"/> using the default constructor
 		/// or retrieves an existing instance of it contained in <see cref="TWrapper"/>.
 		/// <para>
-		/// By default this method returns <see langword="null"/>. When this is the case then
+		/// By default, this method returns <see langword="null"/>. When this is the case then
 		/// the <see cref="CreateWrappedObject"/> overload will be used to create the
 		/// <see cref="TWrapped"/> instance during initialization.
 		/// </para>
@@ -254,7 +344,7 @@ namespace Sisus.Init.Internal
 		/// </summary>
 		/// <returns> Instance of the <see cref="TWrapped"/> class or <see langword="null"/>. </returns>
 		[return: MaybeNull]
-		protected virtual TWrapped GetOrCreateUnitializedWrappedObject() => target != null && target.gameObject == gameObject ? target.wrapped : default;
+		protected virtual TWrapped GetOrCreateUninitializedWrappedObject() => target && ReferenceEquals(target.gameObject, gameObject) ? target.wrapped : default;
 
 		/// <summary>
 		/// Initializes the existing <see cref="target"/> or new instance of type <see cref="TWrapper"/> using the provided <paramref name="wrappedObject">wrapped object</paramref>.
@@ -264,12 +354,12 @@ namespace Sisus.Init.Internal
 		[return: NotNull]
 		protected virtual TWrapper InitWrapper(TWrapped wrappedObject)
 		{
-			if(target == null)
+			if(!target)
 			{
 				return gameObject.AddComponent<TWrapper, TWrapped>(wrappedObject);
 			}
 
-			if(target.gameObject != gameObject)
+			if(!ReferenceEquals(target.gameObject, gameObject))
 			{
 				return target.Instantiate(wrappedObject);
 			}
@@ -317,7 +407,7 @@ namespace Sisus.Init.Internal
 		bool IInitializerEditorOnly.WasJustReset { get; set; }
 		bool IInitializerEditorOnly.IsAsync => IsAsync;
 		void IInitializerEditorOnly.SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) => SetReleaseArgumentOnDestroy(argument, shouldRelease);
-		void IInitializerEditorOnly.SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) => SetReleaseArgumentOnDestroy(argument, isAsyncValueProvider);
+		void IInitializerEditorOnly.SetIsArgumentAsync(Arguments argument, bool isAsync) => SetReleaseArgumentOnDestroy(argument, isAsync);
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }
 		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
 		private protected abstract NullGuardResult EvaluateNullGuard();

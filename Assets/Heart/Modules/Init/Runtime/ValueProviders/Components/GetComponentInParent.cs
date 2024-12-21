@@ -4,7 +4,7 @@ using static Sisus.Init.ValueProviders.ValueProviderUtility;
 namespace Sisus.Init.ValueProviders
 {
 	/// <summary>
-	/// Returns an object of the requested type attached to the client <see cref="GameObject"/> or any of its parents.
+	/// Returns an object of the requested type attached to the client's <see cref="GameObject"/> or any of its parents.
 	/// <para>
 	/// Can be used to retrieve an Init argument at runtime.
 	/// </para>

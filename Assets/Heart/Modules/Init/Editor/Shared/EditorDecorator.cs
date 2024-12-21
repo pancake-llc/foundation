@@ -1,6 +1,4 @@
-﻿#define DEBUG_DISPOSE
-
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;

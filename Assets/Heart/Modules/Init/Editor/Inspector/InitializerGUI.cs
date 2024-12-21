@@ -15,11 +15,14 @@ using UnityEditorInternal;
 using UnityEngine;
 using Component = UnityEngine.Component;
 using Object = UnityEngine.Object;
-#if DEV_MODE
-using UnityEngine.Profiling;
-#endif
+
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector.Editor;
+#endif
+
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using UnityEngine.Profiling;
+using Unity.Profiling;
 #endif
 
 namespace Sisus.Init.EditorOnly.Internal
@@ -166,8 +169,8 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			NowDrawing = this;
 
-			#if DEV_MODE
-			using ProfilerScope x = new("InitializerGUI.Ctr");
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = constructorMarker.Auto();
 			#endif
 
 			this.ownerSerializedObject = ownerSerializedObject;
@@ -329,6 +332,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			bool setValue = !GetBoolUserData(initializableScript, initializableType, userDataKey);
 			Menu.SetChecked(ComponentMenuItems.ShowInitSection, setValue);
 			SetUserData(initializableScript, initializableType, userDataKey, setValue);
+			EditorDecoratorInjector.RemoveFrom(initializableType);
 		}
 
 		public static NullArgumentGuard GetNullArgumentGuardFlags([DisallowNull] Object target)
@@ -426,8 +430,8 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private void SetNullArgumentGuardFlags(NullArgumentGuard value)
 		{
-			bool alltargetsHandled = true;
-
+			bool allTargetsHandled = true;
+			
 			if(Target is IInitializer)
 			{
 				if(ownerSerializedObject.FindProperty("nullArgumentGuard") is { } nullArgumentGuardProperty)
@@ -443,7 +447,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						if (target is not IInitializerEditorOnly initializerEditorOnly)
 						{
-							alltargetsHandled = false;
+							allTargetsHandled = false;
 							continue;
 						}
 
@@ -457,34 +461,41 @@ namespace Sisus.Init.EditorOnly.Internal
 			else
 			{
 				var initializers = targets.Select(t => t is MonoBehaviour monoBehaviour && InitializerUtility.TryGetInitializer(monoBehaviour, out IInitializer initializer) ? initializer as Object : null).Where(i => i).ToArray();
-				//bool done = false;
-				using var tempSerializedObject = new SerializedObject(initializers);
-				if(tempSerializedObject.FindProperty("nullArgumentGuard") is { } nullArgumentGuardProperty)
+
+				if(initializers.Any())
 				{
-					nullArgumentGuardProperty.intValue = (int)value;
-					tempSerializedObject.ApplyModifiedProperties();
+					using var tempSerializedObject = new SerializedObject(initializers);
+					if(tempSerializedObject.FindProperty("nullArgumentGuard") is { } nullArgumentGuardProperty)
+					{
+						nullArgumentGuardProperty.intValue = (int)value;
+						tempSerializedObject.ApplyModifiedProperties();
+					}
+					else
+					{
+						Undo.RecordObjects(initializers, "Set Null Argument Guard");
+
+						foreach(Object initializer in initializers)
+						{
+							if(initializer is not IInitializerEditorOnly initializerEditorOnly)
+							{
+								allTargetsHandled = false;
+								continue;
+							}
+
+							initializerEditorOnly.NullArgumentGuard = value;
+						}
+
+						tempSerializedObject.Update();
+						tempSerializedObject.ApplyModifiedProperties();
+					}
 				}
 				else
 				{
-					Undo.RecordObjects(initializers, "Set Null Argument Guard");
-
-					foreach(Object initializer in initializers)
-					{
-						if (initializer is not IInitializerEditorOnly initializerEditorOnly)
-						{
-							alltargetsHandled = false;
-							continue;
-						}
-
-						initializerEditorOnly.NullArgumentGuard = value;
-					}
-
-					tempSerializedObject.Update();
-					tempSerializedObject.ApplyModifiedProperties();
+					allTargetsHandled = false;
 				}
 			}
 
-			if(alltargetsHandled)
+			if(allTargetsHandled)
 			{
 				return;
 			}
@@ -576,7 +587,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		private void Setup()
 		{
 			#if DEV_MODE
-			using ProfilerScope x = new("InitializerGUI.Setup");
+			using var x = setupMarker.Auto();
 			#endif
 
 			initializerBackgroundStyle = new GUIStyle(EditorStyles.helpBox);
@@ -644,7 +655,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		public void OnInspectorGUI()
 		{
 			#if DEV_MODE
-			using ProfilerScope x = new("InitializerGUI.OnInspectorGUI");
+			using var x = onInspectorGUIMarker.Auto();
 			#endif
 
 			if(initializerBackgroundStyle is null)
@@ -851,7 +862,7 @@ namespace Sisus.Init.EditorOnly.Internal
 									else if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
 									{
 										nullGuardIcon = initStateFailedIcon;
-										nullGuardIcon.tooltip = "❌ Target has not been initialized.";
+										nullGuardIcon.tooltip = "○ Target has not been initialized.";
 									}
 									else
 									{
@@ -865,11 +876,11 @@ namespace Sisus.Init.EditorOnly.Internal
 									break;
 								case InitState.Initialized:
 									nullGuardIcon = initStateInitializedIcon;
-									nullGuardIcon.tooltip = "✔️ Target has been initialized.";
+									nullGuardIcon.tooltip = "◉️ Target has been initialized.";
 									break;
 								case InitState.Failed:
 									nullGuardIcon = initStateFailedIcon;
-									nullGuardIcon.tooltip = "❌ Target initialization has failed.";
+									nullGuardIcon.tooltip = "○ Target initialization has failed.";
 									break;
 								default:
 									throw new ArgumentOutOfRangeException(initializable.InitState.ToString());
@@ -888,22 +899,22 @@ namespace Sisus.Init.EditorOnly.Internal
 								nullGuardIcon = nullGuardPassedWithValueProviderValueMissing;
 								nullGuardIcon.tooltip
 									= GetTooltip(nullGuard, false)
-									  + "\n\nAll arguments are services, but some of them are loaded asynchronously.\n\nAdding an Initializer is recommended for deferred initialization support, in case the service isn't ready yet when this client is loaded.";
+									+ "\n\nAll arguments are services, but some of them are loaded asynchronously.\n\nAdding an Initializer is recommended for deferred initialization support, in case the service isn't ready yet when this client is loaded.";
 							}
 							else
 							{
 								nullGuardIcon = nullGuardPassedIcon;
 								nullGuardIcon.tooltip
 									= GetTooltip(nullGuard, false) +
-									  (targetDerivesFromGenericBaseType
-										  ? "\n\nAll arguments are services.\n\nThe client will receive them automatically during initialization.\n\nAdding an Initializer is not necessary - unless there is a need to override some of the services for this particular client."
-										  : "\n\nAll arguments are services.\n\nThe client can use InitArgs.TryGet to acquire them during initialization, in which case adding an Initializer is not necessary - unless there is a need to override some of the services for this particular client");
+									(targetDerivesFromGenericBaseType
+									? "\n\nAll arguments are services.\n\nThe client will receive them automatically during initialization.\n\nAdding an Initializer is not necessary - unless there is a need to override some of the services for this particular client."
+									: "\n\nAll arguments are services.\n\nThe client can use InitArgs.TryGet to acquire them during initialization, in which case adding an Initializer is not necessary - unless there is a need to override some of the services for this particular client");
 							}
 						}
 						else
 						{
 							nullGuardIcon = nullGuardFailedIcon;
-							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) +"\n\nMissing argument detected.\n\nIf the argument should be allowed to be null, then set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime select 'Service (Local)' from the dropdown.";
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) +"\n\n<color=#ffd100>Missing argument detected!</color>\n\nIf the argument should be allowed to be null, then set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime select 'Service (Local)' from the dropdown.";
 						}
 
 						GUI.Label(nullGuardIconRect, nullGuardIcon);
@@ -1025,7 +1036,7 @@ namespace Sisus.Init.EditorOnly.Internal
 									else if(nullGuard.HasFlag(NullArgumentGuard.RuntimeException))
 									{
 										nullGuardIcon = initStateFailedIcon;
-										nullGuardIcon.tooltip = "❌ Target has not been initialized.";
+										nullGuardIcon.tooltip = "○ Target has not been initialized.";
 									}
 									else
 									{
@@ -1039,11 +1050,11 @@ namespace Sisus.Init.EditorOnly.Internal
 									break;
 								case InitState.Initialized:
 									nullGuardIcon = initStateInitializedIcon;
-									nullGuardIcon.tooltip = "✔️ Target has been initialized.";
+									nullGuardIcon.tooltip = "◉️ Target has been initialized.";
 									break;
 								case InitState.Failed:
 									nullGuardIcon = initStateFailedIcon;
-									nullGuardIcon.tooltip = "❌ Target initialization has failed.";
+									nullGuardIcon.tooltip = "○ Target initialization has failed.";
 									break;
 								default:
 									throw new ArgumentOutOfRangeException(initializable.InitState.ToString());
@@ -1059,7 +1070,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						else if(nullGuardResult == NullGuardResult.ValueMissing)
 						{
 							nullGuardIcon = nullGuardFailedIcon;
-							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) +"\n\nMissing argument detected.\n\nIf the argument should be allowed to be null, then set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime select 'Service (Local)' from the dropdown.";
+							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) +"\n\n<color=#ffd100>Missing argument detected!\n\nIf the argument should be allowed to be null, then set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime select 'Service (Local)' from the dropdown.";
 						}
 						else if(nullGuardResult == NullGuardResult.InvalidValueProviderState)
 						{
@@ -1228,7 +1239,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			buttonRect.width = Mathf.Min(buttonOptimalWidth, buttonMaxWidth);
 			if(GUI.Toggle(buttonRect, !usingOnAfterDeserialize, useAwakeButtonLabel, buttonStyle) && usingOnAfterDeserialize)
 			{
-				LayoutUtility.ApplyWhenSafe(RemoveInitializerFromAllTargets);
+				LayoutUtility.OnLayoutEvent(RemoveInitializerFromAllTargets);
 			}
 		}
 
@@ -1347,7 +1358,7 @@ namespace Sisus.Init.EditorOnly.Internal
 							Debug.Log($"SetIsInspectorExpanded({initializer.GetType().Name}, {setUnfolded})");
 							#endif
 
-							LayoutUtility.ApplyWhenSafe(() =>
+							LayoutUtility.OnLayoutEvent(() =>
 							{
 								if(initializer)
 								{
@@ -1365,7 +1376,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					Debug.Log($"SetUserData({userDataType.Name}, {setUnfolded})");
 					#endif
 
-					LayoutUtility.ApplyWhenSafe(() =>
+					LayoutUtility.OnLayoutEvent(() =>
 					{
 						EditorPrefsUtility.SetUserData(userDataType, IsUnfoldedUserDataKey, setUnfolded);
 					});
@@ -1475,6 +1486,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			for(int i = 0; i < count; i++)
 			{
 				sb.Append('\n');
+				sb.Append(i + 1);
+				sb.Append(". ");
 				sb.Append(TypeUtility.ToString(initParameterTypes[i]));
 				if(initParametersAreServices[i])
 				{
@@ -1534,19 +1547,19 @@ namespace Sisus.Init.EditorOnly.Internal
 			return hasInitializer ?
 			(guard switch
 			{
-				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n✔️ Edit Mode Warning\n❌ Runtime Exception\n❌ Enabled For Prefabs",
-				NullArgumentGuard.RuntimeException => "Null Argument Guard:\n❌ Edit Mode Warning\n✔️ Runtime Exception\n❌ Enabled For Prefabs",
-				NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n❌ Edit Mode Warning\n❌ Runtime Exception\n✔️ Enabled For Prefabs",
-				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException => "Null Argument Guard:\n✔️ Edit Mode Warning\n✔️ Runtime Exception\n❌ Enabled For Prefabs",
-				NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n❌ Edit Mode Warning\n✔️ Runtime Exception\n✔️ Enabled For Prefabs",
-				NullArgumentGuard.EditModeWarning | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n✔️ Edit Mode Warning\n✔️ Runtime Exception\n❌ Enabled For Prefabs",
-				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n✔️ Edit Mode Warning\n✔️ Runtime Exception\n✔️ Enabled For Prefabs",
-				_ => "Null Argument Guard:\n❌ Edit Mode Warning\n❌ Runtime Exception\n❌ Enabled For Prefabs"
+				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n◉️ Edit Mode Warning\n○ Runtime Exception\n○ Enabled For Prefabs",
+				NullArgumentGuard.RuntimeException => "Null Argument Guard:\n○ Edit Mode Warning\n◉️ Runtime Exception\n○ Enabled For Prefabs",
+				NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n○ Edit Mode Warning\n○ Runtime Exception\n◉️ Enabled For Prefabs",
+				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException => "Null Argument Guard:\n◉️ Edit Mode Warning\n◉️ Runtime Exception\n○ Enabled For Prefabs",
+				NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n○ Edit Mode Warning\n◉️ Runtime Exception\n◉️ Enabled For Prefabs",
+				NullArgumentGuard.EditModeWarning | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n◉️ Edit Mode Warning\n◉️ Runtime Exception\n○ Enabled For Prefabs",
+				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n◉️ Edit Mode Warning\n◉️ Runtime Exception\n◉️ Enabled For Prefabs",
+				_ => "Null Argument Guard:\n○ Edit Mode Warning\n○ Runtime Exception\n○ Enabled For Prefabs"
 			})
 			:  guard switch
 			{
-				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n✔️ Edit Mode Warning",
-				_ => "Null Argument Guard:\n❌ Edit Mode Warning"
+				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n◉️ Edit Mode Warning",
+				_ => "Null Argument Guard:\n○ Edit Mode Warning"
 			};
 		}
 
@@ -1659,7 +1672,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			menu.AddSeparator("");
 
-			menu.AddItem(new GUIContent("Remove"), false, () => LayoutUtility.ApplyWhenSafe(RemoveInitializerFromAllTargets));
+			menu.AddItem(new GUIContent("Remove"), false, () => LayoutUtility.OnLayoutEvent(RemoveInitializerFromAllTargets));
 
 			menu.AddItem(new GUIContent("Copy"), false, Copy);
 
@@ -1819,15 +1832,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(initializerEditor)
 			{
 				initializerEditor.serializedObject.Update();
-				
+
 				#if DEV_MODE && DEBUG_REPAINT
 				Debug.Log(initializerEditor.GetType().Name + "Repaint");
+				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 				Profiler.BeginSample("Sisus.Repaint");
+				#endif
 				#endif
 
 				initializerEditor.Repaint();
 
-				#if DEV_MODE && DEBUG_REPAINT
+				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 				Profiler.EndSample();
 				#endif
 			}
@@ -1852,14 +1867,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(initializerEditor)
 			{
 				initializerEditor.serializedObject.Update();
+
 				#if DEV_MODE && DEBUG_REPAINT
 				Debug.Log(initializerEditor.GetType().Name + "Repaint");
+				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 				Profiler.BeginSample("Sisus.Repaint");
+				#endif
 				#endif
 
 				initializerEditor.Repaint();
 
-				#if DEV_MODE && DEBUG_REPAINT
+				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 				Profiler.EndSample();
 				#endif
 			}
@@ -1884,14 +1902,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(initializerEditor && initializerEditor.target)
 			{
 				initializerEditor.serializedObject.Update();
+
 				#if DEV_MODE && DEBUG_REPAINT
 				Debug.Log(initializerEditor.GetType().Name + "Repaint");
+				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 				Profiler.BeginSample("Sisus.Repaint");
+				#endif
 				#endif
 
 				initializerEditor.Repaint();
 
-				#if DEV_MODE && DEBUG_REPAINT
+				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 				Profiler.EndSample();
 				#endif
 			}
@@ -2021,5 +2042,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			TargetInitializedWhenBecomesActive,
 			TargetInitializedWhenDeserialized
 		}
+
+		#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker constructorMarker = new(ProfilerCategory.Gui, nameof(InitializerGUI) + ".Ctr");
+		private static readonly ProfilerMarker setupMarker = new(ProfilerCategory.Gui, nameof(InitializerGUI) + "." + nameof(Setup));
+		private static readonly ProfilerMarker onInspectorGUIMarker = new(ProfilerCategory.Gui, nameof(InitializerGUI) + "." + nameof(OnInspectorGUI));
+		#endif
 	}
 }

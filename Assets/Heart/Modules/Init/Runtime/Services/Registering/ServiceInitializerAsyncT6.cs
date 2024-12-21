@@ -32,14 +32,14 @@ namespace Sisus.Init
 	public abstract class ServiceInitializerAsync<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : IServiceInitializerAsync<TService, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> where TService : class
 	{
 		/// <inheritdoc/>
-		Task IServiceInitializerAsync.InitTargetAsync(params object[] arguments)
+		async Task<object> IServiceInitializerAsync.InitTargetAsync(params object[] arguments)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(arguments is null) Debug.LogWarning($"{GetType().Name}.{nameof(InitTargetAsync)} was given no services, when six were expected.");
 			else if(arguments.Length != 6) Debug.LogWarning($"{GetType().Name}.{nameof(InitTargetAsync)} was given {arguments.Length} services, when six were expected.");
 			#endif
 
-			return InitTargetAsync((TFirstArgument)arguments[0], (TSecondArgument)arguments[1], (TThirdArgument)arguments[2], (TFourthArgument)arguments[3], (TFifthArgument)arguments[4], (TSixthArgument)arguments[5]);
+			return await InitTargetAsync((TFirstArgument)arguments[0], (TSecondArgument)arguments[1], (TThirdArgument)arguments[2], (TFourthArgument)arguments[3], (TFifthArgument)arguments[4], (TSixthArgument)arguments[5]);
 		}
 
 		/// <inheritdoc/>

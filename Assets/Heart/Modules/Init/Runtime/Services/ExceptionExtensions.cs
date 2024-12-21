@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Sisus.Init.Internal
@@ -7,10 +9,14 @@ namespace Sisus.Init.Internal
     internal static class ExceptionExtensions
     {
 #if DEV_MODE || DEBUG
-        private static readonly HashSet<GlobalServiceInfo> exceptionsLogged = new();
+        private static readonly HashSet<ServiceInfo> exceptionsLogged = new();
 #endif
 
-        internal static void LogToConsole(this Exception exception)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if UNITY_6000_0_OR_NEWER
+        [HideInCallstack]
+#endif
+        internal static void LogToConsole([DisallowNull] this Exception exception)
         {
             if(exception is AggregateException aggregateException)
             {
@@ -30,7 +36,11 @@ namespace Sisus.Init.Internal
             Debug.LogException(exception, exception is InitArgsException initArgsException ? initArgsException.Context : null);
         }
 
-        internal static void LogToConsole(this AggregateException aggregateException)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if UNITY_6000_0_OR_NEWER
+        [HideInCallstack]
+#endif
+        internal static void LogToConsole([DisallowNull] this AggregateException aggregateException)
         {
             foreach(var innerException in aggregateException.InnerExceptions)
             {

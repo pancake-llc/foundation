@@ -42,7 +42,7 @@ namespace Sisus.Init
 					return true;
 				}
 
-				#if UNITY_2022_3_OR_NEWER
+				#if UNITY_6000_0_OR_NEWER
 				// Only MonoBehaviour type wrappers have the destroyCancellationToken property.
 				// In other cases we rely on the global level CancellationToken.
 				if(wrapper.AsMonoBehaviour is MonoBehaviour monoBehaviour)

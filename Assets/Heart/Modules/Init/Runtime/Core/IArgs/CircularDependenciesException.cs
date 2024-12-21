@@ -18,17 +18,20 @@ namespace Sisus.Init
 		/// <param name="exception">
 		/// The exception that is the cause of the current exception. If the innerException parameter is not a null reference, the current exception is raised in a catch block that handles the inner exception.
 		/// </param>
-		internal CircularDependenciesException(GlobalServiceInfo serviceInfo, List<GlobalServiceInfo> dependencyChain, Exception exception = null) : base(serviceInfo, ServiceInitFailReason.CircularDependencies, GenerateMessage(dependencyChain), exception) { }
+		internal CircularDependenciesException(ServiceInfo serviceInfo, List<ServiceInfo> dependencyChain, Exception exception = null) : base(serviceInfo, ServiceInitFailReason.CircularDependencies, GenerateMessage(serviceInfo, dependencyChain), exception) { }
 
-		private static string GenerateMessage(List<GlobalServiceInfo> dependencyChain)
+		internal static string GenerateMessage(ServiceInfo serviceInfo, List<ServiceInfo> dependencyChain)
 		{
 			int count = dependencyChain.Count;
+			var sb = new StringBuilder();
 			if(count == 0)
 			{
-				return "Unable to initialize service because its constructor requires another service, which can not be constructed without the prior service existing first.";
+				sb.Append("Unable to initialize service because its constructor requires another service, which can not be constructed without the prior service existing first.");
+				AppendServiceInfo(sb, serviceInfo);
+				AppendMoreHelpUrl(sb);
+				return sb.ToString();
 			}
 
-			var sb = new StringBuilder();
 			string firstName = TypeUtility.ToString(dependencyChain[0].ConcreteOrDefiningType);
 
 			if(count == 1)
@@ -63,6 +66,9 @@ namespace Sisus.Init
 			sb.Append(" → <color=red>");
 			sb.Append(firstName);
 			sb.Append("</color> → ...");
+
+			AppendServiceInfo(sb, serviceInfo);
+			AppendMoreHelpUrl(sb);
 
 			return sb.ToString();
 		}

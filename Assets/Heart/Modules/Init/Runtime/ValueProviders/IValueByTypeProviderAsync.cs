@@ -26,7 +26,7 @@ namespace Sisus.Init
 		/// </param>
 		/// <returns>
 		/// <see cref="Awaitable{TValue}"/> that can be <see langword="await">awaited</see> to get the value of type <typeparamref name="TValue"/>, if available;
-		/// otherwise, <see cref="default"/>.
+		/// otherwise, <see langword="default"/>.
 		/// </returns>
 		#if UNITY_2023_1_OR_NEWER
 		Awaitable<TValue>

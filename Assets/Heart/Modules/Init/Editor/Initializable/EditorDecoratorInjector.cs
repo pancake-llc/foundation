@@ -1,5 +1,6 @@
-﻿#define DEBUG_INJECT
-#define DEBUG_REMOVE
+﻿//#define DEBUG_REPAINT
+//#define DEBUG_INJECT
+//#define DEBUG_REMOVE
 
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,6 @@ namespace Sisus.Init.EditorOnly.Internal
 	[InitializeOnLoad]
 	internal static class EditorDecoratorInjector
 	{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-		private static readonly ProfilerMarker afterRootHeaderGUIMarker = new(ProfilerCategory.Gui, "EditorDecoratorInjector.AfterInspectorRootEditorHeaderGUI");
-		private static readonly ProfilerMarker processInspectorElementMarker = new(ProfilerCategory.Gui, "EditorDecoratorInjector.ProcessInspectorElement");
-#endif
-		
 		private static readonly Assembly sisusEditorAssembly = typeof(InitializableEditorDecorator).Assembly;
 		private static readonly List<EditorDecorator> activeDecorators = new();
 
@@ -37,12 +33,57 @@ namespace Sisus.Init.EditorOnly.Internal
 			AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
 		}
 
+		public static void RemoveFrom(Component target)
+		{
+			LayoutUtility.OnRepaintEvent(() =>
+			{
+				for(int i = activeDecorators.Count - 1; i >= 0; i--)
+				{
+					if(Array.IndexOf(activeDecorators[i].DecoratedEditor.targets,target) != -1)
+					{
+						activeDecorators[i].Dispose();
+						activeDecorators.RemoveAt(i);
+					}
+				}
+			});
+		}
+
+		public static void RemoveFrom(Type targetType)
+		{
+			LayoutUtility.OnRepaintEvent(() =>
+			{
+				for(int i = activeDecorators.Count - 1; i >= 0; i--)
+				{
+					var decorator = activeDecorators[i];
+					foreach(var target in decorator.DecoratedEditor.targets)
+					{
+						if (target.GetType() != targetType)
+						{
+							continue;
+						}
+
+						if(decorator.IsValid())
+						{
+							LayoutUtility.Repaint(decorator.DecoratedEditor);
+						}
+
+						decorator.parent?.Remove(decorator);
+						decorator.Dispose();
+						activeDecorators.RemoveAt(i);
+						break;
+					}
+				}
+			});
+		}
+
 		private static void OnBeforeAssemblyReload()
 		{
 			// Dispose all decorators to avoid memory leaks.
 			for(int i = activeDecorators.Count - 1; i >= 0; i--)
 			{
-				activeDecorators[i].Dispose();
+				var decorator = activeDecorators[i];
+				decorator.parent?.Remove(decorator);
+				decorator.Dispose();
 			}
 
 			activeDecorators.Clear();
@@ -50,27 +91,27 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static void AfterInspectorRootEditorHeaderGUI(Editor rootEditor)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 			using var x = afterRootHeaderGUIMarker.Auto();
-#endif
-			
+			#endif
+
 			if(EditorApplication.isCompiling)
 			{
 				return;
 			}
 
-			foreach(var inspectorElement in GetAllInspectorElements(rootEditor))
+			foreach((var inspectorType, var inspectorElement) in GetAllInspectorElements(rootEditor))
 			{
-				ProcessInspectorElement(rootEditor, inspectorElement);
+				ProcessInspectorElement(rootEditor, inspectorType, inspectorElement);
 			}
 		}
 
-		private static void ProcessInspectorElement(Editor rootEditor, InspectorElement inspectorElement)
+		private static void ProcessInspectorElement(Editor rootEditor, InspectorType inspectorType, InspectorElement inspectorElement)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 			using var x = processInspectorElementMarker.Auto();
-#endif
-			
+			#endif
+
 			var editor = inspectorElement.GetEditor();
 			if(editor.GetType().Assembly == sisusEditorAssembly)
 			{
@@ -91,10 +132,11 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
 					activeDecorators[i].Dispose();
 					activeDecorators.RemoveAt(i);
-
 					LayoutUtility.Repaint(rootEditor);
 				}
 			}
+
+			bool isDebugMode = inspectorType is InspectorType.InspectorWindowDebugMode;
 
 			for(int i = inspectorElement.childCount - 1; i >= 0; i--)
 			{
@@ -104,7 +146,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				// If a valid decorator already exits, we are done here.
-				if(decorator.IsValid() && decorator.targets.SequenceEqual(inspectorElement.GetEditor().targets))
+				if(!isDebugMode && decorator.IsValid() && decorator.targets.SequenceEqual(inspectorElement.GetEditor().targets))
 				{
 					return;
 				}
@@ -126,6 +168,13 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				LayoutUtility.Repaint(rootEditor);
+			}
+
+			// Don't draw decorators in debug mode to avoid clutter, duplicated information,
+			// and to minimize the risk of crashes.
+			if(isDebugMode)
+			{
+				return;
 			}
 
 			if(IsMissingComponent(target))
@@ -162,9 +211,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 					activeDecorators.Add(afterInspectorGUI);
 
-#if DEV_MODE && DEBUG_INJECT
+					#if DEV_MODE && DEBUG_INJECT
 					Debug.Log($"Injecting {editorDecoratorType.Name}.{nameof(EditorDecorator.OnAfterInspectorGUI)} to {targetType.Name}'s editor {editor.GetType().Name} (in assembly {editor.GetType().Assembly.GetName().Name})...");
-#endif
+					#endif
 
 					afterInspectorGUI.name = nameof(EditorDecorator.OnAfterInspectorGUI);
 					inspectorElement.Insert(inspectorElement.childCount, afterInspectorGUI);
@@ -185,7 +234,12 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 		}
-		
+
 		private static bool IsMissingComponent(Object target) => !target || target.GetType() == typeof(MonoBehaviour);
+
+		#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker afterRootHeaderGUIMarker = new(ProfilerCategory.Gui, "EditorDecoratorInjector.AfterInspectorRootEditorHeaderGUI");
+		private static readonly ProfilerMarker processInspectorElementMarker = new(ProfilerCategory.Gui, "EditorDecoratorInjector.ProcessInspectorElement");
+		#endif
 	}
 }

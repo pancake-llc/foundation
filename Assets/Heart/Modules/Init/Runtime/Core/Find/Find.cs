@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Sisus.Init.Internal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -79,7 +80,7 @@ namespace Sisus.Init
 			for(int i = findableTypes.Length - 1; i >= 0; i--)
 			{
 				Object found = ObjectByExactType(findableTypes[i], includeInactive);
-				if(found != null)
+				if(found)
 				{
 					return As<T>(found);
 				}
@@ -192,7 +193,7 @@ namespace Sisus.Init
 		/// </para>
 		/// </param>
 		/// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
-		/// <returns> Loaded <see cref="Any"/> instance, if found; otherwise, <see langword="null"/>. </returns>
+		/// <returns> Loaded <see cref="Init.Any{T}"/> instance, if found; otherwise, <see langword="null"/>. </returns>
 		[return: MaybeNull]
 		public static object Any([DisallowNull] Type type, bool includeInactive = false)
 		{
@@ -293,7 +294,7 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// Returns all loaded <see cref="Any">Objects</see> of the given <paramref name="type"/>.
+		/// Returns all loaded <see cref="Init.Any{T}">Objects</see> of the given <paramref name="type"/>.
 		/// </summary>
 		/// <param name="type">
 		/// Type of the objects to find.
@@ -581,7 +582,7 @@ namespace Sisus.Init
 		/// <param name="type">
 		/// Type of the object to find.
 		/// <para>
-		/// This can be the exact type of an <see cref="Any"/>, any type derived by it
+		/// This can be the exact type of an <see cref="Init.Any{T}"/>, any type derived by it
 		/// or the type of any interface it implements.
 		/// </para>
 		/// <para>
@@ -618,7 +619,7 @@ namespace Sisus.Init
 		/// <param name="type">
 		/// Type of the object to find.
 		/// <para>
-		/// This can be the exact type of an <see cref="Any"/>, any type derived by it
+		/// This can be the exact type of an <see cref="Init.Any{T}"/>, any type derived by it
 		/// or the type of any interface it implements.
 		/// </para>
 		/// <para>
@@ -903,7 +904,7 @@ namespace Sisus.Init
 				}
 
 				var component = gameObject.GetComponentInChildren(findableTypes[i], includeInactive);
-				if(component != null)
+				if(component)
 				{
 					return As(type, component);
 				}
@@ -929,7 +930,7 @@ namespace Sisus.Init
 				}
 
 				var component = gameObject.GetComponentInChildren(findableTypes[i], includeInactive);
-				if(component != null)
+				if(component)
 				{
 					result = As(type, component);
 					return true;
@@ -1063,7 +1064,7 @@ namespace Sisus.Init
 		{
 			GameObject result = GameObject.FindWithTag(tag);
 			
-			if(result != null || !includeInactive)
+			if(result || !includeInactive)
 			{
 				return result;
 			}
@@ -1091,7 +1092,7 @@ namespace Sisus.Init
 		{
 			result = GameObject.FindWithTag(tag);
 
-			if(result != null)
+			if(result)
 			{
 				return true;
 			}
@@ -1102,7 +1103,7 @@ namespace Sisus.Init
 			}
 
 			result = WithTagFromLoadedScenesIncludingInactive(tag);
-			return result != null;
+			return result;
 		}
 
 		/// <summary>
@@ -1133,7 +1134,7 @@ namespace Sisus.Init
 		public static T WithTag<T>(string tag, bool includeInactive = false)
 		{
 			GameObject gameObject = WithTag(tag, includeInactive);
-			return gameObject != null ? In<T>(gameObject) : default;
+			return gameObject ? In<T>(gameObject) : default;
 		}
 
 		/// <summary>
@@ -1152,6 +1153,7 @@ namespace Sisus.Init
 		/// Only objects whose classes derive from <see cref="Component"/> or
 		/// objects that are wrapped by a <see cref="IWrapper{T}"/> can be returned.
 		/// </para>
+		/// </param>
 		/// <param name="includeInactive">
 		/// Should <see cref="GameObject.activeInHierarchy">inactive</see>
 		/// <see cref="GameObject">GameObjects</see> be included in the search?
@@ -1164,7 +1166,7 @@ namespace Sisus.Init
 		public static object WithTag([DisallowNull] string tag, [DisallowNull] Type type, bool includeInactive = false)
 		{
 			GameObject gameObject = WithTag(tag, includeInactive);
-			return gameObject != null ? In(gameObject, type) : default;
+			return gameObject ? In(gameObject, type) : default;
 		}
 
 		/// <summary>
@@ -1610,7 +1612,7 @@ namespace Sisus.Init
 			if(HasFlag(including, Including.Parents))
 			{
 				Transform parent = gameObject.transform.parent;
-				if(parent != null && InParents(parent.gameObject, type, out result, includeInactive))
+				if(parent && InParents(parent.gameObject, type, out result, includeInactive))
 				{
 					return result;
 				}
@@ -1683,7 +1685,7 @@ namespace Sisus.Init
 			if(HasFlag(including, Including.Parents))
 			{
 				Transform parent = gameObject.transform.parent;
-				if(parent != null && InParents(parent.gameObject, out result, includeInactive))
+				if(parent && InParents(parent.gameObject, out result, includeInactive))
 				{
 					return true;
 				}
@@ -1746,13 +1748,13 @@ namespace Sisus.Init
 			}
 
 			Transform parent = gameObject.transform.parent;
-			if(parent != null && InParents(parent.gameObject, out result, includeInactive))
+			if(parent && InParents(parent.gameObject, out result, includeInactive))
 			{
 				return true;
 			}
 
 			var rootGameObject = gameObject.transform.root.gameObject;
-			if(rootGameObject != gameObject && InChildren(rootGameObject, out result, includeInactive))
+			if(!ReferenceEquals(rootGameObject, gameObject) && InChildren(rootGameObject, out result, includeInactive))
 			{
 				return true;
 			}
@@ -1841,7 +1843,7 @@ namespace Sisus.Init
 				return In<T>(gameObject);
 			}
 
-			if(obj is IWrapper wrapper && wrapper.WrappedObject is T wrappedObject)
+			if(obj is IWrapper { WrappedObject: T wrappedObject })
 			{
 				return wrappedObject;
 			}
@@ -1851,13 +1853,13 @@ namespace Sisus.Init
 				return In<T>(component.gameObject);
 			}
 
-			if(!WrapperOf(obj, out wrapper))
+			if(!WrapperOf(obj, out var wrapper))
 			{
 				return default;
 			}
 
 			gameObject = wrapper.gameObject;
-			if(gameObject == null)
+			if(!gameObject)
 			{
 				return default;
 			}
@@ -1927,7 +1929,7 @@ namespace Sisus.Init
 			}
 
 			gameObject = wrapper.gameObject;
-			if(gameObject != null)
+			if(gameObject)
 			{
 				return In(gameObject, out result);
 			}
@@ -2211,7 +2213,7 @@ namespace Sisus.Init
 			if(HasFlag(including, Including.Parents))
 			{
 				Transform parent = gameObject.transform.parent;
-				if(parent != null && InParents(parent.gameObject, out result, includeInactive))
+				if(parent && InParents(parent.gameObject, out result, includeInactive))
 				{
 					return result;
 				}
@@ -2365,7 +2367,7 @@ namespace Sisus.Init
 				if(HasFlag(including, Including.Parents))
 				{
 					Transform parent = gameObject.transform.parent;
-					if(parent != null)
+					if(parent)
 					{
 						AllInParents(parent.gameObject, list, includeInactive);
 					}
@@ -2410,7 +2412,7 @@ namespace Sisus.Init
 				if(HasFlag(including, Including.Parents))
 				{
 					Transform parent = gameObject.transform.parent;
-					if(parent != null)
+					if(parent)
 					{
 						AllInParents(parent.gameObject, type, list, includeInactive);
 					}
@@ -2606,7 +2608,7 @@ namespace Sisus.Init
 						return scriptAsset;
 					}
 
-					if(scriptClassType is null)
+					if(scriptClassType is null && (!fallback || type.Namespace is { Length: 0 } || scriptAsset.text.Contains("namespace " + type.Namespace)))
 					{
 						fallback = scriptAsset;
 					}
@@ -2634,6 +2636,11 @@ namespace Sisus.Init
 						{
 							return scriptAsset;
 						}
+						
+						if(!fallback && scriptClassType is null && type.Namespace is { Length: > 0 } && scriptAsset.text.Contains("namespace " + type.Namespace))
+						{
+							fallback = scriptAsset;
+						}
 
 						#if DEV_MODE && DEBUG_FIND_SCRIPT
 						Debug.LogWarning($"FindScriptFile({TypeUtility.ToString(type)}) second pass: ignoring partial match @ \"{path}\" because MonoScript.GetClass() result {TypeUtility.ToString(scriptClassType)} did not match type.");
@@ -2655,7 +2662,7 @@ namespace Sisus.Init
 			}
 
 			#if DEV_MODE
-			Debug.Log($"FindScriptFile({TypeUtility.ToString(type)}) failed to find MonoScript for type {TypeUtility.ToString(type)} AssetDatabase.FindAssets(\"{name} t:MonoScript\") returned {count} results.");
+			Debug.Log($"FindScriptFile({TypeUtility.ToString(type)}) failed to find MonoScript for type {TypeUtility.ToString(type)} AssetDatabase.FindAssets(\"{name} t:MonoScript\") returned {count} results:\n{string.Join("\n", guids.Select(AssetDatabase.GUIDToAssetPath))}");
 			#endif
 
 			return null;
@@ -2720,7 +2727,7 @@ namespace Sisus.Init
 				{
 					string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, type);
-					if(instance != null)
+					if(instance)
 					{
 						result = As<T>(instance);
 						if(result != null)
@@ -2775,7 +2782,7 @@ namespace Sisus.Init
 				{
 					string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, findableType);
-					if(instance != null)
+					if(instance)
 					{
 						result = As(type, instance);
 						return true;
@@ -2820,7 +2827,7 @@ namespace Sisus.Init
 					{
 						string assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 						var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-						if(prefab != null)
+						if(prefab)
 						{
 							yield return As<T>(prefab);
 						}
@@ -2838,7 +2845,7 @@ namespace Sisus.Init
 				{
 					string assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, type);
-					if(instance != null)
+					if(instance)
 					{
 						yield return As<T>(instance);
 					}
@@ -2880,7 +2887,7 @@ namespace Sisus.Init
 					{
 						string assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 						var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-						if(prefab != null)
+						if(prefab)
 						{
 							yield return prefab;
 						}
@@ -2898,7 +2905,7 @@ namespace Sisus.Init
 				{
 					string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, findableType);
-					if(instance != null)
+					if(instance)
 					{
 						yield return As(type, instance);
 					}
@@ -2931,7 +2938,7 @@ namespace Sisus.Init
 		{
 			Object obj = LoadAddressable(key);
 
-			if(obj == null)
+			if(!obj)
 			{
 				result = default;
 				return false;
@@ -2978,7 +2985,7 @@ namespace Sisus.Init
 		{
 			Object obj = LoadAddressable(key);
 
-			if(obj == null)
+			if(!obj)
 			{
 				result = null;
 				return false;
@@ -3023,7 +3030,7 @@ namespace Sisus.Init
 		{
 			Object obj = LoadAddressable(key);
 
-			if(obj == null)
+			if(!obj)
 			{
 				return null;
 			}
@@ -3065,7 +3072,7 @@ namespace Sisus.Init
 		{
 			Object obj = LoadAddressable(key);
 
-			if(obj == null)
+			if(!obj)
 			{
 				return default;
 			}
@@ -3101,7 +3108,7 @@ namespace Sisus.Init
 		/// </param>
 		/// <param name="path"> Path to the target resource to load. </param>
 		/// <param name="result">
-		/// When this method returns, contains loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+		/// When this method returns, contains loaded instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
 		/// </param>
 		/// <returns> <see langword="true"/> if an asset was found; otherwise, <see langword="false"/>. </returns>
 		public static bool Resource([DisallowNull] Type type, [DisallowNull] string path, [NotNullWhen(true), MaybeNullWhen(false)] out object result)
@@ -3132,7 +3139,7 @@ namespace Sisus.Init
 		public static object Resource([DisallowNull] Type type, [DisallowNull] string path)
 		{
 			Object obj = Resources.Load(path, typeof(Object));
-			if(obj == null)
+			if(!obj)
 			{
 				return default;
 			}
@@ -3169,7 +3176,7 @@ namespace Sisus.Init
 		public static T Resource<T>(string path)
 		{
 			Object obj = Resources.Load(path, typeof(Object));
-			if(obj == null)
+			if(!obj)
 			{
 				return default;
 			}
@@ -3209,7 +3216,7 @@ namespace Sisus.Init
 		public static bool Resource<T>([DisallowNull] string path, [NotNullWhen(true), MaybeNullWhen(false)] out T result)
 		{
 			Object obj = Resources.Load(path, typeof(Object));
-			if(obj == null)
+			if(!obj)
 			{
 				result = default;
 				return false;

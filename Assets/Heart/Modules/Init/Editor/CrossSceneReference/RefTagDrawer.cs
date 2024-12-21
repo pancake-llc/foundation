@@ -13,11 +13,6 @@ namespace Sisus.Init.EditorOnly
 	[InitializeOnLoad]
 	internal static class RefTagDrawer
 	{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-		private static readonly ProfilerMarker beforeHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.BeforeHeaderGUI");
-		private static readonly ProfilerMarker afterHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.AfterHeaderGUI");
-#endif
-		
 		static RefTagDrawer()
 		{
 			ComponentHeader.BeforeHeaderGUI -= OnBeforeComponentHeaderGUI;
@@ -39,6 +34,10 @@ namespace Sisus.Init.EditorOnly
 
 		private static void OnAfterGameObjectHeaderGUI([DisallowNull] Editor gameObjectEditor)
 		{
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = beforeHeaderGUIMarker.Auto();
+#endif
+			
 			var gameObject = gameObjectEditor.target as GameObject;
 			if(!TryGetRefTag(gameObject, gameObject, out var referenceable))
 			{
@@ -55,38 +54,34 @@ namespace Sisus.Init.EditorOnly
 			HandleContextMenu(referenceable, refRect);
 		}
 
-		private static float OnBeforeComponentHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
+		private static void OnBeforeComponentHeaderGUI(Component[] targets, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
 #if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-			using var x = beforeHeaderGUIMarker.Auto();
+			using var x = afterHeaderGUIMarker.Auto();
 #endif
-			
-			if(!TryGetRefTag(component.gameObject, component, out RefTag referenceable))
+
+			var component = targets[0];
+			if(!TryGetRefTag(component.gameObject, component, out var referenceable))
 			{
-				return 0f;
+				return;
 			}
 
 			var refLabel = GetRefLabel(referenceable);
 			var refRect = GetRefRectForComponent(component, headerRect, refLabel, Styles.RefTag);
 			HandleContextMenu(referenceable, refRect);
-			return 0f;
 		}
 
-		private static float OnAfterComponentHeaderGUI(Component component, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
+		private static void OnAfterComponentHeaderGUI(Component[] targets, Rect headerRect, bool HeaderIsSelected, bool supportsRichText)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-			using var x = afterHeaderGUIMarker.Auto();
-#endif
-			
+			var component = targets[0];
 			if(!TryGetRefTag(component.gameObject, component, out var referenceable))
 			{
-				return 0f;
+				return;
 			}
 
 			var refLabel = GetRefLabel(referenceable);
 			var refRect = GetRefRectForComponent(component, headerRect, refLabel, Styles.RefTag);
 			DrawRefLabel(refLabel, refRect);
-			return 0f;
 		}
 
 		private static void DrawRefLabel(GUIContent refLabel, Rect refRect)
@@ -200,5 +195,10 @@ namespace Sisus.Init.EditorOnly
 			result = null;
 			return false;
 		}
+		
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker beforeHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.BeforeHeaderGUI");
+		private static readonly ProfilerMarker afterHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.AfterHeaderGUI");
+#endif
 	}
 }

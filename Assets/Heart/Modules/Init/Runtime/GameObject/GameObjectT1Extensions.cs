@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
 namespace Sisus.Init
 {
@@ -322,6 +324,35 @@ namespace Sisus.Init
 
 			@this.OnBeforeException();
 			throw new InitArgumentsNotReceivedException(typeof(TComponent), $"GameObject<{typeof(TComponent).Name}>.Init");
+		}
+
+		/// <summary>
+		/// Initializes the added component using a delegate.
+		/// </summary>
+		/// <typeparam name="TComponent"> Type of the added component. </typeparam>
+		/// <param name="this"> new <see cref="GameObject"/> being initialized. </param>
+		/// <param name="init"> Delegate pointing to a function that accepts the second added component and handles initializing it. </param>
+		/// <returns> The initialized component. </returns>
+		public static TComponent Init<TComponent>(this GameObject<TComponent> @this, [DisallowNull] Action<TComponent> init) where TComponent : Component
+		{
+			@this.OnBeforeInit();
+
+			TComponent component;
+			if(@this.isClone || typeof(Transform).IsAssignableFrom(typeof(TComponent)))
+			{
+				if(!@this.gameObject.TryGetComponent(out component))
+				{
+					component = @this.gameObject.AddComponent<TComponent>();
+				}
+			}
+			else
+			{
+				component = @this.gameObject.AddComponent<TComponent>();
+			}
+
+			init(component);
+			@this.OnAfterInit();
+			return component;
 		}
 	}
 }

@@ -281,7 +281,7 @@ namespace Sisus.Init.Internal
 				return;
 			}
 
-			ServiceUtility.SetInstance(definingType, instance);
+			ServiceUtility.Set(definingType, instance);
 		}
 
 		private static void InjectServiceDependenciesForTypesThatRequireOnlyThem([AllowNull] Dictionary<Type, object> services)

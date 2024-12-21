@@ -76,20 +76,20 @@ namespace Sisus.Init
 		{
 			// Handle instance first creation method, which supports cyclical dependencies (A requires B, and B requires A).
 			if(wrapper is IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> initializable
-				&& GetOrCreateUnitializedWrappedObject() is var wrappedObject)
+				&& GetOrCreateUninitializedWrappedObject() is var wrappedObject)
 			{
 				wrapper = InitWrapper(wrappedObject);
 
 				var firstArgument = FirstArgument;
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref firstArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref firstArgument);
 				var secondArgument = SecondArgument;
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref secondArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref secondArgument);
 				var thirdArgument = ThirdArgument;
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref thirdArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref thirdArgument);
 				var fourthArgument = FourthArgument;
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref fourthArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref fourthArgument);
 				var fifthArgument = FifthArgument;
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref fifthArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref fifthArgument);
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				ValidateArgumentsAtRuntime(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
@@ -138,7 +138,7 @@ namespace Sisus.Init
 		/// Creates a new instance of <see cref="TWrapped"/> initialized using the provided arguments and returns it.
 		/// <para>
 		/// Note: If you need support circular dependencies between your objects then you need to also override
-		/// <see cref="GetOrCreateUnitializedWrappedObject()"/>.
+		/// <see cref="GetOrCreateUninitializedWrappedObject()"/>.
 		/// </para>
 		/// </summary>
 		/// <param name="firstArgument"> The first argument used to initialize the wrapped object. </param>

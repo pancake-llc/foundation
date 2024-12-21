@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define DEBUG_SERVICE_PROVIDERS
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
@@ -11,7 +13,7 @@ using UnityEditor;
 namespace Sisus.Init
 {
 	/// <summary>
-	/// Class that can act as a container for a service instances that are accessible by a limited number of clients.
+	/// Class that can act as a registerer for a service instances that are accessible by a limited number of clients.
 	/// </summary>
 	/// <typeparam name="TService">
 	/// The defining type of the service class, which is the type specified in its <see cref="ServiceAttribute"/>,
@@ -67,7 +69,7 @@ namespace Sisus.Init
 			foreach(var instance in Instances)
 			{
 				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
+				if(!instance.registerer)
 				{
 					continue;
 				}
@@ -91,7 +93,7 @@ namespace Sisus.Init
 			foreach(var instance in Instances)
 			{
 				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
+				if(!instance.registerer)
 				{
 					continue;
 				}
@@ -115,7 +117,7 @@ namespace Sisus.Init
 			foreach(var instance in Instances)
 			{
 				#if UNITY_EDITOR
-				if(!instance.serviceProvider)
+				if(!instance.registerer)
 				{
 					continue;
 				}
@@ -131,35 +133,50 @@ namespace Sisus.Init
 		}
 
 		#if UNITY_EDITOR
-		public static bool Add([DisallowNull] TService service, Clients clients, [DisallowNull] Component container)
+		public static bool Add([DisallowNull] TService service, Clients clients, [DisallowNull] Component registerer)
 		{
-			Debug.Assert(service != null, "ScopedService<TService>.Add()");
+			#if DEV_MODE
+			Debug.Assert(service != null, typeof(TService).Name);
+			#endif
+
 			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
-			return instances.TryAdd(new Instance(service, clients, container), default);
+			return instances.TryAdd(new Instance(service, clients, registerer), default);
 		}
 		#else
-		public static bool Add([DisallowNull] TService service, Clients clients, [DisallowNull] Component container)
+		public static bool Add([DisallowNull] TService service, Clients clients, [DisallowNull] Component registerer)
 		{
-			Instances.Add(new Instance(service, clients, container));
+			Instances.Add(new Instance(service, clients, registerer));
 			return true;
 		}
 		#endif
 
-		#if UNITY_EDITOR
-		internal static bool AddInternal([AllowNull] TService service, Clients clients, [DisallowNull] Component container)
+		public static bool Add([DisallowNull] ServiceProvider<TService> serviceProvider, Clients clients, [DisallowNull] Component registerer)
 		{
-			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
-			return instances.TryAdd(new Instance(service, clients, container), default);
-		}
-		#endif
+			#if DEV_MODE && DEBUG_SERVICE_PROVIDERS
+			Debug.Log("ScopedService<" + Internal.TypeUtility.ToString(typeof(TService)) + ">.Add(" + Internal.TypeUtility.ToString(serviceProvider?.GetType()) + ", " + clients + ", " + registerer + ")");
+			#endif
 
-		public static bool Remove([DisallowNull] TService service, [DisallowNull] Component container)
-		{
 			#if UNITY_EDITOR
-			var instances = UnityEditor.EditorApplication.isPlaying ? instancesInPlayMode : instancesInEditMode;
+			Debug.Assert(serviceProvider != null, typeof(TService).Name);
+			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
+			return instances.TryAdd(new Instance(serviceProvider, clients, registerer), default);
+			#else
+			Instances.Add(new Instance(serviceProvider, clients, registerer));
+			return true;
+			#endif
+		}
+
+		public static bool Remove([DisallowNull] ServiceProvider<TService> serviceProvider, [DisallowNull] Component registerer)
+		{
+			#if DEV_MODE && DEBUG_SERVICE_PROVIDERS
+			Debug.Log("ScopedService<" + Internal.TypeUtility.ToString(typeof(TService)) + ">.Remove(" + Internal.TypeUtility.ToString(serviceProvider?.GetType()) + ", " + registerer + ")");
+			#endif
+
+			#if UNITY_EDITOR
+			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
 			foreach(var instance in instances.Keys)
 			{
-				if(ReferenceEquals(instance.service, service) && ReferenceEquals(instance.serviceProvider, container))
+				if(ReferenceEquals(instance.serviceProvider, serviceProvider) && ReferenceEquals(instance.registerer, registerer))
 				{
 					return instances.TryRemove(instance, out _);
 				}
@@ -168,7 +185,7 @@ namespace Sisus.Init
 			for(int i = Instances.Count - 1; i >= 0; i--)
 			{
 				var instance = Instances[i];
-				if(ReferenceEquals(instance.service, service) && ReferenceEquals(instance.serviceProvider, container))
+				if(ReferenceEquals(instance.serviceProvider, serviceProvider) && ReferenceEquals(instance.registerer, registerer))
 				{
 					Instances.RemoveAt(i);
 					return true;
@@ -179,13 +196,47 @@ namespace Sisus.Init
 			return false;
 		}
 
-		public static bool RemoveFrom([DisallowNull] Component serviceProvider, out TService service)
+		#if UNITY_EDITOR
+		internal static bool AddInternal([AllowNull] TService service, Clients clients, [DisallowNull] Component registerer)
+		{
+			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
+			return instances.TryAdd(new Instance(service, clients, registerer), default);
+		}
+		#endif
+
+		public static bool Remove([DisallowNull] TService service, [DisallowNull] Component registerer)
 		{
 			#if UNITY_EDITOR
-			var instances = UnityEditor.EditorApplication.isPlaying ? instancesInPlayMode : instancesInEditMode;
+			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
 			foreach(var instance in instances.Keys)
 			{
-				if(ReferenceEquals(instance.serviceProvider, serviceProvider))
+				if(ReferenceEquals(instance.service, service) && ReferenceEquals(instance.registerer, registerer))
+				{
+					return instances.TryRemove(instance, out _);
+				}
+			}
+			#else
+			for(int i = Instances.Count - 1; i >= 0; i--)
+			{
+				var instance = Instances[i];
+				if(ReferenceEquals(instance.service, service) && ReferenceEquals(instance.registerer, registerer))
+				{
+					Instances.RemoveAt(i);
+					return true;
+				}
+			}
+			#endif
+
+			return false;
+		}
+
+		public static bool RemoveFrom([DisallowNull] Component registerer, out TService service)
+		{
+			#if UNITY_EDITOR
+			var instances = EditorOnly.ThreadSafe.Application.IsPlaying ? instancesInPlayMode : instancesInEditMode;
+			foreach(var instance in instances.Keys)
+			{
+				if(ReferenceEquals(instance.registerer, registerer))
 				{
 					instances.TryRemove(instance, out _);
 					service = instance.service;
@@ -196,7 +247,7 @@ namespace Sisus.Init
 			for(int i = Instances.Count - 1; i >= 0; i--)
 			{
 				var instance = Instances[i];
-				if(ReferenceEquals(instance.serviceProvider, serviceProvider))
+				if(ReferenceEquals(instance.registerer, registerer))
 				{
 					Instances.RemoveAt(i);
 					service = instance.service;
@@ -218,7 +269,14 @@ namespace Sisus.Init
 			/// <summary>
 			/// The service instance
 			/// </summary>
+			[MaybeNull]
 			public readonly TService service;
+
+			/// <summary>
+			/// A transient service provider.
+			/// </summary>
+			[MaybeNull]
+			public readonly ServiceProvider<TService> serviceProvider;
 
 			/// <summary>
 			/// Specifies which client objects can receive services from the service.
@@ -226,18 +284,29 @@ namespace Sisus.Init
 			public readonly Clients clients;
 
 			/// <summary>
-			/// ServiceTag, ServicesComponent, Initializer etc.
+			/// ServiceTag, ServicesComponent, Initializer etc. Null if registered by a ServiceInjector.
 			/// </summary>
-			public readonly Component serviceProvider;
+			[MaybeNull]
+			public readonly Component registerer;
 
-			public readonly Transform Transform => serviceProvider ? serviceProvider.transform : null;
-			public readonly Scene Scene => serviceProvider ? serviceProvider.gameObject.scene : default;
+			[MaybeNull]
+			public Transform Transform => registerer ? registerer.transform : null;
+			public Scene Scene => registerer ? registerer.gameObject.scene : default;
 
-			public Instance([DisallowNull] TService service, Clients clients, [DisallowNull] Component serviceProvider)
+			public Instance([DisallowNull] TService service, Clients clients, [DisallowNull] Component registerer)
 			{
 				this.service = service;
+				this.serviceProvider = default;
 				this.clients = clients;
+				this.registerer = registerer;
+			}
+
+			public Instance([DisallowNull] ServiceProvider<TService> serviceProvider, Clients clients, [DisallowNull] Component registerer)
+			{
+				this.service = default;
 				this.serviceProvider = serviceProvider;
+				this.clients = clients;
+				this.registerer = registerer;
 			}
 
 			public override bool Equals(object obj) => obj is Instance instance && Equals(instance);
@@ -245,14 +314,15 @@ namespace Sisus.Init
 			public bool Equals(Instance other) => 
 				EqualityComparer<TService>.Default.Equals(service, other.service) &&
 				clients == other.clients &&
-				ReferenceEquals(serviceProvider, other.serviceProvider);
+				ReferenceEquals(registerer, other.registerer);
 
 			public override int GetHashCode()
 			{
 				int hashCode = -618816118;
 				hashCode = hashCode * -1521134295 + EqualityComparer<TService>.Default.GetHashCode(service);
+				hashCode = hashCode * -1521134295 + EqualityComparer<ServiceProvider<TService>>.Default.GetHashCode(serviceProvider);
 				hashCode = hashCode * -1521134295 + clients.GetHashCode();
-				hashCode = hashCode * -1521134295 + EqualityComparer<Component>.Default.GetHashCode(serviceProvider);
+				hashCode = hashCode * -1521134295 + EqualityComparer<Component>.Default.GetHashCode(registerer);
 				return hashCode;
 			}
 		}

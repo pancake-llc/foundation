@@ -1,5 +1,6 @@
 ﻿using Sisus.Init.Internal;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Sisus.Init.Internal.InitializerUtility;
 
 namespace Sisus.Init
@@ -37,7 +38,7 @@ namespace Sisus.Init
 		[SerializeField] private protected Any<TSixthArgument> sixthArgument = default;
 
 		[SerializeField, HideInInspector] private Arguments disposeArgumentsOnDestroy = Arguments.None;
-		[SerializeField, HideInInspector] private Arguments asyncValueProviderArguments = Arguments.None;
+		[FormerlySerializedAs("asyncValueProviderArguments"),SerializeField, HideInInspector] private Arguments asyncArguments = Arguments.None;
 
 		/// <inheritdoc/>
 		protected override TFirstArgument FirstArgument { get => firstArgument.GetValue(this, Context.MainThread); set => firstArgument = value; }
@@ -53,7 +54,7 @@ namespace Sisus.Init
 		protected override TSixthArgument SixthArgument { get => sixthArgument.GetValue(this, Context.MainThread); set => sixthArgument = value; }
 
 		protected override bool IsRemovedAfterTargetInitialized => disposeArgumentsOnDestroy == Arguments.None;
-		private protected override bool IsAsync => asyncValueProviderArguments != Arguments.None;
+		private protected override bool IsAsync => asyncArguments != Arguments.None;
 
 		private protected sealed override async
 		#if UNITY_2023_1_OR_NEWER
@@ -70,7 +71,7 @@ namespace Sisus.Init
 			var fifthArgument = await this.fifthArgument.GetValueAsync(this, Context.MainThread);
 			var sixthArgument = await this.sixthArgument.GetValueAsync(this, Context.MainThread);
 
-			#if UNITY_2022_3_OR_NEWER && (UNITY_EDITOR || INIT_ARGS_SAFE_MODE)
+			#if UNITY_6000_0_OR_NEWER && (UNITY_EDITOR || INIT_ARGS_SAFE_MODE)
 			if(destroyCancellationToken.IsCancellationRequested) return default;
 			#endif
 
@@ -92,9 +93,9 @@ namespace Sisus.Init
 
 			TClient result;
 			#if UNITY_EDITOR
-			if(target == null)
-			#else
 			if(!target)
+			#else
+			if(target is null)
 			#endif
 			{
 				result = gameObject.AddComponent<TClient>();
@@ -138,12 +139,12 @@ namespace Sisus.Init
 			}
 		}
 
-		private protected sealed override void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider)
+		private protected sealed override void SetIsArgumentAsync(Arguments argument, bool isAsync)
 		{
-			var setValue = asyncValueProviderArguments.WithFlag(argument, isAsyncValueProvider);
-			if(asyncValueProviderArguments != setValue)
+			var setValue = asyncArguments.WithFlag(argument, isAsync);
+			if(asyncArguments != setValue)
 			{
-				asyncValueProviderArguments = setValue;
+				asyncArguments = setValue;
 				UnityEditor.EditorUtility.SetDirty(this);
 			}
 		}

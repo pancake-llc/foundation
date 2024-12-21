@@ -177,6 +177,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			assetImporter = AssetImporter.GetAtPath(scriptPath) as MonoImporter;
+			if(!assetImporter)
+			{
+				return false;
+			}
 
 			#if UNITY_2023_2 || UNITY_2023_3 || UNITY_6000_0 || INIT_ARGS_DISABLE_WRITE_TO_METADATA
 			// Certain Unity versions have a bug where userData always returns an empty string:
@@ -188,7 +192,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 			#endif
 
-			return assetImporter;
+			return true;
 		}
 
 		/// <summary>

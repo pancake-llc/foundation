@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Sisus.Init.Internal;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Sisus.Init.Internal.InitializerUtility;
 
 namespace Sisus.Init
@@ -33,12 +34,12 @@ namespace Sisus.Init
 		[SerializeField] private Any<TArgument> argument = default;
 
 		[SerializeField, HideInInspector] private Arguments disposeArgumentsOnDestroy = Arguments.None;
-		[SerializeField, HideInInspector] private Arguments asyncValueProviderArguments = Arguments.None;
+		[FormerlySerializedAs("asyncValueProviderArguments"),SerializeField, HideInInspector] private Arguments asyncArguments = Arguments.None;
 
 		protected override TArgument Argument { get => argument.GetValue(this, Context.MainThread); set => argument = value; }
 
 		protected override bool IsRemovedAfterTargetInitialized => disposeArgumentsOnDestroy == Arguments.None;
-		private protected override bool IsAsync => asyncValueProviderArguments != Arguments.None;
+		private protected override bool IsAsync => asyncArguments != Arguments.None;
 
 		private protected sealed override async ValueTask<TStateMachineBehaviour> InitTargetAsync(Animator target)
 		{
@@ -88,10 +89,10 @@ namespace Sisus.Init
 
 		private protected sealed override void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider)
 		{
-			var setValue = asyncValueProviderArguments.WithFlag(argument, isAsyncValueProvider);
-			if(asyncValueProviderArguments != setValue)
+			var setValue = asyncArguments.WithFlag(argument, isAsyncValueProvider);
+			if(asyncArguments != setValue)
 			{
-				asyncValueProviderArguments = setValue;
+				asyncArguments = setValue;
 				UnityEditor.EditorUtility.SetDirty(this);
 			}
 		}

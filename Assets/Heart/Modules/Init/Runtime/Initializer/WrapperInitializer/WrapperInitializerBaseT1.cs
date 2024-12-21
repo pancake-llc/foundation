@@ -52,12 +52,12 @@ namespace Sisus.Init
 		{
 			// Handle instance first creation method, which supports cyclical dependencies (A requires B, and B requires A).
 			if(wrapper is IInitializable<TArgument> initializable
-				&& GetOrCreateUnitializedWrappedObject() is var wrappedObject)
+				&& GetOrCreateUninitializedWrappedObject() is var wrappedObject)
 			{
 				wrapper = InitWrapper(wrappedObject);
 
 				var argument = Argument;
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref argument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref argument);
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(IsRuntimeNullGuardActive) ValidateArgumentAtRuntime(argument);
@@ -102,7 +102,7 @@ namespace Sisus.Init
 		/// Creates a new instance of <see cref="TWrapped"/> initialized using the provided argument and returns it.
 		/// <para>
 		/// Note: If you need support circular dependencies between your objects then you need to also override
-		/// <see cref="GetOrCreateUnitializedWrappedObject()"/>.
+		/// <see cref="GetOrCreateUninitializedWrappedObject()"/>.
 		/// </para>
 		/// </summary>
 		/// <param name="argument"> The argument used to initialize the wrapped object. </param>

@@ -12,8 +12,7 @@ using static Sisus.NullExtensions;
 namespace Sisus.Init.EditorOnly.Internal
 {
 	/// <summary>
-	/// Custom property drawer for <see cref="Any{T}"/>
-	/// that allows assigning any value to the property.
+	/// Custom property drawer for <see cref="ServiceDefinition"/>.
 	/// </summary>
 	[CustomPropertyDrawer(typeof(ServiceDefinition), true)]
 	internal class ServiceDefinitionDrawer : PropertyDrawer
@@ -273,7 +272,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			else if (serviceOrServiceProvider is IValueByTypeProvider valueByTypeProvider)
 			{
 				var client = serviceOrServiceProvider as Component;
-				foreach(var providedValueType in TypeUtility.GetAllTypesVisibleTo(serviceOrServiceProviderType, t => valueByTypeProvider.CanProvideValue(t, client), 256))
+				foreach(var providedValueType in TypeUtility.GetAllTypesVisibleTo(serviceOrServiceProviderType, valueType => valueByTypeProvider.CanProvideValue(client, valueType), 256))
 				{
 					AddIfDoesNotContain(providedValueTypes, providedValueType);
 				}

@@ -263,7 +263,7 @@ namespace Sisus.Init.Internal
 		bool IInitializerEditorOnly.WasJustReset { get; set; }
 		bool IInitializerEditorOnly.IsAsync => IsAsync;
 		void IInitializerEditorOnly.SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) => SetReleaseArgumentOnDestroy(argument, shouldRelease);
-		void IInitializerEditorOnly.SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) => SetReleaseArgumentOnDestroy(argument, isAsyncValueProvider);
+		void IInitializerEditorOnly.SetIsArgumentAsync(Arguments argument, bool isAsync) => SetReleaseArgumentOnDestroy(argument, isAsync);
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }
 		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
 		private protected abstract NullGuardResult EvaluateNullGuard();

@@ -14,7 +14,7 @@ using static Sisus.Init.EditorOnly.Internal.InitializerEditorUtility;
 
 namespace Sisus.Init.EditorOnly
 {
-	[CustomEditor(typeof(InitializerBaseInternal), editorForChildClasses:true, isFallback = true), CanEditMultipleObjects]
+	[CustomEditor(typeof(Initializer), editorForChildClasses:true, isFallback = true), CanEditMultipleObjects]
 	public class InitializerEditor : Editor
 	{
 		protected internal const string InitArgumentMetadataClassName = InitializerUtility.InitArgumentMetadataClassName;

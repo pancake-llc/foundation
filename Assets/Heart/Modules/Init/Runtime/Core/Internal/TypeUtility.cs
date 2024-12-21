@@ -35,32 +35,7 @@ namespace Sisus.Init.Internal
 			#endif
 		};
 
-		private static readonly HashSet<Type> genericBaseTypes = new()
-		{
-			typeof(MonoBehaviour<>),
-			typeof(MonoBehaviour<,>),
-			typeof(MonoBehaviour<,,>),
-			typeof(MonoBehaviour<,,,>),
-			typeof(MonoBehaviour<,,,,>),
-			typeof(MonoBehaviour<,,,,,>),
-			typeof(MonoBehaviour<,,,,,,>),
-			typeof(MonoBehaviour<,,,,,,,>),
-			typeof(MonoBehaviour<,,,,,,,,>),
-			typeof(MonoBehaviour<,,,,,,,,,>),
-			typeof(MonoBehaviour<,,,,,,,,,,>),
-			typeof(MonoBehaviour<,,,,,,,,,,,>),
-
-			typeof(ConstructorBehaviour<>), typeof(ConstructorBehaviour<,>),typeof(ConstructorBehaviour<,>),
-			typeof(ConstructorBehaviour<,,>), typeof(ConstructorBehaviour<,,,>), typeof(ConstructorBehaviour<,,,,>),
-
-			typeof(ScriptableObject<>), typeof(ScriptableObject<,>), typeof(ScriptableObject<,,>),
-			typeof(ScriptableObject<,,,>), typeof(ScriptableObject<,,,,>), typeof(ScriptableObject<,,,,,>),
-
-			typeof(StateMachineBehaviour<>), typeof(StateMachineBehaviour<,>), typeof(StateMachineBehaviour<,,>),
-			typeof(StateMachineBehaviour<,,,>), typeof(StateMachineBehaviour<,,,,>), typeof(StateMachineBehaviour<,,,,,>)
-		};
-
-		private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(3)
+		private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new(64)
 		{
 			{ '\0', new Dictionary<Type, string>(4096) {
 				{ typeof(Serialization._Integer), "Integer" }, { typeof(int), "Integer" }, { typeof(uint), "UInteger" },
@@ -478,8 +453,8 @@ namespace Sisus.Init.Internal
 			return type is null ? "Null" : ToString(type, namespaceDelimiter, toStringCache);
 		}
 
-		internal static string ToString([AllowNull] IEnumerable<Type> type, char namespaceDelimiter = '\0') => string.Join(", ", type.Select(t => ToString(t, namespaceDelimiter)));
-		
+		internal static string ToString([AllowNull] IEnumerable<Type> type, string separator = ", ", char namespaceDelimiter = '\0') => string.Join(separator, type.Select(t => ToString(t, namespaceDelimiter)));
+
 		internal static string ToString([DisallowNull] Type type, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache)
 		{
 			if(cache[namespaceDelimiter].TryGetValue(type, out string cached))
@@ -759,7 +734,7 @@ namespace Sisus.Init.Internal
 			{
 				return typeof(object);
 			}
-            
+
 			foreach(var interfaceType in collectionType.GetInterfaces())
 			{
 				if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))

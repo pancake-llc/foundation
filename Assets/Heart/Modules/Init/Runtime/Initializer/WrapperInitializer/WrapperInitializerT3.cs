@@ -1,5 +1,6 @@
 ﻿using Sisus.Init.Internal;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Sisus.Init.Internal.InitializerUtility;
 
 namespace Sisus.Init
@@ -33,7 +34,7 @@ namespace Sisus.Init
 		[SerializeField] private Any<TThirdArgument> thirdArgument = default;
 
 		[SerializeField, HideInInspector] private Arguments disposeArgumentsOnDestroy = Arguments.None;
-		[SerializeField, HideInInspector] private Arguments asyncValueProviderArguments = Arguments.None;
+		[FormerlySerializedAs("asyncValueProviderArguments"),SerializeField, HideInInspector] private Arguments asyncArguments = Arguments.None;
 
 		/// <inheritdoc/>
 		protected override TFirstArgument FirstArgument { get => firstArgument.GetValue(this, Context.MainThread); set => firstArgument = value; }
@@ -43,7 +44,7 @@ namespace Sisus.Init
 		protected override TThirdArgument ThirdArgument { get => thirdArgument.GetValue(this, Context.MainThread); set => thirdArgument = value; }
 
 		protected override bool IsRemovedAfterTargetInitialized => disposeArgumentsOnDestroy == Arguments.None;
-		private protected override bool IsAsync => asyncValueProviderArguments != Arguments.None;
+		private protected override bool IsAsync => asyncArguments != Arguments.None;
 
 		private protected sealed override async
 		#if UNITY_2023_1_OR_NEWER
@@ -55,16 +56,16 @@ namespace Sisus.Init
 		{
 			// Handle instance first creation method, which supports cyclical dependencies (A requires B, and B requires A).
 			if(wrapper is IInitializable<TFirstArgument, TSecondArgument, TThirdArgument> initializable
-				&& GetOrCreateUnitializedWrappedObject() is var wrappedObject)
+				&& GetOrCreateUninitializedWrappedObject() is var wrappedObject)
 			{
 				wrapper = InitWrapper(wrappedObject);
 
 				var firstArgument = await this.firstArgument.GetValueAsync(this, Context.MainThread);
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref firstArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref firstArgument);
 				var secondArgument = await this.secondArgument.GetValueAsync(this, Context.MainThread);
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref secondArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref secondArgument);
 				var thirdArgument = await this.thirdArgument.GetValueAsync(this, Context.MainThread);
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref thirdArgument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref thirdArgument);
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(disposeArgumentsOnDestroy != Arguments.None)
@@ -133,10 +134,10 @@ namespace Sisus.Init
 
 		private protected sealed override void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider)
 		{
-			var setValue = asyncValueProviderArguments.WithFlag(argument, isAsyncValueProvider);
-			if(asyncValueProviderArguments != setValue)
+			var setValue = asyncArguments.WithFlag(argument, isAsyncValueProvider);
+			if(asyncArguments != setValue)
 			{
-				asyncValueProviderArguments = setValue;
+				asyncArguments = setValue;
 				UnityEditor.EditorUtility.SetDirty(this);
 			}
 		}

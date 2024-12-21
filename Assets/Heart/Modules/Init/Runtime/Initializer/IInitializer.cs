@@ -66,6 +66,10 @@ namespace Sisus.Init
 		/// If <see cref="Target"/> is <see langword="null"/>, the initializer is a component, and the client is a component type,
 		/// then a new component is attached to the <see cref="GameObject"/> containing the initializer, initialized, and returned.
 		/// </para>
+		/// <para>
+		/// This method should be idempotent, meaning that if it is called multiple times, it should always return the
+		/// same object, and that object should only get initialized once.
+		/// </para>
 		/// </summary>
 		/// <returns> The initialized object. </returns>
 		[return: NotNull]
@@ -94,6 +98,10 @@ namespace Sisus.Init
 		/// <para>
 		/// If <see cref="Target"/> is <see langword="null"/>, the initializer is a component, and the client is a component type,
 		/// then a new component is attached to the <see cref="GameObject"/> containing the initializer, initialized, and returned.
+		/// </para>
+		/// <para>
+		/// This method should be idempotent, meaning that if it is called multiple times, it should always return an
+		/// awaitable with the same result, the result object should only get initialized once.
 		/// </para>
 		/// </summary>
 		/// <returns> The initialized object. </returns>
@@ -127,6 +135,10 @@ namespace Sisus.Init
 		/// then a new component of type <see cref="TClient"/> is attached to the <see cref="GameObject"/>
 		/// containing the initializer, initialized, and returned.
 		/// </para>
+		/// <para>
+		/// This method should be idempotent, meaning that if it is called multiple times, it should always return the
+		/// same object, and that object should only get initialized once.
+		/// </para>
 		/// </summary>
 		/// <returns> The initialized object of type <see cref="TClient"/>. </returns>
 		[return: NotNull]
@@ -156,6 +168,10 @@ namespace Sisus.Init
 		/// If <see cref="IInitializer.Target"/> is <see langword="null"/>, and the initializer is a component,
 		/// then a new component of type <see cref="TClient"/> is attached to the <see cref="GameObject"/>
 		/// containing the initializer, initialized, and returned.
+		/// </para>
+		/// <para>
+		/// This method should be idempotent, meaning that if it is called multiple times, it should always return an
+		/// awaitable with the same result, the result object should only get initialized once.
 		/// </para>
 		/// </summary>
 		/// <returns> The initialized object. </returns>

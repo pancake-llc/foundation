@@ -8,16 +8,16 @@ namespace Sisus.Init.Internal
 {
 	internal static class ServiceAttributeUtility
 	{
-		private static readonly GlobalServiceInfo serviceProviderInfo = new(typeof(ServiceProvider), new []{ new ServiceAttribute(typeof(IServiceProvider)), new ServiceAttribute(typeof(System.IServiceProvider))}, typeof(ServiceProvider), new []{ typeof(IServiceProvider), typeof(System.IServiceProvider)});
-		private static readonly GlobalServiceInfo updaterInfo = new(typeof(Updater), new []{ new ServiceAttribute(typeof(ICoroutineRunner))}, typeof(Updater), new []{ typeof(ICoroutineRunner)});
+		private static readonly ServiceInfo serviceProviderInfo = new(typeof(ServiceProvider), new []{ new ServiceAttribute(typeof(IServiceProvider)), new ServiceAttribute(typeof(System.IServiceProvider))}, typeof(ServiceProvider), new []{ typeof(IServiceProvider), typeof(System.IServiceProvider)});
+		private static readonly ServiceInfo updaterInfo = new(typeof(Updater), new []{ new ServiceAttribute(typeof(ICoroutineRunner))}, typeof(Updater), new []{ typeof(ICoroutineRunner)});
 
-		internal static readonly Dictionary<Type, GlobalServiceInfo> concreteTypes = new()
+		internal static readonly Dictionary<Type, ServiceInfo> concreteTypes = new()
 		{
 			{ typeof(ServiceProvider), serviceProviderInfo },
 			{ typeof(Updater), updaterInfo }
 		};
 
-		internal static readonly Dictionary<Type, GlobalServiceInfo> definingTypes = new()
+		internal static readonly Dictionary<Type, ServiceInfo> definingTypes = new()
 		{
 			{ typeof(IServiceProvider), serviceProviderInfo },
 			{ typeof(System.IServiceProvider), serviceProviderInfo },
@@ -35,7 +35,7 @@ namespace Sisus.Init.Internal
 			foreach(var typeWithAttribute in typesWithAttribute)
 			{
 				var attributes = typeWithAttribute.GetCustomAttributes<ServiceAttribute>().ToArray();
-				foreach(var info in GlobalServiceInfo.From(typeWithAttribute, attributes))
+				foreach(var info in ServiceInfo.From(typeWithAttribute, attributes))
 				{
 					if(info.concreteType is null)
 					{

@@ -48,7 +48,7 @@ namespace Sisus.Init.Internal
 		{
 			get
 			{
-				#if UNITY_2022_3_OR_NEWER
+				#if UNITY_6000_0_OR_NEWER
 				return Application.exitCancellationToken;
 				#else
 				#if UNITY_EDITOR
@@ -95,7 +95,7 @@ namespace Sisus.Init.Internal
 				{
 					fixedUpdating[i] = NullUpdatable.Instance;
 				}
-				
+
 				updatingCount = 0;
 				lateUpdatingCount = 0;
 				fixedUpdatingCount = 0;
@@ -142,37 +142,26 @@ namespace Sisus.Init.Internal
 			{
 				if(subscriber is IUpdate updateable)
 				{
-					if(Array.IndexOf(updating, updateable) != -1)
+					if(Array.IndexOf(updating, updateable) == -1)
 					{
-						return;
+						Add(ref updating, updateable, ref updatingCount);
 					}
-
-					Add(ref updating, updateable, ref updatingCount);
 				}
 
 				if(subscriber is ILateUpdate lateUpdateable)
 				{
-					if(Array.IndexOf(lateUpdating, lateUpdateable) != -1)
+					if(Array.IndexOf(lateUpdating, lateUpdateable) == -1)
 					{
-						return;
+						Add(ref lateUpdating, lateUpdateable, ref lateUpdatingCount);
 					}
-
-					Add(ref lateUpdating, lateUpdateable, ref lateUpdatingCount);
 				}
 
 				if(subscriber is IFixedUpdate fixedUpdateable)
 				{
-					if(Array.IndexOf(fixedUpdating, fixedUpdateable) != -1)
+					if(Array.IndexOf(fixedUpdating, fixedUpdateable) == -1)
 					{
-						return;
+						Add(ref fixedUpdating, fixedUpdateable, ref fixedUpdatingCount);
 					}
-
-					Add(ref fixedUpdating, fixedUpdateable, ref fixedUpdatingCount);
-				}
-				
-				if(subscriber is IOnEnable enableable)
-				{
-					enableable.OnEnable();
 				}
 			}
 		}
@@ -225,37 +214,26 @@ namespace Sisus.Init.Internal
 			{
 				if(subscriber is IUpdate updateable)
 				{
-					if(Array.IndexOf(updating, updateable) == -1)
+					if(Array.IndexOf(updating, updateable) != -1)
 					{
-						return;
+						Remove(ref updating, updateable, ref updatingCount, NullUpdatable.Instance);
 					}
-
-					Remove(ref updating, updateable, ref updatingCount, NullUpdatable.Instance);
 				}
 
 				if(subscriber is ILateUpdate lateUpdateable)
 				{
-					if(Array.IndexOf(lateUpdating, lateUpdateable) == -1)
+					if(Array.IndexOf(lateUpdating, lateUpdateable) != -1)
 					{
-						return;
+						Remove(ref lateUpdating, lateUpdateable, ref updatingCount, NullUpdatable.Instance);
 					}
-
-					Remove(ref lateUpdating, lateUpdateable, ref updatingCount, NullUpdatable.Instance);
 				}
 
 				if(subscriber is IFixedUpdate fixedUpdateable)
 				{
-					if(Array.IndexOf(fixedUpdating, fixedUpdateable) == -1)
+					if(Array.IndexOf(fixedUpdating, fixedUpdateable) != -1)
 					{
-						return;
+						Remove(ref fixedUpdating, fixedUpdateable, ref fixedUpdatingCount, NullUpdatable.Instance);
 					}
-
-					Remove(ref fixedUpdating, fixedUpdateable, ref fixedUpdatingCount, NullUpdatable.Instance);
-				}
-
-				if(subscriber is IOnDisable disableable)
-				{
-					disableable.OnDisable();
 				}
 			}
 		}
@@ -327,7 +305,7 @@ namespace Sisus.Init.Internal
 		/// <returns>
 		/// A reference to the started <paramref name="coroutine"/>.
 		/// <para>
-		/// This reference can be passed to <see cref="StopCoroutine"/> to stop
+		/// This reference can be passed to <see cref="StopCoroutine(Coroutine)"/> to stop
 		/// the execution of the coroutine.
 		/// </para>
 		/// </returns>
@@ -458,7 +436,7 @@ namespace Sisus.Init.Internal
 
 		private void FixedUpdate()
 		{
-			float deltaTime = Time.deltaTime;
+			float deltaTime = Time.fixedDeltaTime;
 			for(int i = fixedUpdatingCount - 1; i >= 0; i--)
 			{
 				fixedUpdating[i].FixedUpdate(deltaTime);
@@ -490,5 +468,6 @@ namespace Sisus.Init.Internal
 
 			public void LateUpdate(float deltaTime) { }
 		}
+
 	}
 }

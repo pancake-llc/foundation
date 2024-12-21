@@ -21,8 +21,9 @@ namespace Sisus.ComponentNames.Editor
             static void OnInspectorTitleChanged(Component component, NameWithSuffix newTitle) => InjectTitleIntoInternalCache(component, ComponentName.GetInspectorTitle(component));
 		}
 
-        private static float BeginComponentHeader(Component component, Rect headerRect, bool headerIsSelected, bool headerSupportsRichText)
+        private static void BeginComponentHeader(Component[] targets, Rect headerRect, bool headerIsSelected, bool headerSupportsRichText)
 		{
+            var component = targets[0];
             HandleOpeningRenamingGUI(component, headerRect, headerIsSelected);
 
 			var inspectorTitle = ComponentName.GetInspectorTitle(component);
@@ -38,7 +39,7 @@ namespace Sisus.ComponentNames.Editor
 
             var tooltipRect = headerRect;
             tooltipRect.x += 60f;
-            tooltipRect.width -= 125f + 16 * 4 + 3 * 3;
+            tooltipRect.width -= 125f + 16 * 4 + 3 * 3; // for 4 button in header component
 
             label.text = titleWithSuffixPlainText;
             float titleWidth = EditorStyles.boldLabel.CalcSize(label).x;
@@ -49,8 +50,6 @@ namespace Sisus.ComponentNames.Editor
 
             tooltip.tooltip = ComponentTooltip.Get(component);
             GUI.Label(tooltipRect, tooltip);
-
-            return 0f;
         }
 
         private static void HandleOpeningRenamingGUI(Component component, Rect headerRect, bool headerIsSelected)

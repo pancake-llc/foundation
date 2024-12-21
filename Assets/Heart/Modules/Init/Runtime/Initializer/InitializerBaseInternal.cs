@@ -1,22 +1,14 @@
-﻿#pragma warning disable CS0414
-
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using UnityEngine;
-using static Sisus.Init.Internal.InitializerUtility;
-using static Sisus.NullExtensions;
-using Object = UnityEngine.Object;
-#if UNITY_EDITOR
 using Sisus.Init.EditorOnly;
-#endif
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Sisus.Init.Internal
 {
-    // Base class for all Initializers; targeted by InitializerEditor.
-	public abstract class InitializerBaseInternal : MonoBehaviour { }
-
+	#pragma warning disable CS0414
 	/// <summary>
 	/// A base class for a component that can specify the arguments used to initialize a client of type <typeparamref name="TClient"/>.
 	/// <para>
@@ -27,17 +19,17 @@ namespace Sisus.Init.Internal
 	/// </para>
 	/// </summary>
 	/// <typeparam name="TClient"> Type of the initialized client component. </typeparam>
-	public abstract class InitializerBaseInternal<TClient> : InitializerBaseInternal, IInitializer<TClient>, IValueProvider<TClient>, IValueByTypeProvider
+	public abstract class InitializerBaseInternal<TClient> : Initializer, IInitializer<TClient>, IValueProvider<TClient>, IValueByTypeProvider
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly<TClient>
 		#endif
-		where TClient : Object
+	where TClient : Object
 	{
-		[SerializeField, HideInInspector, Tooltip(TargetTooltip)]
+		[SerializeField, HideInInspector, Tooltip(InitializerUtility.TargetTooltip)]
 		protected TClient target = default;
 
-		[SerializeField, HideInInspector, Tooltip(NullArgumentGuardTooltip)]
-		private protected NullArgumentGuard nullArgumentGuard = DefaultNullArgumentGuardFlags;
+		[SerializeField, HideInInspector, Tooltip(InitializerUtility.NullArgumentGuardTooltip)]
+		private protected NullArgumentGuard nullArgumentGuard = InitializerUtility.DefaultNullArgumentGuardFlags;
 
 		private protected InitState initState = InitState.Uninitialized;
 		private TClient initTargetResult = default;
@@ -70,6 +62,8 @@ namespace Sisus.Init.Internal
 			set => target = value as TClient;
 		}
 
+		internal override Object GetTarget() => target;
+
 		/// <inheritdoc/>
 		bool IInitializer.TargetIsAssignableOrConvertibleToType(Type type) => type.IsAssignableFrom(typeof(TClient));
 
@@ -79,20 +73,20 @@ namespace Sisus.Init.Internal
 		/// <inheritdoc/>
 		async
 		#if UNITY_2023_1_OR_NEWER
-		Awaitable<object>
+			Awaitable<object>
 		#else
 		System.Threading.Tasks.Task<object>
 		#endif
-		IInitializer.InitTargetAsync() => await InitTargetAsync();
+			IInitializer.InitTargetAsync() => await InitTargetAsync();
 
 		/// <inheritdoc/>
 		public async
 		#if UNITY_2023_1_OR_NEWER
-		Awaitable<TClient>
+			Awaitable<TClient>
 		#else
 		System.Threading.Tasks.Task<TClient>
 		#endif
-		InitTargetAsync()
+			InitTargetAsync()
 		{
 			if(initState != InitState.Uninitialized)
 			{
@@ -104,15 +98,53 @@ namespace Sisus.Init.Internal
 				return null;
 			}
 
-			initState = InitState.Initializing;
-
-			var initTargetAsync = InitTargetAsync(target);
-
 			try
 			{
-				initTargetResult = await initTargetAsync;
+				initState = InitState.Initializing;
+				
+				var task = InitTargetAsync(target);
+				bool initializableDisabledTemporarily;
+				InitializableBaseInternal initializable;
+				if(!task.GetAwaiter().IsCompleted)
+				{
+					initializable = target as InitializableBaseInternal;
+					if(initializable && initializable.enabled)
+					{
+						var targetGameObject = initializable.gameObject;
+						if(targetGameObject.activeInHierarchy && ReferenceEquals(initializable.gameObject, gameObject))
+						{
+							initializable.initState = InitState.Initializing;
+							initializableDisabledTemporarily = true;
+							initializable.enabled = false;
+						}
+						else
+						{
+							initializableDisabledTemporarily = false;
+						}
+					}
+					else
+					{
+						initializableDisabledTemporarily = false;
+					}
+				}
+				else
+				{
+					initializableDisabledTemporarily = false;
+					initializable = null;
+				}
 
+				initTargetResult = await task;
 				initState = InitState.Initialized;
+				
+				if(initializableDisabledTemporarily && initTargetResult)
+				{
+					// InitializableBaseInternal has handling to avoid calling OnAwake if initState is still Initializing,
+					// enabling the initializer to defer execution until now.
+					initializable.Awake();
+					
+					// After Awake has been executed, enable the target to execute OnEnable and Start as well.
+					initializable.enabled = true;
+				}
 
 				if(IsRemovedAfterTargetInitialized && this)
 				{
@@ -154,7 +186,7 @@ namespace Sisus.Init.Internal
 		/// </para>
 		/// <para>
 		/// If <paramref name="target"/> is attached to a different <see cref="GameObject"/> than the initializer, like for example a different prefab,
-		/// then this method clones the <paramref name="target"/>, initializes the clone, and returns it. 
+		/// then this method clones the <paramref name="target"/>, initializes the clone, and returns it.
 		/// </para>
 		/// <para>
 		/// If <paramref name="target"/> is <see langword="null"/>,
@@ -168,7 +200,7 @@ namespace Sisus.Init.Internal
 		/// <returns> The initialized object. </returns>
 		private protected virtual
 		#if UNITY_2023_1_OR_NEWER
-		Awaitable<TClient> InitTargetAsync([AllowNull] TClient target) => AwaitableUtility.FromResult(InitTarget(target));
+			Awaitable<TClient> InitTargetAsync([AllowNull] TClient target) => AwaitableUtility.FromResult(InitTarget(target));
 		#else
 		System.Threading.Tasks.Task<TClient> InitTargetAsync([AllowNull] TClient target) => System.Threading.Tasks.Task.FromResult(InitTarget(target));
 		#endif
@@ -186,15 +218,13 @@ namespace Sisus.Init.Internal
 				return null;
 			}
 
-			initState = InitState.Initializing;
-
 			try
 			{
-
+				initState = InitState.Initializing;
 				initTargetResult = InitTarget(target);
 				initState = InitState.Initialized;
 
-				if(IsRemovedAfterTargetInitialized)
+				if(IsRemovedAfterTargetInitialized && this)
 				{
 					Updater.InvokeAtEndOfFrame(DestroySelfIfNotAsset);
 				}
@@ -257,7 +287,7 @@ namespace Sisus.Init.Internal
 		/// </para>
 		/// <para>
 		/// If <paramref name="target"/> is attached to a different <see cref="GameObject"/> than the initializer, like for example a different prefab,
-		/// then this method clones the <paramref name="target"/>, initializes the clone, and returns it. 
+		/// then this method clones the <paramref name="target"/>, initializes the clone, and returns it.
 		/// </para>
 		/// <para>
 		/// If <paramref name="target"/> is <see langword="null"/>,
@@ -291,7 +321,24 @@ namespace Sisus.Init.Internal
 			#endif
 			IsAsync)
 			{
-				await InitTargetAsync();
+				#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+				try
+				{
+				#endif
+					
+					await InitTargetAsync();
+
+				#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+				}
+				catch(Exception e)
+				{
+					if(e is not OperationCanceledException)
+					{
+						throw;
+					}
+				}
+				#endif
+
 				return;
 			}
 
@@ -306,37 +353,12 @@ namespace Sisus.Init.Internal
 		private protected void ThrowIfMissing<TArgument>(TArgument argument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(argument == Null)
+			if(argument == NullExtensions.Null)
 			{
-				GetMissingInitArgumentsException(this, typeof(TArgument)).LogAsError();
+				InitializerUtility.GetMissingInitArgumentsException(this, typeof(TArgument)).LogAsError();
 				throw new ArgumentNullException(typeof(TArgument).Name);
 			}
 			#endif
-		}
-
-		private void DestroySelf()
-		{
-			if(this)
-			{
-				Destroy(this);
-			}
-		}
-
-		private void DestroySelfIfNotAsset()
-		{
-			if(!this)
-			{
-				return;
-			}
-
-			#if UNITY_EDITOR
-			if(gameObject.IsAsset(resultIfSceneObjectInEditMode: true))
-			{
-				return;
-			}
-			#endif
-
-			Destroy(this);
 		}
 
 		#if UNITY_EDITOR
@@ -348,11 +370,11 @@ namespace Sisus.Init.Internal
 		NullGuardResult IInitializerEditorOnly.EvaluateNullGuard() => EvaluateNullGuard();
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => false;
 		bool IInitializerEditorOnly.WasJustReset { get; set; }
-		bool IInitializerEditorOnly.IsAsync => IsAsync;
 		void IInitializerEditorOnly.SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) => SetReleaseArgumentOnDestroy(argument, shouldRelease);
-		void IInitializerEditorOnly.SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) => SetIsArgumentAsyncValueProvider(argument, isAsyncValueProvider);
+		void IInitializerEditorOnly.SetIsArgumentAsync(Arguments argument, bool isAsync) => SetIsArgumentAsync(argument, isAsync);
+		bool IInitializerEditorOnly.IsAsync => IsAsync;
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }
-		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
+		private protected virtual void SetIsArgumentAsync(Arguments argument, bool isAsync) { }
 		private protected abstract NullGuardResult EvaluateNullGuard();
 		private protected abstract void Reset();
 		private protected abstract void OnValidate();

@@ -1,9 +1,7 @@
-﻿using System;
-using Sisus.Init.Internal;
+﻿using Sisus.Init.Internal;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using Object = UnityEngine.Object;
 
 namespace Sisus.Init
 {
@@ -37,9 +35,6 @@ namespace Sisus.Init
 		public static TService Instance = default; // as a performance optimization, use a field instead of a property in release builds.
 		#endif
 
-		internal static void Unset() => Service.Unset<TService>();
-		internal static void Dispose() => Service.Dispose<TService>();
-
 		static Service()
 		{
 			#if DEV_MODE || (DEBUG && INIT_ARGS_SAFE_MODE)
@@ -52,9 +47,14 @@ namespace Sisus.Init
 			#if UNITY_EDITOR
 			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-			#else
-			UnityEngine.Application.quitting -= OnExitingApplicationOrPlayMode;
-			UnityEngine.Application.quitting += OnExitingApplicationOrPlayMode;
+
+			static void OnPlayModeStateChanged(PlayModeStateChange state)
+			{
+				if(state is PlayModeStateChange.ExitingPlayMode)
+				{
+					Service.Unset<TService>();
+				}
+			}
 			#endif
 
 			#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
@@ -73,44 +73,6 @@ namespace Sisus.Init
 				}
 			}
 			#endif
-		
-#if UNITY_EDITOR
-			static void OnPlayModeStateChanged(PlayModeStateChange state)
-			{
-				if(state == PlayModeStateChange.ExitingPlayMode)
-				{
-					OnExitingApplicationOrPlayMode();
-				}
-			}
-#endif
-
-			static void OnExitingApplicationOrPlayMode()
-			{
-				if(Instance is null)
-				{
-					return;
-				}
-
-				if(Instance is not Object && !Find.typesToWrapperTypes.ContainsKey(Instance.GetType()))
-				{
-					if(Instance is IOnDisable onDisable)
-					{
-						onDisable.OnDisable();
-					}
-
-					if(Instance is IOnDestroy onDestroy)
-					{
-						onDestroy.OnDestroy();
-					}
-
-					if(Instance is IDisposable disposable)
-					{
-						disposable.Dispose();
-					}
-				}
-
-				Instance = default;
-			}
 		}
 
 		#if (ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT

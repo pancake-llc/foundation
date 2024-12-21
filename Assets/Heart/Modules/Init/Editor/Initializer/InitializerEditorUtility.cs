@@ -13,16 +13,21 @@ using UnityEngine;
 using static Sisus.Init.Internal.InitializableUtility;
 using static Sisus.Init.Internal.InitializerUtility;
 using Object = UnityEngine.Object;
+
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector.Editor;
+#endif
+
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
 #endif
 
 namespace Sisus.Init.EditorOnly.Internal
 {
 	internal static class InitializerEditorUtility
 	{
-		internal static readonly Color NullGuardFailedColor = new(1f, 0.82f, 0f, 1f);
-		internal static readonly Color NullGuardWarningColor = new(0.4f, 0.6f, 1f, 1f);
+		internal static readonly Color nullGuardFailedColor = new(1f, 0.82f, 0f, 1f);
+		internal static readonly Color nullGuardWarningColor = new(0.4f, 0.6f, 1f, 1f);
 
 		private static readonly GUIContent clientNullTooltip = new("", "A new instance will be added to this GameObject during initialization.");
 		private static readonly GUIContent clientPrefabTooltip = new("", "A new instance will be created by cloning this prefab during initialization.");
@@ -299,7 +304,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					if(Find.typesToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
-					   && Array.IndexOf(wrapperTypes, inspectedType) != -1)
+						&& Array.IndexOf(wrapperTypes, inspectedType) != -1)
 					{
 						if(initializableEditorDecoratorsByArgumentCount.TryGetValue(argumentCount, out editorDecoratorType))
 						{
@@ -451,7 +456,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				if(Find.typesToWrapperTypes.TryGetValue(initializerClientType, out Type[] wrapperTypes)
-				   && Array.IndexOf(wrapperTypes, clientType) != -1)
+					&& Array.IndexOf(wrapperTypes, clientType) != -1)
 				{
 					return true;
 				}
@@ -730,7 +735,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return results;
 		}
 
-		internal static Type GetMetaDataClassType(Type initializerType) => initializerType.GetNestedType(InitializerEditor.InitArgumentMetadataClassName, BindingFlags.Public | BindingFlags.NonPublic);
+		internal static Type GetMetaDataClassType(Type initializerType) => initializerType.GetNestedType(InitializerEditor.InitArgumentMetadataClassName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 
 		private static MemberInfo[] GetParameterInfosFromMetadata([DisallowNull] Type metadataClass)
 		{ 
@@ -919,7 +924,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static GUIContent GetLabel(SerializedProperty anyProperty, Type argumentType, FieldInfo fieldInfo)
 		{
-			var initializerType = fieldInfo.DeclaringType;
+			var initializerType = anyProperty.serializedObject.targetObject.GetType();
 			if(!typeof(IInitializer).IsAssignableFrom(initializerType))
 			{
 				return new(anyProperty.displayName, anyProperty.tooltip);
@@ -928,7 +933,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(GetMetaDataClassType(initializerType) is { } metadataClass)
 			{
 				var memberInfos = GetParameterInfosFromMetadata(metadataClass);
-				if(propertyNameToInitParameterIndex.TryGetValue(fieldInfo.Name, out int parameterIndex) && memberInfos.Length < parameterIndex)
+				if(propertyNameToInitParameterIndex.TryGetValue(fieldInfo.Name, out int parameterIndex) && parameterIndex < memberInfos.Length)
 				{
 					var memberInfo = memberInfos[parameterIndex];
 					return new(GetLabel(memberInfo.Name), TryGetTooltip(memberInfo, out string tooltip) ? tooltip : anyProperty.tooltip);
@@ -1095,11 +1100,11 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(nullGuardResult == NullGuardResult.ValueProviderValueNullInEditMode)
 			{
-				color = NullGuardWarningColor;
+				color = nullGuardWarningColor;
 				return true;
 			}
 
-			color = NullGuardFailedColor;
+			color = nullGuardFailedColor;
 			return true;
 		}
 
@@ -1107,10 +1112,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static bool TryGetAssignableType(Object reference, Object owner, Type anyType, Type valueType, out Type assignableType)
 		{
-			#if DEV_MODE
-			using ProfilerScope x = new("InitializerEditorUtility.TryGetAssignableType");
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = tryGetAssignableTypeMarker.Auto();
 			#endif
-			
+
 			if(!reference)
 			{
 				assignableType = null;
@@ -1168,5 +1173,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			assignableType = isAssignable ? reference.GetType() : null;
 			return isAssignable;
 		}
+
+		#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker tryGetAssignableTypeMarker = new(ProfilerCategory.Gui, "InitializerEditorUtility.TryGetAssignableType");
+		#endif
 	}
 }

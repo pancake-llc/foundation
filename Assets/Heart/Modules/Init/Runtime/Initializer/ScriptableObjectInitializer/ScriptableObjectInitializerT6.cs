@@ -1,5 +1,6 @@
 ﻿using Sisus.Init.Internal;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Sisus.Init.Internal.InitializerUtility;
 
 namespace Sisus.Init
@@ -40,7 +41,7 @@ namespace Sisus.Init
 		[SerializeField] private Any<TSixthArgument> sixthArgument = default;
 
 		[SerializeField, HideInInspector] private Arguments disposeArgumentsOnDestroy = Arguments.None;
-		[SerializeField, HideInInspector] private Arguments asyncValueProviderArguments = Arguments.None;
+		[FormerlySerializedAs("asyncValueProviderArguments"),SerializeField, HideInInspector] private Arguments asyncArguments = Arguments.None;
 
 		protected override TFirstArgument FirstArgument { get => firstArgument.GetValue(this, Context.MainThread); set => firstArgument = value; }
 		protected override TSecondArgument SecondArgument { get => secondArgument.GetValue(this, Context.MainThread); set => secondArgument = value; }
@@ -50,7 +51,7 @@ namespace Sisus.Init
 		protected override TSixthArgument SixthArgument { get => sixthArgument.GetValue(this, Context.MainThread); set => sixthArgument = value; }
 
 		protected override bool IsRemovedAfterTargetInitialized => disposeArgumentsOnDestroy == Arguments.None;
-		private protected override bool IsAsync => asyncValueProviderArguments != Arguments.None;
+		private protected override bool IsAsync => asyncArguments != Arguments.None;
 
 		private protected sealed override async
 		#if UNITY_2023_1_OR_NEWER
@@ -112,10 +113,10 @@ namespace Sisus.Init
 
 		private protected sealed override void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider)
 		{
-			var setValue = asyncValueProviderArguments.WithFlag(argument, isAsyncValueProvider);
-			if(asyncValueProviderArguments != setValue)
+			var setValue = asyncArguments.WithFlag(argument, isAsyncValueProvider);
+			if(asyncArguments != setValue)
 			{
-				asyncValueProviderArguments = setValue;
+				asyncArguments = setValue;
 				UnityEditor.EditorUtility.SetDirty(this);
 			}
 		}

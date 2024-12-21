@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Sisus.Init.Internal;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 using static Sisus.NullExtensions;
+
+#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+using Unity.Profiling;
+#endif
 
 namespace Sisus.Init
 {
@@ -18,11 +23,11 @@ namespace Sisus.Init
 		static readonly Dictionary<Type, GlobalServiceGetter> globalServiceGetters = new();
 		static readonly Dictionary<Type, GlobalServiceSetter> globalServiceSetters = new();
 		static readonly Dictionary<Type, GlobalServiceSilentSetter> globalServiceSilentSetters = new();
-		static readonly Dictionary<Type, ScopedServiceAdder> scopedServiceAdders = new();
+		static readonly Dictionary<ScopedServiceAdder.Key, ScopedServiceAdder> scopedServiceAdders = new();
 		static readonly Dictionary<Type, ScopedServiceGetter> scopedServiceGetters = new();
 		static readonly Dictionary<Type, IsServiceOrServiceProviderForResolver> isServiceOrServiceProviderForResolvers = new();
 		static readonly Dictionary<Type, IsServiceOrServiceProviderResolver> isServiceOrServiceProviderResolvers = new();
-		static readonly Dictionary<Type, ScopedServiceRemover> scopedServiceRemovers = new();
+		static readonly Dictionary<ScopedServiceRemover.Key, ScopedServiceRemover> scopedServiceRemovers = new();
 		static readonly Dictionary<Type, ScopedServicesFromProviderRemover> scopedServicesFromProviderRemovers = new();
 		static readonly Dictionary<Type, ServiceClientsGetter> serviceClientsGetters = new();
 
@@ -47,20 +52,20 @@ namespace Sisus.Init
 		{
 			get
 			{
-#if INIT_ARGS_DISABLE_SERVICE_INJECTION
+				#if INIT_ARGS_DISABLE_SERVICE_INJECTION
 				return true;
-#else
+				#else
 
-#if UNITY_EDITOR
+				#if UNITY_EDITOR
 				if(!EditorOnly.ThreadSafe.Application.IsPlaying)
 				{
 					return EditorServiceInjector.ServicesAreReady;
 				}
-#endif
+				#endif
 
 
 				return ServiceInjector.ServicesAreReady;
-#endif
+				#endif
 			}
 		}
 
@@ -81,19 +86,19 @@ namespace Sisus.Init
 		{
 			get
 			{
-#if INIT_ARGS_DISABLE_SERVICE_INJECTION
+				#if INIT_ARGS_DISABLE_SERVICE_INJECTION
 				return true;
-#else
+				#else
 
-#if UNITY_EDITOR
+				#if UNITY_EDITOR
 				if(!EditorOnly.ThreadSafe.Application.IsPlaying)
 				{
 					return EditorServiceInjector.ServicesAreReady;
 				}
-#endif
+				#endif
 
 				return ServiceInjector.ServicesAreReady;
-#endif
+				#endif
 			}
 		}
 
@@ -105,30 +110,30 @@ namespace Sisus.Init
 		{
 			add
 			{
-#if INIT_ARGS_DISABLE_SERVICE_INJECTION
+				#if INIT_ARGS_DISABLE_SERVICE_INJECTION
 				value?.Invoke();
-#else
+				#else
 				if(ServiceInjector.ServicesAreReady)
 				{
 					value?.Invoke();
 				}
 
 				ServiceInjector.ServicesBecameReady += value;
-#endif
+				#endif
 			}
 
 			remove
 			{
-#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
+				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
 				ServiceInjector.ServicesBecameReady -= value;
-#endif
+				#endif
 			}
 		}
 
 		/// <summary>
-		/// Gets the shared service instance of the given <paramref name="serviceType"/>.
+		/// Gets the shared service instance of the given <paramref name="definingType"/>.
 		/// <para>
-		/// The returned object's class will match the provided <paramref name="serviceType"/>,
+		/// The returned object's class will match the provided <paramref name="definingType"/>,
 		/// derive from it or implement an interface of the type.
 		/// </para>
 		/// </summary>
@@ -141,7 +146,7 @@ namespace Sisus.Init
 		/// </para>
 		/// </param>
 		/// <returns></returns>
-		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is globally accessible to any client. </exception>
+		/// <exception cref="NullReferenceException"> Thrown if no globally accessbible service of type  <paramref name="definingType"/> is found. </exception>
 		public static object Get([DisallowNull] Type definingType)
 		{
 			if(!globalServiceGetters.TryGetValue(definingType, out var getter))
@@ -237,9 +242,9 @@ namespace Sisus.Init
 		/// <returns> Shared instance of the service of the given type. </returns>
 		public static bool TryGetFor(object client, [DisallowNull] Type definingType, out object service, Context context = Context.MainThread)
 		{
-#if DEV_MODE && UNITY_EDITOR
-			using ProfilerScope x = new("ServiceUtility.TryGetFor");
-#endif
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = tryGetForMarker.Auto();
+			#endif
 
 			if(!context.IsUnitySafeContext())
 			{
@@ -273,7 +278,7 @@ namespace Sisus.Init
 				resolver = new IsServiceOrServiceProviderResolver(definingType);
 				isServiceOrServiceProviderResolvers.Add(definingType, resolver);
 			}
-
+			
 			return resolver.IsServiceOrServiceProvider(test);
 		}
 
@@ -304,6 +309,7 @@ namespace Sisus.Init
 					return true;
 				}
 			}
+
 			return false;
 		}
 
@@ -379,9 +385,9 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <param name="instance"> The new instance of the service. </param>
-#if UNITY_2022_3_OR_NEWER
+		#if UNITY_2022_3_OR_NEWER
 		[HideInCallstack]
-#endif
+		#endif
 		public static void SetInstanceSilently([DisallowNull] Type definingType, [AllowNull] object instance)
 		{
 			Debug.Assert(definingType is not null);
@@ -429,12 +435,12 @@ namespace Sisus.Init
 		/// </para>
 		/// </param>
 		/// <param name="instance"> The new instance of the service. </param>
-#if UNITY_2022_3_OR_NEWER
+		#if UNITY_2022_3_OR_NEWER
 		[HideInCallstack]
-#endif
-		public static void SetInstance([DisallowNull] Type definingType, [AllowNull] object instance)
+		#endif
+		public static void Set([DisallowNull] Type definingType, [AllowNull] object instance)
 		{
-#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEV_MODE || DEBUG || INIT_ARGS_SAFE_MODE
 			Debug.Assert(definingType is not null);
 
 			if(instance is not null && !definingType.IsInstanceOfType(instance))
@@ -450,7 +456,7 @@ namespace Sisus.Init
 
 				return;
 			}
-#endif
+			#endif
 
 			if(!globalServiceSetters.TryGetValue(definingType, out var serviceSetter))
 			{
@@ -470,7 +476,7 @@ namespace Sisus.Init
 		/// then the <see cref="ServiceChanged{T}.listeners"/> event will be raised.
 		/// </para>
 		/// </summary>
-		/// <param name="service"> The service instance to add. </param>
+		/// <param name="serviceOrProvider"> The service instance to add. </param>
 		/// <param name="definingType">
 		/// The defining type of the service; the class or interface type that uniquely defines
 		/// the service and can be used to retrieve an instance of it.
@@ -483,215 +489,49 @@ namespace Sisus.Init
 		/// Specifies which client objects can receive the service instance in their Init function
 		/// during their initialization.
 		/// </param>
-		/// <param name="container">
+		/// <param name="registerer">
 		/// Component that is registering the service. This can also be the service itself, if it is a component.
 		/// <para>
 		/// This same argument should be passed when <see cref="RemoveFromClients">removing the instance</see>.
 		/// </para>
 		/// </param>
-		public static void AddFor([AllowNull] object service, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
+		public static void AddFor([AllowNull] object serviceOrProvider, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component registerer)
 		{
-#if DEV_MODE
-			Debug.Assert(definingType is not null, service?.GetType().Name ?? "defining type null", service as Object);
-			Debug.Assert(service != Null, definingType?.Name ?? "service null", service as Object);
-#endif
+			#if DEV_MODE
+			Debug.Assert(definingType is not null, serviceOrProvider?.GetType().Name ?? "defining type null", serviceOrProvider as Object);
+			Debug.Assert(serviceOrProvider != Null, definingType?.Name ?? "service null", serviceOrProvider as Object);
+			#endif
 
-			if(!definingType.IsInstanceOfType(service) && !TryExtractServiceFrom(service, definingType, clients, container, out service))
+			ServiceProviderType serviceProviderType;
+			if(definingType.IsInstanceOfType(serviceOrProvider))
 			{
+				serviceProviderType = ServiceProviderType.None;
+			}
+			else if(!TryExtractServiceOrProvider(serviceOrProvider, definingType, registerer, out serviceOrProvider, out serviceProviderType))
+			{
+				LogInvalidServiceDefinitionError(serviceOrProvider.GetType(), definingType, registerer);
 				return;
 			}
 
-			if(!scopedServiceAdders.TryGetValue(definingType, out var adder))
+			AddFor(serviceOrProvider, serviceProviderType, definingType, clients, registerer);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static void AddFor([AllowNull] object serviceOrProvider, ServiceProviderType serviceProviderType, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component registerer)
+		{
+			#if DEV_MODE
+			Debug.Assert(definingType is not null, serviceOrProvider?.GetType().Name ?? "defining type null", serviceOrProvider as Object);
+			Debug.Assert(serviceOrProvider != Null, definingType?.Name ?? "service null", serviceOrProvider as Object);
+			#endif
+
+			var key = new ScopedServiceAdder.Key(definingType, serviceProviderType);
+			if(!scopedServiceAdders.TryGetValue(key, out var adder))
 			{
-				adder = new ScopedServiceAdder(definingType);
-				scopedServiceAdders.Add(definingType, adder);
+				adder = new ScopedServiceAdder(definingType, serviceProviderType);
+				scopedServiceAdders.Add(key, adder);
 			}
 
-			adder.AddFor(service, clients, container);
-
-			static bool TryExtractServiceFrom(object provider, Type definingType, Clients clients, Component container, out object result)
-			{
-				if(provider is IValueProvider valueProvider)
-				{
-					if(valueProvider.TryGetFor(container, out result))
-					{
-						return true;
-					}
-
-					// Support situation where object implements multiple different IValueProvider<TService>
-					// interfaces  and IValueProvider.TryGetFor always returns false.
-					if(typeof(IValueProvider<>).MakeGenericType(definingType) is { } genericValueProviderType
-						&& genericValueProviderType.IsInstanceOfType(provider))
-					{
-						var tryGetForMethod = genericValueProviderType.GetMethod(nameof(IValueProvider<object>.TryGetFor));
-						var args = new[] { container, null };
-						if((bool)tryGetForMethod.Invoke(provider, args))
-						{
-							result = args[1];
-							return true;
-						}
-					}
-				}
-
-				if(provider is IValueProviderAsync valueProviderAsync)
-				{
-					var serviceGetter = valueProviderAsync.GetForAsync(container);
-					_ = AddForAsync(provider, serviceGetter, definingType, clients, container);
-					result = null;
-					return false;
-				}
-
-				if(provider is IValueByTypeProvider valueByTypeProvider)
-				{
-					var tryGetForMethod = typeof(IValueByTypeProvider).GetMethod(nameof(IValueByTypeProvider.TryGetFor)).MakeGenericMethod(definingType);
-					var args = new[] { container, null };
-					if((bool)tryGetForMethod.Invoke(provider, args))
-					{
-						result = args[1];
-						return true;
-					}
-
-					if(!Application.isPlaying && valueByTypeProvider.CanProvideValue(definingType, container))
-					{
-#if DEV_MODE && DEBUG_ENABLED
-						Debug.Log("Can't register {TypeUtility.ToString(provider.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because it is an IValueByTypeProvider, CanProvideValue returned true, and this is edit mode.");
-#endif
-						result = null;
-						return false;
-					}
-				}
-
-				if(provider is IInitializer initializer)
-				{
-					if(!Application.isPlaying)
-					{
-#if DEV_MODE && DEBUG_ENABLED
-						Debug.Log("Can't register {TypeUtility.ToString(service.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because it is an initializer, and this is edit mode.");
-#endif
-						result = null;
-						return false;
-					}
-
-					object initialized = initializer.InitTarget();
-					if(!definingType.IsInstanceOfType(initialized))
-					{
-						LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
-						result = null;
-						return false;
-					}
-
-					result = initialized;
-					return true;
-				}
-
-				if(provider is IWrapper and Object unityObject)
-				{
-					if(!Application.isPlaying)
-					{
-#if DEV_MODE && DEBUG_ENABLED
-						Debug.Log("Can't register wrapper {TypeUtility.ToString(service.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because the wrapper could have an initializer, and this is edit mode");
-#endif
-						result = null;
-						return false;
-					}
-
-					if(InitializerUtility.TryGetInitializer(unityObject, out initializer)
-					&& initializer.InitTarget() is object initialized
-					&& definingType.IsInstanceOfType(initialized))
-					{
-						result = initialized;
-						return true;
-					}
-				}
-
-				LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
-				result = null;
-				return false;
-			}
-
-#if !UNITY_2023_1_OR_NEWER
-			static async System.Threading.Tasks.Task AddForAsync(object provider, [AllowNull] System.Threading.Tasks.Task<object> serviceGetter, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
-			{
-				try
-				{
-					object service = await serviceGetter;
-					if(service is not null)
-					{
-						AddFor(service, definingType, clients, container);
-						return;
-					}
-				}
-				// Handle edge case: in situations where an object implements multiple IValueProviderAsync<T> interfaces,
-				// the non-generic IValueProviderAsync.GetValueValueAsync might throw NotSupportedException or return null.
-				catch
-#if DEV_MODE
-				(Exception e) { Debug.Log(e);
-#else
-				{
-#endif
-				}
-
-				if(typeof(IValueProviderAsync<>).MakeGenericType(definingType) is { } valueProviderAsyncGenericType
-				&& valueProviderAsyncGenericType.IsInstanceOfType(provider))
-				{
-					var getForAsyncMethod = valueProviderAsyncGenericType.GetMethod(nameof(IValueProviderAsync<object>.GetForAsync));
-					serviceGetter = getForAsyncMethod.Invoke(provider, new object[] { container }) as System.Threading.Tasks.Task<object>;
-					object service = await serviceGetter;
-					if(service is not null)
-					{
-						AddFor(service, definingType, clients, container);
-					}
-				}
-
-				LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
-			}
-#endif
-
-#if UNITY_2023_1_OR_NEWER
-			static async Awaitable<object> AddForAsync(object provider, [AllowNull] Awaitable<object> serviceGetter, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
-			{
-				try
-				{
-					object service = await serviceGetter;
-					if(service is not null)
-					{
-						AddFor(service, definingType, clients, container);
-						return service;
-					}
-				}
-				// Handle edge case: in situations where an object implements multiple IValueProviderAsync<T> interfaces,
-				// the non-generic IValueProviderAsync.GetValueValueAsync might throw NotSupportedException or return null.
-				catch
-#if DEV_MODE
-				(Exception e) { Debug.Log(e);
-#else
-				{
-#endif
-				}
-
-				LogInvalidServiceDefinitionError(provider.GetType(), definingType, container);
-				return null;
-			}
-#endif
-
-			static void LogInvalidServiceDefinitionError(Type concreteType, Type definingType, Component container)
-			{
-#if UNITY_EDITOR
-				// Don't log warnings if the container is a selected asset, as that probably means it's still being actively configured.
-				if(Array.IndexOf(UnityEditor.Selection.gameObjects, container.gameObject) != -1 && container.gameObject.IsAsset(true))
-				{
-					return;
-				}
-#endif
-
-				if(definingType.IsInterface)
-				{
-					Debug.LogWarning($"Invalid Service Definition: {concreteType.Name} has been configured as a service with the defining type {definingType.Name}, but {concreteType.Name} does not implement {definingType.Name}.");
-					return;
-				}
-
-				Debug.LogWarning($"Invalid Service Definition: {concreteType.Name} has been configured as a service with the defining type {definingType.Name}, but {concreteType.Name} does not derive from {definingType.Name}.");
-			}
+			adder.AddFor(serviceOrProvider, clients, registerer);
 		}
 
 		/// <summary>
@@ -703,7 +543,7 @@ namespace Sisus.Init
 		/// then the <see cref="Service{}.InstanceChanged"/> event will be raised.
 		/// </para>
 		/// </summary>
-		/// <param name="service"> The service instance to remove. </param>
+		/// <param name="serviceOrProvider"> The service instance to remove. </param>
 		/// <param name="definingType">
 		/// The defining type of the service; the class or interface type that uniquely defines
 		/// the service and can be used to retrieve an instance of it.
@@ -712,30 +552,47 @@ namespace Sisus.Init
 		/// or the exact type of the service.
 		/// </para>
 		/// </param>
-		/// <param name="clients"> The availability of the service being removed. </param>
-		/// <param name="container"> Component that registered the service. </param>
-		public static void RemoveFromClients([DisallowNull] object service, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component container)
+		/// <param name="clients"> The availability of the service being removed.
+		/// </param>
+		/// <param name="registerer">
+		/// Component that registered the service. This can also be the service itself, if it is a component.
+		/// </param>
+		public static void RemoveFrom([AllowNull] object serviceOrProvider, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component registerer)
 		{
-			Debug.Assert(definingType is not null);
-			Debug.Assert(service != Null);
+			#if DEV_MODE
+			Debug.Assert(definingType is not null, serviceOrProvider?.GetType().Name ?? "defining type null", serviceOrProvider as Object);
+			Debug.Assert(serviceOrProvider != Null, definingType?.Name ?? "service null", serviceOrProvider as Object);
+			#endif
 
-			if(!definingType.IsInstanceOfType(service))
+			ServiceProviderType serviceProviderType;
+			if(definingType.IsInstanceOfType(serviceOrProvider))
 			{
-				if(!(service is IValueProvider valueProvider) || !(valueProvider.Value is object providedValue) || !definingType.IsInstanceOfType(providedValue))
-				{
-					return;
-				}
-
-				service = providedValue;
+				serviceProviderType = ServiceProviderType.None;
+			}
+			else if(!TryExtractServiceOrProvider(serviceOrProvider, definingType, registerer, out serviceOrProvider, out serviceProviderType))
+			{
+				LogInvalidServiceDefinitionError(serviceOrProvider.GetType(), definingType, registerer);
+				return;
 			}
 
-			if(!scopedServiceRemovers.TryGetValue(definingType, out var remover))
+			RemoveFrom(serviceOrProvider, serviceProviderType, definingType, clients, registerer);
+		}
+		
+		internal static void RemoveFrom([AllowNull] object serviceOrProvider, ServiceProviderType serviceProviderType, [DisallowNull] Type definingType, Clients clients, [DisallowNull] Component registerer)
+		{
+			#if DEV_MODE
+			Debug.Assert(definingType is not null, serviceOrProvider?.GetType().Name ?? "defining type null", serviceOrProvider as Object);
+			Debug.Assert(serviceOrProvider != Null, definingType?.Name ?? "service null", serviceOrProvider as Object);
+			#endif
+			
+			var key = new ScopedServiceRemover.Key(definingType, serviceProviderType);
+			if(!scopedServiceRemovers.TryGetValue(key, out var remover))
 			{
-				remover = new ScopedServiceRemover(definingType);
-				scopedServiceRemovers.Add(definingType, remover);
+				remover = new ScopedServiceRemover(definingType, serviceProviderType);
+				scopedServiceRemovers.Add(key, remover);
 			}
-
-			remover.RemoveFrom(service, clients, container);
+			
+			remover.RemoveFrom(serviceOrProvider, clients, registerer);
 		}
 
 		/// <summary>
@@ -748,14 +605,14 @@ namespace Sisus.Init
 		/// </returns>
 		public static bool IsServiceDefiningType<T>()
 		{
-#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
+			#if UNITY_EDITOR && !INIT_ARGS_DISABLE_SERVICE_INJECTION
 			return (!typeof(T).IsValueType && Service<T>.Instance != Null)
 					|| ScopedService<T>.ExistsForAllClients()
 					|| ServiceAttributeUtility.definingTypes.ContainsKey(typeof(T))
 					|| (!ServicesAreReady && EditorServiceAttributeUtility.definingTypes.ContainsKey(typeof(T)));
-#else
+			#else
 			return (!typeof(T).IsValueType && Service<T>.Instance is not null) || ScopedService<T>.ExistsForAllClients();
-#endif
+			#endif
 		}
 
 		/// <summary>
@@ -770,16 +627,16 @@ namespace Sisus.Init
 		/// <returns> <see langword="true"/> if type is the defining type of a service; otherwise, <see langword="false"/>. </returns>
 		public static bool IsServiceDefiningType([DisallowNull] Type type)
 		{
-#if DEV_MODE && UNITY_EDITOR
-			using ProfilerScope x = new("ServiceUtility.IsServiceDefiningType");
-#endif
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = isServiceDefiningTypeMarker.Auto();
+			#endif
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(type is null)
 			{
 				throw new ArgumentNullException(nameof(type));
 			}
-#endif
+			#endif
 
 			if(ServiceAttributeUtility.definingTypes.ContainsKey(type))
 			{
@@ -791,11 +648,11 @@ namespace Sisus.Init
 				return false;
 			}
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			return typeof(Service<>).MakeGenericType(type).GetProperty(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) != null;
-#else
+			#else
 			return typeof(Service<>).MakeGenericType(type).GetField(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) != null;
-#endif
+			#endif
 		}
 
 		/// <summary>
@@ -810,19 +667,19 @@ namespace Sisus.Init
 		/// </para>
 		/// </summary>
 		/// <typeparam name="TService"> The defining type of a service that should be supported on AOT platforms. </typeparam>
-#if !ENABLE_BURST_AOT && !ENABLE_IL2CPP
+		#if !ENABLE_BURST_AOT && !ENABLE_IL2CPP
 		[System.Diagnostics.Conditional("FALSE")]
-#endif
+		#endif
 		public static void EnsureAOTPlatformSupportForService<TService>()
 		{
-#if(ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT
+			#if (ENABLE_BURST_AOT || ENABLE_IL2CPP) && !INIT_ARGS_DISABLE_AUTOMATIC_AOT_SUPPORT
 			if(Application.isEditor || !Application.isEditor)
 			{
 				return;
 			}
 
 			_ = Service<TService>.Instance;
-			_ = ServiceProvider<TService>.GetValue(null);
+			_ = new ServiceProvider<TService>(default(IValueProvider)).TryGetFor(null, out _);
 			_ = ScopedService<TService>.Instances;
 			Service.Set<TService>(default);
 			Service.SetSilently<TService>(default);
@@ -830,8 +687,94 @@ namespace Sisus.Init
 			Service.AddFor(Clients.Everywhere, new GameObject().GetComponent<TService>(), new GameObject().GetComponent<Transform>());
 			Service.RemoveFrom(Clients.Everywhere, new GameObject().GetComponent<TService>(), new GameObject().GetComponent<Transform>());
 			Service.TryGetClients<TService>(default, out _);
-#endif
+			#endif
 		}
+
+		// internal static readonly Dictionary<Type, ServiceProviderType> genericInterfaceToServiceProviderType = new()
+		// {
+		// 	{ typeof(IServiceInitializer<>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializer<,,,,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
+		// 	{ typeof(IServiceInitializerAsync<>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
+		// 	{ typeof(IInitializer<>), ServiceProviderType.Initializer },
+		// 	{ typeof(IWrapper<>), ServiceProviderType.Wrapper },
+		// 	{ typeof(IValueProvider<>), ServiceProviderType.IValueProviderT },
+		// 	{ typeof(IValueProviderAsync<>), ServiceProviderType.IValueProviderAsyncT },
+		// };
+
+		// static ServiceProviderType GetServiceProviderType([DisallowNull] object serviceOrServiceProvider, Type definingType)
+		// {
+		// 	var subjectType = serviceOrServiceProvider.GetType();
+		// 	var implementedInterfaces = subjectType.GetInterfaces();
+		// 	for(int i = implementedInterfaces.Length - 1; i >= 0; i--)
+		// 	{
+		// 		var interfaceType = implementedInterfaces[i];
+		// 		if(!interfaceType.IsGenericType)
+		// 		{
+		// 			continue;
+		// 		}
+		//
+		// 		var genericTypeDefinition = interfaceType.GetGenericTypeDefinition();
+		// 		if(!genericInterfaceToServiceProviderType.TryGetValue(genericTypeDefinition, out var valueProviderType))
+		// 		{
+		// 			continue;
+		// 		}
+		//
+		// 		var valueType = interfaceType.GetGenericArguments()[0];
+		// 		if(valueType.IsAbstract || TypeUtility.IsBaseType(valueType) || !definingType.IsAssignableFrom(valueType))
+		// 		{
+		// 			continue;
+		// 		}
+		//
+		// 		return valueProviderType;
+		// 	}
+		//
+		// 	if(definingType.IsAssignableFrom(subjectType))
+		// 	{
+		// 		serviceProviderType = ServiceProviderType.None;
+		// 		concreteType = null;
+		// 		return false;
+		// 	}
+		//
+		// 	#if DEBUG || INIT_ARGS_SAFE_MODE
+		// 	for(int i = attributes.Length - 1; i >= 0; i--)
+		// 	{
+		// 		if(attributes[i].definingType is Type definingType
+		// 		&& !ServiceUtility.IsValidDefiningTypeFor(definingType, subjectType))
+		// 		{
+		// 			string classWithAttributeName = TypeUtility.ToString(subjectType);
+		// 			string definingTypeName = TypeUtility.ToString(definingType);
+		// 			Debug.LogAssertion($"Invalid {nameof(ServiceAttribute)} detected on {classWithAttributeName}. {classWithAttributeName} is not assignable to service defining type {definingTypeName}, and does not implement {nameof(IInitializer)}<{definingTypeName}> or {nameof(IWrapper)}<{definingTypeName}>, IServiceInitializer<{definingTypeName}> or IValueProvider<{definingTypeName}>. Unable to determine concrete type of the service.");
+		// 		}
+		// 	}
+		// 	#endif
+		//
+		// 	serviceProviderType = ServiceProviderType.None;
+		// 	concreteType = null;
+		// 	return false;
+		// }
 
 		public static void RemoveAllServicesProvidedBy(Services serviceProvider)
 		{
@@ -851,5 +794,170 @@ namespace Sisus.Init
 				remover.RemoveFrom(serviceProvider.toClients, serviceProvider);
 			}
 		}
+		
+		private static bool TryExtractServiceOrProvider(object serviceProvider, Type definingType, Component registerer, out object result, out ServiceProviderType serviceProviderType)
+		{
+			if(serviceProvider is IInitializer initializer)
+			{
+				#if UNITY_EDITOR
+				if(!Application.isPlaying)
+				{
+					result = initializer.Target;
+
+					#if DEV_MODE && DEBUG_ENABLED
+					if(result is null)
+					{
+						Debug.Log("Can't register {TypeUtility.ToString(service.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because it is an initializer, and this is edit mode.");
+						serviceProviderType = ServiceProviderType.Initializer;
+						return false;
+					}
+					#endif
+
+					serviceProviderType = ServiceProviderType.Initializer;
+					return true;
+				}
+				#endif
+
+				var initialized = initializer.InitTarget();
+				if(!definingType.IsInstanceOfType(initialized))
+				{
+					LogInvalidServiceDefinitionError(serviceProvider.GetType(), definingType, registerer);
+					result = null;
+					serviceProviderType = ServiceProviderType.None;
+					return false;
+				}
+
+				result = initialized;
+				serviceProviderType = ServiceProviderType.None;
+				return true;
+			}
+
+			if(serviceProvider is IWrapper wrapper)
+			{
+				#if UNITY_EDITOR
+				if(!Application.isPlaying)
+				{
+					result = wrapper.WrappedObject;
+
+					#if DEV_MODE && DEBUG_ENABLED
+					if(result is null)
+					{
+						Debug.Log("Can't register {TypeUtility.ToString(service.GetType())} as {TypeUtility.ToString(definingType)}, but won't log an error, because the wrapper has an initializer, and this is edit mode.");
+						serviceProviderType = ServiceProviderType.Wrapper;
+						return false;
+					}
+					#endif
+				}
+				else
+				#endif
+				if(wrapper is Object unityObject
+					&& InitializerUtility.TryGetInitializer(unityObject, out initializer)
+					&& initializer.InitTarget() is { } initialized)
+				{
+					result = initialized;
+					serviceProviderType = ServiceProviderType.None;
+					return true;
+				}
+				else
+				{
+					LogInvalidServiceDefinitionError(serviceProvider.GetType(), definingType, registerer);
+					result = null;
+					serviceProviderType = ServiceProviderType.None;
+					return false;
+				}
+
+				serviceProviderType = ServiceProviderType.None;
+				if(!definingType.IsInstanceOfType(result))
+				{
+					LogInvalidServiceDefinitionError(serviceProvider.GetType(), definingType, registerer);
+					result = null;
+					serviceProviderType = ServiceProviderType.None;
+					return false;
+				}
+
+				serviceProviderType = ServiceProviderType.None;
+				return true;
+			}
+
+			if(serviceProvider is IValueProvider)
+			{
+				if(typeof(IValueProvider<>).MakeGenericType(definingType) is { } valueProviderTType
+					&& valueProviderTType.IsInstanceOfType(serviceProvider))
+				{
+					result = serviceProvider;
+					serviceProviderType = ServiceProviderType.IValueProviderT;
+					return true;
+				}
+
+				serviceProviderType = ServiceProviderType.IValueProvider;
+			}
+			else
+			{
+				serviceProviderType = ServiceProviderType.None;
+			}
+
+			if(serviceProvider is IValueProviderAsync)
+			{
+				if(typeof(IValueProviderAsync<>).MakeGenericType(definingType) is { } valueProviderAsyncTType
+				&& valueProviderAsyncTType.IsInstanceOfType(serviceProvider))
+				{
+					result = serviceProvider;
+					serviceProviderType = ServiceProviderType.IValueProviderAsyncT;
+					return true;
+				}
+
+				if(serviceProviderType == ServiceProviderType.None)
+				{
+					serviceProviderType = ServiceProviderType.IValueProviderAsync;
+				}
+			}
+
+			if(serviceProvider is IValueByTypeProvider)
+			{
+				result = serviceProvider;
+				serviceProviderType = ServiceProviderType.IValueByTypeProvider;
+				return true;
+			}
+
+			if(serviceProvider is IValueByTypeProviderAsync)
+			{
+				result = serviceProvider;
+				serviceProviderType = ServiceProviderType.IValueByTypeProviderAsync;
+				return true;
+			}
+
+			if(serviceProviderType != ServiceProviderType.None)
+			{
+				result = serviceProvider;
+				return true;
+			}
+
+			result = null;
+			return false;
+		}
+		
+		private static void LogInvalidServiceDefinitionError(Type concreteType, Type definingType, Component container)
+		{
+			#if UNITY_EDITOR
+			// Don't log warnings if the container is a selected asset, as that probably means it's still being actively configured.
+			if(Array.IndexOf(UnityEditor.Selection.gameObjects, container.gameObject) != -1 && container.gameObject.IsAsset(true))
+			{
+				return;
+			}
+			#endif
+
+			if(definingType.IsInterface)
+			{
+				Debug.LogWarning($"Invalid Service Definition: {concreteType.Name} has been configured as a service with the defining type {definingType.Name}, but {concreteType.Name} does not implement {definingType.Name}.");
+				return;
+			}
+
+			Debug.LogWarning($"Invalid Service Definition: {concreteType.Name} has been configured as a service with the defining type {definingType.Name}, but {concreteType.Name} does not derive from {definingType.Name}.");
+		}
+
+		#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker tryGetForMarker = new(ProfilerCategory.Gui, "ServiceUtility.TryGetFor");
+		private static readonly ProfilerMarker isServiceDefiningTypeMarker = new(ProfilerCategory.Gui, "ServiceUtility.IsServiceDefiningType");
+		#endif
 	}
 }

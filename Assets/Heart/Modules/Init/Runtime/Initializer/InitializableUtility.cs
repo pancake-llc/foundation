@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using Sisus.Init.EditorOnly;
-#endif
-
 namespace Sisus.Init.Internal
 {
 	/// <summary>
@@ -14,11 +10,6 @@ namespace Sisus.Init.Internal
 	/// </summary>
 	public static class InitializableUtility
 	{
-		#if UNITY_EDITOR
-		public static event Action<IInitializableEditorOnly> InstanceLoadedInEditor;
-		public static void RegisterLoadedInstanceInEditor(IInitializableEditorOnly instance) => InstanceLoadedInEditor?.Invoke(instance);
-		#endif
-
 		internal static readonly Dictionary<Type, int> argumentCountsByIInitializableTypeDefinition = new(12)
 		{
 			{ typeof(IInitializable<>), 1 },
@@ -117,5 +108,10 @@ namespace Sisus.Init.Internal
 		/// Does the client derive from base class that can handle automatically initializing itself with all services?
 		/// </summary>
 		public static bool CanSelfInitializeWithoutInitializer([DisallowNull] Component client) => TypeUtility.DerivesFromGenericBaseType(client.GetType());
+
+		/// <summary>
+		/// Does the client derive from base class that can handle automatically initializing itself with all services?
+		/// </summary>
+		public static bool CanSelfInitializeWithoutInitializer([DisallowNull] Type clientType) => typeof(Component).IsAssignableFrom(clientType) && TypeUtility.DerivesFromGenericBaseType(clientType);
 	}
 }

@@ -22,25 +22,17 @@ namespace Sisus.Init.ValueProviders
 			|| typeof(IValueByTypeProviderAsync).IsAssignableFrom(type);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool IsValueProvider([AllowNull] Object obj) => obj is IValueProvider or IValueByTypeProvider or IValueByTypeProviderAsync or IValueProviderAsync;
+		public static bool IsValueProvider([AllowNull] object obj) => obj is IValueProvider or IValueByTypeProvider or IValueByTypeProviderAsync or IValueProviderAsync;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool IsAsyncValueProvider([AllowNull] Object obj) => obj is IValueProviderAsync or IValueByTypeProviderAsync;
+		public static bool IsAsyncValueProvider([AllowNull] object obj) => obj is IValueProviderAsync or IValueByTypeProviderAsync;
 
 		public static bool TryGetValueProviderValue([AllowNull] object potentialValueProvider, [DisallowNull] Type valueType, [NotNullWhen(true), MaybeNullWhen(false)] out object valueOrAwaitableToGetValue)
 		{
-			if(potentialValueProvider is IValueByTypeProvider)
-			{
-				object[] args = { potentialValueProvider as Component, null };
-				if((bool)typeof(IValueByTypeProvider).GetMethod(nameof(IValueByTypeProvider.TryGetFor)).MakeGenericMethod(valueType).Invoke(potentialValueProvider, args))
-				{
-					valueOrAwaitableToGetValue = args[1];
-					return valueOrAwaitableToGetValue is not null;
-				}
-			}
-
 			if(potentialValueProvider is IValueProvider valueProvider)
 			{
+				// NOTE: Always use IValueProvider<T>.Value if available instead of IValueProvider.Value, because it is
+				// possible for an object to implement multiple different IValueProvider<T> interfaces!
 				var genericValueProviderType = typeof(IValueProvider<>).MakeGenericType(valueType);
 				if(genericValueProviderType.IsInstanceOfType(potentialValueProvider))
 				{
@@ -50,7 +42,19 @@ namespace Sisus.Init.ValueProviders
 					return result;
 				}
 
+				// Prefer IValueByTypeProvider over IValueProvider, because an object could implement both interfaces,
+				// and support retrieving more than one type of service using IValueByTypeProvider, but only one default
+				// service using IValueProvider.
+				if(potentialValueProvider is IValueByTypeProvider valueByTypeProvider)
+				{
+					return valueByTypeProvider.TryGetFor(potentialValueProvider as Component, valueType, out valueOrAwaitableToGetValue);
+				}
+
 				return valueProvider.TryGetFor(potentialValueProvider as Component, out valueOrAwaitableToGetValue);
+			}
+			else if(potentialValueProvider is IValueByTypeProvider valueByTypeProvider)
+			{
+				return valueByTypeProvider.TryGetFor(potentialValueProvider as Component, valueType, out valueOrAwaitableToGetValue);
 			}
 
 			if(potentialValueProvider is IValueByTypeProviderAsync)

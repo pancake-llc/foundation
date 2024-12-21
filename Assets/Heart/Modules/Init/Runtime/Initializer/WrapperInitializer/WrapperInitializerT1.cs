@@ -1,5 +1,6 @@
 ﻿using Sisus.Init.Internal;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Sisus.Init.Internal.InitializerUtility;
 
 namespace Sisus.Init
@@ -27,13 +28,13 @@ namespace Sisus.Init
 		[SerializeField] private Any<TArgument> argument = default;
 
 		[SerializeField, HideInInspector] private Arguments disposeArgumentsOnDestroy = Arguments.None;
-		[SerializeField, HideInInspector] private Arguments asyncValueProviderArguments = Arguments.None;
+		[FormerlySerializedAs("asyncValueProviderArguments"),SerializeField, HideInInspector] private Arguments asyncArguments = Arguments.None;
 
 		/// <inheritdoc/>
 		protected override TArgument Argument { get => argument.GetValue(this, Context.MainThread); set => argument = value; }
 
 		protected override bool IsRemovedAfterTargetInitialized => disposeArgumentsOnDestroy == Arguments.None;
-		private protected override bool IsAsync => asyncValueProviderArguments != Arguments.None;
+		private protected override bool IsAsync => asyncArguments != Arguments.None;
 
 		private protected sealed override async
 		#if UNITY_2023_1_OR_NEWER
@@ -45,12 +46,12 @@ namespace Sisus.Init
 		{
 			// Handle instance first creation method, which supports cyclical dependencies (A requires B, and B requires A).
 			if(wrapper is IInitializable<TArgument> initializable
-				&& GetOrCreateUnitializedWrappedObject() is var wrappedObject)
+				&& GetOrCreateUninitializedWrappedObject() is var wrappedObject)
 			{
 				wrapper = InitWrapper(wrappedObject);
 
 				var argument = await this.argument.GetValueAsync(this, Context.MainThread);
-				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref argument);
+				OnAfterUninitializedWrappedObjectArgumentRetrieved(this, ref argument);
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(disposeArgumentsOnDestroy == Arguments.First) OptimizeValueProviderNameForDebugging(this, this.argument);
@@ -103,10 +104,10 @@ namespace Sisus.Init
 
 		private protected sealed override void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider)
 		{
-			var setValue = asyncValueProviderArguments.WithFlag(argument, isAsyncValueProvider);
-			if(asyncValueProviderArguments != setValue)
+			var setValue = asyncArguments.WithFlag(argument, isAsyncValueProvider);
+			if(asyncArguments != setValue)
 			{
-				asyncValueProviderArguments = setValue;
+				asyncArguments = setValue;
 				UnityEditor.EditorUtility.SetDirty(this);
 			}
 		}

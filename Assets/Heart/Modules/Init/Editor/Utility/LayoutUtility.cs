@@ -18,15 +18,14 @@ namespace Sisus.Init.EditorOnly.Internal
 	[InitializeOnLoad]
 	internal static class LayoutUtility
 	{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 		private static readonly ProfilerMarker repaintMarker = new(ProfilerCategory.Gui, "Sisus.Repaint");
+		#endif
 
-		internal static ProfilerMarker.AutoScope MarkRepaint() => repaintMarker.Auto();
-#endif
-		
 		public static Editor NowDrawing { get; internal set; }
 
-		private static readonly List<Action> deferredActions = new();
+		private static readonly List<Action> onNextLayoutEvent = new();
+		private static readonly List<Action> onNextRepaintEvent = new();
 
 		static LayoutUtility()
 		{
@@ -38,21 +37,34 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			NowDrawing = editor;
 
-			if(deferredActions.Count > 0)
+			if(onNextLayoutEvent.Count > 0)
 			{
-				if(Event.current.type is not EventType.Layout)
+				if(Event.current.type is EventType.Layout)
+				{
+					ApplyImmediate(onNextLayoutEvent);
+				}
+				else
 				{
 					Repaint(editor);
-					return;
 				}
+			}
 
-				ApplyImmediate(deferredActions);
+			if(onNextRepaintEvent.Count > 0)
+			{
+				if(Event.current.type is EventType.Repaint)
+				{
+					ApplyImmediate(onNextRepaintEvent);
+				}
+				else
+				{
+					Repaint(editor);
+				}
 			}
 		}
 
 		public static void EndGUI([DisallowNull] Editor editor)
 		{
-			if(deferredActions.Count <= 0)
+			if(onNextLayoutEvent.Count <= 0)
 			{
 				return;
 			}
@@ -63,7 +75,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				return;
 			}
 
-			ApplyImmediate(deferredActions);
+			ApplyImmediate(onNextLayoutEvent);
 		}
 
 		public static void ExitGUI()
@@ -129,18 +141,18 @@ namespace Sisus.Init.EditorOnly.Internal
 			NowDrawing = parentEditor;
 		}
 
-		public static void ApplyWhenSafe([DisallowNull] Action action, Editor editor = null, ExecutionOptions executionOptions = ExecutionOptions.Default)
+		public static void OnLayoutEvent([DisallowNull] Action action, Editor editor = null, ExecutionOptions executionOptions = ExecutionOptions.Default)
 		{
 			EventType eventType = Event.current?.type ?? EventType.Ignore;
 			if(eventType == EventType.Layout)
 			{
-				if(executionOptions.HasFlag(ExecutionOptions.ExecuteImmediateIfLayoutEvent))
+				if(executionOptions.HasFlag(ExecutionOptions.CanBeExecutedImmediately))
 				{
 					action();
 					return;
 				}
 			}
-			else if(executionOptions.HasFlag(ExecutionOptions.ExitGUIIfNotLayoutEvent))
+			else if(executionOptions.HasFlag(ExecutionOptions.ExitGUIIfWrongEvent))
 			{
 				Repaint(editor);
 				ExitGUI();
@@ -149,10 +161,37 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(!executionOptions.HasFlag(ExecutionOptions.AllowDuplicates))
 			{
-				deferredActions.Remove(action);
+				onNextLayoutEvent.Remove(action);
 			}
 
-			deferredActions.Add(action);
+			onNextLayoutEvent.Add(action);
+			Repaint(editor);
+		}
+
+		public static void OnRepaintEvent([DisallowNull] Action action, Editor editor = null, ExecutionOptions executionOptions = ExecutionOptions.Default)
+		{
+			EventType eventType = Event.current?.type ?? EventType.Ignore;
+			if(eventType == EventType.Layout)
+			{
+				if(executionOptions.HasFlag(ExecutionOptions.CanBeExecutedImmediately))
+				{
+					action();
+					return;
+				}
+			}
+			else if(executionOptions.HasFlag(ExecutionOptions.ExitGUIIfWrongEvent))
+			{
+				Repaint(editor);
+				ExitGUI();
+				return;
+			}
+
+			if(!executionOptions.HasFlag(ExecutionOptions.AllowDuplicates))
+			{
+				onNextLayoutEvent.Remove(action);
+			}
+
+			onNextLayoutEvent.Add(action);
 			Repaint(editor);
 		}
 
@@ -200,34 +239,34 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		public static void Repaint([AllowNull] Editor editor = null)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-			using var _ = repaintMarker.Auto();
-#endif
-			
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			using var x = repaintMarker.Auto();
+			#endif
+
 			GUI.changed = true;
 
 			if(editor)
 			{
-#if DEV_MODE && DEBUG_REPAINT
+				#if DEV_MODE && DEBUG_REPAINT
 				Debug.Log(editor.GetType().Name + ".Repaint");
-#endif
-				
+				#endif
+
 				editor.Repaint();
 
 				if(NowDrawing != editor && NowDrawing)
 				{
-#if DEV_MODE && DEBUG_REPAINT
+					#if DEV_MODE && DEBUG_REPAINT
 					Debug.Log(NowDrawing.GetType().Name + ".Repaint");
-#endif
+					#endif
 
 					NowDrawing.Repaint();
 				}
 			}
 			else if(NowDrawing)
 			{
-#if DEV_MODE && DEBUG_REPAINT
+				#if DEV_MODE && DEBUG_REPAINT
 				Debug.Log(NowDrawing.GetType().Name + ".Repaint");
-#endif
+				#endif
 
 				NowDrawing.Repaint();
 			}

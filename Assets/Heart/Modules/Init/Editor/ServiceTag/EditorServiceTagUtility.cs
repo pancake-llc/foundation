@@ -31,11 +31,6 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static readonly GUIContent blankLabel = new(" ");
 		private static readonly HashSet<Type> definingTypesBuilder = new();
 		private static readonly Dictionary<object, Type[]> objectDefiningTypesCache = new();
-		
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-		private static readonly ProfilerMarker getServiceDefiningTypesMarker = new(ProfilerCategory.Gui, "EditorServiceTagUtility.GetServiceDefiningTypes");
-		private static readonly ProfilerMarker repaintAllServiceEditorsMarker = new(ProfilerCategory.Gui, "EditorServiceTagUtility.RepaintAllServiceEditors");
-#endif
 
 		static EditorServiceTagUtility()
 		{
@@ -56,7 +51,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			static void OnObjectChangesPublished(ref ObjectChangeEventStream stream) => ClearDefiningTypesCache();
 			static void OnUndoRedoPerformed() => ClearDefiningTypesCache();
-			
+
 			static void OnSelectionChanged()
 			{
 				// Need to repaint editor header to update service tag position.
@@ -70,19 +65,21 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			static void ClearDefiningTypesCache()
 			{
-#if DEV_MODE && DEBUG_CLEAR_CACHE
+				#if DEV_MODE && DEBUG_CLEAR_CACHE
 				Debug.Log("ClearDefiningTypesCache");
-#endif
+				#endif
 				EditorApplication.delayCall -= ClearDefiningTypesCacheImmediate;
 				EditorApplication.delayCall += ClearDefiningTypesCacheImmediate;
 			}
 
-			[MenuItem("Tools/Pancake/Init/Clear Service Defining Types Cache", priority = 10000)]
+			#if DEV_MODE
+			[MenuItem("DevMode/Clear Service Defining Types Cache")]
+			#endif
 			static void ClearDefiningTypesCacheImmediate()
 			{
 				var components = Selection.activeGameObject ? Selection.activeGameObject.GetComponentsNonAlloc<Component>() : ComponentCollection<Component>.Empty();
 				RepaintEditorsWhenService(components);
-				
+
 				foreach(var definingTypes in objectDefiningTypesCache.Values)
 				{
 					if(definingTypes.Length > 0)
@@ -92,10 +89,10 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				objectDefiningTypesCache.Clear();
-				
+
 				RepaintEditorsWhenService(components);
 			}
-			
+
 			static void RepaintEditorsWhenService(ComponentCollection<Component> inspectedComponents)
 			{
 				foreach(var component in inspectedComponents)
@@ -110,10 +107,6 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			static void RepaintAllServiceEditors()
 			{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-				using var x = repaintAllServiceEditorsMarker.Auto();
-#endif
-				
 				var gameObject = Selection.activeGameObject;
 				if(!gameObject)
 				{
@@ -133,10 +126,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static Span<Type> GetServiceDefiningTypes([DisallowNull] object serviceOrServiceProvider)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 			using var x = getServiceDefiningTypesMarker.Auto();
-#endif
-			
+			#endif
+
 			if(objectDefiningTypesCache.TryGetValue(serviceOrServiceProvider, out var cachedResults))
 			{
 				if(cachedResults.Length <= 1)
@@ -373,7 +366,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			var classWithAttribute = ServiceInjector.GetClassWithServiceAttribute(serviceDefiningType);
-			var script = Find.Script(classWithAttribute != null ? classWithAttribute : serviceDefiningType);
+			var script = Find.Script(classWithAttribute ?? serviceDefiningType);
 			if(!script && classWithAttribute != null)
 			{
 				script = Find.Script(serviceDefiningType);
@@ -383,6 +376,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				EditorGUIUtility.PingObject(script);
 				LayoutUtility.ExitGUI();
+			}
+			else
+			{
+				Debug.Log($"Could not locate the script that contains the type '{TypeUtility.ToString(classWithAttribute ?? serviceDefiningType)}'.\nThis can happen when the name of the script does not match the type name.", client);
 			}
 		}
 
@@ -505,7 +502,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				return;
 			}
 
-			if(ServiceAttributeUtility.definingTypes.TryGetValue(definingType, out var serviceInfo) && Find.Script(serviceInfo.classWithAttribute ?? serviceInfo.concreteType ?? definingType, out MonoScript scriptWithAttribute))
+			if(ServiceAttributeUtility.definingTypes.TryGetValue(definingType, out var serviceInfo) && Find.Script(serviceInfo.serviceOrProviderType ?? serviceInfo.concreteType ?? definingType, out MonoScript scriptWithAttribute))
 			{
 				EditorGUIUtility.PingObject(scriptWithAttribute);
 				return;
@@ -593,7 +590,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				var tagRectScreenSpace = tagRect;
 				tagRectScreenSpace.y += GUIUtility.GUIToScreenPoint(Vector2.zero).y;
-				if(EditorWindow.mouseOverWindow != null)
+				if(EditorWindow.mouseOverWindow)
 				{
 					tagRectScreenSpace.y -= EditorWindow.mouseOverWindow.position.y;
 				}
@@ -643,6 +640,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				ServiceTag.Add(service, selectedType);
+				InspectorContents.RepaintEditorsWithTarget(service);
 			}
 
 			(string fullPath, Texture icon) GetItemContent(Type type)
@@ -832,5 +830,9 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 		}
+
+		#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+		private static readonly ProfilerMarker getServiceDefiningTypesMarker = new(ProfilerCategory.Gui, "EditorServiceTagUtility.GetServiceDefiningTypes");
+		#endif
 	}
 }

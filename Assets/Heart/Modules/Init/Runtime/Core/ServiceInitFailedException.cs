@@ -16,24 +16,8 @@ namespace Sisus.Init
 	/// </summary>
 	public class ServiceInitFailedException : InitArgsException
 	{
-		internal GlobalServiceInfo ServiceInfo { get; }
+		internal ServiceInfo ServiceInfo { get; }
 		public ServiceInitFailReason Reason { get; }
-
-		[NotNull] public Type ClassWithAttribute => ServiceInfo.classWithAttribute;
-
-		/// <summary>
-		/// Can in theory be null in rare instances, if the <see cref="ServiceAttribute"/> was attached to an initializer
-		/// like a <see cref="CustomInitializer"/> where the generic type for the initialized object is abstract.
-		/// <para>
-		/// Can also be a generic type definition. E.g. type Logger{T} registered using [Service(typeof(ILogger{}))].
-		/// </para>
-		/// </summary>
-		[MaybeNull] public Type ConcreteType => ServiceInfo.concreteType;
-
-		/// <summary>
-		/// An array containing of the defining types of the service.
-		/// </summary>
-		public Type[] DefiningTypes => ServiceInfo.definingTypes;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ServiceInitFailedException"/> class.
@@ -43,25 +27,25 @@ namespace Sisus.Init
 		/// <param name="exception">
 		/// The exception that is the cause of the current exception. If the innerException parameter is not a null reference, the current exception is raised in a catch block that handles the inner exception.
 		/// </param>
-		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, string message, Exception exception = null) : base(message, exception)
+		private protected ServiceInitFailedException(ServiceInfo serviceInfo, ServiceInitFailReason reason, string message, Exception exception = null) : base(message, exception)
 		{
 			ServiceInfo = serviceInfo;
 			Reason = reason;
 		}
 
-		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper) : base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, null, null))
+		private protected ServiceInitFailedException(ServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper) : base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, null, null))
 		{
 			ServiceInfo = serviceInfo;
 			Reason = reason;
 		}
 
-		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Exception exception, Type concreteType = null) : base(GenerateMessage(serviceInfo, reason, null, null, null, null, exception), exception)
+		private protected ServiceInitFailedException(ServiceInfo serviceInfo, ServiceInitFailReason reason, Exception exception, Type concreteType = null) : base(GenerateMessage(serviceInfo, reason, null, null, null, null, exception), exception)
 		{
 			ServiceInfo = serviceInfo;
 			Reason = reason;
 		}
 
-		private protected ServiceInitFailedException(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType, Exception exception) : base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, concreteType, exception), exception, sceneObject ? sceneObject : asset ? asset : initializerOrWrapper is Object obj && obj ? obj :
+		private protected ServiceInitFailedException(ServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType, Exception exception) : base(GenerateMessage(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, concreteType, exception), exception, sceneObject ? sceneObject : asset ? asset : initializerOrWrapper is Object obj && obj ? obj :
 		#if UNITY_EDITOR
 		Find.Script(serviceInfo.ConcreteOrDefiningType)
 		#else
@@ -73,20 +57,36 @@ namespace Sisus.Init
 			Reason = reason;
 		}
 
-		internal static InitArgsException Create([DisallowNull] GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Exception exception = null)
-		 => Create(serviceInfo, reason, null, null, null, exception, null, null);
+		internal static InitArgsException Create([DisallowNull] ServiceInfo serviceInfo, ServiceInitFailReason reason, Exception exception = null)
+		 => Create(serviceInfo, reason, null, null, null, exception);
 
-		internal static InitArgsException Create([DisallowNull] GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject = null, object initializerOrWrapper = null, Exception exception = null, Type concreteType = null, Type missingDependencyType = null)
+		internal static InitArgsException Create([DisallowNull] ServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject = null, object initializerOrWrapper = null, Exception exception = null, Type concreteType = null, Type missingDependencyType = null, LocalServices localServices = null)
 		{
 			InitArgsException result;
-			var dependencyChain = new List<GlobalServiceInfo>();
-			if(reason is ServiceInitFailReason.CircularDependencies or ServiceInitFailReason.MissingDependency && TryGetCircularDependencyChain(dependencyChain, serviceInfo))
+			var dependencyChain = new List<ServiceInfo>();
+			if(reason is ServiceInitFailReason.CircularDependencies)
 			{
+				#if DEV_MODE
+				bool success =
+				#endif
+					TryGetCircularDependencyChain(dependencyChain, serviceInfo);
+
 				result = new CircularDependenciesException(serviceInfo, dependencyChain, exception);
+
+				#if DEV_MODE
+				if(!success) { Debug.LogWarning($"Failed to get circular dependency chain for {TypeUtility.ToString(serviceInfo.ConcreteOrDefiningType)}"); }
+				#endif
 			}
 			else if(reason is ServiceInitFailReason.MissingDependency)
 			{
-				result = MissingInitArgumentsException.ForService(concreteType, missingDependencyType);
+				if(TryGetCircularDependencyChain(dependencyChain, serviceInfo))
+				{
+					result = new CircularDependenciesException(serviceInfo, dependencyChain, exception);
+				}
+				else
+				{
+					result = MissingInitArgumentsException.ForService(concreteType ?? serviceInfo.ConcreteOrDefiningType, missingDependencyType, localServices);
+				}
 			}
 			else
 			{
@@ -97,7 +97,7 @@ namespace Sisus.Init
 			return result;
 		}
 
-		private static bool TryGetCircularDependencyChain(List<GlobalServiceInfo> dependencyChain, GlobalServiceInfo currentServiceInfo)
+		private static bool TryGetCircularDependencyChain(List<ServiceInfo> dependencyChain, ServiceInfo currentServiceInfo)
 		{
 			bool usesConstructorInjection = !currentServiceInfo.FindFromScene
 				&& (!currentServiceInfo.ShouldInstantiate(true)
@@ -135,7 +135,7 @@ namespace Sisus.Init
 			return false;
 		}
 
-		private static string GenerateMessage(GlobalServiceInfo serviceInfo, ServiceInitFailReason reason, Object asset, Object sceneObject, object initializerOrWrapper, Type concreteType, Exception exception) /* params object[] context)*/ //Object context, Exception inner) // TODO: Replace both  context and inner with object context?
+		private static string GenerateMessage([DisallowNull] ServiceInfo serviceInfo, ServiceInitFailReason reason, [AllowNull] Object asset, [AllowNull] Object sceneObject, object initializerOrWrapper, [AllowNull] Type concreteType, Exception exception)
 		{
 			var sb = new StringBuilder();
 			sb.Append("Service Init Failed: ");
@@ -157,21 +157,28 @@ namespace Sisus.Init
 				ServiceInitFailReason.MissingResource => $"No asset was found at the resource path 'Resources/{serviceInfo.ResourcePath}', but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.ResourcePath)} set to the aforementioned path. Either make sure an asset exists in the project at the specified path, or don't specify a {nameof(ServiceAttribute.ResourcePath)}, to have a new instance be created automatically instead.",
 				ServiceInitFailReason.MissingComponent => $"No component matching all specified service defining types was found on '{(sceneObject ?? asset).name}'.",
 				ServiceInitFailReason.AssetNotConvertible => $"Asset '{(sceneObject ?? asset).name}' of type {TypeUtility.ToString((sceneObject ?? asset)?.GetType())} was not convertible to all the defining types specified for the service.",
-				ServiceInitFailReason.ServiceInitializerThrewException => $"An exception was thrown by {TypeUtility.ToString(initializerOrWrapper.GetType())}:\n{exception}",
-				ServiceInitFailReason.ServiceInitializerReturnedNull => $"Service initializer {TypeUtility.ToString(initializerOrWrapper.GetType())}.{nameof(ServiceInitializer<object>.InitTarget)} returned a Null result.",
-				ServiceInitFailReason.InitializerThrewException => $"An exception was thrown by {TypeUtility.ToString(initializerOrWrapper.GetType())}:\n{exception}",
-				ServiceInitFailReason.InitializerReturnedNull => $"{TypeUtility.ToString(initializerOrWrapper.GetType())} returned a Null result.",
-				ServiceInitFailReason.WrapperReturnedNull => $"{TypeUtility.ToString(initializerOrWrapper.GetType())}.{nameof(IWrapper.WrappedObject)} was Null.",
-				ServiceInitFailReason.InvalidDefiningType => $"Service '{concreteType.Name}' is a scriptable object type but has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Scriptable objects can not exist in scenes and as such can't be retrieved using this method.",
-				ServiceInitFailReason.ScriptableObjectWithFindFromScene => $"Service '{concreteType.Name}' is a scriptable object type but has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Scriptable objects can not exist in scenes and as such can't be retrieved using this method.",
+				ServiceInitFailReason.CreatingServiceProviderFailed => $"An exception occurred while trying to create service initializer {TypeUtility.ToString(serviceInfo.serviceOrProviderType)}:\n{exception}",
+				ServiceInitFailReason.ServiceProviderThrewException => $"An exception was thrown by {TypeUtility.ToString(initializerOrWrapper?.GetType())}:\n{exception}",
+				ServiceInitFailReason.ServiceProviderResultNull => $"Service provider {TypeUtility.ToString(initializerOrWrapper?.GetType())} returned a Null result.",
+				ServiceInitFailReason.InitializerThrewException => $"An exception was thrown by {TypeUtility.ToString(initializerOrWrapper?.GetType())}:\n{exception}",
+				ServiceInitFailReason.InitializerReturnedNull => $"{TypeUtility.ToString(initializerOrWrapper?.GetType())} returned a Null result.",
+				ServiceInitFailReason.WrapperReturnedNull => $"{TypeUtility.ToString(initializerOrWrapper?.GetType())}.{nameof(IWrapper.WrappedObject)} was Null.",
+				ServiceInitFailReason.InvalidDefiningType => $"Service '{concreteType?.Name}' is a scriptable object type but has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Scriptable objects can not exist in scenes and as such can't be retrieved using this method.",
+				ServiceInitFailReason.ScriptableObjectWithFindFromScene => $"Service '{concreteType?.Name}' is a scriptable object type but has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Scriptable objects can not exist in scenes and as such can't be retrieved using this method.",
 				ServiceInitFailReason.UnresolveableConcreteType when serviceInfo.concreteType?.IsGenericTypeDefinition ?? false => "Unable to determine closed generic type to use for creating the service instance.",
 				ServiceInitFailReason.UnresolveableConcreteType => "Unable to determine concrete type to use for creating the service instance.",
 				ServiceInitFailReason.ExceptionWasThrown => "An exception was thrown during service initialization.",
-				ServiceInitFailReason.CircularDependencies => CircularDependenciesException.Create(serviceInfo, reason, asset, sceneObject, initializerOrWrapper, exception, concreteType),
+				ServiceInitFailReason.CircularDependencies => CircularDependenciesException.GenerateMessage(serviceInfo, new()),
 				ServiceInitFailReason.MissingDependency => new MissingInitArgumentsException(concreteType)
-				//_ => throw new ArgumentOutOfRangeException(nameof(reason), reason, null)
 			});
 
+			AppendServiceInfo(sb, serviceInfo, asset:asset, sceneObject:sceneObject);
+			AppendMoreHelpUrl(sb);
+			return sb.ToString();
+		}
+
+		internal static void AppendServiceInfo([DisallowNull] StringBuilder sb, [DisallowNull] ServiceInfo serviceInfo, [AllowNull] Object asset = null, [AllowNull] Object sceneObject = null)
+		{
 			sb.Append("\n\nService Info:");
 
 			if(serviceInfo.concreteType != null)
@@ -188,15 +195,23 @@ namespace Sisus.Init
 				sb.Append(".");
 			}
 
-			if(serviceInfo.classWithAttribute != null)
+			if(serviceInfo.serviceOrProviderType != null && serviceInfo.concreteType != serviceInfo.serviceOrProviderType)
 			{
-				sb.Append("\nClass with attribute: ");
-				sb.Append(serviceInfo.classWithAttribute);
+				if(ServiceAttributeUtility.definingTypes.ContainsValue(serviceInfo))
+				{
+					sb.Append("\nClass with [Service] attribute: ");
+				}
+				else
+				{
+					sb.Append("\nService provider type: ");
+				}
+
+				sb.Append(TypeUtility.ToString(serviceInfo.serviceOrProviderType));
 				sb.Append(".");
 			}
 
 			#if UNITY_EDITOR
-			if(asset != null)
+			if(asset)
 			{
 				sb.Append("\nAsset: '");
 				sb.Append(AssetDatabase.GetAssetPath(asset));
@@ -211,14 +226,12 @@ namespace Sisus.Init
 				sb.Append(".");
 			}
 
-			return sb.ToString();
-
 			void AddHierarchyPath(Transform transform)
 			{
 				sb.Append(transform.name);
 				sb.Append('\'');
 
-				while(transform.parent != null)
+				while(transform.parent)
 				{
 					transform = transform.parent;
 					sb.Insert(0, '/');
@@ -236,7 +249,7 @@ namespace Sisus.Init
 
 
 			int count =
-				#if UNITY_2022_3_OR_NEWER
+				#if UNITY_2022_2_OR_NEWER
 				SceneManager.loadedSceneCount;
 				#else
 				SceneManager.sceneCount;

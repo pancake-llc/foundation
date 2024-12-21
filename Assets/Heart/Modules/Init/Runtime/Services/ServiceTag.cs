@@ -1,9 +1,11 @@
 ﻿//#define SHOW_SERVICE_TAGS
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Sisus.Init.Serialization;
+using Sisus.Init.ValueProviders;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,10 +16,9 @@ using UnityEditorInternal;
 namespace Sisus.Init.Internal
 {
 	[ExecuteAlways, AddComponentMenu(Hidden), DefaultExecutionOrder(ExecutionOrder.ServiceTag)]
-	public sealed partial class ServiceTag : MonoBehaviour, IValueByTypeProvider, IValueProvider<Component>, IInitializable<Component, Clients, Type>
+	public sealed partial class ServiceTag : MonoBehaviour, IServiceProvider, IValueByTypeProvider, IValueProvider<Component>, IInitializable<Component, Clients, Type>
 		#if UNITY_EDITOR
 		, ISerializationCallbackReceiver
-		, INullGuardByType
 		#endif
 	{
 		private const string Hidden = "";
@@ -25,11 +26,15 @@ namespace Sisus.Init.Internal
 		[SerializeField]
 		private Component service;
 
-		[SerializeField, Tooltip("Limits what clients have access to the services in this Services by their location in the scene hierarchy.\n\nWhen set to 'Children' only clients that are attached to the same GameObject as this Services or or any of its children (including nested children) can access the services in this Services.\n\nWhen set to 'Scene' only clients that are in the same scene as this Services can access the services in this Services.\n\nWhen set to 'Global', all clients are allowed to access the services in this Services regardless of where they are in the scene hierarchy.")]
+		[SerializeField,
+		Tooltip("Specifies which clients can use this service.\n\n" +
+				"When set to " + nameof(Clients.InChildren) + ", only clients that are attached to this GameObject or its children (including nested children) can access this service.\n\n" +
+				"When set to " + nameof(Clients.InScene) + ", only clients that are in the same scene can access this service.\n\n" +
+				"When set to " + nameof(Clients.Everywhere) + ", all clients can access this service, regardless of their location in a scene, or whether they are a scene object at all.")]
 		private Clients toClients = Clients.Everywhere;
 
 		[SerializeField]
-		private _Type definingType = new _Type();
+		private _Type definingType = new();
 
 		/// <summary>
 		/// Gets the defining type that clients should be able to use to retrieve
@@ -101,6 +106,18 @@ namespace Sisus.Init.Internal
 			}
 		}
 
+		/// <summary>
+		/// Specifies which clients can receive services from this provider.
+		/// <para>
+		/// When set to <see cref="Clients.InChildren"/>, only clients that are attached to the same GameObject as this provider, or any of its children (including nested children), can access its services.
+		/// </para>
+		/// <para>
+		/// When set to <see cref="Clients.InScene"/>, only clients that are in the same scene as this provider, can access its services.
+		/// </para>
+		/// <para>
+		/// When set to <see cref="Clients.Everywhere"/>, all clients are allowed to access its services, regardless of their location in scenes hierarchies, or whether they are a scene object at all.
+		/// </para>
+		/// </summary>
 		internal Clients ToClients
 		{
 			get => toClients;
@@ -145,17 +162,21 @@ namespace Sisus.Init.Internal
 		}
 		#endif
 
-		bool IValueByTypeProvider.TryGetFor<TValue>([AllowNull] Component client, out TValue value)
+		/// <inheritdoc cref="IServiceProvider.TryGet{TService}(out TService)"/>
+		public bool TryGet<TService>(out TService service) => TryGetFor(null, out service);
+
+		/// <inheritdoc cref="IServiceProvider.TryGetFor{TService}(Component, out TService)"/>
+		public bool TryGetFor<TService>([AllowNull] Component client, out TService service)
 		{
-			if(definingType.Value == typeof(TValue)
-			&& service
-			&& Find.In(service, out value)
+			if(definingType.Value == typeof(TService)
+			&& this.service
+			&& Find.In(this.service, out service)
 			&& (IsAvailableToAnyClient() || (client && IsAvailableToClient(client.gameObject))))
 			{
 				return true;
 			}
 
-			value = default;
+			service = default;
 			return false;
 		}
 
@@ -280,7 +301,7 @@ namespace Sisus.Init.Internal
 
 			if(service && definingType.Value is Type definingTypeValue)
 			{
-				ServiceUtility.RemoveFromClients(service, definingTypeValue, toClients, this);
+				ServiceUtility.RemoveFrom(service, definingTypeValue, toClients, this);
 			}
 		}
 
@@ -453,14 +474,14 @@ namespace Sisus.Init.Internal
 			Register();
 		}
 
-		NullGuardResult INullGuardByType.EvaluateNullGuard<TValue>(Component client)
+		NullGuardResult INullGuardByType.EvaluateNullGuard<TService>(Component client)
 		{
-			if(definingType.Value is not Type serviceType || !service)
+			if(definingType.Value is not Type serviceType)
 			{
 				return NullGuardResult.InvalidValueProviderState;
 			}
 
-			if(serviceType != typeof(TValue) || typeof(TValue).IsValueType)
+			if(serviceType != typeof(TService))
 			{
 				return NullGuardResult.TypeNotSupported;
 			}
@@ -470,15 +491,46 @@ namespace Sisus.Init.Internal
 				return NullGuardResult.ClientNotSupported;
 			}
 
-			if(service is not TValue && service is not IWrapper<TValue>)
+			#if UNITY_EDITOR
+			// In the editor, perform some additional checks to be able to provide more
+			// detailed information in the Inspector and help catch potential issues earlier.
+
+			// In builds, trust that services will be configured properly.
+
+			if(!service)
 			{
-				return NullGuardResult.TypeNotSupported;
+				return NullGuardResult.InvalidValueProviderState;
 			}
 
-			if(!Find.In<TValue>(service, out _))
+			if(service is not TService && !ValueProviderUtility.IsValueProvider(service))
 			{
-				return NullGuardResult.ValueProviderValueMissing;
+				return NullGuardResult.InvalidValueProviderState;
 			}
+
+			if(service is IWrapper wrapper)
+			{
+				if(wrapper.WrappedObject is not TService)
+				{
+					return GetValueProviderMissingResult();
+				}
+			}
+			else if(service is IInitializer initializer)
+			{
+				if(initializer.Target is not object target || !Find.In<TService>(target, out _))
+				{
+					return GetValueProviderMissingResult();
+				}
+			}
+			else if(ValueProviderUtility.TryGetValueProviderValue(service, out object value) || !Find.In<TService>(value, out _))
+			{
+				return GetValueProviderMissingResult();
+			}
+
+			NullGuardResult GetValueProviderMissingResult() =>
+				EditorOnly.ThreadSafe.Application.TryGetIsPlaying(Context.Default, out bool isPlaying) && !isPlaying
+					? NullGuardResult.ValueProviderValueNullInEditMode
+					: NullGuardResult.ValueProviderValueMissing;
+			#endif
 
 			return NullGuardResult.Passed;
 		}

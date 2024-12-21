@@ -1,44 +1,21 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Sisus.Init.ValueProviders;
 using UnityEngine;
 
 namespace Sisus.Init
 {
 	/// <summary>
-	/// Class that can provide an instance of any class that has the <see cref="ServiceAttribute"/> on demand.
+	/// A global service that clients can use to acquire other global and local services by their defining types.
 	/// <para>
-	/// This is a simple proxy for the static <see cref="Service{TDefiningClassOrInterface}"/> class;
-	/// Calling the <see cref="Get"/> method on any instance of this class will return the shared
-	/// service instance stored in <see cref="Service{TDefiningClassOrInterface}.Instance"/>.
+	/// Implements the <see cref="Sisus.Init.IServiceProvider"/> and <see cref="System.IServiceProvider"/> interfaces.
 	/// </para>
 	/// <para>
-	/// A benefit of using <see cref="ServiceProvider"/> instead of <see cref="Service{}"/> directly,
-	/// is the ability to call <see cref="Get"/> through the <see cref="IServiceProvider"/> interface.
-	/// This makes it possible to create mock implementations of the interface for unit tests.
-	/// </para>
-	/// <para>
-	/// Additionally, it makes it easier to swap your service provider with another implementation at a later time.
-	/// </para>
-	/// <para>
-	/// A third benefit is that it makes your code less coupled with other classes, making it much easier to
-	/// port the code over to another project for example.
-	/// </para>
-	/// <para>
-	/// The <see cref="ServiceProvider"/> can be automatically received by classes that derive from
-	/// <see cref="MonoBehaviour{IServiceProvider}"/> or <see cref="ScriptableObject{IServiceProvider}"/>.
+	/// This is just a simple proxy for the <see cref="Service.TryGet{TService}"/>
+	/// and <see cref="Service.TryGetFor{TService}(Component, out TService)"/> methods.
 	/// </para>
 	/// </summary>
-	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
-	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Class | Is.Interface, WhereNone = Is.BuiltIn | Is.Service, Order = 100f, Tooltip = "An instance of this dynamic service is expected to become available for the client at runtime.\n\nService can be a component that has the Service Tag, or an Object registered as a service in a Services component, that is located in another scene or prefab.\n\nThe service could also be manually registered in code using " + nameof(Service) + "." + nameof(Service.Set) + ".")]
-	#endif
-	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
-	[CreateAssetMenu(fileName = MENU_NAME, menuName = ValueProviderUtility.CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1002)]
-	#endif
-	public sealed class ServiceProvider : ScriptableObject, IServiceProvider, System.IServiceProvider, IValueByTypeProvider, INullGuardByType
+	public sealed class ServiceProvider : ScriptableObject, IServiceProvider, System.IServiceProvider, IValueByTypeProvider
 	{
-		private const string MENU_NAME = "Service (Local)";
-
 		/// <inheritdoc/>
 		public bool TryGet<TService>(out TService service) => Service.TryGet(out service);
 
