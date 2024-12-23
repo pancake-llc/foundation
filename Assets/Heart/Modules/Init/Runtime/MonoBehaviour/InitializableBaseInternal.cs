@@ -4,7 +4,9 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+#if UNITY_EDITOR
 using Sisus.Init.EditorOnly;
+#endif
 using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 using Debug = UnityEngine.Debug;

@@ -461,6 +461,7 @@ namespace Sisus.Init.Internal
 		}
 
 		void ISerializationCallbackReceiver.OnBeforeSerialize() { }
+#endif
 
 		public async void OnAfterDeserialize()
 		{
@@ -534,6 +535,5 @@ namespace Sisus.Init.Internal
 
 			return NullGuardResult.Passed;
 		}
-		#endif
 	}
 }

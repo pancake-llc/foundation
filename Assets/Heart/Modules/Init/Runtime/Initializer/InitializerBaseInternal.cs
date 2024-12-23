@@ -2,7 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+#if UNITY_EDITOR
 using Sisus.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 

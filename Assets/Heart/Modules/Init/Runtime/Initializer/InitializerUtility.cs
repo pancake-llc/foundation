@@ -337,7 +337,6 @@ namespace Sisus.Init.Internal
 			}
 		}
 
-		#if DEBUG
 		internal static bool ShouldSelfGuardAgainstNull([DisallowNull] object target)
 		{
 			if(target is MonoBehaviour monoBehaviour)
@@ -391,7 +390,6 @@ namespace Sisus.Init.Internal
 			return false;
 			#endif
 		}
-		#endif
 
 		public static bool ShouldSelfGuardAgainstNull([DisallowNull] ScriptableObject target)
 		{
