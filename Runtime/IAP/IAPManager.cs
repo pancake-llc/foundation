@@ -212,7 +212,6 @@ namespace Pancake.IAP
 #if PANCAKE_ADS
             Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
 #endif
-            var receipt = purchaseEvent.purchasedProduct.receipt;
             OnPurchaseSucceedEvent?.Invoke(e);
             foreach (var completeEvent in CompletedDict)
             {
