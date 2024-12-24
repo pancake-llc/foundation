@@ -17,7 +17,7 @@ namespace Pancake.IAP
     [AddComponentMenu("")]
     public class IAPManager : MonoBehaviour, IDetailedStoreListener
     {
-        public static event Action<string> OnPurchaseSucceedEvent;
+        public static event Action<PurchaseEventArgs> OnPurchaseSucceedEvent;
         public static event Action<string> OnPurchaseFailedEvent;
         private static readonly Dictionary<string, Action> CompletedDict = new Dictionary<string, Action>();
         private static readonly Dictionary<string, Action> FaildDict = new Dictionary<string, Action>();
@@ -212,7 +212,8 @@ namespace Pancake.IAP
 #if PANCAKE_ADS
             Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
 #endif
-            OnPurchaseSucceedEvent?.Invoke(e.purchasedProduct.definition.id);
+            var receipt = purchaseEvent.purchasedProduct.receipt;
+            OnPurchaseSucceedEvent?.Invoke(e);
             foreach (var completeEvent in CompletedDict)
             {
                 if (completeEvent.Key.Equals(e.purchasedProduct.definition.id)) completeEvent.Value?.Invoke();
