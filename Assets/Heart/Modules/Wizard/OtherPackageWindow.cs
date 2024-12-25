@@ -81,7 +81,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.10.3");
+                RegistryManager.AddPackage("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.10.5");
                 RegistryManager.Resolve();
             }
 
@@ -93,7 +93,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git?path=Packages/src#5.0.0");
+                RegistryManager.AddPackage("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git?path=Packages/src#5.0.2");
                 RegistryManager.Resolve();
             }
 
