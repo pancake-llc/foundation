@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Purchasing;
+// ReSharper disable InconsistentNaming
 
 
 namespace Pancake.IAPEditor
@@ -78,16 +79,25 @@ namespace Pancake.IAPEditor
                     string id = iapData.FindPropertyRelative("id").stringValue;
                     var productType = (ProductType) iapData.FindPropertyRelative("productType").intValue;
                     string itemName = id.Split('.').Last();
-                    AssetDatabase.DeleteAsset($"{p}/scriptable_iap_{itemName.ToLower()}.asset"); // delete previous product same name
-                    var scriptable = CreateInstance<IAPDataVariable>();
-                    IAPSettings.Products.Add(scriptable);
-                    scriptable.id = id;
-                    scriptable.productType = productType;
-                    AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+                    var old = AssetDatabase.LoadAssetAtPath<IAPDataVariable>($"{p}/scriptable_iap_{itemName.ToLower()}.asset");
+                    if (old == null)
+                    {
+                        var scriptable = CreateInstance<IAPDataVariable>();
+                        IAPSettings.Products.Add(scriptable);
+                        scriptable.id = id;
+                        scriptable.productType = productType;
+                        AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
 
-                    Selection.activeObject = scriptable; // trick to repaint scriptable
+                        Selection.activeObject = scriptable; // trick to repaint scriptable
+                    }
+                    else
+                    {
+                        old.id = id;
+                        old.productType = productType;
+                        IAPSettings.Products.Add(old);
+                    }
                 }
 
                 serializedObject.ApplyModifiedProperties();
