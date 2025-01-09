@@ -46,8 +46,7 @@
     "com.unity.modules.unitywebrequesttexture": "1.0.0",
     "com.unity.modules.unitywebrequestwww": "1.0.0",
     "com.unity.modules.vehicles": "1.0.0",
-    "com.unity.modules.video": "1.0.0",
-    "com.adjust.sdk": "https://github.com/adjust/unity_sdk.git?path=Assets/Adjust#v5.0.3"
+    "com.unity.modules.video": "1.0.0"
   },
   "scopedRegistries": []
 }
