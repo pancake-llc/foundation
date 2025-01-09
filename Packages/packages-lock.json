@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.adjust.sdk": {
+      "version": "https://github.com/adjust/unity_sdk.git?path=Assets/Adjust#v5.0.3",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "fe136c20e50be7d3df63726315e7c8cf39054749"
+    },
     "com.annulusgames.debug-ui": {
       "version": "https://github.com/pancake-llc/DebugUI.git?path=src/DebugUI/Assets/DebugUI",
       "depth": 0,

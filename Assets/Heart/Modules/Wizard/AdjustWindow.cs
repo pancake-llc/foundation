@@ -13,7 +13,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_ADJUST
-            Uniform.DrawInstalled("5.0.3");
+            Uniform.DrawInstalled("5.0.6");
             EditorGUILayout.Space();
 
             var adjustSetting = Resources.Load<AdjustConfig>(nameof(AdjustConfig));
@@ -59,7 +59,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Adjust Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.adjust.sdk", "https://github.com/adjust/unity_sdk.git?path=Assets/Adjust#v5.0.3");
+                RegistryManager.AddPackage("com.adjust.sdk", "https://github.com/adjust/unity_sdk.git?path=Assets/Adjust#v5.0.6");
                 RegistryManager.Resolve();
             }
 
