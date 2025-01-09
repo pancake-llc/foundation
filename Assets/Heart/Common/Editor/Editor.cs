@@ -654,6 +654,15 @@ namespace PancakeEditor.Common
 
         public static void Dirty(this Object o) => EditorUtility.SetDirty(o);
 
+        public static void RunBatFile(string fullPathWithExtension)
+        {
+            var processInfo = new System.Diagnostics.ProcessStartInfo {FileName = fullPathWithExtension, UseShellExecute = true, CreateNoWindow = true};
+
+            var process = System.Diagnostics.Process.Start(processInfo);
+            process!.WaitForExit();
+            Debug.Log($"Open monitor form path: {fullPathWithExtension}");
+        }
+
         #region Rect
 
         private static WrappedEvent Wrap(this Event e) => new(e);
@@ -687,7 +696,7 @@ namespace PancakeEditor.Common
             rect.y += value;
             return rect;
         }
-        
+
         public static Rect AddXMax(this Rect rect, float value)
         {
             rect.xMax += value;

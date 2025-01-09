@@ -129,7 +129,7 @@ namespace PancakeEditor
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
-                    Arguments = arguments,
+                    Arguments = arguments
                 };
 
                 var process = Process.Start(startInfo);

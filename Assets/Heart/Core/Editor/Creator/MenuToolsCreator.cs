@@ -1,10 +1,13 @@
 using System;
+using System.IO;
 using JetBrains.Annotations;
 using Pancake.Common;
 using PancakeEditor.Finder;
 using RedBlueGames.MulliganRenamer;
 using UnityEditor;
+using UnityEditor.Android;
 using UnityEngine;
+using Editor = PancakeEditor.Common.Editor;
 
 namespace PancakeEditor
 {
@@ -26,6 +29,16 @@ namespace PancakeEditor
                 Debug.Log("Success delete user settings of finder!");
             }
         }
+
+#if UNITY_EDITOR && (UNITY_ANDROID || UNITY_EDITOR_WIN)
+        [MenuItem("Tools/Pancake/Open Android Monitor %#M")]
+        private static void OpenAndroidMonitor()
+        {
+            string batFilePath = AndroidExternalToolsSettings.sdkRootPath + "/tools/monitor.bat";
+
+            if (File.Exists(batFilePath)) Editor.RunBatFile(batFilePath);
+        }
+#endif
 
         [MenuItem("Tools/Fast Play Mode", validate = false)]
         private static void ToggleFastPlayMode()
