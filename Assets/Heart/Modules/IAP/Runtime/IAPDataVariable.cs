@@ -20,7 +20,7 @@ namespace Pancake.IAP
         [ReadOnly] public string localizedDescription;
         [ReadOnly] public string localizedTitle;
         [HideInInspector] public string receipt;
-        internal SubscriptionInfo subscriptionInfo;
+        public SubscriptionInfo subscriptionInfo;
 
         [Space] [SerializeField] private IAPPurchaseSuccess onPurchaseSuccess;
         [SerializeField] private IAPPurchaseFailed onPurchaseFailed;
