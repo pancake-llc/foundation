@@ -595,8 +595,8 @@ MonoBehaviour:
   isAffectToSelf: 1
   affectObject: {fileID: 0}
   motionData:
-    scale: {x: 1.2, y: 1.2}
-    motion: 2
+    scale: {x: 1.05, y: 1.05}
+    motion: 0
     duration: 0.1
     easeDown: 5
     easeUp: 26

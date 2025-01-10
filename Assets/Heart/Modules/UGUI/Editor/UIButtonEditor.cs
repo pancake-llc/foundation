@@ -38,7 +38,8 @@ namespace PancakeEditor.UI
         private SerializedProperty _motionUnableInteract;
         private SerializedProperty _scaleUnableInteract;
         private SerializedProperty _durationUnableInteract;
-        private SerializedProperty _easeInteract;
+        private SerializedProperty _easeUpInteract;
+        private SerializedProperty _easeDownInteract;
         private SerializedProperty _enabledSound;
         private SerializedProperty _audioClick;
 
@@ -68,7 +69,8 @@ namespace PancakeEditor.UI
             _isMotionUnableInteract = serializedObject.FindProperty("isMotionUnableInteract");
             _easeDown = serializedObject.FindProperty("motionData").FindPropertyRelative("easeDown");
             _easeUp = serializedObject.FindProperty("motionData").FindPropertyRelative("easeUp");
-            _easeInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("ease");
+            _easeUpInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("easeUp");
+            _easeDownInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("easeDown");
             _enabledSound = serializedObject.FindProperty("enabledSound");
             _audioClick = serializedObject.FindProperty("audioClick");
         }
@@ -266,13 +268,12 @@ namespace PancakeEditor.UI
 
                 EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(new GUIContent("  Unable Interact", "Use motion when unable interact button"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                GUILayout.Label(new GUIContent("  When Inactive", "Use motion when button interactable false"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _isMotionUnableInteract.boolValue = GUILayout.Toggle(_isMotionUnableInteract.boolValue, "");
                 EditorGUILayout.EndHorizontal();
 
                 if (_isMotionUnableInteract.boolValue)
                 {
-                    EditorGUILayout.Space();
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Label("  Motion Type", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                     _motionUnableInteract.enumValueIndex = EditorGUILayout.Popup(_motionUnableInteract.enumValueIndex, ButtonMotion);
@@ -294,10 +295,15 @@ namespace PancakeEditor.UI
                             EditorGUILayout.EndHorizontal();
                             break;
                     }
+                    
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label(new GUIContent("  Ease Down"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    EditorGUILayout.PropertyField(_easeDownInteract, new GUIContent(""));
+                    EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label(new GUIContent("  Ease"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                    EditorGUILayout.PropertyField(_easeInteract, new GUIContent(""));
+                    GUILayout.Label(new GUIContent("  Ease Up"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    EditorGUILayout.PropertyField(_easeUpInteract, new GUIContent(""));
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.Space();

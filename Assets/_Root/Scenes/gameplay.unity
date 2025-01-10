@@ -684,7 +684,7 @@ MonoBehaviour:
     reference: {fileID: 0}
     value: {fileID: 0}
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
   references:
     version: 2
     RefIds:
@@ -752,7 +752,7 @@ MonoBehaviour:
     value:
       rid: -2
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
   references:
     version: 2
     RefIds:
@@ -909,7 +909,7 @@ MonoBehaviour:
     value:
       rid: -2
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
   references:
     version: 2
     RefIds:
@@ -1384,7 +1384,7 @@ MonoBehaviour:
     value:
       rid: -2
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
   references:
     version: 2
     RefIds:
@@ -1651,7 +1651,7 @@ MonoBehaviour:
     value:
       rid: -2
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
   references:
     version: 2
     RefIds:
@@ -1959,7 +1959,7 @@ MonoBehaviour:
     value:
       rid: -2
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
   references:
     version: 2
     RefIds:
@@ -2538,8 +2538,8 @@ MonoBehaviour:
   isAffectToSelf: 1
   affectObject: {fileID: 0}
   motionData:
-    scale: {x: 1.2, y: 1.2}
-    motion: 2
+    scale: {x: 1.05, y: 1.05}
+    motion: 0
     duration: 0.1
     easeDown: 5
     easeUp: 26
