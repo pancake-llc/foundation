@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameCreationMode: 0
   targetFrameRate: -1
+  toolbarTimeScale:
+    enabled: 1
+    leftSide: 0
+    width: 234

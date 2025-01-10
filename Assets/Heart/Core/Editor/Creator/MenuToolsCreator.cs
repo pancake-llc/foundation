@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using JetBrains.Annotations;
 using Pancake.Common;
+using PancakeEditor.Common;
 using PancakeEditor.Finder;
 using RedBlueGames.MulliganRenamer;
 using UnityEditor;
@@ -22,11 +23,11 @@ namespace PancakeEditor
         private static void DeleteUserFinderSetting()
         {
             const string path = "UserSettings/FinderSetting.asset";
-            if (System.IO.File.Exists(path))
+            if (File.Exists(path))
             {
-                System.IO.File.Delete(path);
+                File.Delete(path);
                 AssetDatabase.Refresh();
-                Debug.Log("Success delete user settings of finder!");
+                Debug.Log("Success delete user settings of finder!".SetColor(Uniform.Success));
             }
         }
 
@@ -37,6 +38,7 @@ namespace PancakeEditor
             string batFilePath = AndroidExternalToolsSettings.sdkRootPath + "/tools/monitor.bat";
 
             if (File.Exists(batFilePath)) Editor.RunBatFile(batFilePath);
+            else Debug.Log("Can not found Android monitor at path :".SetColor(Uniform.Warning) + batFilePath);
         }
 #endif
 
@@ -168,7 +170,7 @@ namespace PancakeEditor
                     "Clear",
                     "Cancel"))
             {
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(Application.persistentDataPath);
+                DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
 
                 foreach (var file in di.GetFiles()) file.Delete();
                 foreach (var dir in di.GetDirectories()) dir.Delete(true);

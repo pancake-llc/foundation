@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using Pancake.Common;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -660,7 +661,7 @@ namespace PancakeEditor.Common
 
             var process = System.Diagnostics.Process.Start(processInfo);
             process!.WaitForExit();
-            Debug.Log($"Open monitor form path: {fullPathWithExtension}");
+            Debug.Log($"{"Open monitor form path".SetColor(Uniform.Success)}: {fullPathWithExtension}");
         }
 
         #region Rect

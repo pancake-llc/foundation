@@ -1,16 +1,31 @@
 ﻿using Pancake;
-using PancakeEditor.Common;
 using UnityEditor;
 
 namespace PancakeEditor
 {
     [CustomEditor(typeof(HeartEditorSettings), true)]
-    public class HeartEditorSettingDrawer : UnityEditor.Editor
+    public class HeartEditorSettingDrawer : Editor
     {
+        private SerializedProperty _nameCreationModeProperty;
+        private SerializedProperty _targetFrameRateProperty;
+        private SerializedProperty _toolbarTimeScaleProperty;
+
+        private void OnEnable()
+        {
+            _nameCreationModeProperty = serializedObject.FindProperty("nameCreationMode");
+            _targetFrameRateProperty = serializedObject.FindProperty("targetFrameRate");
+            _toolbarTimeScaleProperty = serializedObject.FindProperty("toolbarTimeScale");
+        }
+
         public override void OnInspectorGUI()
         {
-            string[] propertiesToHide = {"m_Script"};
-            Uniform.DrawInspectorExcept(serializedObject, propertiesToHide);
+            serializedObject.Update();
+
+            EditorGUILayout.PropertyField(_nameCreationModeProperty);
+            EditorGUILayout.PropertyField(_targetFrameRateProperty);
+            EditorGUILayout.PropertyField(_toolbarTimeScaleProperty);
+            
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

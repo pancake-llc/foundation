@@ -1,5 +1,4 @@
 using Pancake;
-using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -35,10 +34,63 @@ namespace PancakeEditor
     [CustomEditor(typeof(HierarchySettings), true)]
     public class HierarchySettingDrawer : UnityEditor.Editor
     {
+        private SerializedProperty _hierarchyObjectModeProperty;
+        private SerializedProperty _showHierarchyTogglesProperty;
+        private SerializedProperty _showComponentIconsProperty;
+        private SerializedProperty _showTreeMapProperty;
+        private SerializedProperty _treeMapColorProperty;
+        private SerializedProperty _showSeparatorProperty;
+        private SerializedProperty _showRowShadingProperty;
+        private SerializedProperty _separatorColorProperty;
+        private SerializedProperty _evenRowColorProperty;
+        private SerializedProperty _oddRowColorProperty;
+
+        private void OnEnable()
+        {
+            _hierarchyObjectModeProperty = serializedObject.FindProperty("hierarchyObjectMode");
+            _showHierarchyTogglesProperty = serializedObject.FindProperty("showHierarchyToggles");
+            _showComponentIconsProperty = serializedObject.FindProperty("showComponentIcons");
+            _showTreeMapProperty = serializedObject.FindProperty("showTreeMap");
+            _treeMapColorProperty = serializedObject.FindProperty("treeMapColor");
+            _showSeparatorProperty = serializedObject.FindProperty("showSeparator");
+            _showRowShadingProperty = serializedObject.FindProperty("showRowShading");
+            _separatorColorProperty = serializedObject.FindProperty("separatorColor");
+            _evenRowColorProperty = serializedObject.FindProperty("evenRowColor");
+            _oddRowColorProperty = serializedObject.FindProperty("oddRowColor");
+        }
+
         public override void OnInspectorGUI()
         {
-            string[] propertiesToHide = {"m_Script"};
-            Uniform.DrawInspectorExcept(serializedObject, propertiesToHide);
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(_hierarchyObjectModeProperty);
+            EditorGUILayout.PropertyField(_showHierarchyTogglesProperty);
+            EditorGUILayout.PropertyField(_showComponentIconsProperty);
+            EditorGUILayout.PropertyField(_showTreeMapProperty);
+            if (_showTreeMapProperty.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(_treeMapColorProperty);
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUILayout.PropertyField(_showSeparatorProperty);
+            if (_showSeparatorProperty.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(_separatorColorProperty);
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUILayout.PropertyField(_showRowShadingProperty);
+            if (_showRowShadingProperty.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(_evenRowColorProperty);
+                EditorGUILayout.PropertyField(_oddRowColorProperty);
+                EditorGUI.indentLevel--;
+            }
+            
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
