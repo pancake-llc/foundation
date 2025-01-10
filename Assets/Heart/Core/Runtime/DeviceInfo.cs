@@ -17,7 +17,9 @@ namespace Pancake
             }
         }
 
+#if UNITY_IOS
         public static string idfa => UnityEngine.iOS.Device.advertisingIdentifier;
+#endif
 
         private static string GetGpsAdId()
         {
