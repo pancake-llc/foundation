@@ -39,7 +39,7 @@ namespace Sisus.ComponentNames.Editor
 
             var tooltipRect = headerRect;
             tooltipRect.x += 60f;
-            tooltipRect.width -= 125f + 16 * 4 + 3 * 3; // for 4 button in header component
+            tooltipRect.width -= 125f + 16 * 4 + 3 * 3; // for 4 button in [component-header]
 
             label.text = titleWithSuffixPlainText;
             float titleWidth = EditorStyles.boldLabel.CalcSize(label).x;

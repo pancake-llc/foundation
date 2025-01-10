@@ -250,10 +250,14 @@ namespace Sisus.Init.EditorOnly.Internal
 					onDiscardButtonPressed.Invoke();
 					return;
 				}
+				
+				var targetObject = anyProperty.serializedObject.targetObject;
+				var scriptableObject = editor.target as ScriptableObject;
 
 				if(Event.current.button is 1)
 				{
 					var menu = new GenericMenu();
+
 					menu.AddItem(new("Edit Script"), false, () =>
 					{
 						if(Find.Script(editor.target.GetType(), out MonoScript script))
@@ -261,6 +265,69 @@ namespace Sisus.Init.EditorOnly.Internal
 							AssetDatabase.OpenAsset(script);
 						}
 					});
+
+					var valueProviderIsAsset = scriptableObject && AssetDatabase.Contains(scriptableObject);
+					if(valueProviderIsAsset)
+					{
+						menu.AddItem(new("Ping Asset"), false, () =>
+						{
+							EditorGUIUtility.PingObject(scriptableObject);
+						});
+
+						if(AssetDatabase.IsSubAsset(scriptableObject) && PrefabUtility.IsPartOfPrefabInstance(targetObject))
+						{
+							menu.AddItem(new("Embed Into Prefab Instance"), false, () =>
+							{
+								if(EditorUtility.DisplayDialog("Convert Into Embedded Value Provider?", $"Do you want to convert the value provider that is currently a sub-asset of the prefab '{AssetDatabase.GetAssetPath(scriptableObject)}' into an value provider embedded in this prefab instance?\n\nChoosing 'Convert' will cause the sub-asset to be deleted from the prefab asset, and moved to into be part of this particular instance of the prefab.", "Convert", "Cancel"))
+								{
+									var embeddedValueProvider = Object.Instantiate(scriptableObject);
+									
+									var prefabPath = AssetDatabase.GetAssetPath(scriptableObject);
+									Undo.RegisterImporterUndo(prefabPath, "Embed Into Prefab Instance");
+									Undo.RegisterFullObjectHierarchyUndo(targetObject, "Embed Into Prefab Instance");
+									AssetDatabase.RemoveObjectFromAsset(scriptableObject);
+									EditorUtility.SetDirty(targetObject);
+									EditorUtility.SetDirty(scriptableObject);
+									var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+									if(prefab)
+									{
+										EditorUtility.SetDirty(prefab);
+									}
+
+									referenceProperty.objectReferenceValue = embeddedValueProvider;
+									referenceProperty.serializedObject.ApplyModifiedProperties();
+
+									Debug.Log($"Converted the value provider {scriptableObject.GetType().Name} from being a sub-asset of the prefab '{prefabPath}' into being embedded in the prefab instance '{targetObject}'.", targetObject);
+								}
+							});
+						}
+					}
+					else
+					{
+						// Allow converting embedded value providers on prefab instances into sub-assets of the prefab asset
+						if(PrefabUtility.IsPartOfPrefabInstance(targetObject)
+						   && scriptableObject)
+						{
+							menu.AddItem(new("Make Sub-Asset of Prefab"), false, () =>
+							{
+								var prefabPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(targetObject);
+								if(string.IsNullOrEmpty(scriptableObject.name))
+								{
+									scriptableObject.name = valueProviderLabel.text;
+								}
+
+								Undo.RegisterImporterUndo(prefabPath, "Make Sub-Asset of Prefab");
+								Undo.RegisterFullObjectHierarchyUndo(targetObject, "Make Sub-Asset of Prefab");
+								AssetDatabase.AddObjectToAsset(scriptableObject, prefabPath);
+								EditorUtility.SetDirty(targetObject);
+								EditorUtility.SetDirty(scriptableObject);
+								PrefabUtility.ApplyPropertyOverride(anyProperty, prefabPath, InteractionMode.UserAction);
+
+								Debug.Log($"Converted embedded value provider {scriptableObject.GetType().Name} into a sub-asset of the prefab asset '{prefabPath}'.", AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath));
+							});
+						}
+					}
+
 					menu.ShowAsContext();
 				}
 				
@@ -276,6 +343,12 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 						
 						EditorGUIUtility.PingObject(value);
+						return;
+					}
+
+					if(scriptableObject)
+					{
+						EditorGUIUtility.PingObject(scriptableObject);
 						return;
 					}
 					

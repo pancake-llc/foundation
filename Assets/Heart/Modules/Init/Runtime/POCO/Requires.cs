@@ -4,10 +4,10 @@
 	/// A base class for an object that depends on one service.
 	/// <para>
 	/// If the object depends on a class that has the <see cref="ServiceAttribute"/> then
-	/// it will be able to receive it in its <see cref="Init"/> function automatically during initialization.
+	/// it will be able to receive it in its <see cref="Init"/> method automatically during initialization.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class Requires<TArgument> : IInitializable<TArgument>
 	{
 		public Requires()
@@ -31,12 +31,12 @@
 	/// <summary>
 	/// A base class for an object that depends on two services.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class Requires<TFirstArgument, TSecondArgument>
 		: IInitializable<TFirstArgument, TSecondArgument>
 	{
@@ -63,13 +63,13 @@
 	/// <summary>
 	/// A base class for an object that depends on three services.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class Requires<TFirstArgument, TSecondArgument, TThirdArgument>
 		: IInitializable<TFirstArgument, TSecondArgument, TThirdArgument>
 	{
@@ -96,14 +96,14 @@
 	/// <summary>
 	/// A base class for an object that depends on four services.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class Requires<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		: IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 	{
@@ -130,15 +130,15 @@
 	/// <summary>
 	/// A base class for an object that depends on five services.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class Requires<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		: IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 	{
@@ -165,16 +165,16 @@
 	/// <summary>
 	/// A base class for an object that depends on six services.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class Requires<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		: IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 	{

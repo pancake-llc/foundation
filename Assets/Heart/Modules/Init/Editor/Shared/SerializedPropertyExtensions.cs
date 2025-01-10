@@ -364,13 +364,26 @@ namespace Sisus.Shared.EditorOnly
 
 		public static void SetValue(this SerializedProperty serializedProperty, object value)
 		{
-            #if UNITY_2021_3_OR_NEWER
-			if(serializedProperty.propertyType == SerializedPropertyType.ManagedReference)
+			#if UNITY_6000_0_OR_NEWER
+			serializedProperty.boxedValue = value;
+			#else
+			switch(serializedProperty.propertyType)
 			{
-				serializedProperty.managedReferenceValue = value;
-				return;
+				#if UNITY_2021_3_OR_NEWER
+				case SerializedPropertyType.ManagedReference:
+					serializedProperty.managedReferenceValue = value;
+					return;
+				#endif
+				case SerializedPropertyType.String:
+					serializedProperty.stringValue = (string)value;
+					return;
+				case SerializedPropertyType.Boolean:
+					serializedProperty.boolValue = (bool)value;
+					return;
+				case SerializedPropertyType.Float:
+					serializedProperty.floatValue = (float)value;
+					return;
 			}
-            #endif
 
 			string propertyPath = serializedProperty.propertyPath;
 			var serializedObject = serializedProperty.serializedObject;
@@ -398,6 +411,7 @@ namespace Sisus.Shared.EditorOnly
 
 			EditorUtility.SetDirty(serializedObject.targetObject);
 			serializedObject.ApplyModifiedProperties();
+			#endif
 		}
 
 		private static void SetValue(object obj, NameOrIndex property, object value)

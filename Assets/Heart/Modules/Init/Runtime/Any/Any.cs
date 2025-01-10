@@ -224,7 +224,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="client">
 		/// The scriptable object requesting the value, or <see langword="null"/> if the requester
-		/// is unknown or not a component.
+		/// is unknown or not a scriptable object.
 		/// </param>
 		/// <param name="context"> The context from which the request is being made. </param>
 		/// <returns>
@@ -585,12 +585,16 @@ namespace Sisus.Init
 		/// or a <see cref="Services">scene service</see> which is accessible to the <paramref name="client"/> then gets the service.
 		/// </para>
 		/// </summary>
-		/// <param name="value">
+		/// <param name="client">
+		/// The component requesting the value, or <see langword="null"/> if the requester is unknown or not a component.
+		/// </param>
+		/// <param name="context"> The context from which the request is being made. </param>
+		/// <param name="result">
 		/// When this method returns, contains the value associated with the current <see cref="Any{T}"/> object, if it has a value;
 		/// otherwise, the default value of <see cref="T"/>. This parameter is passed uninitialized.
 		/// </param>
 		/// <returns> <see langword="true"/> if a valid underlying value has been assigned; otherwise, <see langword="false"/>. </returns>
-		public bool TryGetValue(Component client, Context context, out T result)
+		public bool TryGetValue([AllowNull] Component client, Context context, out T result)
 		{
 			// Prefer cached value over a value provider - this can help avoid issues
 			// such as addressable assets being loaded more than once by the same client
@@ -920,83 +924,91 @@ namespace Sisus.Init
 		NullGuardResult INullGuard.EvaluateNullGuard(Component client) => EvaluateNullGuard(client, Context.MainThread);
 		internal NullGuardResult EvaluateNullGuard(Component client = null, Context context = Context.MainThread)
 		{
-			if(reference is not null && reference.GetHashCode() != 0)
+			try
 			{
-				switch(reference)
+				if(reference is not null && reference.GetHashCode() != 0)
 				{
-					case T:
-						return NullGuardResult.Passed;
-					// If value is _Null token, don't return Service, even if T is defining type of a service
-					case _Null:
-						return value is not null ? NullGuardResult.Passed : NullGuardResult.ValueMissing;
-					// Prefer non-async value provider interfaces over async ones
-					case INullGuard nullGuard:
-						return nullGuard.EvaluateNullGuard(client);
-					case INullGuardByType nullGuardByType:
-						return nullGuardByType.EvaluateNullGuard<T>(client);
-					case IValueProvider<T> valueProvider:
-						return valueProvider.HasValueFor(client)
+					switch(reference)
+					{
+						case T:
+							return NullGuardResult.Passed;
+						// If value is _Null token, don't return Service, even if T is defining type of a service
+						case _Null:
+							return value is not null ? NullGuardResult.Passed : NullGuardResult.ValueMissing;
+						// Prefer non-async value provider interfaces over async ones
+						case INullGuard nullGuard:
+							return nullGuard.EvaluateNullGuard(client);
+						case INullGuardByType nullGuardByType:
+							return nullGuardByType.EvaluateNullGuard<T>(client);
+						case IValueProvider<T> valueProvider:
+							return valueProvider.HasValueFor(client)
+								? NullGuardResult.Passed
+								: EditorOnly.ThreadSafe.Application.IsPlaying
+								? NullGuardResult.ValueProviderValueMissing
+								: NullGuardResult.ValueProviderValueNullInEditMode;
+						case IValueByTypeProvider valueProvider:
+							return valueProvider.HasValueFor<T>(client)
+								? NullGuardResult.Passed
+								: EditorOnly.ThreadSafe.Application.IsPlaying
+								? NullGuardResult.ValueProviderValueMissing
+								: NullGuardResult.ValueProviderValueNullInEditMode;
+						case IValueProvider valueProvider:
+							return valueProvider.TryGetFor(client, out var objectValue) && Find.In<T>(objectValue, out _)
+								? NullGuardResult.Passed
+								: EditorOnly.ThreadSafe.Application.IsPlaying
+								? NullGuardResult.ValueProviderValueMissing
+								: NullGuardResult.ValueProviderValueNullInEditMode;
+						case IValueProviderAsync<T> valueProvider:
+							var awaitable = valueProvider.GetForAsync(client);
+							#if UNITY_2023_1_OR_NEWER
+							var awaiter = awaitable.GetAwaiter();
+							return awaiter.IsCompleted && awaitable.GetAwaiter().GetResult() is not null
 							? NullGuardResult.Passed
 							: EditorOnly.ThreadSafe.Application.IsPlaying
 							? NullGuardResult.ValueProviderValueMissing
 							: NullGuardResult.ValueProviderValueNullInEditMode;
-					case IValueByTypeProvider valueProvider:
-						return valueProvider.HasValueFor<T>(client)
-							? NullGuardResult.Passed
-							: EditorOnly.ThreadSafe.Application.IsPlaying
-							? NullGuardResult.ValueProviderValueMissing
-							: NullGuardResult.ValueProviderValueNullInEditMode;
-					case IValueProvider valueProvider:
-						return valueProvider.TryGetFor(client, out var objectValue) && Find.In<T>(objectValue, out _)
-							? NullGuardResult.Passed
-							: EditorOnly.ThreadSafe.Application.IsPlaying
-							? NullGuardResult.ValueProviderValueMissing
-							: NullGuardResult.ValueProviderValueNullInEditMode;
-					case IValueProviderAsync<T> valueProvider:
-						var awaitable = valueProvider.GetForAsync(client);
-						#if UNITY_2023_1_OR_NEWER
-						var awaiter = awaitable.GetAwaiter();
-						return awaiter.IsCompleted && awaitable.GetAwaiter().GetResult() is not null
-						? NullGuardResult.Passed
-						: EditorOnly.ThreadSafe.Application.IsPlaying
-						? NullGuardResult.ValueProviderValueMissing
-						: NullGuardResult.ValueProviderValueNullInEditMode;
-						#else
-						return awaitable.IsFaulted ? NullGuardResult.ValueProviderException : NullGuardResult.Passed;
-						#endif
+							#else
+							return awaitable.IsFaulted ? NullGuardResult.ValueProviderException : NullGuardResult.Passed;
+							#endif
 
-					case IValueByTypeProviderAsync valueProvider:
-						awaitable = valueProvider.GetForAsync<T>(client);
-						#if UNITY_2023_1_OR_NEWER
-						awaiter = awaitable.GetAwaiter();
-						return awaiter.IsCompleted && awaitable.GetAwaiter().GetResult() is not null
-						? NullGuardResult.Passed
-						: EditorOnly.ThreadSafe.Application.IsPlaying
-						? NullGuardResult.ValueProviderValueMissing
-						: NullGuardResult.ValueProviderValueNullInEditMode;
-						#else
-						return awaitable.IsFaulted ? NullGuardResult.ValueProviderException : NullGuardResult.Passed;
-						#endif
+						case IValueByTypeProviderAsync valueProvider:
+							awaitable = valueProvider.GetForAsync<T>(client);
+							#if UNITY_2023_1_OR_NEWER
+							awaiter = awaitable.GetAwaiter();
+							return awaiter.IsCompleted && awaitable.GetAwaiter().GetResult() is not null
+							? NullGuardResult.Passed
+							: EditorOnly.ThreadSafe.Application.IsPlaying
+							? NullGuardResult.ValueProviderValueMissing
+							: NullGuardResult.ValueProviderValueNullInEditMode;
+							#else
+							return awaitable.IsFaulted ? NullGuardResult.ValueProviderException : NullGuardResult.Passed;
+							#endif
+					}
 				}
-			}
 
-			bool isPlaying = context.IsMainThread() ? Application.isPlaying : EditorOnly.ThreadSafe.Application.IsPlaying;
-			if(!isPlaying && ServiceUtility.IsServiceDefiningType<T>())
-			{
-				return NullGuardResult.Passed;
-			}
+				bool isPlaying = context.IsMainThread() ? Application.isPlaying : EditorOnly.ThreadSafe.Application.IsPlaying;
+				if(!isPlaying && ServiceUtility.IsServiceDefiningType<T>())
+				{
+					return NullGuardResult.Passed;
+				}
 
-			if(value is null || (value is Object unityObject && !unityObject))
-			{
-				return (client && context.IsUnitySafeContext() ? Service.ExistsFor<T>(client) : Service.Exists<T>()) ? NullGuardResult.Passed : NullGuardResult.ValueMissing;
-			}
+				if(value is null || (value is Object unityObject && !unityObject))
+				{
+					return (client && context.IsUnitySafeContext() ? Service.ExistsFor<T>(client) : Service.Exists<T>()) ? NullGuardResult.Passed : NullGuardResult.ValueMissing;
+				}
 
-			return value switch
+				return value switch
+				{
+					// Support value providers in Any.Serialization.cs, like _String.
+					IValueProvider<T> valueProvider => valueProvider.HasValueFor(client) ? NullGuardResult.Passed : NullGuardResult.InvalidValueProviderState,
+					_ => NullGuardResult.Passed,
+				};
+			}
+			catch(Exception e)
 			{
-				// Support value providers in Any.Serialization.cs, like _String.
-				IValueProvider<T> valueProvider => valueProvider.HasValueFor(client) ? NullGuardResult.Passed : NullGuardResult.InvalidValueProviderState,
-				_ => NullGuardResult.Passed,
-			};
+				Debug.LogWarning(e);
+				return NullGuardResult.ValueProviderException;
+			}
 		}
 		#endif
 	}

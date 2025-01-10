@@ -467,16 +467,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static void DrawClientField(Rect rect, SerializedProperty client, GUIContent clientLabel, bool isInitializable)
 		{
-			var fieldRect = EditorGUI.PrefixLabel(rect, new GUIContent(" "));
-			if(fieldRect.width < 20f)
-			{
-				fieldRect.width = 20f;
-				fieldRect.x = rect.xMax - 20f;
-			}
-
 			var reference = client.objectReferenceValue;
-			EditorGUI.ObjectField(fieldRect, client, GUIContent.none);
+			EditorGUI.ObjectField(rect, client, GUIContent.none);
 
+			var fieldRect = rect;
 			fieldRect.x += 2f;
 			fieldRect.y += 2f;
 			fieldRect.width -= 21f;

@@ -46,7 +46,7 @@ namespace Sisus.Init
 
 		/// <summary>
 		/// <see langword="true"/> if this object received the arguments that it depends on in the constructor
-		/// or if they were injected to it through the <see cref="Init"/> function; otherwise, <see langword="false"/>.
+		/// or if they were injected to it through the <see cref="Init"/> method; otherwise, <see langword="false"/>.
 		/// <para>
 		/// Note that this is set to <see langword="true"/> if it receives the arguments regardless of whether or not
 		/// any of the received arguments are <see langword="null"/> or not.
@@ -227,7 +227,7 @@ namespace Sisus.Init
 		void IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 			.Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 			{
-				ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, Context.MainThread);
+				HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, Context.MainThread);
 				Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 			}
 
@@ -321,7 +321,7 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> method has finished.
 		/// <para>
 		/// <see cref="OnAwake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
 		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>
@@ -368,7 +368,7 @@ namespace Sisus.Init
 				// the parent chains can only be done from the main thread.
 				if(InitArgs.TryGet(Context.Awake, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument))
 				{
-					ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, Context.Awake);
+					HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, Context.Awake);
 					Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 				}
 				else
@@ -405,7 +405,7 @@ namespace Sisus.Init
 
 			initState = InitState.Initializing;
 
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, context);
+			HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, context);
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 
 			initState = InitState.Initialized;
@@ -433,7 +433,7 @@ namespace Sisus.Init
 		{
 			if(arguments.provided)
 			{
-				ValidateArgumentsIfPlayMode(arguments.firstArgument, arguments.secondArgument, arguments.thirdArgument, arguments.fourthArgument, arguments.fifthArgument, arguments.sixthArgument, Context.OnAfterDeserialize);
+				HandleValidate(arguments.firstArgument, arguments.secondArgument, arguments.thirdArgument, arguments.fourthArgument, arguments.fifthArgument, arguments.sixthArgument, Context.OnAfterDeserialize);
 				Init(arguments.firstArgument, arguments.secondArgument, arguments.thirdArgument, arguments.fourthArgument, arguments.fifthArgument, arguments.sixthArgument);
 			}
 		}
@@ -460,7 +460,7 @@ namespace Sisus.Init
 				&& InitArgs.TryGet(Context.Reset, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument,
 														out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument))
 			{
-				ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, Context.Reset);
+				HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, Context.Reset);
 				Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 			}
 
@@ -545,7 +545,7 @@ namespace Sisus.Init
 		#if UNITY_EDITOR
 		async
         #endif
-		private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, Context context)
+		private void HandleValidate(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, Context context)
 		{
 			#if UNITY_EDITOR
 			if(context.TryDetermineIsEditMode(out bool editMode))

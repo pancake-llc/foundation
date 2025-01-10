@@ -94,7 +94,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Provides the <see cref="ScriptableObject"/> with the object that it wraps.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the scriptable object.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the scriptable object.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, during the Awake event when
@@ -140,7 +140,7 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// <see cref="Awake"/> is called when the script instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
+		/// <see cref="Awake"/> is called when the script instance is being loaded and handles calling the <see cref="Init"/> method with the <see cref="TWrapped"/> argument.
 		/// <para>
 		/// <see cref="Awake"/> is called when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> containing a reference to the scriptable object asset loads,
 		/// or when a new instance of the ScriptableObject is <see cref="Create.Instance{TScriptableWrapper, TWrapped}(TArgument)">created</see>.

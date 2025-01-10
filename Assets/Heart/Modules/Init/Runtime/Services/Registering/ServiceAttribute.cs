@@ -138,7 +138,7 @@ namespace Sisus.Init
 		/// If <see langword="true"/> then an instance of the service
 		/// will be loaded from the initial scene.
 		/// </summary>
-		/// <seealso cref="UnityEngine.Object.FindObjectOfType(true)"/>
+		/// <seealso cref="UnityEngine.Object.FindAnyObjectByType(Type)"/>
 		public bool FindFromScene
 		{
 			get => loadMethod == LoadMethod.FindFromScene;
@@ -149,6 +149,48 @@ namespace Sisus.Init
 				{
 					referenceType = ReferenceType.None;
 					loadMethod = LoadMethod.FindFromScene;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// The name of the scene containing the service, if provided; otherwise, an empty string.
+		/// <para>
+		/// If the scene in question is not loaded when the service is being initialized, the scene will be loaded additively.
+		/// </para>
+		/// </summary>
+		public string SceneName
+		{
+			get => referenceType == ReferenceType.SceneName ? loadData : "";
+
+			set
+			{
+				if(!string.IsNullOrEmpty(value))
+				{
+					referenceType = ReferenceType.SceneName;
+					loadMethod = LoadMethod.FindFromScene;
+					loadData = value;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// The name of the scene containing the service, if provided; otherwise, an empty string.
+		/// <para>
+		/// If the scene in question is not loaded when the service is being initialized, the scene will be loaded additively.
+		/// </para>
+		/// </summary>
+		public int SceneBuildIndex
+		{
+			get => referenceType == ReferenceType.SceneBuildIndex && int.TryParse(loadData, out int buildIndex) ? buildIndex : -1;
+
+			set
+			{
+				if(value >= 0)
+				{
+					referenceType = ReferenceType.SceneBuildIndex;
+					loadMethod = LoadMethod.FindFromScene;
+					loadData = value.ToString();
 				}
 			}
 		}
@@ -262,63 +304,6 @@ namespace Sisus.Init
 		}
 	}
 
-	/*
-	internal enum LoadMethod
-	{
-		/// <summary>
-		/// Uses <see cref="Instantiate"/> for prefabs and <see cref="Load"/> for other assets.
-		/// </summary>
-		Default = 0,
-
-		/// <summary>
-		/// Loads an asset using either resources or addressables, and registers it as a service directly.
-		/// </summary>
-		Load = 1,
-
-		/// <summary>
-		/// Creates a new instance from scratch or by cloning an asset.
-		/// </summary>
-		Instantiate = 2,
-
-		/// <summary>
-		/// Finds an object from the initial scene, and registers it as a service.
-		/// </summary>
-		FindFromScene,
-
-		/// <summary>
-		/// Loads or instantiates an asset using resources, and registers it as a service directly.
-		/// </summary>
-		Resource,
-
-		/// <summary>
-		/// Loads an asset using resources, and registers it as a service directly.
-		/// </summary>
-		LoadResource,
-			
-		/// <summary>
-		/// Loads an asset using resources, clones it, and registers the clone as a service.
-		/// </summary>
-		InstantiateResource,
-
-		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
-		/// <summary>
-		/// Loads or instantiates an asset using addressables, and registers it as a service directly.
-		/// </summary>
-		Addressable,
-
-		/// <summary>
-		/// Loads an asset using addressables, and registers it as a service directly.
-		/// </summary>
-		LoadAddressable,
-			
-		/// <summary>
-		/// Loads an asset using addressables, clones it, and registers the clone as a service.
-		/// </summary>
-		InstantiateAddressable,
-		#endif
-	}
-	*/
-
 	internal enum ReferenceType
 	{
 		/// <summary>
@@ -330,6 +315,16 @@ namespace Sisus.Init
 		/// A direct reference to a prefab or a scene object.
 		/// </summary>
 		DirectReference,
+		
+		/// <summary>
+		/// A reference to a scene by name.
+		/// </summary>
+		SceneName,
+		
+		/// <summary>
+		/// A reference to a scene by build index.
+		/// </summary>
+		SceneBuildIndex,
 
 		/// <summary>
 		/// Loads or instantiates an asset using resources.
@@ -343,7 +338,6 @@ namespace Sisus.Init
 		AddressableKey
 		#endif
 	}
-
 
 	internal enum LoadMethod
 	{

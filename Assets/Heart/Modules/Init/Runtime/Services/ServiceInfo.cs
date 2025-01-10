@@ -100,7 +100,8 @@ namespace Sisus.Init
 		public readonly bool LazyInit;
 		public readonly bool LoadAsync;
 		public bool FindFromScene => loadMethod == LoadMethod.FindFromScene;
-
+		public string SceneName => referenceType == ReferenceType.SceneName ? loadData : null;
+		public int SceneBuildIndex => referenceType == ReferenceType.SceneBuildIndex && int.TryParse(loadData, out int buildIndex) ? buildIndex : -1;
 		public string ResourcePath => referenceType is ReferenceType.ResourcePath ? loadData : null;
 
 		#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER

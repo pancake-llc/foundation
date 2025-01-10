@@ -847,6 +847,18 @@ namespace Sisus.Init
 						return false;
 					}
 					#endif
+					
+					serviceProviderType = ServiceProviderType.None;
+					if(!definingType.IsInstanceOfType(result))
+					{
+						LogInvalidServiceDefinitionError(serviceProvider.GetType(), definingType, registerer);
+						result = null;
+						serviceProviderType = ServiceProviderType.None;
+						return false;
+					}
+
+					serviceProviderType = ServiceProviderType.None;
+					return true;
 				}
 				else
 				#endif
@@ -858,25 +870,11 @@ namespace Sisus.Init
 					serviceProviderType = ServiceProviderType.None;
 					return true;
 				}
-				else
-				{
-					LogInvalidServiceDefinitionError(serviceProvider.GetType(), definingType, registerer);
-					result = null;
-					serviceProviderType = ServiceProviderType.None;
-					return false;
-				}
 
+				LogInvalidServiceDefinitionError(serviceProvider.GetType(), definingType, registerer);
+				result = null;
 				serviceProviderType = ServiceProviderType.None;
-				if(!definingType.IsInstanceOfType(result))
-				{
-					LogInvalidServiceDefinitionError(serviceProvider.GetType(), definingType, registerer);
-					result = null;
-					serviceProviderType = ServiceProviderType.None;
-					return false;
-				}
-
-				serviceProviderType = ServiceProviderType.None;
-				return true;
+				return false;
 			}
 
 			if(serviceProvider is IValueProvider)

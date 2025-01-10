@@ -245,8 +245,8 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -300,8 +300,8 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -357,8 +357,8 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -415,9 +415,9 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -471,9 +471,9 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -529,9 +529,9 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -588,10 +588,10 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -646,10 +646,10 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -707,10 +707,10 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -769,11 +769,11 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -829,12 +829,12 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -891,13 +891,13 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -955,14 +955,14 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1021,15 +1021,15 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1089,16 +1089,16 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1159,17 +1159,17 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1231,18 +1231,18 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1305,11 +1305,11 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1368,11 +1368,11 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1432,12 +1432,12 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1497,13 +1497,13 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1564,14 +1564,14 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1633,15 +1633,15 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1704,16 +1704,16 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1777,17 +1777,17 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1852,18 +1852,18 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1929,12 +1929,12 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -1995,13 +1995,13 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2063,14 +2063,14 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2133,15 +2133,15 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2205,16 +2205,16 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2279,17 +2279,17 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2355,18 +2355,18 @@ namespace Sisus.Init
 		/// <seealso cref="Object.Instantiate"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2502,8 +2502,8 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2573,9 +2573,9 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2646,10 +2646,10 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2721,11 +2721,11 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2798,12 +2798,12 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2877,13 +2877,13 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -2958,14 +2958,14 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -3041,15 +3041,15 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -3126,16 +3126,16 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -3213,17 +3213,17 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>
@@ -3302,18 +3302,18 @@ namespace Sisus.Init
 		/// <seealso cref="Object.InstantiateAsync"/>
 		/// </summary>
 		/// <typeparam name="TObject"> Type of the <see cref="Object"/> that is being cloned. </typeparam>
-		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </param>
-		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </param>
-		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </param>
-		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </param>
-		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </param>
-		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </param>
-		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </param>
-		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </param>
-		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </param>
-		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </param>
+		/// <typeparam name="TFirstArgument"> Type of the first argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSecondArgument"> Type of the second argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TThirdArgument"> Type of the third argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFourthArgument"> Type of the fourth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TFifthArgument"> Type of the fifth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSixthArgument"> Type of the sixth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TSeventhArgument"> Type of the seventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEighthArgument"> Type of the eighth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TNinthArgument"> Type of the ninth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTenthArgument"> Type of the tenth argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TEleventhArgument"> Type of the eleventh argument used during initialization of the clone. </typeparam>
+		/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument used during initialization of the clone. </typeparam>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the clone. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the clone. </param>

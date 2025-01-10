@@ -3,6 +3,7 @@
 //#define DEBUG_LAZY_INIT
 //#define DEBUG_INIT_TIME
 //#define DEBUG_TEAR_DOWN
+#define DEBUG_LOAD_SCENE
 
 #if !INIT_ARGS_DISABLE_SERVICE_INJECTION
 using System;
@@ -236,7 +237,6 @@ namespace Sisus.Init.Internal
 
 			return true;
 		}
-
 
 		/// <summary>
 		/// Creates instances of all services,
@@ -1040,6 +1040,75 @@ namespace Sisus.Init.Internal
 					}
 				}
 
+				if(serviceInfo.SceneName is { Length: > 0 } sceneName && !SceneManager.GetSceneByName(sceneName).isLoaded)
+				{
+					await LoadDependenciesOfServicesInScene(sceneName, initialized, localServices);
+					
+					if(serviceInfo.LoadAsync)
+					{
+						#if DEV_MODE && DEBUG_LOAD_SCENE
+						Debug.Log($"Loading scene '{sceneName}' asynchronously to initialize service {TypeUtility.ToString(concreteType)}...");
+						#endif
+
+						var asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive); 
+						#if UNITY_6000_0_OR_NEWER
+						await asyncOperation;
+						#else
+						while(!asyncOperation.isDone)
+						{
+							await Task.Yield();
+						}
+						#endif
+					}
+					else
+					{
+						#if DEV_MODE && DEBUG_LOAD_SCENE
+						Debug.Log($"Loading scene '{sceneName}' to initialize service {TypeUtility.ToString(concreteType)}...");
+						#endif
+
+						SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+						var scene = SceneManager.GetSceneByName(sceneName);
+						while(!scene.isLoaded)
+						{
+							await Task.Yield();
+						}
+					}
+				}
+				else if(serviceInfo.SceneBuildIndex is var sceneBuildIndex and not -1 && !SceneManager.GetSceneByBuildIndex(sceneBuildIndex).isLoaded)
+				{
+					await LoadDependenciesOfServicesInScene(sceneBuildIndex, initialized, localServices);
+					
+					if(serviceInfo.LoadAsync)
+					{
+						#if DEV_MODE && DEBUG_LOAD_SCENE
+						Debug.Log($"Loading scene #{sceneBuildIndex} asynchronously to initialize service {TypeUtility.ToString(concreteType)}...");
+						#endif
+
+						var asyncOperation = SceneManager.LoadSceneAsync(sceneBuildIndex, LoadSceneMode.Additive);
+						#if UNITY_6000_0_OR_NEWER
+						await asyncOperation;
+						#else
+						while(!asyncOperation.isDone)
+						{
+							await Task.Yield();
+						}
+						#endif
+					}
+					else
+					{
+						#if DEV_MODE && DEBUG_LOAD_SCENE
+						Debug.Log($"Loading scene #{sceneBuildIndex} to initialize service {TypeUtility.ToString(concreteType)}...");
+						#endif
+						
+						SceneManager.LoadScene(sceneBuildIndex, LoadSceneMode.Additive);
+						var scene = SceneManager.GetSceneByBuildIndex(sceneBuildIndex);
+						while(!scene.isLoaded)
+						{
+							await Task.Yield();
+						}
+					}
+				}
+
 				if(typeof(Component).IsAssignableFrom(concreteType))
 				{
 					result =
@@ -1430,6 +1499,79 @@ namespace Sisus.Init.Internal
 			#endif
 
 			return result;
+		}
+
+		private static async Task LoadDependenciesOfServicesInScene(string sceneName, [DisallowNull] HashSet<Type> initialized, [DisallowNull] LocalServices localServices)
+		{
+			var servicesInScene = GetServiceDefinitions().Where(s => s.SceneName == sceneName).ToArray();
+			var dependencies = GetExternalDependenciesOfServices(servicesInScene, initialized, localServices);
+			
+			#if DEV_MODE && DEBUG_LOAD_SCENE
+			Debug.Log($"Loading dependencies of services in scene '{sceneName}':\n{TypeUtility.ToString(dependencies, "\n")}");
+			#endif
+			
+			var loadTasks = new List<Task>(0);
+
+			foreach(var dependencyType in dependencies)
+			{
+				if(TryGetOrInitializeService(dependencyType, out object service, initialized, localServices) && service is Task task)
+				{
+					loadTasks.Add(task);
+				}
+			}
+			
+			await Task.WhenAll(loadTasks);
+		}
+		
+		private static async Task LoadDependenciesOfServicesInScene(int sceneBuildIndex, [DisallowNull] HashSet<Type> initialized, [DisallowNull] LocalServices localServices)
+		{
+			var servicesInScene = GetServiceDefinitions().Where(s => s.SceneBuildIndex == sceneBuildIndex).ToArray();
+			var dependencies = GetExternalDependenciesOfServices(servicesInScene, initialized, localServices);
+			
+			#if DEV_MODE && DEBUG_LOAD_SCENE
+			Debug.Log($"Loading dependencies of services in scene with build index {sceneBuildIndex}:\n{TypeUtility.ToString(dependencies, "\n")}");
+			#endif
+			
+			var loadTasks = new List<Task>(0);
+			
+			foreach(var dependencyType in dependencies)
+			{
+				if(TryGetOrInitializeService(dependencyType, out var service, initialized, localServices) && service is Task task)
+				{
+					loadTasks.Add(task);
+				}
+			}
+			
+			await Task.WhenAll(loadTasks);
+		}
+		
+		/// <summary>
+		/// Gets types of all dependencies that services have, excluding dependencies between the services themselves.
+		/// </summary>
+		private static HashSet<Type> GetExternalDependenciesOfServices(ServiceInfo[] services, [DisallowNull] HashSet<Type> initialized, [DisallowNull] LocalServices localServices)
+		{
+			HashSet<Type> dependencyTypes = new();
+
+			foreach(var service in services)
+			{
+				GetAllDependencies(service.ConcreteOrDefiningType, dependencyTypes);
+			}
+
+			foreach(var service in services)
+			{
+				dependencyTypes.Remove(service.concreteType);
+				foreach(var definingType in service.definingTypes)
+				{
+					dependencyTypes.Remove(definingType);
+				}
+			}
+
+			foreach(var dependencyType in dependencyTypes)
+			{
+				TryGetOrInitializeService(dependencyType, out _, initialized, localServices);
+			}
+
+			return dependencyTypes;
 		}
 
 		internal async static Task<object> GetOrCreateServiceProvider(ServiceInfo serviceInfo, HashSet<Type> initialized, LocalServices localServices)
@@ -2712,12 +2854,14 @@ namespace Sisus.Init.Internal
 				(object[] arguments, int failedToGetArgumentAtIndex) = await GetOrInitializeServices(parameterTypes, initialized, localServices, client);
 				if(failedToGetArgumentAtIndex != -1)
 				{
-					if(!ShouldSelfGuardAgainstNull(client))
+					#if DEBUG
+					if(ShouldSelfGuardAgainstNull(client))
 					{
-						continue;
+						throw MissingInitArgumentsException.ForService(concreteType, parameterTypes[failedToGetArgumentAtIndex], localServices);
 					}
+					#endif
 					
-					throw MissingInitArgumentsException.ForService(concreteType, parameterTypes[failedToGetArgumentAtIndex], localServices);
+					continue;
 				}
 
 				var initMethod = interfaceType.GetMethod(nameof(IInitializable<object>.Init), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -2732,7 +2876,7 @@ namespace Sisus.Init.Internal
 
 			return client;
 		}
-
+		
 		private static void LogMissingDependencyWarning([DisallowNull] Type clientType, [DisallowNull] Type dependencyType, [AllowNull] Object context, [DisallowNull] LocalServices localServices)
 		{
 			if(!localServices.TryGetInfo(dependencyType, out var serviceInfo))
@@ -2789,7 +2933,7 @@ namespace Sisus.Init.Internal
 				for(int argumentIndex = 0; argumentIndex < parameterCount; argumentIndex++)
 				{
 					var parameterType = parameterTypes[argumentIndex];
-					if(!TryGetOrInitializeService(parameterType, out object firstArgument, initialized, localServices, prefab))
+					if(!TryGetOrInitializeService(parameterType, out arguments[argumentIndex], initialized, localServices, prefab))
 					{
 						LogMissingDependecyWarning(concreteType, parameterType, prefab, localServices);
 						allArgumentsAvailable = false;

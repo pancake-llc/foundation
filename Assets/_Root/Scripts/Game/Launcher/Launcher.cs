@@ -19,7 +19,7 @@ namespace Pancake.Game
 
         protected override void Init(ILoading argument) { _loading = argument; }
 
-        private void Awake()
+        protected override void OnAwake()
         {
 #if UNITY_EDITOR
             Application.targetFrameRate = (int) HeartEditorSettings.TargetFrameRate;

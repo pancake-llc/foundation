@@ -181,7 +181,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(1)
 		{
-			{ '\0', new Dictionary<Type, string>(4096) {
+			{ '\0', new(4096) {
 				{ typeof(int), "int" }, { typeof(uint), "unit" },
 				{ typeof(float), "float" }, { typeof(double), "double" },
 				{ typeof(bool), "bool" }, { typeof(string), "string" },
@@ -192,7 +192,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			} }
 		};
 
-		private static readonly string[] initializerBasePropertyNames = new string[]
+		private static readonly string[] initializerBasePropertyNames =
 		{
 			"FirstArgument",
 			"SecondArgument",
@@ -201,11 +201,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			"FifthArgument",
 			"SixthArgument",
 			"SeventhArgument",
-			"EigthArgument",
+			"EighthArgument",
 			"NinthArgument"
 		};
 
-		private static readonly HashSet<string> reservedKeywords = new HashSet<string>()
+		private static readonly HashSet<string> reservedKeywords = new()
 		{
 			"abstract",
 			"as",
@@ -293,12 +293,12 @@ namespace Sisus.Init.EditorOnly.Internal
 				return CreateInitializer(script);
 			}
 
-			if(target is MonoBehaviour monoBehaviour  && MonoScript.FromMonoBehaviour(monoBehaviour) is MonoScript monoBehaviourScript)
+			if(target is MonoBehaviour monoBehaviour && MonoScript.FromMonoBehaviour(monoBehaviour) is { } monoBehaviourScript)
 			{
 				return CreateInitializer(monoBehaviourScript);
 			}
 
-			if(target is ScriptableObject scriptableObject && MonoScript.FromScriptableObject(scriptableObject) is MonoScript scriptableObjectScript)
+			if(target is ScriptableObject scriptableObject && MonoScript.FromScriptableObject(scriptableObject) is { } scriptableObjectScript)
 			{
 				return CreateInitializer(scriptableObjectScript);
 			}

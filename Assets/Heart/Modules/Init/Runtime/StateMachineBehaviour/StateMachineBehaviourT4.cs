@@ -17,12 +17,12 @@ namespace Sisus.Init
 	/// Arguments can be specified using a <see cref="StateMachineBehaviourInitializer{TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>.
 	/// attached to the <see cref="Animator"/> that contains the <see cref="StateMachineBehaviour"/>.
 	/// <para>
-	/// The arguments will be received through the <see cref="Init"/> function where they can be assigned to member fields and properties.
+	/// The arguments will be received through the <see cref="Init"/> method where they can be assigned to member fields and properties.
 	/// </para>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class StateMachineBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> : StateMachineBehaviour,
 		IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 	{
@@ -36,7 +36,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Provides the <see cref="StateMachineBehaviour">StateMachineBehaviour</see> with the object that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the <see cref="StateMachineBehaviour"/>.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the <see cref="StateMachineBehaviour"/>.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> is called at the beginning of the <see cref="Awake"/> event function when the script is being loaded,
@@ -118,7 +118,7 @@ namespace Sisus.Init
 
 		/// <summary>
 		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the
-		/// <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="Awake"/> event after the <see cref="Init"/> method has finished.
 		/// This happens as the game is launched and is similar to MonoBehavior.Awake.
 		/// <para>
 		/// Use <see cref="OnAwake"/> to initialize variables or states before the application starts.
@@ -144,7 +144,7 @@ namespace Sisus.Init
 			{
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				initState = InitState.Initializing;
-				ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument);
+				HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument);
 				#endif
 
 				Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
@@ -162,7 +162,7 @@ namespace Sisus.Init
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument);
 			#endif
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
@@ -220,7 +220,7 @@ namespace Sisus.Init
 		}
 
 		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+		private void HandleValidate(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			#if UNITY_EDITOR

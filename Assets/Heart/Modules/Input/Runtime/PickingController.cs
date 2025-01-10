@@ -137,7 +137,7 @@ namespace Pancake.MobileInput
 
         protected override void Init(TouchInput argument) { _touchInput = argument; }
 
-        public void Awake()
+        protected override void OnAwake()
         {
             SelectedColliders = new List<Component>();
             _touchCam = GetComponent<TouchCamera>();

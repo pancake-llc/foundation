@@ -87,6 +87,9 @@ namespace Sisus.Init.EditorOnly
 			/// </para>
 			/// </summary>
 			/// <param name="context"> The context from which a method is being called. </param>
+			/// <param name="isPlaying">
+			/// When this method returns, contains a value indicating whether or not we are currently in play mode,
+			/// if it was possible to determine this; otherwise, <see langword="false"/>. </param>
 			/// <returns>
 			/// <see langword="true"/> if was able to determine if application is playing or not; otherwise, <see langword="false"/>.
 			/// </returns>

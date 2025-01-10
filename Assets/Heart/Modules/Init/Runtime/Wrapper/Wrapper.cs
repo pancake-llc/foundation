@@ -135,7 +135,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Provides the <see cref="Component"/> with the object that it wraps.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the component.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the component.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, during the Awake event when
@@ -205,7 +205,7 @@ namespace Sisus.Init
 		#endif
 
 		/// <summary>
-		/// <see cref="Awake"/> is called when the script instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
+		/// <see cref="Awake"/> is called when the script instance is being loaded and handles calling the <see cref="Init"/> method with the <see cref="TWrapped"/> argument.
 		/// <para>
 		/// <see cref="Awake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
 		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>

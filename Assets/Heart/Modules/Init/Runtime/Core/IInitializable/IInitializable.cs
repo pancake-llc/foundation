@@ -61,7 +61,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Initializes the object with an object that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -107,14 +107,14 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument> : IArgs<TFirstArgument, TSecondArgument>
 	{
 		/// <summary>
 		/// Initializes the object with two objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -161,15 +161,15 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 	{
 		/// <summary>
 		/// Initializes the object with three objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -217,16 +217,16 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument passed to the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument passed to the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 	{
 		/// <summary>
 		/// Initializes the object with four objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -276,17 +276,17 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument passed to the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument passed to the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 	{
 		/// <summary>
 		/// Initializes the object with five objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -337,18 +337,18 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument passed to the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument passed to the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument passed to the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument passed to the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 	{
 		/// <summary>
 		/// Initializes the object with six objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -400,19 +400,19 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
 	{
 		/// <summary>
 		/// Initializes the object with seven objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -465,20 +465,20 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
 	{
 		/// <summary>
 		/// Initializes the object with seven objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
 		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> <see cref="Init"/> gets called during the Awake event
@@ -532,15 +532,15 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
 	{
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument);
@@ -568,16 +568,16 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TTenthArgument"> Type of the tenth argument accepted by the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TTenthArgument"> Type of the tenth argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
 	{
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument);
@@ -605,17 +605,17 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TTenthArgument"> Type of the tenth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEleventhArgument"> Type of the eleventh argument accepted by the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TTenthArgument"> Type of the tenth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEleventhArgument"> Type of the eleventh argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
 	{
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument);
@@ -643,18 +643,18 @@ namespace Sisus.Init
 	/// <seealso cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/>
 	/// <seealso cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TTenthArgument"> Type of the tenth argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEleventhArgument"> Type of the eleventh argument accepted by the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument accepted by the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSeventhArgument"> Type of the seventh argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEighthArgument"> Type of the eighth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TTenthArgument"> Type of the tenth argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEleventhArgument"> Type of the eleventh argument accepted by the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
 	{
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument);

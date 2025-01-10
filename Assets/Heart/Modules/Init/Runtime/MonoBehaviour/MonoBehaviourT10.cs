@@ -13,10 +13,10 @@ namespace Sisus.Init
 	/// A base class for <see cref="MonoBehaviour">MonoBehaviours</see> that can be
 	/// <see cref="InstantiateExtensions.Instantiate{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}">instantiated</see>
 	/// or <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}">added</see>
-	/// to a <see cref="GameObject"/> with ten arguments passed to the <see cref="Init"/> function of the created instance.
+	/// to a <see cref="GameObject"/> with ten arguments passed to the <see cref="Init"/> method of the created instance.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// <para>
 	/// If the component is part of a scene or a prefab, add depends on any classes that don't have the <see cref="ServiceAttribute"/>, then an
@@ -28,22 +28,22 @@ namespace Sisus.Init
 	/// receive the arguments via the <see cref="Init"/> method where they can be assigned to member fields or properties.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSeventhArgument"> Type of the seventh argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TEighthArgument"> Type of the eighth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TNinthArgument"> Type of the ninth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TTenthArgument"> Type of the tenth argument received in the <see cref="Init"/> function. </typeparam>
-	public abstract class MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument> : InitializableBaseInternal, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSeventhArgument"> Type of the seventh argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TEighthArgument"> Type of the eighth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TNinthArgument"> Type of the ninth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TTenthArgument"> Type of the tenth argument received in the <see cref="Init"/> method. </typeparam>
+	public abstract class MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument> : MonoBehaviourBase, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
 	{
 		/// <summary>
 		/// Provides the <see cref="Component"/> with the objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the component.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the component.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, before the <see cref="OnAwake"/>, OnEnable and Start events when
@@ -115,32 +115,22 @@ namespace Sisus.Init
 		#if UNITY_EDITOR
 		private protected void Reset()
 		{
-			Init(Context.Reset);
+			InitInternal(Context.Reset);
 			OnInitializableReset(this);
 			OnReset();
 		}
 		#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected override bool Init(Context context)
+		protected override bool Init(Context context)
 		{
-			if(initState != InitState.Uninitialized)
-			{
-				return true;
-			}
-
 			if(!InitArgs.TryGet(context, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument, out TTenthArgument tenthArgument))
 			{
 				return false;
 			}
 
-			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument, context);
-
+			HandleValidate(context, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
-
-			initState = InitState.Initialized;
-
 			return true;
 		}
 
@@ -149,7 +139,7 @@ namespace Sisus.Init
 			.Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument, Context.MainThread);
+			HandleValidate(Context.MainThread, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
 
@@ -162,106 +152,11 @@ namespace Sisus.Init
 		internal void InitInternal(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument, Context.MainThread);
+			HandleValidate(Context.MainThread, firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
 
 			initState = InitState.Initialized;
-		}
-
-		/// <summary>
-		/// Method that can be overridden and used to validate the initialization arguments that were received by this object.
-		/// <para>
-		/// You can use the <see cref="ThrowIfNull"/> method to throw an <see cref="ArgumentNullException"/>
-		/// if an argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
-		/// {
-		///		ThrowIfNull(inputManager);
-		///		ThrowIfNull(camera);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// You can use the <see cref="AssertNotNull"/> method to log an assertion to the Console
-		/// if an argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
-		/// {
-		///		AssertNotNull(inputManager);
-		///		AssertNotNull(camera);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// Calls to this method are ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="firstArgument"> The first received argument to validate. </param>
-		/// <param name="secondArgument"> The second received argument to validate. </param>
-		/// <param name="thirdArgument"> The third received argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth received argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth received argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth received argument to validate. </param>
-		/// <param name="seventhArgument"> The seventh received argument to validate. </param>
-		/// <param name="eighthArgument"> The eighth received argument to validate. </param>
-		/// <param name="ninthArgument"> The ninth received argument to validate. </param>
-		/// <param name="tenthArgument"> The tenth received argument to validate. </param>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected virtual void ValidateArguments(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument)
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
-			AssertNotNull(seventhArgument);
-			AssertNotNull(eighthArgument);
-			AssertNotNull(ninthArgument);
-			AssertNotNull(tenthArgument);
-			#endif
-		}
-
-		[Conditional("UNITY_EDITOR"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		#if UNITY_EDITOR
-		async
-		#endif
-		private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, Context context)
-		{
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-
-			if(ShouldSelfGuardAgainstNull(this))
-			{
-				ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
-			}
-			#endif
 		}
 	}
 }

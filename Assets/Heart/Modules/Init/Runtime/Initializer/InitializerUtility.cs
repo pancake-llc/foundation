@@ -337,8 +337,9 @@ namespace Sisus.Init.Internal
 			}
 		}
 
-		internal static bool ShouldSelfGuardAgainstNull([DisallowNull] object target)
+		public static bool ShouldSelfGuardAgainstNull([DisallowNull] object target)
 		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(target is MonoBehaviour monoBehaviour)
 			{
 				return ShouldSelfGuardAgainstNull(monoBehaviour);
@@ -350,6 +351,9 @@ namespace Sisus.Init.Internal
 			}
 
 			return true;
+			#else
+			return false;
+			#endif
 		}
 		
 		/// <summary>

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Sisus.Init.ValueProviders;
 using UnityEditor;
 using UnityEngine;
@@ -48,6 +46,11 @@ namespace Sisus.Init.EditorOnly
 				return false;
 			}
 
+			if(AssetDatabase.IsSubAsset(singleSharedInstance))
+			{
+				return false;
+			}
+
 			using(var serializedObject = new SerializedObject(singleSharedInstance))
 			{
 				var firstProperty = serializedObject.GetIterator();
@@ -60,12 +63,11 @@ namespace Sisus.Init.EditorOnly
 				}
 			}
 
-			singleSharedInstance = null;
-
 			#if DEV_MODE
 			Debug.Log($"Single shared instance disqualified due to having serialized fields: {singleSharedInstance.name}.", singleSharedInstance);
 			#endif
 
+			singleSharedInstance = null;
 			return false;
 		}
 

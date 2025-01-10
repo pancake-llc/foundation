@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Sisus.Shared.EditorOnly;
 using UnityEditor;
@@ -8,6 +9,8 @@ namespace Sisus.Init.EditorOnly.Internal
 {
 	internal sealed class InitParameterGUI : IDisposable
 	{
+		private static readonly Dictionary<Type, MethodInfo> hasSerializedValueMethods = new();
+		
 		public static InitParameterGUI NowDrawing { get; private set; }
 
 		public readonly SerializedProperty anyProperty;
@@ -65,7 +68,12 @@ namespace Sisus.Init.EditorOnly.Internal
 				anyProperty.serializedObject.Update();
 				var any = anyProperty.GetValue();
 				var anyType = any.GetType();
-				hasSerializedValue = (bool)anyType.GetMethod("HasSerializedValue", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Invoke(any, null);
+				if(!hasSerializedValueMethods.TryGetValue(anyType, out MethodInfo method))
+				{
+					method = anyType.GetMethod("HasSerializedValue", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					hasSerializedValueMethods.Add(anyType, method);
+				}
+				hasSerializedValue = (bool)method.Invoke(any, null);
 			}
 			else
 			{

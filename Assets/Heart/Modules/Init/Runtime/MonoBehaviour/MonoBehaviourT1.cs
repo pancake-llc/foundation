@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Sisus.Init.Internal;
@@ -13,10 +12,10 @@ namespace Sisus.Init
 	/// A base class for <see cref="MonoBehaviour">MonoBehaviours</see> that can be
 	/// <see cref="InstantiateExtensions.Instantiate{TComponent, TArgument}">instantiated</see>
 	/// or <see cref="AddComponentExtensions.AddComponent{TComponent, TArgument}">added</see>
-	/// to a <see cref="GameObject"/> with an argument passed to the <see cref="Init"/> function of the created instance.
+	/// to a <see cref="GameObject"/> with an argument passed to the <see cref="Init"/> method of the created instance.
 	/// <para>
-	/// If the object depends on a class that has the <see cref="ServiceAttribute"/> then
-	/// it will be able to receive it in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends on an object that has been registered as service using the <see cref="ServiceAttribute"/>, then
+	/// it will be able to receive the service in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// <para>
 	/// If the component is part of a scene or a prefab, and depends on a class that doesn't have the <see cref="ServiceAttribute"/>,
@@ -27,18 +26,18 @@ namespace Sisus.Init
 	/// via the <see cref="Init"/> method where it can be assigned to a member field or property.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> function. </typeparam>
-	public abstract class MonoBehaviour<TArgument> : InitializableBaseInternal, IInitializable<TArgument>
+	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> method. </typeparam>
+	public abstract class MonoBehaviour<TArgument> : MonoBehaviourBase, IInitializable<TArgument>
 	{
 		/// <summary>
 		/// Provides the <see cref="Component"/> with the <paramref name="argument">object</paramref> that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the component.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the component.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, before the <see cref="OnAwake"/>, OnEnable and Start events when
 		/// the component is created using <see cref="InstantiateExtensions.Instantiate{TArgument}"/> or
-		/// <see cref="AddComponentExtensions.AddComponent{TComponent, TArgument}"/>.
+		/// <see cref="AddComponent"/>.
 		/// </para>
 		/// <para>
 		/// In edit mode <see cref="Init"/> can also get called during the <see cref="Reset"/> event when the script is added to a <see cref="GameObject"/>,
@@ -96,31 +95,22 @@ namespace Sisus.Init
 		#if UNITY_EDITOR
 		private protected void Reset()
 		{
-			Init(Context.Reset);
+			InitInternal(Context.Reset);
 			OnInitializableReset(this);
 			OnReset();
 		}
 		#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected override bool Init(Context context)
+		protected override bool Init(Context context)
 		{
-			if(initState != InitState.Uninitialized)
-			{
-				return true;
-			}
-
 			if(!InitArgs.TryGet(context, this, out TArgument argument))
 			{
 				return false;
 			}
-
-			initState = InitState.Initializing;
-			ValidateArgumentIfPlayMode(argument, context);
-
+			
+			HandleValidate(context, argument);
 			Init(argument);
-
-			initState = InitState.Initialized;
 			return true;
 		}
 
@@ -128,7 +118,7 @@ namespace Sisus.Init
 		void IInitializable<TArgument>.Init(TArgument argument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentIfPlayMode(argument, Context.MainThread);
+			HandleValidate(Context.MainThread, argument);
 
 			Init(argument);
 
@@ -141,86 +131,11 @@ namespace Sisus.Init
 		internal void InitInternal(TArgument argument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentIfPlayMode(argument, Context.MainThread);
+			HandleValidate(Context.MainThread, argument);
 
 			Init(argument);
 
 			initState = InitState.Initialized;
-		}
-
-		/// <summary>
-		/// Method that can be overridden and used to validate the initialization argument that was received by this object.
-		/// <para>
-		/// You can use the <see cref="ThrowIfNull"/> method to throw an <see cref="ArgumentNullException"/>
-		/// if the argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArgument(IInputManager inputManager)
-		/// {
-		///		ThrowIfNull(inputManager);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// You can use the <see cref="AssertNotNull"/> method to log an assertion to the Console
-		/// if the argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArgument(IInputManager inputManager)
-		/// {
-		///		AssertNotNull(inputManager);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// Calls to this method are ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="argument"> The received argument to validate. </param>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected virtual void ValidateArgument(TArgument argument)
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(argument);
-			#endif
-		}
-
-		[Conditional("UNITY_EDITOR"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		#if UNITY_EDITOR
-		async
-		#endif
-		private void ValidateArgumentIfPlayMode(TArgument argument, Context context)
-		{
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-
-			if(ShouldSelfGuardAgainstNull(this))
-			{
-				ValidateArgument(argument);
-			}
-			#endif
 		}
 	}
 }

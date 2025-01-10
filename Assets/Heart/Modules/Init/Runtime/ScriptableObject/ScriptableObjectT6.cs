@@ -18,10 +18,10 @@ namespace Sisus.Init
 	/// A base class for scriptable objects that can be
 	/// <see cref="Create.Instance{TScriptableObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}">created</see>
 	/// or <see cref="InstantiateExtensions.Instantiate{TScriptableObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}">instantiated</see>
-	/// with six arguments passed to the <see cref="Init"/> function of the created instance.
+	/// with six arguments passed to the <see cref="Init"/> method of the created instance.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// <para>
 	/// If the object depends on any classes that don't have the <see cref="ServiceAttribute"/>,
@@ -32,12 +32,12 @@ namespace Sisus.Init
 	/// Instances of classes inheriting from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>
 	/// receive the arguments via the <see cref="Init"/> method where they can be assigned to member fields or properties.
 	/// </para>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TThirdArgument"> Type of the third argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFourthArgument"> Type of the fourth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TFifthArgument"> Type of the fifth argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSixthArgument"> Type of the sixth argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class ScriptableObject<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		: ScriptableObject, IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, IInitializable
 		#if UNITY_EDITOR
@@ -63,7 +63,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Provides the <see cref="ScriptableObject"/> with the objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the <see cref="ScriptableObject"/>.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the <see cref="ScriptableObject"/>.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> is called at the beginning of the <see cref="Awake"/> event function when the script is being loaded,
@@ -160,7 +160,7 @@ namespace Sisus.Init
 		protected virtual void OnReset() { }
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> method has finished.
 		/// This happens as the game is launched and is similar to MonoBehavior.Awake.
 		/// <para>
 		/// Use <see cref="OnAwake"/> to initialize variables or states before the application starts.
@@ -246,7 +246,7 @@ namespace Sisus.Init
 			{
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				initState = InitState.Initializing;
-				ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+				HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 				#endif
 
 				Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
@@ -322,7 +322,7 @@ namespace Sisus.Init
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+			HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 			#endif
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
@@ -336,7 +336,7 @@ namespace Sisus.Init
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+			HandleValidate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 			#endif
 
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
@@ -398,7 +398,7 @@ namespace Sisus.Init
 		}
 
 		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
+		private void HandleValidate(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			#if UNITY_EDITOR

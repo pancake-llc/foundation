@@ -18,13 +18,13 @@ namespace Sisus.Init
 	/// A base class for scriptable objects that can be
 	/// <see cref="Create.Instance{TScriptableObject, TFirstArgument, TArgument}">created</see>
 	/// or <see cref="InstantiateExtensions.Instantiate{TScriptableObject, TArgument}">instantiated</see>
-	/// with an argument passed to the <see cref="Init"/> function of the created instance.
+	/// with an argument passed to the <see cref="Init"/> method of the created instance.
 	/// <para>
 	/// If the object depends on a class that has the <see cref="ServiceAttribute"/> then
-	/// it will receive it in its <see cref="Init"/> function automatically during initialization.
+	/// it will receive it in its <see cref="Init"/> method automatically during initialization.
 	/// </para>
 	/// <para>
-	/// If the object depends on a class that doesn't have the <see cref="ServiceAttribute"/>,
+	/// If the object depends on a class that doen't have the <see cref="ServiceAttribute"/>,
 	/// then an <see cref="ScriptableObjectInitializer{TScriptableObject, TArgument}"/>
 	/// can be used to specify its initialization argument.
 	/// </para>
@@ -33,7 +33,7 @@ namespace Sisus.Init
 	/// via the <see cref="Init"/> method where it can be assigned to a member field or property.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> function. </typeparam>
+	/// <typeparam name="TArgument"> Type of the argument received in the <see cref="Init"/> method. </typeparam>
 	public abstract class ScriptableObject<TArgument> : ScriptableObject, IInitializable<TArgument>, IInitializable
 		#if UNITY_EDITOR
 		, EditorOnly.IInitializableEditorOnly
@@ -58,7 +58,7 @@ namespace Sisus.Init
 		/// <summary>
 		/// Provides the <see cref="ScriptableObject">ScriptableObject</see> with the object that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the <see cref="ScriptableObject"/>.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the <see cref="ScriptableObject"/>.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> is called at the beginning of the <see cref="Awake"/> event function when the script is being loaded,
@@ -150,7 +150,7 @@ namespace Sisus.Init
 		protected virtual void OnReset() { }
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> method has finished.
 		/// This happens as the game is launched and is similar to MonoBehavior.Awake.
 		/// <para>
 		/// Use <see cref="OnAwake"/> to initialize variables or states before the application starts.
@@ -236,7 +236,7 @@ namespace Sisus.Init
 			{
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				initState = InitState.Initializing;
-				ValidateArgumentIfPlayMode(argument);
+				HandleValidate(argument);
 				#endif
 
 				Init(argument);
@@ -287,7 +287,7 @@ namespace Sisus.Init
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			initState = InitState.Initializing;
-			ValidateArgumentIfPlayMode(argument);
+			HandleValidate(argument);
 			#endif
 
 			Init(argument);
@@ -301,7 +301,7 @@ namespace Sisus.Init
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			initState = InitState.Initializing;
-			ValidateArgumentIfPlayMode(argument);
+			HandleValidate(argument);
 			#endif
 
 			Init(argument);
@@ -351,7 +351,7 @@ namespace Sisus.Init
 		}
 
 		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ValidateArgumentIfPlayMode(TArgument argument)
+		private void HandleValidate(TArgument argument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
 			#if UNITY_EDITOR

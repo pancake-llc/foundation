@@ -921,18 +921,17 @@ namespace Sisus.Init.EditorOnly
 			}
 
 			var clientComponent = client as Component;
-			bool clientIsComponent = clientComponent != null;
+			bool clientIsComponent = clientComponent;
 
 			bool fromAnyScene = HasFlag(from, From.AnyScene);
 			bool fromSameScene = fromAnyScene || HasFlag(from, From.SameScene);
 			bool fromParent = fromSameScene || HasFlag(from, From.Parent);
 			bool fromChildren = fromSameScene || HasFlag(from, From.Children);
 
-			ObjectType argumentObjectType = GetObjectType(typeof(TArgument));			
+			ObjectType argumentObjectType = GetObjectType(typeof(TArgument));
 			bool argumentIsInterface = argumentObjectType == ObjectType.Interface;
 			bool argumentIsGameObjectOrTransform = argumentObjectType == ObjectType.GameObject || argumentObjectType == ObjectType.Transform;
 			bool argumentIsComponentOrInterface = argumentIsInterface || argumentObjectType == ObjectType.Component;
-			bool argumentIsObjectOrInterface = argumentIsInterface || argumentObjectType == ObjectType.Object;
 
 			Type argumentElementType =  GetCollectionElementType(typeof(TArgument));
 			ObjectType argumentElementObjectType =  argumentElementType is null ? ObjectType.None : GetObjectType(argumentElementType);
@@ -1053,7 +1052,7 @@ namespace Sisus.Init.EditorOnly
 						if(argumentObjectType == ObjectType.GameObject)
 						{
 							var gameObjects = new List<GameObject>();
-							for(var parent = clientComponent.transform.parent; parent != null; parent = parent.parent)
+							for(var parent = clientComponent.transform.parent; parent; parent = parent.parent)
 							{
 								gameObjects.Add(parent.gameObject);
 							}
@@ -1062,7 +1061,7 @@ namespace Sisus.Init.EditorOnly
 						}
 
 						var transforms = new List<Transform>();
-						for(var parent = clientComponent.transform.parent; parent != null; parent = parent.parent)
+						for(var parent = clientComponent.transform.parent; parent; parent = parent.parent)
 						{
 							transforms.Add(parent);
 						}
@@ -1166,7 +1165,7 @@ namespace Sisus.Init.EditorOnly
 						{
 							string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
 							var asset = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(TArgument));
-							if(asset != null && typeof(TArgument).IsAssignableFrom(asset.GetType()))
+							if(asset && typeof(TArgument).IsAssignableFrom(asset.GetType()))
 							{
 								list.Add(asset);
 							}
@@ -1185,7 +1184,7 @@ namespace Sisus.Init.EditorOnly
 							{
 								string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
 								var asset = UnityEditor.AssetDatabase.LoadAssetAtPath(path, derivedType);
-								if(asset != null && elementType.IsAssignableFrom(asset.GetType()))
+								if(asset && elementType.IsAssignableFrom(asset.GetType()))
 								{
 									list.Add(asset);
 								}

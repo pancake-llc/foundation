@@ -1,7 +1,6 @@
 ﻿//#define SHOW_SERVICE_TAGS
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Sisus.Init.Serialization;
@@ -136,6 +135,67 @@ namespace Sisus.Init.Internal
 			
 			value = null;
 			return false;
+		}
+		
+		NullGuardResult INullGuardByType.EvaluateNullGuard<TService>(Component client)
+		{
+			if(definingType.Value is not Type serviceType)
+			{
+				return NullGuardResult.InvalidValueProviderState;
+			}
+
+			if(serviceType != typeof(TService))
+			{
+				return NullGuardResult.TypeNotSupported;
+			}
+
+			if(!IsAvailableToAnyClient() && (!client || !IsAvailableToClient(client.gameObject)))
+			{
+				return NullGuardResult.ClientNotSupported;
+			}
+
+			#if UNITY_EDITOR
+			// In the editor, perform some additional checks to be able to provide more
+			// detailed information in the Inspector and help catch potential issues earlier.
+
+			// In builds, trust that services will be configured properly.
+
+			if(!service)
+			{
+				return NullGuardResult.InvalidValueProviderState;
+			}
+
+			if(service is not TService && !ValueProviderUtility.IsValueProvider(service))
+			{
+				return NullGuardResult.InvalidValueProviderState;
+			}
+
+			if(service is IWrapper wrapper)
+			{
+				if(wrapper.WrappedObject is not TService)
+				{
+					return GetValueProviderMissingResult();
+				}
+			}
+			else if(service is IInitializer initializer)
+			{
+				if(initializer.Target is not object target || !Find.In<TService>(target, out _))
+				{
+					return GetValueProviderMissingResult();
+				}
+			}
+			else if(ValueProviderUtility.TryGetValueProviderValue(service, out object value) || !Find.In<TService>(value, out _))
+			{
+				return GetValueProviderMissingResult();
+			}
+
+			NullGuardResult GetValueProviderMissingResult() =>
+				EditorOnly.ThreadSafe.Application.TryGetIsPlaying(Context.Default, out bool isPlaying) && !isPlaying
+					? NullGuardResult.ValueProviderValueNullInEditMode
+					: NullGuardResult.ValueProviderValueMissing;
+			#endif
+
+			return NullGuardResult.Passed;
 		}
 
 		#if UNITY_EDITOR
@@ -461,7 +521,6 @@ namespace Sisus.Init.Internal
 		}
 
 		void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-#endif
 
 		public async void OnAfterDeserialize()
 		{
@@ -474,66 +533,6 @@ namespace Sisus.Init.Internal
 
 			Register();
 		}
-
-		NullGuardResult INullGuardByType.EvaluateNullGuard<TService>(Component client)
-		{
-			if(definingType.Value is not Type serviceType)
-			{
-				return NullGuardResult.InvalidValueProviderState;
-			}
-
-			if(serviceType != typeof(TService))
-			{
-				return NullGuardResult.TypeNotSupported;
-			}
-
-			if(!IsAvailableToAnyClient() && (!client || !IsAvailableToClient(client.gameObject)))
-			{
-				return NullGuardResult.ClientNotSupported;
-			}
-
-			#if UNITY_EDITOR
-			// In the editor, perform some additional checks to be able to provide more
-			// detailed information in the Inspector and help catch potential issues earlier.
-
-			// In builds, trust that services will be configured properly.
-
-			if(!service)
-			{
-				return NullGuardResult.InvalidValueProviderState;
-			}
-
-			if(service is not TService && !ValueProviderUtility.IsValueProvider(service))
-			{
-				return NullGuardResult.InvalidValueProviderState;
-			}
-
-			if(service is IWrapper wrapper)
-			{
-				if(wrapper.WrappedObject is not TService)
-				{
-					return GetValueProviderMissingResult();
-				}
-			}
-			else if(service is IInitializer initializer)
-			{
-				if(initializer.Target is not object target || !Find.In<TService>(target, out _))
-				{
-					return GetValueProviderMissingResult();
-				}
-			}
-			else if(ValueProviderUtility.TryGetValueProviderValue(service, out object value) || !Find.In<TService>(value, out _))
-			{
-				return GetValueProviderMissingResult();
-			}
-
-			NullGuardResult GetValueProviderMissingResult() =>
-				EditorOnly.ThreadSafe.Application.TryGetIsPlaying(Context.Default, out bool isPlaying) && !isPlaying
-					? NullGuardResult.ValueProviderValueNullInEditMode
-					: NullGuardResult.ValueProviderValueMissing;
-			#endif
-
-			return NullGuardResult.Passed;
-		}
+		#endif
 	}
 }

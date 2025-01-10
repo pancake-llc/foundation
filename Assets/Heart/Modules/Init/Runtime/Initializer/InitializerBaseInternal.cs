@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+#if (DEBUG || INIT_ARGS_SAFE_MODE) && UNITY_2023_1_OR_NEWER
 using System.Reflection;
+#endif
 using System.Runtime.CompilerServices;
+using UnityEngine;
+using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using Sisus.Init.EditorOnly;
 #endif
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Sisus.Init.Internal
 {
@@ -106,10 +108,10 @@ namespace Sisus.Init.Internal
 				
 				var task = InitTargetAsync(target);
 				bool initializableDisabledTemporarily;
-				InitializableBaseInternal initializable;
+				MonoBehaviourBase initializable;
 				if(!task.GetAwaiter().IsCompleted)
 				{
-					initializable = target as InitializableBaseInternal;
+					initializable = target as MonoBehaviourBase;
 					if(initializable && initializable.enabled)
 					{
 						var targetGameObject = initializable.gameObject;
@@ -140,11 +142,13 @@ namespace Sisus.Init.Internal
 				
 				if(initializableDisabledTemporarily && initTargetResult)
 				{
+					initializable.initState = InitState.Initialized;
+
 					// InitializableBaseInternal has handling to avoid calling OnAwake if initState is still Initializing,
 					// enabling the initializer to defer execution until now.
-					initializable.Awake();
+					initializable.ExecuteOnAwake();
 					
-					// After Awake has been executed, enable the target to execute OnEnable and Start as well.
+					// After OnAwake has been executed, enable the target to execute OnEnable and Start as well.
 					initializable.enabled = true;
 				}
 

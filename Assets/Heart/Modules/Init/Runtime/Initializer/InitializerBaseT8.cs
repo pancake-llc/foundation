@@ -11,7 +11,7 @@ using Sisus.Init.EditorOnly;
 namespace Sisus.Init
 {
 	/// <summary>
-	/// A base class for a component that can specify the eigth arguments used to
+	/// A base class for a component that can specify the eight arguments used to
 	/// initialize an object that implements
 	/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/>.
 	/// <para>

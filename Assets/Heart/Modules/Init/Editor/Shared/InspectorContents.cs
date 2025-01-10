@@ -1,4 +1,4 @@
-﻿#define DEBUG_REPAINT
+﻿//#define DEBUG_REPAINT
 
 using System;
 using System.Collections.Generic;

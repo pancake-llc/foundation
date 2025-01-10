@@ -41,7 +41,7 @@ namespace Sisus.Init
 
 		/// <summary>
 		/// <see langword="true"/> if this object received the argument that it depends on in the constructor
-		/// or if it was injected to it through the <see cref="Init"/> function; otherwise, <see langword="false"/>.
+		/// or if it was injected to it through the <see cref="Init"/> method; otherwise, <see langword="false"/>.
 		/// <para>
 		/// Note that this is set to <see langword="true"/> if it receives the argument regardless of whether or not
 		/// the argument is <see langword="null"/> or not.
@@ -166,7 +166,7 @@ namespace Sisus.Init
 		/// <inheritdoc/>
 		void IInitializable<TArgument>.Init(TArgument argument)
 		{
-			ValidateArgumentIfPlayMode(argument, Context.MainThread);
+			HandleValidate(argument, Context.MainThread);
 			Init(argument);
 		}
 
@@ -255,7 +255,7 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> method has finished.
 		/// <para>
 		/// <see cref="OnAwake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
 		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>
@@ -302,7 +302,7 @@ namespace Sisus.Init
 				// the parent chains can only be done from the main thread.
 				if(InitArgs.TryGet(Context.Awake, this, out TArgument argument))
 				{
-					ValidateArgumentIfPlayMode(argument, Context.Awake);
+					HandleValidate(argument, Context.Awake);
 					Init(argument);
 				}
 				else
@@ -339,7 +339,7 @@ namespace Sisus.Init
 
 			initState = InitState.Initializing;
 
-			ValidateArgumentIfPlayMode(argument, context);
+			HandleValidate(argument, context);
 			Init(argument);
 
 			initState = InitState.Initialized;
@@ -367,7 +367,7 @@ namespace Sisus.Init
 		{
 			if(argument.provided)
 			{
-				ValidateArgumentIfPlayMode(argument.argument, Context.OnAfterDeserialize);
+				HandleValidate(argument.argument, Context.OnAfterDeserialize);
 				Init(argument.argument);
 			}
 		}
@@ -393,7 +393,7 @@ namespace Sisus.Init
 			if((initState == InitState.Uninitialized || (DateTime.UtcNow - dependenciesReceivedTimeStamp).TotalMilliseconds > 1000)
 				&& InitArgs.TryGet(Context.Reset, this, out TArgument argument))
 			{
-				ValidateArgumentIfPlayMode(argument, Context.Reset);
+				HandleValidate(argument, Context.Reset);
 				Init(argument);
 			}
 
@@ -457,7 +457,7 @@ namespace Sisus.Init
 		#if UNITY_EDITOR
 		async
         #endif
-		private void ValidateArgumentIfPlayMode(TArgument argument, Context context)
+		private void HandleValidate(TArgument argument, Context context)
 		{
 			#if UNITY_EDITOR
 			if(context.TryDetermineIsEditMode(out bool editMode))

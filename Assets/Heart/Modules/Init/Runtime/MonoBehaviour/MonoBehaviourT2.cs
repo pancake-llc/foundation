@@ -13,10 +13,10 @@ namespace Sisus.Init
 	/// A base class for <see cref="MonoBehaviour">MonoBehaviours</see> that can be
 	/// <see cref="InstantiateExtensions.Instantiate{TComponent, TFirstArgument, TSecondArgument}">instantiated</see>
 	/// or <see cref="AddComponentExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument}">added</see>
-	/// to a <see cref="GameObject"/> with two arguments passed to the <see cref="Init"/> function of the created instance.
+	/// to a <see cref="GameObject"/> with two arguments passed to the <see cref="Init"/> method of the created instance.
 	/// <para>
-	/// If the object depends exclusively on classes that have the <see cref="ServiceAttribute"/> then
-	/// it will receive them in its <see cref="Init"/> function automatically during initialization.
+	/// If the object depends exclusively on objects that have been registered as services using the <see cref="ServiceAttribute"/>,
+	/// then it will be able to receive the services in its <see cref="Init"/> method automatically during its initialization.
 	/// </para>
 	/// <para>
 	/// If the component is part of a scene or a prefab, add depends on any classes that don't have the <see cref="ServiceAttribute"/>,
@@ -28,14 +28,14 @@ namespace Sisus.Init
 	/// via the <see cref="Init"/> method where they can be assigned to member fields or properties.
 	/// </para>
 	/// </summary>
-	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> function. </typeparam>
-	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> function. </typeparam>
-	public abstract class MonoBehaviour<TFirstArgument, TSecondArgument> : InitializableBaseInternal, IInitializable<TFirstArgument, TSecondArgument>
+	/// <typeparam name="TFirstArgument"> Type of the first argument received in the <see cref="Init"/> method. </typeparam>
+	/// <typeparam name="TSecondArgument"> Type of the second argument received in the <see cref="Init"/> method. </typeparam>
+	public abstract class MonoBehaviour<TFirstArgument, TSecondArgument> : MonoBehaviourBase, IInitializable<TFirstArgument, TSecondArgument>
 	{
 		/// <summary>
 		/// Provides the <see cref="Component"/> with the objects that it depends on.
 		/// <para>
-		/// You can think of the <see cref="Init"/> function as a parameterized constructor alternative for the component.
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for the component.
 		/// </para>
 		/// <para>
 		/// <see cref="Init"/> get called when the script is being loaded, before the <see cref="OnAwake"/>, OnEnable and Start events when
@@ -99,33 +99,22 @@ namespace Sisus.Init
 		#if UNITY_EDITOR
 		private protected void Reset()
 		{
-			Init(Context.Reset);
+			InitInternal(Context.Reset);
 			OnInitializableReset(this);
 			OnReset();
 		}
 		#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected override bool Init(Context context)
+		protected override bool Init(Context context)
 		{
-			if(initState != InitState.Uninitialized)
-			{
-				return true;
-			}
-
 			if(!InitArgs.TryGet(context, this, out TFirstArgument firstArgument, out TSecondArgument secondArgument))
 			{
 				return false;
 			}
 
-			initState = InitState.Initializing;
-
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, context);
-
+			HandleValidate(context, firstArgument, secondArgument);
 			Init(firstArgument, secondArgument);
-
-			initState = InitState.Initialized;
-
 			return true;
 		}
 
@@ -133,7 +122,7 @@ namespace Sisus.Init
 		void IInitializable<TFirstArgument, TSecondArgument>.Init(TFirstArgument firstArgument, TSecondArgument secondArgument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, Context.MainThread);
+			HandleValidate(Context.MainThread, firstArgument, secondArgument);
 
 			Init(firstArgument, secondArgument);
 
@@ -143,90 +132,11 @@ namespace Sisus.Init
 		internal void InitInternal(TFirstArgument firstArgument, TSecondArgument secondArgument)
 		{
 			initState = InitState.Initializing;
-			ValidateArgumentsIfPlayMode(firstArgument, secondArgument, Context.MainThread);
+			HandleValidate(Context.MainThread, firstArgument, secondArgument);
 
 			Init(firstArgument, secondArgument);
 
 			initState = InitState.Initialized;
-		}
-
-		/// <summary>
-		/// Method that can be overridden and used to validate the initialization arguments that were received by this object.
-		/// <para>
-		/// You can use the <see cref="ThrowIfNull"/> method to throw an <see cref="ArgumentNullException"/>
-		/// if an argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
-		/// {
-		///		ThrowIfNull(inputManager);
-		///		ThrowIfNull(camera);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// You can use the <see cref="AssertNotNull"/> method to log an assertion to the Console
-		/// if an argument is <see cref="Null">null</see>.
-		/// <example>
-		/// <code>
-		/// protected override void ValidateArguments(IInputManager inputManager, Camera camera)
-		/// {
-		///		AssertNotNull(inputManager);
-		///		AssertNotNull(camera);
-		/// }
-		/// </code>
-		/// </example>
-		/// </para>
-		/// <para>
-		/// Calls to this method are ignored in non-development builds.
-		/// </para>
-		/// </summary>
-		/// <param name="firstArgument"> The first received argument to validate. </param>
-		/// <param name="secondArgument"> The second received argument to validate. </param>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected virtual void ValidateArguments(TFirstArgument firstArgument, TSecondArgument secondArgument)
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			#endif
-		}
-
-		[Conditional("UNITY_EDITOR"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		#if UNITY_EDITOR
-		async
-		#endif
-		private void ValidateArgumentsIfPlayMode(TFirstArgument firstArgument, TSecondArgument secondArgument, Context context)
-		{
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-
-			if(ShouldSelfGuardAgainstNull(this))
-			{
-				ValidateArguments(firstArgument, secondArgument);
-			}
-			#endif
 		}
 	}
 }

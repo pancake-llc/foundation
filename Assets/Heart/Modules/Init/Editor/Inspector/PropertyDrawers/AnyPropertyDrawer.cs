@@ -77,7 +77,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				Debug.Log($"states[{anyProperty.propertyPath}] = new State({TypeUtility.ToString(fieldInfo.ReflectedType)}.{fieldInfo.Name})");
 				#endif
 
-				state = new State(anyProperty, fieldInfo);
+				state = new(anyProperty, fieldInfo);
 				states.Add(anyProperty.propertyPath, state);
 			}
 			else if(!state.IsValid() || state.ValueHasChanged() || state.anyProperty.serializedObject != anyProperty.serializedObject)
@@ -89,7 +89,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				#endif
 
 				state.Dispose();
-				state = new State(anyProperty, fieldInfo);
+				state = new(anyProperty, fieldInfo);
 				states[anyProperty.propertyPath] = state;
 				UserSelectedTypeChanged?.Invoke(anyProperty, state.valueType);
 			}
@@ -151,7 +151,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			var referenceValue = referenceProperty.objectReferenceValue;
 			bool objectReferenceValueIsNull = !referenceValue;
 			var firstTargetObject = anyProperty.serializedObject.targetObject;
-			bool drawAsObjectField = !objectReferenceValueIsNull || (draggingAssignableObject && managedValueIsNull) || (!state.isService && state.drawObjectField);
+			bool drawAsObjectField = !objectReferenceValueIsNull || draggingAssignableObject || (!state.isService && state.drawObjectField);
 			bool hasSerializedValue = !managedValueIsNull || !objectReferenceValueIsNull;
 			var guiColorWas = GUI.color;
 			GUI.color = Color.white;
@@ -1097,6 +1097,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			using var x = updateValueBasedStateMarker.Auto();
 			#endif
 
+			if(!anyProperty.serializedObject.targetObject)
+			{
+				return;
+			}
+
 			if(statesByTarget.TryGetValue(anyProperty.serializedObject.targetObject, out var states)
 				&& states.TryGetValue(anyProperty.propertyPath, out var state))
 			{
@@ -1666,7 +1671,7 @@ namespace Sisus.Init.EditorOnly.Internal
 							referenceProperty.objectReferenceValue = null;
 						}
 					}
-					else if(setType.GetCustomAttribute<ValueProviderMenuAttribute>() is ValueProviderMenuAttribute attribute
+					else if(setType.GetCustomAttribute<ValueProviderMenuAttribute>() is not null
 							&& typeof(ScriptableObject).IsAssignableFrom(setType))
 					{
 						// if exactly a single asset of the given type exists in the project,
@@ -1879,20 +1884,28 @@ namespace Sisus.Init.EditorOnly.Internal
 					valueProviderGUI = null;
 				}
 
-				if(referenceProperty.objectReferenceValue is ScriptableObject valueProvider
-					&& valueProvider
-					&& ValueProviderUtility.IsValueProvider(valueProvider)
-					&& valueProvider.GetType().GetCustomAttribute<ValueProviderMenuAttribute>() is not null
-					&& valueProvider is not _Null
-					&& (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(valueProvider))
-					|| ValueProviderEditorUtility.IsSingleSharedInstanceSlow(valueProvider))
-				)
+				if(referenceProperty.objectReferenceValue is ScriptableObject valueProvider && ShouldDrawEmbedded(valueProvider))
 				{
 					Editor valueProviderEditor = Editor.CreateEditor(valueProvider, null);
 					if(valueProviderEditor)
 					{
-						valueProviderGUI = new ValueProviderGUI(valueProviderEditor, label, anyProperty, referenceProperty, anyType:anyType, valueType:valueType, DiscardObjectReferenceValue);
+						valueProviderGUI = new(valueProviderEditor, label, anyProperty, referenceProperty, anyType:anyType, valueType:valueType, DiscardObjectReferenceValue);
 					}
+				}
+
+				static bool ShouldDrawEmbedded(ScriptableObject valueProvider)
+				{
+					if(!valueProvider
+					|| !ValueProviderUtility.IsValueProvider(valueProvider)
+					|| valueProvider.GetType().GetCustomAttribute<ValueProviderMenuAttribute>() is null
+					|| valueProvider is _Null)
+					{
+						return false;
+					}
+
+					return !AssetDatabase.Contains(valueProvider) // Draw embedded value providers inlined
+						|| AssetDatabase.IsSubAsset(valueProvider) // Draw sub-assets inlined
+						|| ValueProviderEditorUtility.IsSingleSharedInstanceSlow(valueProvider); // Draw stateless "singletons" inlined
 				}
 			}
 

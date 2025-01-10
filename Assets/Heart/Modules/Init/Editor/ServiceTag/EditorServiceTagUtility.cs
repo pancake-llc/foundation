@@ -115,6 +115,12 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				foreach(var component in Selection.activeGameObject.GetComponentsNonAlloc<Component>())
 				{
+					// Skip missing components
+					if(!component)
+					{
+						continue;
+					}
+					
 					if(GetServiceDefiningTypes(component).Length > 0)
 					{
 						// Need to repaint editor header to update service tag position.

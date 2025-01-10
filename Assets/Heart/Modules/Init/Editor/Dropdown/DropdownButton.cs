@@ -37,10 +37,19 @@ namespace Sisus.Init.EditorOnly
 
 			var clickableRect = iconRect;
 			clickableRect.width += 4f;
-
+			
+			#if DEV_MODE
+			if(Event.current.alt)
+			{
+				var color = Color.cyan;
+				color.a = 0.5f;
+				EditorGUI.DrawRect(clickableRect, color);
+			}
+			#endif
+			
 			var clicked = GUI.Button(clickableRect, GUIContent.none, EditorStyles.label)
-			              // hack: fix issue where click event was eaten by adjascent Object field when inspecting a prefab asset in Unity 6.1
-			              || (clickableRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.MouseDown);
+						// hack: fix issue where click event was eaten by adjacent Object field when inspecting a prefab asset in Unity 6.1
+						|| (clickableRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.MouseDown);
 
 			GUI.Label(iconRect, GUIContent.none, "PopupCurveDropdown");
 			if(buttonLabel.text.Length > 0)
@@ -60,6 +69,8 @@ namespace Sisus.Init.EditorOnly
 			GUI.color = colorWas;
 			if(clicked)
 			{
+				EditorGUIUtility.editingTextField = false;
+				GUIUtility.keyboardControl = 0;
 				openDropdown(buttonPosition);
 			}
 		}

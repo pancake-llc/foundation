@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using UnityEngine;
 
 namespace Sisus.Init.Internal
@@ -44,6 +45,38 @@ namespace Sisus.Init.Internal
 
 		internal static bool TryGetParameterTypes([DisallowNull] Type clientType, [MaybeNullWhen(false), NotNullWhen(true)] out Type[] parameterTypes)
 		{
+			// Prioritize IArgs interfaces implemented by derived types, over ones implemented by base types 
+			var derivedType = clientType;
+			var baseType = clientType.BaseType;
+			while(baseType is not null)
+			{
+				var derivedTypeInterfaces = derivedType.GetInterfaces();
+				var baseTypeInterfaces = baseType.GetInterfaces().ToHashSet();
+				foreach(var interfaceType in derivedTypeInterfaces)
+				{
+					if(baseTypeInterfaces.Contains(interfaceType) || !interfaceType.IsGenericType)
+					{
+						continue;
+					}
+
+					var genericTypeDefinition = interfaceType.IsGenericTypeDefinition ? interfaceType : interfaceType.GetGenericTypeDefinition();
+					if(argumentCountsByIArgsTypeDefinition.ContainsKey(genericTypeDefinition))
+					{
+						parameterTypes = interfaceType.GetGenericArguments();
+						return true;
+					}
+				}
+
+				derivedType = baseType;
+				baseType = baseType.BaseType;
+			}
+
+			parameterTypes = null;
+			return false;
+		}
+		
+		internal static void GetAllDependencies([DisallowNull] Type clientType, HashSet<Type> addToSet)
+		{
 			foreach(var interfaceType in clientType.GetInterfaces())
 			{
 				if(!interfaceType.IsGenericType)
@@ -52,15 +85,14 @@ namespace Sisus.Init.Internal
 				}
 
 				var genericTypeDefinition = interfaceType.IsGenericTypeDefinition ? interfaceType : interfaceType.GetGenericTypeDefinition();
-				if(InitializableUtility.argumentCountsByIArgsTypeDefinition.ContainsKey(genericTypeDefinition))
+				if(argumentCountsByIArgsTypeDefinition.ContainsKey(genericTypeDefinition))
 				{
-					parameterTypes = interfaceType.GetGenericArguments();
-					return true;
+					foreach(var argumentType in interfaceType.GetGenericArguments())
+					{
+						addToSet.Add(argumentType);
+					}
 				}
 			}
-
-			parameterTypes = null;
-			return false;
 		}
 
 		internal static bool TryGetIArgsInterface([DisallowNull] Type clientType, [MaybeNullWhen(false), NotNullWhen(true)] out Type iargsInterface)
@@ -73,7 +105,7 @@ namespace Sisus.Init.Internal
 				}
 
 				var genericTypeDefinition = interfaceType.IsGenericTypeDefinition ? interfaceType : interfaceType.GetGenericTypeDefinition();
-				if(InitializableUtility.argumentCountsByIArgsTypeDefinition.ContainsKey(genericTypeDefinition))
+				if(argumentCountsByIArgsTypeDefinition.ContainsKey(genericTypeDefinition))
 				{
 					iargsInterface = interfaceType;
 					return true;

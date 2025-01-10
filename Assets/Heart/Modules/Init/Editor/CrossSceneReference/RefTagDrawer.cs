@@ -162,7 +162,7 @@ namespace Sisus.Init.EditorOnly
 
 			var labelRect = headerRect;
 			labelRect.x = headerRect.width - 69f - labelWidth;
-			labelRect. x -= 16 * 4 + 3 * 3; // for 4 button in header component
+			labelRect. x -= 16 * 4 + 3 * 3; // for 4 button in [component-header]
 			labelRect.y += 4f;
 
 			// Fixes Transform header label rect position.
