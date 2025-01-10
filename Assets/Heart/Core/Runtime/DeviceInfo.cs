@@ -16,10 +16,18 @@ namespace Pancake
                 return gpsAdIdInternal;
             }
         }
-
+        
+        public static string idfa
+        {
+            get
+            {
 #if UNITY_IOS
-        public static string idfa => UnityEngine.iOS.Device.advertisingIdentifier;
+                return UnityEngine.iOS.Device.advertisingIdentifier;
+#else
+                return string.Empty;
 #endif
+            }
+        }
 
         private static string GetGpsAdId()
         {
