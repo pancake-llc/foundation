@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -13,8 +15,8 @@ internal class ToolbarTimeslider : BaseToolbarElement
 
     public override void Init() { }
 
-    public ToolbarTimeslider(float minTime = 0.0f, float maxTime = 10.0f, float width = 200f)
-        : base(width)
+    public ToolbarTimeslider(float minTime = 0.0f, float maxTime = 10.0f)
+        : base(200)
     {
         this.minTime = minTime;
         this.maxTime = maxTime;
@@ -22,16 +24,29 @@ internal class ToolbarTimeslider : BaseToolbarElement
 
     protected override void OnDrawInList(Rect position)
     {
-        
+        position.width = 70.0f;
+        EditorGUI.LabelField(position, "Min Time");
+
+        position.x += position.width + FIELD_SIZE_SPACE;
+        position.width = 50.0f;
+        minTime = EditorGUI.FloatField(position, "", minTime);
+
+        position.x += position.width + FIELD_SIZE_SPACE;
+        position.width = 70.0f;
+        EditorGUI.LabelField(position, "Max Time");
+
+        position.x += position.width + FIELD_SIZE_SPACE;
+        position.width = 50.0f;
+        maxTime = EditorGUI.FloatField(position, "", maxTime);
     }
 
     protected override void OnDrawInToolbar()
     {
-        EditorGUILayout.LabelField("Time Scale", GUILayout.Width(64));
+        EditorGUILayout.LabelField("Time", GUILayout.Width(30));
         Time.timeScale = EditorGUILayout.Slider("",
             Time.timeScale,
             minTime,
             maxTime,
-            GUILayout.Width(WidthInToolbar - 30.0f));
+            GUILayout.Width(widthInToolbar - 30.0f));
     }
 }

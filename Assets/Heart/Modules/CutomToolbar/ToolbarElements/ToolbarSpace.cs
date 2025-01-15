@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
 [Serializable]
 internal class ToolbarSpace : BaseToolbarElement
 {
-    public override string NameInList => $"[Empty space {WidthInToolbar} px]";
+    public override string NameInList => $"[Empty space {widthInToolbar} px]";
 
     public override void Init() { }
 
@@ -16,5 +18,5 @@ internal class ToolbarSpace : BaseToolbarElement
 
     protected override void OnDrawInList(Rect position) { }
 
-    protected override void OnDrawInToolbar() { EditorGUILayout.Space(WidthInToolbar); }
+    protected override void OnDrawInToolbar() { EditorGUILayout.Space(widthInToolbar); }
 }

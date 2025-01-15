@@ -1,9 +1,7 @@
 {
     "name": "CustomToolbar.Editor",
     "rootNamespace": "",
-    "references": [
-        "GUID:adac8d59ad7e8504f82d387cded797a7"
-    ],
+    "references": [],
     "includePlatforms": [
         "Editor"
     ],

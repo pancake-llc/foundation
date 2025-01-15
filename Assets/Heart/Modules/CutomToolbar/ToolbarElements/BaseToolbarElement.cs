@@ -8,8 +8,8 @@ internal abstract class BaseToolbarElement : IComparable<BaseToolbarElement>
     public abstract string NameInList { get; }
     public virtual int SortingGroup { get; }
 
-    [SerializeField] protected bool IsEnabled = true;
-    [SerializeField] protected float WidthInToolbar;
+    [SerializeField] protected bool isEnabled = true;
+    [SerializeField] protected float widthInToolbar;
 
     protected const float FIELD_SIZE_SPACE = 10.0f;
     protected const float FIELD_SIZE_SINGLE_CHAR = 7.0f;
@@ -21,7 +21,7 @@ internal abstract class BaseToolbarElement : IComparable<BaseToolbarElement>
         //Init();
     }
 
-    public BaseToolbarElement(float widthInToolbar) { WidthInToolbar = widthInToolbar; }
+    public BaseToolbarElement(float widthInToolbar) { this.widthInToolbar = widthInToolbar; }
 
     public void DrawInList(Rect position)
     {
@@ -30,7 +30,7 @@ internal abstract class BaseToolbarElement : IComparable<BaseToolbarElement>
 
         position.x += FIELD_SIZE_SPACE;
         position.width = 15.0f;
-        IsEnabled = EditorGUI.Toggle(position, IsEnabled);
+        isEnabled = EditorGUI.Toggle(position, isEnabled);
 
         position.x += position.width + FIELD_SIZE_SPACE;
         position.width = 200.0f;
@@ -42,18 +42,18 @@ internal abstract class BaseToolbarElement : IComparable<BaseToolbarElement>
 
         position.x += position.width + FIELD_SIZE_SPACE;
         position.width = FIELD_SIZE_WIDTH;
-        WidthInToolbar = EditorGUI.IntField(position, (int) WidthInToolbar);
+        widthInToolbar = EditorGUI.IntField(position, (int) widthInToolbar);
 
         position.x += position.width + FIELD_SIZE_SPACE;
 
-        EditorGUI.BeginDisabledGroup(!IsEnabled);
+        EditorGUI.BeginDisabledGroup(!isEnabled);
         OnDrawInList(position);
         EditorGUI.EndDisabledGroup();
     }
 
     public void DrawInToolbar()
     {
-        if (IsEnabled)
+        if (isEnabled)
             OnDrawInToolbar();
     }
 

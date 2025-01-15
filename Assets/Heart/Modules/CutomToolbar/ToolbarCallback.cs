@@ -10,6 +10,7 @@ namespace UnityToolbarExtender
     {
         public static Type m_toolbarType = typeof(Editor).Assembly.GetType("UnityEditor.Toolbar");
         public static Type m_guiViewType = typeof(Editor).Assembly.GetType("UnityEditor.GUIView");
+
         public static Type m_iWindowBackendType = typeof(Editor).Assembly.GetType("UnityEditor.IWindowBackend");
         public static PropertyInfo m_windowBackend = m_guiViewType.GetProperty("windowBackend", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -66,10 +67,10 @@ namespace UnityToolbarExtender
             }
         }
 
-        static void OnGUI()
+        private static void OnGUI()
         {
             var handler = OnToolbarGUI;
-            if (handler != null) handler();
+            handler?.Invoke();
         }
     }
 }

@@ -11,19 +11,8 @@ namespace Pancake
 
         [SerializeField] private ETargetFrameRate targetFrameRate = ETargetFrameRate.ByDevice;
 
-        [SerializeField] private ToolbarElementSettings toolbarTimeScale = new() {enabled = true, leftSide = false, width = 230};
-
         public static ECreationMode EditorNameCreationMode => Instance.nameCreationMode;
         public static ETargetFrameRate TargetFrameRate => Instance.targetFrameRate;
-        public static ToolbarElementSettings ToolbarTimeScale => Instance.toolbarTimeScale;
-    }
-
-    [System.Serializable]
-    public class ToolbarElementSettings
-    {
-        public bool enabled;
-        public bool leftSide;
-        public float width;
     }
 }
 #endif
