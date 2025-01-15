@@ -33,6 +33,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static readonly GUIContent clientPrefabTooltip = new("", "A new instance will be created by cloning this prefab during initialization.");
 		private static readonly GUIContent clientInstantiateTooltip = new("", "A new instance will be created by cloning this scene object during initialization.");
 		private static readonly GUIContent clientNotInitializableTooltip = new("", "Can not inject arguments to client because it does not implement IInitializable.");
+		private static readonly GUIContent tempLabel = new();
 		private static GUIContent warningIcon;
 		private static GUIContent prefabIcon;
 		private static GUIContent gameObjectIcon;
@@ -468,15 +469,13 @@ namespace Sisus.Init.EditorOnly.Internal
 		internal static void DrawClientField(Rect rect, SerializedProperty client, GUIContent clientLabel, bool isInitializable)
 		{
 			var reference = client.objectReferenceValue;
-			EditorGUI.ObjectField(rect, client, GUIContent.none);
+			var tooltipRect = rect;
+			tooltipRect.x += 2f;
+			tooltipRect.y += 2f;
+			tooltipRect.width -= 21f;
+			tooltipRect.height -= 3f;
 
-			var fieldRect = rect;
-			fieldRect.x += 2f;
-			fieldRect.y += 2f;
-			fieldRect.width -= 21f;
-			fieldRect.height -= 3f;
-
-			bool mouseovered = rect.Contains(Event.current.mousePosition) && DragAndDrop.visualMode != DragAndDropVisualMode.None;
+			var mouseovered = rect.Contains(Event.current.mousePosition) && DragAndDrop.visualMode != DragAndDropVisualMode.None;
 			if(!isInitializable && !mouseovered && TryGetTintForNullGuardResult(NullGuardResult.ClientNotSupported, out Color setGuiColor))
 			{
 				GUI.color = setGuiColor;
@@ -484,15 +483,18 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(!reference)
 			{
+				EditorGUI.ObjectField(rect, client, GUIContent.none);
+				
 				if(mouseovered)
 				{
 					return;
 				}
 
-				clientLabel.tooltip = isInitializable ? clientNullTooltip.text : clientNotInitializableTooltip.text;
+				tempLabel.text = clientLabel.text;
+				tempLabel.tooltip = isInitializable ? clientNullTooltip.text : clientNotInitializableTooltip.text;
 
-				EditorGUI.DrawRect(fieldRect, ObjectFieldBackgroundColor);
-				GUI.Label(fieldRect, clientLabel);
+				EditorGUI.DrawRect(tooltipRect, ObjectFieldBackgroundColor);
+				GUI.Label(tooltipRect, tempLabel);
 			}
 			else
 			{
@@ -554,18 +556,27 @@ namespace Sisus.Init.EditorOnly.Internal
 					icon = GUIContent.none;
 				}
 
-				string tooltip = GetReferenceTooltip(client.serializedObject.targetObject, reference, isInitializable).tooltip;
-				clientLabel.tooltip = tooltip;
+				var objectFieldRect = rect;
+				if(icon.image)
+				{
+					objectFieldRect.x += 22f;
+					objectFieldRect.width -= 22f;
+				}
+
+				EditorGUI.ObjectField(objectFieldRect, client, GUIContent.none);
+
+				var tooltip = GetReferenceTooltip(client.serializedObject.targetObject, reference, isInitializable).tooltip;
+				tempLabel.text = "";
+				tempLabel.tooltip = tooltip;
 				icon.tooltip = tooltip;
 
-				GUI.Label(fieldRect, new GUIContent("", clientLabel.tooltip));
+				GUI.Label(tooltipRect, tempLabel);
 
 				var iconSize = EditorGUIUtility.GetIconSize();
-				EditorGUIUtility.SetIconSize(new Vector2(15f, 15f));
+				EditorGUIUtility.SetIconSize(new(15f, 15f));
 
-				var iconRect = fieldRect;
+				var iconRect = tooltipRect;
 				iconRect.y -= 4f;
-				iconRect.x -= 22f;
 				iconRect.width = 20f;
 				iconRect.height = 20f;
 				if(GUI.Button(iconRect, icon, EditorStyles.label))
@@ -593,7 +604,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				return clientNullTooltip;
 			}
 
-			Component component = reference as Component;
+			var component = reference as Component;
 			if(!component)
 			{
 				return GUIContent.none;

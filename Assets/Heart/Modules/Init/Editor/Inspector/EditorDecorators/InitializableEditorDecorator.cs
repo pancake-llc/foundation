@@ -380,13 +380,7 @@ namespace Sisus.Init.EditorOnly
 		{
 			AnyPropertyDrawer.DisposeAllStaticState();
 			scheduledItem?.Pause();
-
-			if(initializerGUI != null)
-			{
-				initializerGUI.Dispose();
-				initializerGUI = null;
-			}
-
+			DisposeInitializerGUI();
 			base.Dispose(disposeManaged);
 		}
 
@@ -447,12 +441,14 @@ namespace Sisus.Init.EditorOnly
 			}
 
 			#if DEV_MODE && DEBUG_DISPOSE
-			Debug.Log($"DisposeInitializerGUI({initializerGUI?.InitializerEditor?.GetType().Name})");
+			Debug.Log($"DisposeInitializerGUI({initializerGUI.InitializerEditor?.GetType().Name})");
 			#endif
 
 			initializerGUI.Changed -= OnOwnedInitializerGUIChanged;
 			initializerGUI.Dispose();
 			initializerGUI = null;
 		}
+
+		protected override void OnDestroyingDecoratedEditor(Editor editor) => EditorDecoratorInjector.RemoveFrom(editor, ExecutionOptions.CanBeExecutedImmediately);
 	}
 }

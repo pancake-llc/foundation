@@ -31,21 +31,35 @@ namespace Sisus.Init.EditorOnly.Internal
 			Editor.finishedDefaultHeaderGUI += AfterInspectorRootEditorHeaderGUI;
 			AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
 			AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+			ObjectChangeEvents.changesPublished -= OnObjectChangesPublished;
+			ObjectChangeEvents.changesPublished += OnObjectChangesPublished;
 		}
 
-		public static void RemoveFrom(Component target)
+		private static void OnObjectChangesPublished(ref ObjectChangeEventStream stream)
+		{
+			for(int s = stream.length - 1; s >= 0; s--)
+			{
+				var type = stream.GetEventType(s);
+				if(type is ObjectChangeKind.DestroyAssetObject or ObjectChangeKind.DestroyGameObjectHierarchy)
+				{
+					activeDecorators.RemoveAll(decorator => !decorator.DecoratedEditor || !decorator.DecoratedEditor.target);
+				}
+			}
+		}
+
+		public static void RemoveFrom(Editor editor, ExecutionOptions executionOptions = ExecutionOptions.Default)
 		{
 			LayoutUtility.OnRepaintEvent(() =>
 			{
 				for(int i = activeDecorators.Count - 1; i >= 0; i--)
 				{
-					if(Array.IndexOf(activeDecorators[i].DecoratedEditor.targets,target) != -1)
+					if(ReferenceEquals(activeDecorators[i].DecoratedEditor, editor))
 					{
 						activeDecorators[i].Dispose();
 						activeDecorators.RemoveAt(i);
 					}
 				}
-			});
+			}, null, executionOptions);
 		}
 
 		public static void RemoveFrom(Type targetType)

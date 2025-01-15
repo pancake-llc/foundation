@@ -42,7 +42,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		public const string SetInitializerTargetOnScriptsReloadedEditorPrefsKey = "InitArgs.SetInitializerTarget";
-		public const string ServiceVisibilityEditorPrefsKey = "InitArgs.InitializerServiceVisibility";
+		private const string ServiceVisibilityEditorPrefsKey = "InitArgs.InitializerServiceVisibility";
 		private const string HideInitSectionUserDataKey = "hideInitSection";
 		private const string NullArgumentGuardUserDataKey = "nullArgumentGuard";
 		private const string DefaultHeaderText = "Init";
@@ -52,7 +52,8 @@ namespace Sisus.Init.EditorOnly.Internal
 		private const string ClientInitializedWhenBecomesActiveText = "Component will be initialized when the game object becomes active.";
 		private const string ClientInitializedWhenBecomesActiveTextWithSpaceForButton = SpaceForButtons + ClientInitializedWhenBecomesActiveText;
 		private const string IsUnfoldedUserDataKey = "initArgsUnfolded";
-		private const string AddInitializerTooltip = "Attach an Initializer.\n\nThis can be used to customize the arguments received by this client during initialization.";
+		private const string AddInitializerTooltip = "Attach an Initializer.\n\n" +
+		                                             "Initializers can be used to customize the Init arguments that this component receives using the Inspector.";
 		private const string AddStateMachineInitializerTooltip = "Attach a State Machine Behaviour Initializer.\n\nThis can be used to customize the arguments received by the state machine behaviour during initialization.";
 		private static readonly GUIContent useAwakeButtonLabel = new(" Use Awake", "Initialize target later during the Awake event when the game object becomes active?");
 		private static readonly GUIContent useOnAfterDeserializeButtonLabel = new(" Use OnAfterDeserialize", "Initialize target earlier during the OnAfterDeserialize event before the game object becomes active?");
@@ -96,8 +97,8 @@ namespace Sisus.Init.EditorOnly.Internal
 		private bool hasServiceParameters;
 		private bool allParametersAreServices;
 		private bool anyParameterIsAsyncLoadedService;
-		private bool targetImplementsIArgs;
-		private bool targetDerivesFromGenericBaseType;
+		private readonly bool targetImplementsIArgs;
+		private readonly bool targetDerivesFromGenericBaseType;
 		private bool? hadInitializerLastFrame;
 		private NullGuardResult? nullGuardResultLastFrame;
 		private Object[] initializers = new Object[1];
@@ -222,7 +223,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			ServiceChangedListener.UpdateAll(ref serviceChangedListeners, initParameterTypes, OnInitArgumentServiceChanged);
 
 			Setup();
-			UpdateInitArgumentDependentState(hasInitializers);
+			UpdateInitArgumentDependentState(hasInitializers, firstInitializer);
 			NowDrawing = null;
 		}
 
@@ -249,7 +250,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return true;
 		}
 
-		private void UpdateInitArgumentDependentState(bool hasInitializers)
+		private void UpdateInitArgumentDependentState(bool hasInitializers, Object firstInitializer)
 		{
 			shouldUpdateInitArgumentDependentState = false;
 			int count = initParameterTypes.Length;
@@ -277,10 +278,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
-			// targetCanMaybeSelfInitialize = allParametersAreServices && targetImplementsIArgs;
-			// targetCanForSureSelfInitialize = allParametersAreServices && targetDerivesFromGenericBaseType;
-
-			UpdateTooltips(hasInitializers);
+			UpdateTooltips(hasInitializers, firstInitializer);
 		}
 
 		private void OnInitArgumentServiceChanged() => shouldUpdateInitArgumentDependentState = true;
@@ -297,8 +295,12 @@ namespace Sisus.Init.EditorOnly.Internal
 		/// <returns> <see langword="true"/> if user has hidden the Init section for the target via the context menu; otherwise, <see langword="false"/>. </returns>
 		public static bool IsInitSectionHidden([DisallowNull] Object target)
 		{
-			Type targetType;
-			MonoScript targetScript;
+			GetScriptAndTargetType(target, out MonoScript targetScript, out Type targetType);
+			return IsInitSectionHidden(targetScript, targetType);
+		}
+		
+		private static void GetScriptAndTargetType([DisallowNull] Object target, out MonoScript targetScript, out Type targetType)
+		{
 			if(target is MonoBehaviour monoBehaviour)
 			{
 				targetScript = MonoScript.FromMonoBehaviour(monoBehaviour);
@@ -314,8 +316,6 @@ namespace Sisus.Init.EditorOnly.Internal
 				targetScript = null;
 				targetType = target.GetType();
 			}
-
-			return IsInitSectionHidden(targetScript, targetType);
 		}
 
 		public static bool IsInitSectionHidden([AllowNull] MonoScript initializableScript, [DisallowNull] Type initializableType) => GetBoolUserData(initializableScript, initializableType, HideInitSectionUserDataKey);
@@ -635,9 +635,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		private void UpdateTooltips(bool hasInitializers)
+		private void UpdateTooltips(bool hasInitializers, Object firstInitializer)
 		{
 			addInitializerIcon.tooltip = Target is Animator ? AddStateMachineInitializerTooltip : AddInitializerTooltip;
+			contextMenuIcon.tooltip = firstInitializer ? TypeUtility.ToStringNicified(firstInitializer.GetType()) : ""; 
+			
 			if(hasServiceParameters)
 			{
 				servicesShownIcon.tooltip = GetServiceVisibilityTooltip(initParameterTypes, initParametersAreServices, true);
@@ -649,7 +651,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				servicesHiddenIcon.tooltip = "";
 			}
 
-			headerLabel.tooltip = GetInitArgumentsTooltip(initParameterTypes, initParametersAreServices, hasInitializers);
+			headerLabel.tooltip = GetInitArgumentsTooltip(initParameterTypes, initParametersAreServices, hasInitializers, firstInitializer);
 		}
 
 		public void OnInspectorGUI()
@@ -674,7 +676,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(shouldUpdateInitArgumentDependentState)
 				{
-					UpdateInitArgumentDependentState(hasInitializers);
+					UpdateInitArgumentDependentState(hasInitializers, firstInitializer);
 				}
 
 				bool mixedInitializers = false;
@@ -699,7 +701,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				if(!hadInitializerLastFrame.HasValue || hadInitializerLastFrame.Value != hasInitializers)
 				{
 					hadInitializerLastFrame = hasInitializers;
-					UpdateInitArgumentDependentState(hasInitializers);
+					UpdateInitArgumentDependentState(hasInitializers, firstInitializer);
 				}
 
 				EditorGUIUtility.hierarchyMode = true;
@@ -914,8 +916,7 @@ namespace Sisus.Init.EditorOnly.Internal
 									throw new ArgumentOutOfRangeException(initializable.InitState.ToString());
 							}
 						}
-						else if( (!nullGuard.HasFlag(NullArgumentGuard.EnabledForPrefabs) && (gameObjects.FirstOrDefault()?.IsAsset(false) ?? true))
-						 || (!nullGuard.HasFlag(NullArgumentGuard.EditModeWarning) && !Application.isPlaying) )
+						else if(!nullGuard.HasFlag(NullArgumentGuard.EditModeWarning) && !Application.isPlaying)
 						{
 							nullGuardIcon = nullGuardDisabledIcon;
 							nullGuardIcon.tooltip = GetTooltip(nullGuard, false) + "\n\nNull argument guard is off.";
@@ -942,7 +943,22 @@ namespace Sisus.Init.EditorOnly.Internal
 						else
 						{
 							nullGuardIcon = nullGuardFailedIcon;
-							nullGuardIcon.tooltip = GetTooltip(nullGuard, true) +"\n\n<color=#ffd100>Missing argument detected!</color>\n\nIf the argument should be allowed to be null, then set the 'Null Argument Guard' option to 'None'.\n\nIf the missing argument is a service that only becomes available at runtime select 'Service (Local)' from the dropdown.";
+							
+							if(hasInitializers)
+							{
+								const string suffix = "\n\n" +
+								"<color=#ffd100>Missing argument detected!</color>\n\n" +
+								"If a missing argument is a service that only becomes available at runtime, select 'Wait For Service' from its dropdown.";
+								nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + suffix;
+							}
+							else
+							{
+								const string suffix = "\n\n" +
+								"<color=#ffd100>Missing argument detected!</color>\n\n" +
+								"If this client does not need to receive Init arguments at runtime, you can disable the Null Argument Guard.\n\n" +
+								"If a missing argument is a service that only becomes available at runtime, attach an Initializer to the component, and select 'Wait For Service' from the argument's dropdown.";
+								nullGuardIcon.tooltip = GetTooltip(nullGuard, true) + suffix;
+							}
 						}
 
 						GUI.Label(nullGuardIconRect, nullGuardIcon);
@@ -989,7 +1005,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					if(!nullGuardResultLastFrame.HasValue || nullGuardResultLastFrame.Value != nullGuardResult)
 					{
 						nullGuardResultLastFrame = nullGuardResult;
-						UpdateInitArgumentDependentState(hasInitializers);
+						UpdateInitArgumentDependentState(hasInitializers, firstInitializer);
 					}
 
 					var nullGuard = drawNullGuard ? firstInitializerEditorOnly.NullArgumentGuard : NullArgumentGuard.None;
@@ -1043,10 +1059,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						GUIContent nullGuardIcon;
 
-						bool nullGuardDisabled;
-						nullGuardDisabled =
-							!nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning)
-							|| (!nullGuard.IsEnabled(NullArgumentGuard.EnabledForPrefabs) && PrefabUtility.IsPartOfPrefabAsset(firstInitializer));
+						var nullGuardDisabled = !nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning);
 
 						var guiColorWas = GUI.color;
 
@@ -1433,7 +1446,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		private string GetInitArgumentsTooltip([DisallowNull] Type[] initParameterTypes, bool[] initParametersAreServices, bool hasInitializers)
+		private string GetInitArgumentsTooltip([DisallowNull] Type[] initParameterTypes, bool[] initParametersAreServices, bool hasInitializers, Object firstInitializer)
 		{
 			int count = initParameterTypes.Length;
 
@@ -1566,18 +1579,14 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static string GetTooltip(NullArgumentGuard guard, bool hasInitializer)
 		{
-			return hasInitializer ?
-			(guard switch
+			return hasInitializer 
+			? guard switch
 			{
-				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n◉️ Edit Mode Warning\n○ Runtime Exception\n○ Enabled For Prefabs",
-				NullArgumentGuard.RuntimeException => "Null Argument Guard:\n○ Edit Mode Warning\n◉️ Runtime Exception\n○ Enabled For Prefabs",
-				NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n○ Edit Mode Warning\n○ Runtime Exception\n◉️ Enabled For Prefabs",
-				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException => "Null Argument Guard:\n◉️ Edit Mode Warning\n◉️ Runtime Exception\n○ Enabled For Prefabs",
-				NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n○ Edit Mode Warning\n◉️ Runtime Exception\n◉️ Enabled For Prefabs",
-				NullArgumentGuard.EditModeWarning | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n◉️ Edit Mode Warning\n◉️ Runtime Exception\n○ Enabled For Prefabs",
-				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs => "Null Argument Guard:\n◉️ Edit Mode Warning\n◉️ Runtime Exception\n◉️ Enabled For Prefabs",
-				_ => "Null Argument Guard:\n○ Edit Mode Warning\n○ Runtime Exception\n○ Enabled For Prefabs"
-			})
+				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n◉️ Edit Mode Warning\n○ Runtime Exception",
+				NullArgumentGuard.RuntimeException => "Null Argument Guard:\n○ Edit Mode Warning\n◉️ Runtime Exception",
+				NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException => "Null Argument Guard:\n◉️ Edit Mode Warning\n◉️ Runtime Exception",
+				_ => "Null Argument Guard:\n○ Edit Mode Warning\n○ Runtime Exception"
+			}
 			:  guard switch
 			{
 				NullArgumentGuard.EditModeWarning => "Null Argument Guard:\n◉️ Edit Mode Warning",
@@ -1585,6 +1594,10 @@ namespace Sisus.Init.EditorOnly.Internal
 			};
 		}
 
+		/// <param name="canThrowRuntimeExceptions">
+		/// If component does not have an Initializer and does not derive from MonoBehaviour{T...} etc., then the only type of
+		/// warning that can be enabled is showing a warning icon in the Inspector in Edit Mode. 
+		/// </param>
 		private void OnInitializerNullGuardButtonPressed(NullArgumentGuard nullGuard, Rect nullGuardIconRect, bool canThrowRuntimeExceptions)
 		{
 			var menu = new GenericMenu();
@@ -1592,29 +1605,24 @@ namespace Sisus.Init.EditorOnly.Internal
 			switch(Event.current.button)
 			{
 				case 0:
-					menu.AddItem(new GUIContent("None"), nullGuard == NullArgumentGuard.None, () => Set(NullArgumentGuard.None));
-					menu.AddItem(new GUIContent("Edit Mode Warning"), nullGuard.IsEnabled(NullArgumentGuard.EditModeWarning), ()=> Toggle(NullArgumentGuard.EditModeWarning));
+					menu.AddItem(new("Edit Mode Warning"), nullGuard.IsEnabled(NullArgumentGuard.EditModeWarning), ()=> Toggle(NullArgumentGuard.EditModeWarning));
 					if(canThrowRuntimeExceptions)
 					{
-						menu.AddItem(new GUIContent("Runtime Exception"), nullGuard.IsEnabled(NullArgumentGuard.RuntimeException), () => Toggle(NullArgumentGuard.RuntimeException));
-						menu.AddItem(new GUIContent("Enabled For Prefabs"), nullGuard.IsEnabled(NullArgumentGuard.EnabledForPrefabs), () => Toggle(NullArgumentGuard.EnabledForPrefabs));
-						menu.AddItem(new GUIContent("All"), nullGuard == (NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs), () => Set(NullArgumentGuard.EditModeWarning | NullArgumentGuard.RuntimeException | NullArgumentGuard.EnabledForPrefabs));
+						menu.AddItem(new("Runtime Exception"), nullGuard.IsEnabled(NullArgumentGuard.RuntimeException), () => Toggle(NullArgumentGuard.RuntimeException));
 					}
 					else // for now these features are not supported without an initializer
 					{
-						menu.AddDisabledItem(new GUIContent("Runtime Exception"), false);
-						menu.AddDisabledItem(new GUIContent("Enabled For Prefabs"), false);
+						menu.AddDisabledItem(new("Runtime Exception"), false);
 					}
 					break;
 				case 1:
-					menu.AddItem(new GUIContent("Debug"), false, ()=> EditorApplication.ExecuteMenuItem(ServicesWindow.MenuItemName));
-					menu.AddItem(new GUIContent("Help"), false, ()=> Application.OpenURL("https://docs.sisus.co/init-args/common-problems-solutions/client-not-receiving-services/"));
+					menu.AddItem(new("Debug"), false, ()=> EditorApplication.ExecuteMenuItem(ServicesWindow.MenuItemName));
+					menu.AddItem(new("Help"), false, ()=> Application.OpenURL("https://docs.sisus.co/init-args/common-problems-solutions/client-not-receiving-services/"));
 					break;
 				default:
 					return;
 			}
 
-			void Set(NullArgumentGuard flags) => SetNullArgumentGuardFlags(flags);
 			void Toggle(NullArgumentGuard flag) => SetNullArgumentGuardFlags(nullGuard.WithFlagToggled(flag));
 
 			menu.DropDown(nullGuardIconRect);
@@ -1657,7 +1665,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			else
 			{
 				var menu = new GenericMenu();
-				menu.AddItem(new GUIContent("Generate Initializer"), false, () => InitializerEditorUtility.GenerateAndAttachInitializer(targets, target));
+				menu.AddItem(new("Generate Initializer"), false, () => InitializerEditorUtility.GenerateAndAttachInitializer(targets, target));
 				menu.DropDown(addButtonRect);
 			}
 
@@ -1690,27 +1698,23 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			var menu = new GenericMenu();
 
-			menu.AddItem(new GUIContent("Reset"), false, Reset);
+			menu.AddItem(new("Reset"), false, Reset);
 
 			menu.AddSeparator("");
 
-			menu.AddItem(new GUIContent("Remove"), false, () => LayoutUtility.OnLayoutEvent(RemoveInitializerFromAllTargets));
-
-			menu.AddItem(new GUIContent("Copy"), false, Copy);
-
-			menu.AddItem(new GUIContent("Paste"), false, Paste);
-
-			menu.AddSeparator("");
+			menu.AddItem(new("Remove"), false, () => LayoutUtility.OnLayoutEvent(RemoveInitializerFromAllTargets));
 
 			if(MonoScript.FromMonoBehaviour(firstInitializer as MonoBehaviour) is MonoScript scriptAsset)
 			{
-				menu.AddItem(new GUIContent("Edit Script"), false, () => AssetDatabase.OpenAsset(scriptAsset));
-				menu.AddItem(new GUIContent("Ping Script"), false, () => EditorApplication.delayCall += () => EditorGUIUtility.PingObject(scriptAsset));
+				menu.AddSeparator("");
+				menu.AddItem(new("Edit Script"), false, () => AssetDatabase.OpenAsset(scriptAsset));
+				menu.AddItem(new("Ping Script"), false, () => EditorApplication.delayCall += () => EditorGUIUtility.PingObject(scriptAsset));
 			}
 
 			if(!mixedInitializers)
 			{
-				menu.AddItem(new GUIContent("Preset"), false, () => PresetSelector.ShowSelector(initializers, null, true));
+				menu.AddSeparator("");
+				menu.AddItem(new("Preset"), false, () => PresetSelector.ShowSelector(initializers, null, true));
 			}
 
 			if(toggleInitializerRect.HasValue)
@@ -1759,32 +1763,6 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				Object.DestroyImmediate(destroyWhenDone);
 			}
-
-			void Copy()
-			{
-				if(firstInitializer is Component component)
-				{
-					ComponentUtility.CopyComponent(component);
-				}
-				else
-				{
-					EditorGUIUtility.systemCopyBuffer = JsonUtility.ToJson(firstInitializer, true);
-				}
-			}
-
-			void Paste()
-			{
-				EditorGUIUtility.editingTextField = false;
-
-				if(firstInitializer is Component)
-				{
-					ForEachInitializer("", i => ComponentUtility.PasteComponentValues(i));
-				}
-				else if(!string.IsNullOrEmpty(EditorGUIUtility.systemCopyBuffer))
-				{
-					ForEachInitializer("",  i => JsonUtility.FromJsonOverwrite(EditorGUIUtility.systemCopyBuffer, i));
-				}
-			}
 		}
 
 		private void RemoveInitializerFromAllTargets()
@@ -1798,6 +1776,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(isResponsibleForInitializerEditorLifetime && initializerEditor)
 			{
+				EditorDecoratorInjector.RemoveFrom(initializerEditor, ExecutionOptions.CanBeExecutedImmediately);
 				Object.DestroyImmediate(initializerEditor);
 				initializerEditor = null;
 			}
@@ -1870,55 +1849,17 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		private void ForEachInitializer(string undoName, Action<Component> action)
-		{
-			if(!string.IsNullOrEmpty(undoName))
-			{
-				Undo.RecordObjects(initializers, undoName);
-			}
-
-			for(int i = 0, count = initializers.Length; i < count; i++)
-			{
-				var initializer = initializers[i] as Component;
-				if(initializer)
-				{
-					action(initializer);
-				}
-			}
-
-			if(initializerEditor)
-			{
-				initializerEditor.serializedObject.Update();
-
-				#if DEV_MODE && DEBUG_REPAINT
-				Debug.Log(initializerEditor.GetType().Name + "Repaint");
-				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-				Profiler.BeginSample("Sisus.Repaint");
-				#endif
-				#endif
-
-				initializerEditor.Repaint();
-
-				#if DEV_MODE && DEBUG_REPAINT && DEBUG && !INIT_ARGS_DISABLE_PROFILING
-				Profiler.EndSample();
-				#endif
-			}
-		}
-
 		private void ForEachInitializer(string undoName, Action<Object> action)
 		{
-			if(!string.IsNullOrEmpty(undoName))
+			var notNullInitializers = initializers.All(i => (bool)i) ? initializers : initializers.Where(i => (bool)i).ToArray();
+			if(!string.IsNullOrEmpty(undoName) && notNullInitializers.Length > 0)
 			{
-				Undo.RecordObjects(initializers, undoName);
+				Undo.RecordObjects(notNullInitializers, undoName);
 			}
 
-			for(int i = 0, count = initializers.Length; i < count; i++)
+			for(int i = 0, count = notNullInitializers.Length; i < count; i++)
 			{
-				var initializer = initializers[i];
-				if(initializer)
-				{
-					action(initializer);
-				}
+				action(notNullInitializers[i]);
 			}
 
 			if(initializerEditor && initializerEditor.target)

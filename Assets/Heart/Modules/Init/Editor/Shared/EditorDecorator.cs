@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define DEBUG_DISPOSE
+
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -28,10 +30,10 @@ namespace Sisus.Shared.EditorOnly
 
 		protected EditorDecorator(Editor decoratedEditor)
 		{
-#if DEV_MODE && DEBUG_DISPOSE
+			#if DEV_MODE && DEBUG_DISPOSE
 			Debug.Log($"{GetType().Name}.Ctr({decoratedEditor.target.GetType().Name})");
-#endif
-			
+			#endif
+
 			this.decoratedEditor = decoratedEditor;
 			this.isResponsibleForDecoratedEditorLifetime = false;
 			DecoratingDefaultOrOdinEditor = CustomEditorUtility.IsDefaultOrOdinEditor(decoratedEditor.GetType());
@@ -41,9 +43,9 @@ namespace Sisus.Shared.EditorOnly
 
 		~EditorDecorator()
 		{
-#if DEV_MODE
+			#if DEV_MODE
 			Debug.LogWarning($"{GetType().Name} Finalizer was called. Did you forget to call Dispose()?");
-#endif
+			#endif
 
 			Dispose(false);
 		}
@@ -132,9 +134,9 @@ namespace Sisus.Shared.EditorOnly
 				return method.DeclaringType != typeof(EditorDecorator);
 			}
 
-#if DEV_MODE
+			#if DEV_MODE
 			Debug.LogWarning($"Method '{methodName}' was not found on {wrapperType}.");
-#endif
+			#endif
 
 			return false;
 		}
@@ -166,6 +168,8 @@ namespace Sisus.Shared.EditorOnly
 			GC.SuppressFinalize(this);
 		}
 
+		protected virtual void OnDestroyingDecoratedEditor(Editor editor) { }
+
 		private void DestroyIfNotNull(ref Editor editor)
 		{
 			if(editor)
@@ -173,6 +177,7 @@ namespace Sisus.Shared.EditorOnly
 				#if DEV_MODE && DEBUG_DISPOSE
 				Debug.Log(GetType().Name + "." + $"DestroyImmediate: {editor.GetType().Name} ({editor.GetInstanceID()})");
 				#endif
+				OnDestroyingDecoratedEditor(editor);
 				Object.DestroyImmediate(editor);
 			}
 

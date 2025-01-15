@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -6,12 +7,12 @@ using Object = UnityEngine.Object;
 namespace Sisus.Init
 {
 	/// <summary>
-	/// This attribute can be added to a class that derives from one of the <see cref="MonoBehaviour{}"/>
+	/// This attribute can be added to a class that derives from one of the <see cref="MonoBehaviour{T}"/>
 	/// base classes to automatically initialize it with dependencies when the component is first attached
 	/// to a <see cref="GameObject"/> in the editor or when the user selects 'Reset' in the Inspector's context menu.
 	/// <para>
 	/// The dependencies are automatically retrieved from the scene hierarchy, relative to the <see cref="GameObject"/>
-	/// that contains the <see cref="MonoBehaviour{}"/>. You can specify <see cref="From"/> where <see cref="Object"/>
+	/// that contains the <see cref="MonoBehaviour{T}"/>. You can specify <see cref="From"/> where <see cref="Object"/>
 	/// arguments should be searched, or use the default search mode, which tries to pick a good search mode to use
 	/// based on the type of the argument:
 	/// <list>
@@ -20,12 +21,12 @@ namespace Sisus.Init
 	/// <item> other <see cref="Object"/>: <see cref="From.Assets"/>, </item>
 	/// <item>
 	/// Collection of <see cref="Component"/>, interface, <see cref="Transform"/> or <see cref="GameObject"/>: <see cref="From.Children"/>.
-	/// For example Collider[] or IEnumerable<Transform>.
+	/// For example <see cref="Collider"/>[] or <see cref="IEnumerable{Transform}"/>.
 	/// </item>
 	/// </list>
 	/// </para>
 	/// <para>
-	/// The found arguments are passed to the component's <see cref="IInitializable{}.Init"/> function,
+	/// The found arguments are passed to the component's <see cref="IInitializable{T}.Init"/> function,
 	/// where they can be assigned to serialized fields.
 	/// </para>
 	/// <para>
@@ -33,7 +34,7 @@ namespace Sisus.Init
 	/// needing to assign all <see cref="Object"/> references manually using the inspector.
 	/// </para>
 	/// <para>
-	/// This attribute can also be added to classes that derive from one of the <see cref="InitializerBase{}"/> base classes.
+	/// This attribute can also be added to classes that derive from one of the <see cref="InitializerBase{T}"/> base classes.
 	/// In this case the end result is the same, except the arguments are routed into the initializer instead.
 	/// </para>
 	/// </summary>
@@ -74,11 +75,11 @@ namespace Sisus.Init
 		public readonly From sixth;
 
 		/// <summary>
-		/// When a component that derives from <see cref="MonoBehaviour{}"/> and has the
+		/// When a component that derives from <see cref="MonoBehaviour{T}"/> and has the
 		/// <see cref="InitOnResetAttribute"/> is first added to a GameObject in the editor,
 		/// or when the user hits the Reset button in the Inspector's context menu,
 		/// the arguments accepted by the component are automatically gathered
-		/// and passed to its <see cref="IInitializable{}.Init"/> function.
+		/// and passed to its <see cref="IInitializable{T}.Init"/> function.
 		/// <para>
 		/// This auto-initialization behaviour only occurs in edit mode during the Reset event function
 		/// and is meant to make it more convenient to add components without needing to assign all
@@ -88,11 +89,11 @@ namespace Sisus.Init
 		public InitOnResetAttribute() : this(defaultFrom) { }
 
 		/// <summary>
-		/// When a component that derives from <see cref="MonoBehaviour{}"/> and has the
+		/// When a component that derives from <see cref="MonoBehaviour{T}"/> and has the
 		/// <see cref="InitOnResetAttribute"/> is first added to a GameObject in the editor,
 		/// or when the user hits the Reset button in the Inspector's context menu,
 		/// the arguments accepted by the component are automatically gathered
-		/// and passed to its <see cref="IInitializable{}.Init"/> function.
+		/// and passed to its <see cref="IInitializable{T}.Init"/> function.
 		/// <para>
 		/// This auto-initialization behaviour only occurs in edit mode during the Reset event function
 		/// and is meant to make it more convenient to add components without needing to assign all
@@ -111,11 +112,11 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// When a component that derives from <see cref="MonoBehaviour{}"/> and has the
+		/// When a component that derives from <see cref="MonoBehaviour{T}"/> and has the
 		/// <see cref="InitOnResetAttribute"/> is first added to a GameObject in the editor,
 		/// or when the user hits the Reset button in the Inspector's context menu,
 		/// the arguments accepted by the component are automatically gathered
-		/// and passed to its <see cref="IInitializable{}.Init"/> function.
+		/// and passed to its <see cref="IInitializable{T}.Init"/> function.
 		/// <para>
 		/// This auto-initialization behaviour only occurs in edit mode during the Reset event function
 		/// and is meant to make it more convenient to add components without needing to assign all

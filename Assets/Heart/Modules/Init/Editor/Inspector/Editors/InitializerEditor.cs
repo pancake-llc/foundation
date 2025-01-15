@@ -61,8 +61,7 @@ namespace Sisus.Init.EditorOnly
 				}
 
 				var nullGuard = (NullArgumentGuard)nullArgumentGuard.intValue;
-				return !nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning)
-					|| (!nullGuard.IsEnabled(NullArgumentGuard.EnabledForPrefabs) && PrefabUtility.IsPartOfPrefabAsset(target));
+				return !nullGuard.IsEnabled(Application.isPlaying ? NullArgumentGuard.RuntimeException : NullArgumentGuard.EditModeWarning);
 			}
 		}
 
