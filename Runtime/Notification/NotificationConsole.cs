@@ -136,7 +136,7 @@ namespace Pancake.Notification
         /// </summary>
         /// <param name="id">id of chanel</param>
         /// <param name="customTimeSchedule"></param>
-        public void UpdateDeliveryTimeBy(string id, int customTimeSchedule = -1)
+        public int? UpdateDeliveryTimeBy(string id, int customTimeSchedule = -1)
         {
             int index = -1;
 
@@ -152,10 +152,10 @@ namespace Pancake.Notification
             if (index == -1)
             {
                 Debug.LogWarning($"id: {id} not exist! please check again!");
-                return;
+                return null;
             }
 
-            UpdateDeliveryTimeBy(index, customTimeSchedule);
+            return UpdateDeliveryTimeBy(index, customTimeSchedule);
         }
 
         /// <summary>
@@ -163,12 +163,12 @@ namespace Pancake.Notification
         /// </summary>
         /// <param name="index">index of id chanel</param>
         /// <param name="customTimeSchedule"></param>
-        public void UpdateDeliveryTimeBy(int index, int customTimeSchedule = -1)
+        public int? UpdateDeliveryTimeBy(int index, int customTimeSchedule = -1)
         {
             var currentNow = DateTime.Now.ToLocalTime();
             var structureData = structures[index];
 
-            if (structureData.autoSchedule) return;
+            if (structureData.autoSchedule) return null;
 
             var data = structureData.datas.PickRandom();
 
@@ -182,7 +182,7 @@ namespace Pancake.Notification
                     deliveryTime.Minute,
                     deliveryTime.Second,
                     DateTimeKind.Local);
-                SendNotification(data.title,
+               return SendNotification(data.title,
                     data.message,
                     resultTime,
                     channelId: _channels[index].Id,
@@ -200,7 +200,7 @@ namespace Pancake.Notification
                     deliveryTime.Second,
                     DateTimeKind.Local);
                 var timeSpanResult = new TimeSpan(0, 0, customTimeSchedule == -1 ? structureData.minute : customTimeSchedule, 0);
-                SendNotification(data.title,
+                return SendNotification(data.title,
                     data.message,
                     resultTime,
                     channelId: _channels[index].Id,
@@ -232,7 +232,7 @@ namespace Pancake.Notification
                     deliveryTime.Minute,
                     deliveryTime.Second,
                     DateTimeKind.Local);
-                SendNotification(structureData.datas[indexData].title,
+               SendNotification(structureData.datas[indexData].title,
                     structureData.datas[indexData].message,
                     resultTime,
                     channelId: _channels[index].Id,
@@ -321,7 +321,7 @@ namespace Pancake.Notification
         /// <param name="smallIcon">Notification small icon.</param>
         /// <param name="largeIcon">Notification large icon.</param>
         /// <param name="timeRepeatAt">time repeat fire notification</param>
-        public void SendNotification(
+        public int? SendNotification(
             string title,
             string body,
             DateTime deliveryTime,
@@ -334,7 +334,7 @@ namespace Pancake.Notification
         {
             IGameNotification notification = Manager.CreateNotification();
 
-            if (notification == null) return;
+            if (notification == null) return null;
 
             notification.Title = title;
             notification.Body = body;
@@ -366,6 +366,7 @@ namespace Pancake.Notification
 
             PendingNotification notificationToDisplay = Manager.ScheduleNotification(notification);
             notificationToDisplay.Reschedule = reschedule;
+            return notification.Id;
         }
 
         /// <summary>
