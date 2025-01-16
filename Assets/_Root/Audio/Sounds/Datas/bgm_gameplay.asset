@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 47712f4850ef4c4
   type: 0
-  loop: 0
+  loop: 1
   masterVolume: 1
   groups:
   - sequenceMode: 0
