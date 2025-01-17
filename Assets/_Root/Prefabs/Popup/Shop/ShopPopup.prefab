@@ -1389,7 +1389,7 @@ MonoBehaviour:
     m_Left: 0
     m_Right: 12
     m_Top: 36
-    m_Bottom: 0
+    m_Bottom: 30
   m_ChildAlignment: 1
   m_Spacing: 34
   m_ChildForceExpandWidth: 1
@@ -2186,6 +2186,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b0025d1a9850cf41917568178ed0a45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   enabledSound: 0
   audioOpen:
     name: 
@@ -2232,6 +2241,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edef1642ba182a43b832361a9cb113c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   usePrefabNameAsId: 1
   <Id>k__BackingField: 
   enterAnimations: []
@@ -3000,7 +3018,7 @@ MonoBehaviour:
     m_Left: 0
     m_Right: 30
     m_Top: 22
-    m_Bottom: 0
+    m_Bottom: 30
   m_ChildAlignment: 1
   m_Spacing: 34
   m_ChildForceExpandWidth: 1
