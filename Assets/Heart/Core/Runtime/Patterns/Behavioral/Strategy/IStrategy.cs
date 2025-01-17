@@ -15,21 +15,21 @@
     }
 
     /// <summary> Strategy interface with one parameter. </summary>
-    public interface IStrategy<out TR, in T>
+    public interface IStrategy<in T, out TR>
     {
         /// <summary> Execute the strategy. </summary>
         TR OnExecute(T value);
     }
 
     /// <summary> Strategy interface with two parameters. </summary>
-    public interface IStrategy<out TR, in T0, in T1>
+    public interface IStrategy<in T0, in T1, out TR>
     {
         /// <summary> Execute the strategy. </summary>
         TR OnExecute(T0 value0, T1 value1);
     }
 
     /// <summary> Strategy interface with three parameters. </summary>
-    public interface IStrategy<out TR, in T0, in T1, in T2>
+    public interface IStrategy<in T0, in T1, in T2, out TR>
     {
         /// <summary> Execute the strategy. </summary>
         TR OnExecute(T0 value0, T1 value1, T2 value2);
