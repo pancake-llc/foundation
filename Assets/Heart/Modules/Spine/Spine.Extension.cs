@@ -165,29 +165,32 @@ namespace Pancake.Spine
 
             return skeleton;
         }
-
-
+        
         public static SkeletonAnimation OnComplete(this SkeletonAnimation skeleton, Action onComplete, int track = 0, MonoBehaviour target = null)
         {
-            App.Delay(target, skeleton.Duration(track), onComplete);
+            var bindTo = target != null ? target : skeleton;
+            App.Delay(bindTo, skeleton.Duration(track), onComplete);
             return skeleton;
         }
 
         public static SkeletonGraphic OnComplete(this SkeletonGraphic skeleton, Action onComplete, int track = 0, MonoBehaviour target = null)
         {
-            App.Delay(target, skeleton.Duration(track), onComplete);
+            var bindTo = target != null ? target : skeleton;
+            App.Delay(bindTo, skeleton.Duration(track), onComplete);
             return skeleton;
         }
 
         public static SkeletonAnimation OnUpdate(this SkeletonAnimation skeleton, Action<float> onUpdate, int track = 0, MonoBehaviour target = null)
         {
-            App.Delay(target, skeleton.Duration(track), null, onUpdate);
+            var bindTo = target != null ? target : skeleton;
+            App.Delay(bindTo, skeleton.Duration(track), null, onUpdate);
             return skeleton;
         }
 
         public static SkeletonGraphic OnUpdate(this SkeletonGraphic skeleton, Action<float> onUpdate, int track = 0, MonoBehaviour target = null)
         {
-            App.Delay(target, skeleton.Duration(track), null, onUpdate);
+            var bindTo = target != null ? target : skeleton;
+            App.Delay(bindTo, skeleton.Duration(track), null, onUpdate);
             return skeleton;
         }
 
