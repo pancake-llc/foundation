@@ -18,7 +18,9 @@ namespace Pancake.Common
             Data.Init();
         }
 
-        public static float DeltaTime(ETimeMode mode) => mode == ETimeMode.Normal ? Time.deltaTime : Time.unscaledDeltaTime;
+        public static float DeltaTime(ETimeMode mode) => mode == ETimeMode.Normal ? UnityEngine.Time.deltaTime : UnityEngine.Time.unscaledDeltaTime;
+        
+        public static float Time(ETimeMode mode) => mode == ETimeMode.Normal ? UnityEngine.Time.time : UnityEngine.Time.unscaledTime;
 
         public static void AddListener(EUpdateMode mode, Action action)
         {

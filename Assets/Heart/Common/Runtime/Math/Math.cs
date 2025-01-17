@@ -61,15 +61,15 @@ namespace Pancake.Common
 
         /// <summary>Returns the square root of each component</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Sqrt(this Vector2 v) => new Vector2(Sqrt(v.x), Sqrt(v.y));
+        public static Vector2 Sqrt(this Vector2 v) => new(Sqrt(v.x), Sqrt(v.y));
 
         /// <inheritdoc cref="Math.Sqrt(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 Sqrt(this Vector3 v) => new Vector3(Sqrt(v.x), Sqrt(v.y), Sqrt(v.z));
+        public static Vector3 Sqrt(this Vector3 v) => new(Sqrt(v.x), Sqrt(v.y), Sqrt(v.z));
 
         /// <inheritdoc cref="Math.Sqrt(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 Sqrt(this Vector4 v) => new Vector4(Sqrt(v.x), Sqrt(v.y), Sqrt(v.z), Sqrt(v.w));
+        public static Vector4 Sqrt(this Vector4 v) => new(Sqrt(v.x), Sqrt(v.y), Sqrt(v.z), Sqrt(v.w));
 
         /// <summary>Returns <c>value</c> raised to the power of <c>exponent</c></summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -243,15 +243,15 @@ namespace Pancake.Common
 
         /// <summary>Returns the absolute value, per component. Basically makes negative numbers positive</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Abs(this Vector2 v) => new Vector2(Abs(v.x), Abs(v.y));
+        public static Vector2 Abs(this Vector2 v) => new(Abs(v.x), Abs(v.y));
 
         /// <inheritdoc cref="Math.Abs(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 Abs(this Vector3 v) => new Vector3(Abs(v.x), Abs(v.y), Abs(v.z));
+        public static Vector3 Abs(this Vector3 v) => new(Abs(v.x), Abs(v.y), Abs(v.z));
 
         /// <inheritdoc cref="Math.Abs(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 Abs(this Vector4 v) => new Vector4(Abs(v.x), Abs(v.y), Abs(v.z), Abs(v.w));
+        public static Vector4 Abs(this Vector4 v) => new(Abs(v.x), Abs(v.y), Abs(v.z), Abs(v.w));
 
         #endregion
 
@@ -265,17 +265,15 @@ namespace Pancake.Common
 
         /// <summary>Clamps each component between <c>min</c> and <c>max</c></summary>
         public static Vector2 Clamp(this Vector2 v, Vector2 min, Vector2 max) =>
-            new Vector2(v.x < min.x ? min.x : v.x > max.x ? max.x : v.x, v.y < min.y ? min.y : v.y > max.y ? max.y : v.y);
+            new(v.x < min.x ? min.x : v.x > max.x ? max.x : v.x, v.y < min.y ? min.y : v.y > max.y ? max.y : v.y);
 
         /// <inheritdoc cref="Math.Clamp(Vector2,Vector2,Vector2)"/>
         public static Vector3 Clamp(this Vector3 v, Vector3 min, Vector3 max) =>
-            new Vector3(v.x < min.x ? min.x : v.x > max.x ? max.x : v.x,
-                v.y < min.y ? min.y : v.y > max.y ? max.y : v.y,
-                v.z < min.z ? min.z : v.z > max.z ? max.z : v.z);
+            new(v.x < min.x ? min.x : v.x > max.x ? max.x : v.x, v.y < min.y ? min.y : v.y > max.y ? max.y : v.y, v.z < min.z ? min.z : v.z > max.z ? max.z : v.z);
 
         /// <inheritdoc cref="Math.Clamp(Vector2,Vector2,Vector2)"/>
         public static Vector4 Clamp(this Vector4 v, Vector4 min, Vector4 max) =>
-            new Vector4(v.x < min.x ? min.x : v.x > max.x ? max.x : v.x,
+            new(v.x < min.x ? min.x : v.x > max.x ? max.x : v.x,
                 v.y < min.y ? min.y : v.y > max.y ? max.y : v.y,
                 v.z < min.z ? min.z : v.z > max.z ? max.z : v.z,
                 v.w < min.w ? min.w : v.w > max.w ? max.w : v.w);
@@ -287,32 +285,29 @@ namespace Pancake.Common
         public static float Clamp01(this float value) => value < 0f ? 0f : value > 1f ? 1f : value;
 
         /// <summary>Clamps each component between 0 and 1</summary>
-        public static Vector2 Clamp01(this Vector2 v) => new Vector2(v.x < 0f ? 0f : v.x > 1f ? 1f : v.x, v.y < 0f ? 0f : v.y > 1f ? 1f : v.y);
+        public static Vector2 Clamp01(this Vector2 v) => new(v.x < 0f ? 0f : v.x > 1f ? 1f : v.x, v.y < 0f ? 0f : v.y > 1f ? 1f : v.y);
 
         /// <inheritdoc cref="Math.Clamp01(Vector2)"/>
         public static Vector3 Clamp01(this Vector3 v) =>
-            new Vector3(v.x < 0f ? 0f : v.x > 1f ? 1f : v.x, v.y < 0f ? 0f : v.y > 1f ? 1f : v.y, v.z < 0f ? 0f : v.z > 1f ? 1f : v.z);
+            new(v.x < 0f ? 0f : v.x > 1f ? 1f : v.x, v.y < 0f ? 0f : v.y > 1f ? 1f : v.y, v.z < 0f ? 0f : v.z > 1f ? 1f : v.z);
 
         /// <inheritdoc cref="Math.Clamp01(Vector2)"/>
         public static Vector4 Clamp01(this Vector4 v) =>
-            new Vector4(v.x < 0f ? 0f : v.x > 1f ? 1f : v.x,
-                v.y < 0f ? 0f : v.y > 1f ? 1f : v.y,
-                v.z < 0f ? 0f : v.z > 1f ? 1f : v.z,
-                v.w < 0f ? 0f : v.w > 1f ? 1f : v.w);
+            new(v.x < 0f ? 0f : v.x > 1f ? 1f : v.x, v.y < 0f ? 0f : v.y > 1f ? 1f : v.y, v.z < 0f ? 0f : v.z > 1f ? 1f : v.z, v.w < 0f ? 0f : v.w > 1f ? 1f : v.w);
 
         /// <summary>Clamps the value between -1 and 1</summary>
         public static float ClampNeg1To1(this float value) => value < -1f ? -1f : value > 1f ? 1f : value;
 
         /// <summary>Clamps each component between -1 and 1</summary>
-        public static Vector2 ClampNeg1To1(this Vector2 v) => new Vector2(v.x < -1f ? -1f : v.x > 1f ? 1f : v.x, v.y < -1f ? -1f : v.y > 1f ? 1f : v.y);
+        public static Vector2 ClampNeg1To1(this Vector2 v) => new(v.x < -1f ? -1f : v.x > 1f ? 1f : v.x, v.y < -1f ? -1f : v.y > 1f ? 1f : v.y);
 
         /// <summary>Clamps each component between -1 and 1</summary>
         public static Vector3 ClampNeg1To1(this Vector3 v) =>
-            new Vector3(v.x < -1f ? -1f : v.x > 1f ? 1f : v.x, v.y < -1f ? -1f : v.y > 1f ? 1f : v.y, v.z < -1f ? -1f : v.z > 1f ? 1f : v.z);
+            new(v.x < -1f ? -1f : v.x > 1f ? 1f : v.x, v.y < -1f ? -1f : v.y > 1f ? 1f : v.y, v.z < -1f ? -1f : v.z > 1f ? 1f : v.z);
 
         /// <summary>Clamps each component between -1 and 1</summary>
         public static Vector4 ClampNeg1To1(this Vector4 v) =>
-            new Vector4(v.x < -1f ? -1f : v.x > 1f ? 1f : v.x,
+            new(v.x < -1f ? -1f : v.x > 1f ? 1f : v.x,
                 v.y < -1f ? -1f : v.y > 1f ? 1f : v.y,
                 v.z < -1f ? -1f : v.z > 1f ? 1f : v.z,
                 v.w < -1f ? -1f : v.w > 1f ? 1f : v.w);
@@ -474,17 +469,17 @@ namespace Pancake.Common
 
         /// <summary>Rounds the vector components down to the nearest integer</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Floor(this Vector2 value) => new Vector2((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y));
+        public static Vector2 Floor(this Vector2 value) => new((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y));
 
         /// <inheritdoc cref="Math.Floor(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Floor(this Vector3 value) =>
-            new Vector3((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y), (float) System.Math.Floor(value.z));
+            new((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y), (float) System.Math.Floor(value.z));
 
         /// <inheritdoc cref="Math.Floor(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Floor(this Vector4 value) =>
-            new Vector4((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y), (float) System.Math.Floor(value.z), (float) System.Math.Floor(value.w));
+            new((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y), (float) System.Math.Floor(value.z), (float) System.Math.Floor(value.w));
 
         /// <summary>Rounds the value down to the nearest integer, returning an int value</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -492,12 +487,12 @@ namespace Pancake.Common
 
         /// <summary>Rounds the vector components down to the nearest integer, returning an integer vector</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2Int FloorToInt(this Vector2 value) => new Vector2Int((int) System.Math.Floor(value.x), (int) System.Math.Floor(value.y));
+        public static Vector2Int FloorToInt(this Vector2 value) => new((int) System.Math.Floor(value.x), (int) System.Math.Floor(value.y));
 
         /// <inheritdoc cref="Math.FloorToInt(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3Int FloorToInt(this Vector3 value) =>
-            new Vector3Int((int) System.Math.Floor(value.x), (int) System.Math.Floor(value.y), (int) System.Math.Floor(value.z));
+            new((int) System.Math.Floor(value.x), (int) System.Math.Floor(value.y), (int) System.Math.Floor(value.z));
 
         /// <summary>Rounds the value up to the nearest integer</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -505,20 +500,17 @@ namespace Pancake.Common
 
         /// <summary>Rounds the vector components up to the nearest integer</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Ceil(this Vector2 value) => new Vector2((float) System.Math.Ceiling(value.x), (float) System.Math.Ceiling(value.y));
+        public static Vector2 Ceil(this Vector2 value) => new((float) System.Math.Ceiling(value.x), (float) System.Math.Ceiling(value.y));
 
         /// <inheritdoc cref="Math.Ceil(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Ceil(this Vector3 value) =>
-            new Vector3((float) System.Math.Ceiling(value.x), (float) System.Math.Ceiling(value.y), (float) System.Math.Ceiling(value.z));
+            new((float) System.Math.Ceiling(value.x), (float) System.Math.Ceiling(value.y), (float) System.Math.Ceiling(value.z));
 
         /// <inheritdoc cref="Math.Ceil(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Ceil(this Vector4 value) =>
-            new Vector4((float) System.Math.Ceiling(value.x),
-                (float) System.Math.Ceiling(value.y),
-                (float) System.Math.Ceiling(value.z),
-                (float) System.Math.Ceiling(value.w));
+            new((float) System.Math.Ceiling(value.x), (float) System.Math.Ceiling(value.y), (float) System.Math.Ceiling(value.z), (float) System.Math.Ceiling(value.w));
 
         /// <summary>Rounds the value up to the nearest integer, returning an int value</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -526,12 +518,12 @@ namespace Pancake.Common
 
         /// <summary>Rounds the vector components up to the nearest integer, returning an integer vector</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2Int CeilToInt(this Vector2 value) => new Vector2Int((int) System.Math.Ceiling(value.x), (int) System.Math.Ceiling(value.y));
+        public static Vector2Int CeilToInt(this Vector2 value) => new((int) System.Math.Ceiling(value.x), (int) System.Math.Ceiling(value.y));
 
         /// <inheritdoc cref="Math.CeilToInt(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3Int CeilToInt(this Vector3 value) =>
-            new Vector3Int((int) System.Math.Ceiling(value.x), (int) System.Math.Ceiling(value.y), (int) System.Math.Ceiling(value.z));
+            new((int) System.Math.Ceiling(value.x), (int) System.Math.Ceiling(value.y), (int) System.Math.Ceiling(value.z));
 
         /// <summary>Rounds the value to the nearest integer</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -539,17 +531,17 @@ namespace Pancake.Common
 
         /// <summary>Rounds the vector components to the nearest integer</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Round(this Vector2 value) => new Vector2((float) System.Math.Round(value.x), (float) System.Math.Round(value.y));
+        public static Vector2 Round(this Vector2 value) => new((float) System.Math.Round(value.x), (float) System.Math.Round(value.y));
 
         /// <inheritdoc cref="Math.Round(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Round(this Vector3 value) =>
-            new Vector3((float) System.Math.Round(value.x), (float) System.Math.Round(value.y), (float) System.Math.Round(value.z));
+            new((float) System.Math.Round(value.x), (float) System.Math.Round(value.y), (float) System.Math.Round(value.z));
 
         /// <inheritdoc cref="Math.Round(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Round(this Vector4 value) =>
-            new Vector4((float) System.Math.Round(value.x), (float) System.Math.Round(value.y), (float) System.Math.Round(value.z), (float) System.Math.Round(value.w));
+            new((float) System.Math.Round(value.x), (float) System.Math.Round(value.y), (float) System.Math.Round(value.z), (float) System.Math.Round(value.w));
 
         /// <summary>Rounds the value to the nearest value, snapped to the given interval size</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -557,17 +549,17 @@ namespace Pancake.Common
 
         /// <summary>Rounds the vector components to the nearest value, snapped to the given interval size</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Round(this Vector2 value, float snapInterval) => new Vector2(Round(value.x, snapInterval), Round(value.y, snapInterval));
+        public static Vector2 Round(this Vector2 value, float snapInterval) => new(Round(value.x, snapInterval), Round(value.y, snapInterval));
 
         /// <inheritdoc cref="Math.Round(Vector2,float)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Round(this Vector3 value, float snapInterval) =>
-            new Vector3(Round(value.x, snapInterval), Round(value.y, snapInterval), Round(value.z, snapInterval));
+            new(Round(value.x, snapInterval), Round(value.y, snapInterval), Round(value.z, snapInterval));
 
         /// <inheritdoc cref="Math.Round(Vector2,float)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Round(this Vector4 value, float snapInterval) =>
-            new Vector4(Round(value.x, snapInterval), Round(value.y, snapInterval), Round(value.z, snapInterval), Round(value.w, snapInterval));
+            new(Round(value.x, snapInterval), Round(value.y, snapInterval), Round(value.z, snapInterval), Round(value.w, snapInterval));
 
         /// <summary>Rounds the value to the nearest integer, returning an int value</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -575,12 +567,12 @@ namespace Pancake.Common
 
         /// <summary>Rounds the vector components to the nearest integer, returning an integer vector</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2Int RoundToInt(this Vector2 value) => new Vector2Int((int) System.Math.Round(value.x), (int) System.Math.Round(value.y));
+        public static Vector2Int RoundToInt(this Vector2 value) => new((int) System.Math.Round(value.x), (int) System.Math.Round(value.y));
 
         /// <inheritdoc cref="Math.RoundToInt(Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3Int RoundToInt(this Vector3 value) =>
-            new Vector3Int((int) System.Math.Round(value.x), (int) System.Math.Round(value.y), (int) System.Math.Round(value.z));
+            new((int) System.Math.Round(value.x), (int) System.Math.Round(value.y), (int) System.Math.Round(value.z));
 
         #endregion
 
@@ -697,20 +689,114 @@ namespace Pancake.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Lerp(float a, float b, float t) => (1f - t) * a + t * b;
 
+
+        /// <summary>
+        /// internal method used to determine the lerp rate
+        /// </summary>
+        /// <param name="rate"></param>
+        /// <param name="deltaTime"></param>
+        /// <returns></returns>
+        private static float LerpRate(float rate, float deltaTime)
+        {
+            rate = Mathf.Clamp01(rate);
+            float invRate = -Mathf.Log(1.0f - rate, 2.0f) * 60f;
+            return Mathf.Pow(2.0f, -invRate * deltaTime);
+        }
+
+        /// <summary>
+        /// Lerps a float towards a target at the specified rate
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="target"></param>
+        /// <param name="rate"></param>
+        /// <param name="deltaTime"></param>
+        /// <returns></returns>
+        // ReSharper disable once InconsistentNaming
+        public static float MMLerp(float value, float target, float rate, float deltaTime)
+        {
+            if (deltaTime == 0f) return value;
+
+            return Mathf.Lerp(target, value, LerpRate(rate, deltaTime));
+        }
+
+        /// <summary>
+        /// Lerps a Vector2 towards a target at the specified rate
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="target"></param>
+        /// <param name="rate"></param>
+        /// <param name="deltaTime"></param>
+        /// <returns></returns>
+        // ReSharper disable once InconsistentNaming
+        public static Vector2 MMLerp(Vector2 value, Vector2 target, float rate, float deltaTime)
+        {
+            if (deltaTime == 0f) return value;
+
+            return Vector2.Lerp(target, value, LerpRate(rate, deltaTime));
+        }
+
+        /// <summary>
+        /// Lerps a Vector3 towards a target at the specified rate
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="target"></param>
+        /// <param name="rate"></param>
+        /// <param name="deltaTime"></param>
+        /// <returns></returns>
+        // ReSharper disable once InconsistentNaming
+        public static Vector3 MMLerp(Vector3 value, Vector3 target, float rate, float deltaTime)
+        {
+            if (deltaTime == 0f) return value;
+
+            return Vector3.Lerp(target, value, LerpRate(rate, deltaTime));
+        }
+
+        /// <summary>
+        /// Lerps a Vector4 towards a target at the specified rate
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="target"></param>
+        /// <param name="rate"></param>
+        /// <param name="deltaTime"></param>
+        /// <returns></returns>
+        // ReSharper disable once InconsistentNaming
+        public static Vector4 MMLerp(Vector4 value, Vector4 target, float rate, float deltaTime)
+        {
+            if (deltaTime == 0f) return value;
+
+            return Vector4.Lerp(target, value, LerpRate(rate, deltaTime));
+        }
+
+        /// <summary>
+        /// Lerps a Quaternion towards a target at the specified rate
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="target"></param>
+        /// <param name="rate"></param>
+        /// <param name="deltaTime"></param>
+        /// <returns></returns>
+        // ReSharper disable once InconsistentNaming
+        public static Quaternion MMLerp(Quaternion value, Quaternion target, float rate, float deltaTime)
+        {
+            if (deltaTime == 0f) return value;
+
+            return Quaternion.Lerp(target, value, LerpRate(rate, deltaTime));
+        }
+
         /// <summary>Blends between a and b of each component, based on the t-value of each component in the t-vector. When t = 0 it returns a, when t = 1 it returns b, and any values between are blended linearly </summary>
         /// <param name="a">The start value, when t is 0</param>
         /// <param name="b">The start value, when t is 1</param>
         /// <param name="t">The t-values from 0 to 1 representing position along the lerp</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Lerp(Vector2 a, Vector2 b, Vector2 t) => new Vector2(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y));
+        public static Vector2 Lerp(Vector2 a, Vector2 b, Vector2 t) => new(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y));
 
         /// <inheritdoc cref="Math.Lerp(Vector2,Vector2,Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 Lerp(Vector3 a, Vector3 b, Vector3 t) => new Vector3(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y), Lerp(a.z, b.z, t.z));
+        public static Vector3 Lerp(Vector3 a, Vector3 b, Vector3 t) => new(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y), Lerp(a.z, b.z, t.z));
 
         /// <inheritdoc cref="Math.Lerp(Vector2,Vector2,Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 Lerp(Vector4 a, Vector4 b, Vector4 t) => new Vector4(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y), Lerp(a.z, b.z, t.z), Lerp(a.w, b.w, t.w));
+        public static Vector4 Lerp(Vector4 a, Vector4 b, Vector4 t) => new(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y), Lerp(a.z, b.z, t.z), Lerp(a.w, b.w, t.w));
 
         /// <summary>Linearly blends between two rectangles, moving and resizing from the center. Note: this lerp is unclamped</summary>
         /// <param name="a">The start value, when t is 0</param>
@@ -753,8 +839,7 @@ namespace Pancake.Common
         public static float InverseLerpSafe(float a, float b, float value)
         {
             float den = b - a;
-            if (den == 0)
-                return 0;
+            if (den == 0) return 0;
             return (value - a) / den;
         }
 
@@ -763,17 +848,16 @@ namespace Pancake.Common
         /// <param name="b">The end of the ranges, where it would return 1</param>
         /// <param name="v">A value between a and b. Note: values outside this range are still valid, and will be extrapolated</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 InverseLerp(Vector2 a, Vector2 b, Vector2 v) => new Vector2((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y));
+        public static Vector2 InverseLerp(Vector2 a, Vector2 b, Vector2 v) => new((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y));
 
         /// <inheritdoc cref="Math.InverseLerp(Vector2,Vector2,Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 InverseLerp(Vector3 a, Vector3 b, Vector3 v) =>
-            new Vector3((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y), (v.z - a.z) / (b.z - a.z));
+        public static Vector3 InverseLerp(Vector3 a, Vector3 b, Vector3 v) => new((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y), (v.z - a.z) / (b.z - a.z));
 
         /// <inheritdoc cref="Math.InverseLerp(Vector2,Vector2,Vector2)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 InverseLerp(Vector4 a, Vector4 b, Vector4 v) =>
-            new Vector4((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y), (v.z - a.z) / (b.z - a.z), (v.w - a.w) / (b.w - a.w));
+            new((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y), (v.z - a.z) / (b.z - a.z), (v.w - a.w) / (b.w - a.w));
 
         /// <summary>Given a value between a and b, returns its normalized location in that range, as a t-value (interpolant) clamped between 0 and 1</summary>
         /// <param name="a">The start of the range, where it would return 0</param>
@@ -798,11 +882,11 @@ namespace Pancake.Common
         /// <param name="oMax">The end value of the output range</param>
         /// <param name="value">The value to remap</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Remap(float iMin, float iMax, float oMin, float oMax, float value) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
+        public static float Remap(float value, float iMin, float iMax, float oMin, float oMax) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
 
         /// <inheritdoc cref="Math.Remap(float,float,float,float,float)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Remap(float iMin, float iMax, float oMin, float oMax, int value) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
+        public static float Remap(int value, float iMin, float iMax, float oMin, float oMax) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
 
         /// <summary>Remaps values from the input range [iMin to iMax] into the output range [oMin to oMax] on a per-component basis.
         /// Equivalent to Lerp(oMin,oMax,InverseLerp(iMin,iMax,value))</summary>
@@ -1171,6 +1255,175 @@ namespace Pancake.Common
                     return (int) PingPong(value - min, max - min - 1) + min;
                 default:
                     return value;
+            }
+        }
+
+        #endregion
+
+        #region Spring
+
+        /// <summary>
+        /// Internal method used to compute the spring velocity
+        /// </summary>
+        /// <param name="currentValue"></param>
+        /// <param name="targetValue"></param>
+        /// <param name="velocity"></param>
+        /// <param name="damping"></param>
+        /// <param name="frequency"></param>
+        /// <param name="deltaTime"></param>
+        /// <returns></returns>
+        private static float SpringVelocity(float currentValue, float targetValue, float velocity, float damping, float frequency, float deltaTime)
+        {
+            frequency = frequency * 2f * PI;
+            float f2 = frequency * frequency;
+            float d2 = 2.0f * damping * frequency;
+            float x = currentValue - targetValue;
+            float acceleration = -f2 * x - d2 * velocity;
+            velocity += deltaTime * acceleration;
+            return velocity;
+        }
+
+        /// <summary>
+        /// Springs a float towards a target value 
+        /// </summary>
+        /// <param name="currentValue">the current value to spring, passed as a ref</param>
+        /// <param name="targetValue">the target value we're aiming for</param>
+        /// <param name="velocity">a velocity value, passed as ref, used to compute the current speed of the springed value</param>
+        /// <param name="damping">the damping, between 0.01f and 1f, the higher the daming, the less springy it'll be</param>
+        /// <param name="frequency">the frequency, in Hz, so the amount of periods the spring should go over in 1 second</param>
+        /// <param name="deltaTime">the delta time (usually Time.deltaTime or Time.unscaledDeltaTime)</param>
+        public static void Spring(ref float currentValue, float targetValue, ref float velocity, float damping, float frequency, float deltaTime)
+        {
+            const float fixedDeltaTime = 1.0f / 60.0f;
+            float accumulator = deltaTime;
+            while (accumulator > 0f)
+            {
+                float step = Min(accumulator, fixedDeltaTime);
+                velocity = SpringVelocity(currentValue,
+                    targetValue,
+                    velocity,
+                    damping,
+                    frequency,
+                    step);
+                currentValue += step * velocity;
+                accumulator -= step;
+            }
+        }
+
+        /// <summary>
+        /// Springs a Vector2 towards a target value 
+        /// </summary>
+        /// <param name="currentValue">the current value to spring, passed as a ref</param>
+        /// <param name="targetValue">the target value we're aiming for</param>
+        /// <param name="velocity">a velocity value, passed as ref, used to compute the current speed of the springed value</param>
+        /// <param name="damping">the damping, between 0.01f and 1f, the higher the daming, the less springy it'll be</param>
+        /// <param name="frequency">the frequency, in Hz, so the amount of periods the spring should go over in 1 second</param>
+        /// <param name="deltaTime">the delta time (usually Time.deltaTime or Time.unscaledDeltaTime)</param>
+        public static void Spring(ref Vector2 currentValue, Vector2 targetValue, ref Vector2 velocity, float damping, float frequency, float deltaTime)
+        {
+            const float fixedDeltaTime = 1.0f / 60.0f;
+            float accumulator = deltaTime;
+            while (accumulator > 0f)
+            {
+                float step = Min(accumulator, fixedDeltaTime);
+                velocity.x = SpringVelocity(currentValue.x,
+                    targetValue.x,
+                    velocity.x,
+                    damping,
+                    frequency,
+                    step);
+                velocity.y = SpringVelocity(currentValue.y,
+                    targetValue.y,
+                    velocity.y,
+                    damping,
+                    frequency,
+                    step);
+                currentValue += step * velocity;
+                accumulator -= step;
+            }
+        }
+
+        /// <summary>
+        /// Springs a Vector3 towards a target value 
+        /// </summary>
+        /// <param name="currentValue">the current value to spring, passed as a ref</param>
+        /// <param name="targetValue">the target value we're aiming for</param>
+        /// <param name="velocity">a velocity value, passed as ref, used to compute the current speed of the springed value</param>
+        /// <param name="damping">the damping, between 0.01f and 1f, the higher the daming, the less springy it'll be</param>
+        /// <param name="frequency">the frequency, in Hz, so the amount of periods the spring should go over in 1 second</param>
+        /// <param name="deltaTime">the delta time (usually Time.deltaTime or Time.unscaledDeltaTime)</param>
+        public static void Spring(ref Vector3 currentValue, Vector3 targetValue, ref Vector3 velocity, float damping, float frequency, float deltaTime)
+        {
+            const float fixedDeltaTime = 1.0f / 60.0f;
+            float accumulator = deltaTime;
+            while (accumulator > 0f)
+            {
+                float step = Min(accumulator, fixedDeltaTime);
+                velocity.x = SpringVelocity(currentValue.x,
+                    targetValue.x,
+                    velocity.x,
+                    damping,
+                    frequency,
+                    step);
+                velocity.y = SpringVelocity(currentValue.y,
+                    targetValue.y,
+                    velocity.y,
+                    damping,
+                    frequency,
+                    step);
+                velocity.z = SpringVelocity(currentValue.z,
+                    targetValue.z,
+                    velocity.z,
+                    damping,
+                    frequency,
+                    step);
+                currentValue += step * velocity;
+                accumulator -= step;
+            }
+        }
+
+        /// <summary>
+        /// Springs a Vector4 towards a target value 
+        /// </summary>
+        /// <param name="currentValue">the current value to spring, passed as a ref</param>
+        /// <param name="targetValue">the target value we're aiming for</param>
+        /// <param name="velocity">a velocity value, passed as ref, used to compute the current speed of the springed value</param>
+        /// <param name="damping">the damping, between 0.01f and 1f, the higher the daming, the less springy it'll be</param>
+        /// <param name="frequency">the frequency, in Hz, so the amount of periods the spring should go over in 1 second</param>
+        /// <param name="deltaTime">the delta time (usually Time.deltaTime or Time.unscaledDeltaTime)</param>
+        public static void Spring(ref Vector4 currentValue, Vector4 targetValue, ref Vector4 velocity, float damping, float frequency, float deltaTime)
+        {
+            const float fixedDeltaTime = 1.0f / 60.0f;
+            float accumulator = deltaTime;
+            while (accumulator > 0f)
+            {
+                float step = Min(accumulator, fixedDeltaTime);
+                velocity.x = SpringVelocity(currentValue.x,
+                    targetValue.x,
+                    velocity.x,
+                    damping,
+                    frequency,
+                    step);
+                velocity.y = SpringVelocity(currentValue.y,
+                    targetValue.y,
+                    velocity.y,
+                    damping,
+                    frequency,
+                    step);
+                velocity.z = SpringVelocity(currentValue.z,
+                    targetValue.z,
+                    velocity.z,
+                    damping,
+                    frequency,
+                    step);
+                velocity.w = SpringVelocity(currentValue.w,
+                    targetValue.w,
+                    velocity.w,
+                    damping,
+                    frequency,
+                    step);
+                currentValue += step * velocity;
+                accumulator -= step;
             }
         }
 
