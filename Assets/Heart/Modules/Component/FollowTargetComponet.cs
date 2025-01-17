@@ -26,91 +26,105 @@ namespace Pancake.Component
             Local
         }
 
-        [Header("Follow Position")] public bool followPosition = true;
+        [FoldoutGroup("Follow")] public bool followPosition = true;
 
-        [ShowIf(nameof(followPosition)), Indent, LabelText("Follow X")]
+        [FoldoutGroup("Follow"), ShowIf(nameof(followPosition)), Indent, LabelText("Follow X")]
         public bool followPositionX = true;
 
-        [ShowIf(nameof(followPosition)), Indent, LabelText("Follow Y")]
+        [FoldoutGroup("Follow"), ShowIf(nameof(followPosition)), Indent, LabelText("Follow Y")]
         public bool followPositionY = true;
 
-        [ShowIf(nameof(followPosition)), Indent, LabelText("Follow Z")]
+        [FoldoutGroup("Follow"), ShowIf(nameof(followPosition)), Indent, LabelText("Follow Z")]
         public bool followPositionZ = true;
 
-        [ShowIf(nameof(followPosition)), Indent, LabelText("Space")] public PositionSpaces positionSpace = PositionSpaces.World;
+        [FoldoutGroup("Follow"), ShowIf(nameof(followPosition)), Indent, LabelText("Space")]
+        public PositionSpaces positionSpace = PositionSpaces.World;
 
-        [Header("Follow Rotation")] public bool followRotation = true;
+        [FoldoutGroup("Follow")] public bool followRotation = true;
+        [FoldoutGroup("Follow")] public bool followScale = true;
 
-        [Header("Follow Scale")] public bool followScale = true;
-        [ShowIf(nameof(followScale)), Indent] public float followScaleFactor = 1f;
+        [FoldoutGroup("Follow"), ShowIf(nameof(followScale)), Indent]
+        public float followScaleFactor = 1f;
 
-        [Header("Target")] public Transform target;
+        [FoldoutGroup("Target")] public Transform target;
+        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public Vector3 offset;
+        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceXToXOffset;
+        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceYToYOffset;
+        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceZToZOffset;
 
-        [ShowIf(nameof(followPosition))] public Vector3 offset;
-        [ShowIf(nameof(followPosition))] public bool addInitialDistanceXToXOffset;
-        [ShowIf(nameof(followPosition))] public bool addInitialDistanceYToYOffset;
-        [ShowIf(nameof(followPosition))] public bool addInitialDistanceZToZOffset;
+        [FoldoutGroup("Interpolation")] public bool interpolatePosition = true;
 
-        [Header("Position Interpolation")] public bool interpolatePosition = true;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(interpolatePosition)), Indent]
+        public FollowModes followPositionMode = FollowModes.MMLerp;
 
-        [ShowIf(nameof(interpolatePosition)), Indent] public FollowModes followPositionMode = FollowModes.MMLerp;
-        [ShowIf(nameof(interpolatePosition)), Indent] public float followPositionSpeed = 10f;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(interpolatePosition)), Indent]
+        public float followPositionSpeed = 10f;
 
         /// higher values mean more damping, less spring, low values mean less damping, more spring
-        [ShowIf(nameof(followPositionMode), FollowModes.Spring), Indent, LabelText("Spring Damping")] [Range(0.01f, 1.0f)]
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(followPositionMode), FollowModes.Spring), Indent, LabelText("Spring Damping")] [Range(0.01f, 1.0f)]
         public float positionSpringDamping = 0.3f;
 
         /// the frequency at which the spring should "vibrate", in Hz (1 : the spring will do one full period in one second)
-        [ShowIf(nameof(followPositionMode), FollowModes.Spring), Indent, LabelText("Spring Frequency")]
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(followPositionMode), FollowModes.Spring), Indent, LabelText("Spring Frequency")]
         public float positionSpringFrequency = 3f;
 
-        [Header("Rotation Interpolation")] public bool interpolateRotation = true;
+        [FoldoutGroup("Interpolation")] public bool interpolateRotation = true;
 
         /// the follow mode to use when interpolating the rotation
-        [ShowIf(nameof(interpolateRotation))] public FollowModes followRotationMode = FollowModes.MMLerp;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(interpolateRotation)), Indent]
+        public FollowModes followRotationMode = FollowModes.MMLerp;
 
         /// the speed at which to interpolate the follower's rotation
-        [ShowIf(nameof(interpolateRotation))] public float followRotationSpeed = 10f;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(interpolateRotation)), Indent]
+        public float followRotationSpeed = 10f;
 
         /// higher values mean more damping, less spring, low values mean less damping, more spring
-        [ShowIf(nameof(followRotationMode), FollowModes.Spring)] [Range(0.01f, 1.0f)]
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(followRotationMode), FollowModes.Spring), Range(0.01f, 1.0f), Indent]
         public float rotationSpringDamping = 0.3f;
 
         /// the frequency at which the spring should "vibrate", in Hz (1 : the spring will do one full period in one second)
-        [ShowIf(nameof(followRotationMode), FollowModes.Spring)] public float rotationSpringFrequency = 3f;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(followRotationMode), FollowModes.Spring), Indent]
+        public float rotationSpringFrequency = 3f;
 
-        [Header("Scale Interpolation")] public bool interpolateScale = true;
+        [FoldoutGroup("Interpolation"),] public bool interpolateScale = true;
 
         /// the follow mode to use when interpolating the scale
-        [ShowIf(nameof(interpolateScale))] public FollowModes followScaleMode = FollowModes.MMLerp;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(interpolateScale)), Indent]
+        public FollowModes followScaleMode = FollowModes.MMLerp;
 
         /// the speed at which to interpolate the follower's scale
-        [ShowIf(nameof(interpolateScale))] public float followScaleSpeed = 10f;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(interpolateScale)), Indent]
+        public float followScaleSpeed = 10f;
 
         /// higher values mean more damping, less spring, low values mean less damping, more spring
-        [ShowIf(nameof(followScaleMode), FollowModes.Spring)] [Range(0.01f, 1.0f)]
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(followScaleMode), FollowModes.Spring), Range(0.01f, 1.0f), Indent]
         public float scaleSpringDamping = 0.3f;
 
         /// the frequency at which the spring should "vibrate", in Hz (1 : the spring will do one full period in one second)
-        [ShowIf(nameof(followScaleMode), FollowModes.Spring)] public float scaleSpringFrequency = 3f;
+        [FoldoutGroup("Interpolation"), ShowIf(nameof(followScaleMode), FollowModes.Spring), Indent]
+        public float scaleSpringFrequency = 3f;
 
-        [Header("Mode")] public bool disableSelfOnSetActiveFalse;
+        [FoldoutGroup("Distance & Anchor")] [Tooltip("if this is true, this component will self disable when its host game object gets disabled")]
+        public bool disableSelfOnSetActiveFalse;
 
-        [Header("Distances")] public bool useMinimumDistanceBeforeFollow;
+        [FoldoutGroup("Distance & Anchor")] public bool useMinimumDistanceBeforeFollow;
 
         /// the minimum distance to keep between the object and its target
+        [FoldoutGroup("Distance & Anchor"), ShowIf(nameof(useMinimumDistanceBeforeFollow)), Indent]
         public float minimumDistanceBeforeFollow = 1f;
 
         /// whether we want to make sure the object is never too far away from its target
-        public bool useMaximumDistance;
+        [FoldoutGroup("Distance & Anchor")] public bool useMaximumDistance;
 
         /// the maximum distance at which the object can be away from its target
+        [FoldoutGroup("Distance & Anchor"), ShowIf(nameof(useMaximumDistance)), Indent]
         public float maximumDistance = 1f;
 
-        [Header("Anchor")] public bool anchorToInitialPosition;
+        [FoldoutGroup("Distance & Anchor")] public bool anchorToInitialPosition;
 
         /// the maximum distance around the initial position at which the transform can move
-        [ShowIf(nameof(anchorToInitialPosition))] public float maxDistanceToAnchor = 1f;
+        [FoldoutGroup("Distance & Anchor"), ShowIf(nameof(anchorToInitialPosition)), Indent]
+        public float maxDistanceToAnchor = 1f;
 
         protected bool LocalSpace => positionSpace == PositionSpaces.Local;
 
@@ -183,12 +197,11 @@ namespace Pancake.Component
                 return;
             }
 
-            Vector3 difference = transform.position - target.transform.position;
+            var difference = transform.position - target.transform.position;
             offset.x = addInitialDistanceXToXOffset ? difference.x : offset.x;
             offset.y = addInitialDistanceYToYOffset ? difference.y : offset.y;
             offset.z = addInitialDistanceZToZOffset ? difference.z : offset.z;
         }
-
 
         public override void OnUpdate()
         {
@@ -417,12 +430,9 @@ namespace Pancake.Component
 
         public virtual void ChangeFollowTarget(Transform newTarget) => target = newTarget;
 
-        protected virtual void OnDisable()
+        protected override void OnDisabled()
         {
-            if (disableSelfOnSetActiveFalse)
-            {
-                enabled = false;
-            }
+            if (disableSelfOnSetActiveFalse) enabled = false;
         }
     }
 }
