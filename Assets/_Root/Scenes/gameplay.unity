@@ -1159,7 +1159,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  sortingLayerName: UI
+  sortingLayerName: Overlay
   delay: 0.5
   lerpFrontBar: 1
   lerpFrontBarSpeed: 15

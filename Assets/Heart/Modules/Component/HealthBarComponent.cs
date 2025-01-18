@@ -75,7 +75,7 @@ namespace Pancake.Component
             colorKeys = new GradientColorKey[] {new(Color.black, 0), new(Color.black, 1f)}, alphaKeys = new GradientAlphaKey[] {new(1, 0), new(1, 1)}
         };
 
-        [ShowIf(nameof(healthBarType), HealthBarTypes.Drawn), FoldoutGroup("Draw Settings")]
+        [ShowIf(nameof(healthBarType), HealthBarTypes.Drawn), FoldoutGroup("Draw Settings"), SortingLayer]
         public string sortingLayerName = "UI";
 
         [ShowIf(nameof(healthBarType), HealthBarTypes.Drawn), FoldoutGroup("Draw Settings")]
@@ -263,10 +263,7 @@ namespace Pancake.Component
             newCanvas.renderMode = RenderMode.WorldSpace;
             newCanvas.transform.localScale = Vector3.one;
             newCanvas.GetComponent<RectTransform>().sizeDelta = size;
-            if (!string.IsNullOrEmpty(sortingLayerName))
-            {
-                newCanvas.sortingLayerName = sortingLayerName;
-            }
+            if (!string.IsNullOrEmpty(sortingLayerName)) newCanvas.sortingLayerName = sortingLayerName;
 
             var container = new GameObject();
             container.transform.SetParent(newGameObject.transform);
