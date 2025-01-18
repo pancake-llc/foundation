@@ -7,7 +7,7 @@ namespace Pancake.Component
     /// <summary>
     /// Add this component to an object, and it'll get moved towards the target at update, with or without interpolation based on your settings
     /// </summary>
-    public class FollowTargetComponet : GameUnit
+    public class FollowTargetComponent : GameUnit
     {
         /// the possible follow modes
         public enum FollowModes
@@ -48,9 +48,9 @@ namespace Pancake.Component
 
         [FoldoutGroup("Target")] public Transform target;
         [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public Vector3 offset;
-        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceXToXOffset;
-        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceYToYOffset;
-        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceZToZOffset;
+        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceXToXOffset; //whether to add the initial x distance to the offset
+        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceYToYOffset; // whether to add the initial y distance to the offset
+        [FoldoutGroup("Target"), ShowIf(nameof(followPosition))] public bool addInitialDistanceZToZOffset; // whether to add the initial z distance to the offset
 
         [FoldoutGroup("Interpolation")] public bool interpolatePosition = true;
 

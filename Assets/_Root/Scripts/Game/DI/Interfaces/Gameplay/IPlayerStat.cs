@@ -1,3 +1,5 @@
+using System;
+
 namespace Pancake.Game.Interfaces
 {
     /// <summary>
@@ -5,9 +7,11 @@ namespace Pancake.Game.Interfaces
     /// </summary>
     public interface IPlayerStat
     {
+        event Action<int> OnHealthChanged;
         float MoveSpeed { get; }
         int MaxHealth { get; }
-        int Health { get; set; }
+        int Health { get; }
+        void UpdateHealth(int amount);
         void IncreaseMaxHeath(int value);
     }
 }

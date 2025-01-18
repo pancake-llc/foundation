@@ -7,7 +7,7 @@ namespace Pancake
     public abstract class GameUnit : GameComponent, IUpdate, IFixedUpdate, ILateUpdate
     {
         [SerializeField] private EGameLoopType gameLoop;
-        
+
         private void OnEnable()
         {
             Register();
@@ -39,5 +39,12 @@ namespace Pancake
         public virtual void OnLateUpdate() { }
         protected virtual void OnEnabled() { }
         protected virtual void OnDisabled() { }
+
+        internal void SwitchGameLoop(EGameLoopType gameLoop)
+        {
+            UnRegister();
+            this.gameLoop = gameLoop;
+            Register();
+        }
     }
 }

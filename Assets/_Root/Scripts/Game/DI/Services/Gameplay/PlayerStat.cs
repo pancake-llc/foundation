@@ -19,14 +19,20 @@ namespace Pancake.Game
         private Stat MaxHeathStat => _maxHeathStat ??= new Stat(MaxHeathMediator, baseHeathStat);
         private StatMediator MaxHeathMediator => _maxHeathMediator ??= new StatMediator();
 
+        public void UpdateHealth(int amount)
+        {
+            _currentHeath += amount;
+            OnHealthChanged?.Invoke(amount);
+        }
+
         public void IncreaseMaxHeath(int value)
         {
             var statModifier = new StatModifier.StatModifier(baseHeathStat.statType, new AddModifier(value));
             MaxHeathMediator.AddModifier(statModifier);
         }
 
+        public event Action<int> OnHealthChanged;
         public int MaxHealth => (int) MaxHeathStat.Value;
-
-        public int Health { get => _currentHeath; set => _currentHeath = value; }
+        public int Health => _currentHeath;
     }
 }

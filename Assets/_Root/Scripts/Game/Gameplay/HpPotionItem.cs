@@ -19,7 +19,7 @@ namespace Pancake.Game
 
         public void Collect()
         {
-            _playerStat.Health += valueRecovery;
+            _playerStat.UpdateHealth(valueRecovery);
             _onCollected.Trigger();
         }
     }

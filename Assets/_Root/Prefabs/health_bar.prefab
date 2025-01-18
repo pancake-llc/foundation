@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5928773359408014257}
   - component: {fileID: 5941950483241370084}
+  - component: {fileID: 2037656616397753821}
   m_Layer: 0
   m_Name: health_bar
   m_TagString: Untagged
@@ -60,6 +61,275 @@ Canvas:
   m_SortingLayerID: -515380899
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &2037656616397753821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3433010829814772064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 206e66cb692f47bdafb18006292fb74c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  foregroundBar: {fileID: 8045442497153197724}
+  delayedBarDecreasing: {fileID: 7752695000287262387}
+  delayedBarIncreasing: {fileID: 0}
+  minimumBarFillValue: 0
+  maximumBarFillValue: 1
+  setInitialFillValueOnStart: 0
+  initialFillValue: 0
+  barDirection: 0
+  fillMode: 0
+  timeMode: 1
+  barFillMode: 0
+  lerpForegroundBar: 1
+  lerpForegroundBarSpeedIncreasing: 15
+  lerpForegroundBarSpeedDecreasing: 15
+  lerpForegroundBarDurationIncreasing: 0.2
+  lerpForegroundBarDurationDecreasing: 0.2
+  lerpForegroundBarCurveIncreasing:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  lerpForegroundBarCurveDecreasing:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  decreasingDelay: 1
+  lerpDecreasingDelayedBar: 1
+  lerpDecreasingDelayedBarSpeed: 15
+  lerpDecreasingDelayedBarDuration: 0.2
+  lerpDecreasingDelayedBarCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  increasingDelay: 1
+  lerpIncreasingDelayedBar: 1
+  lerpIncreasingDelayedBarSpeed: 15
+  lerpIncreasingDelayedBarDuration: 0.2
+  lerpIncreasingDelayedBarCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  bumpScaleOnChange: 1
+  bumpOnIncrease: 0
+  bumpOnDecrease: 0
+  bumpDuration: 0.2
+  changeColorWhenBumping: 1
+  bumpColor: {r: 1, g: 1, b: 1, a: 1}
+  storeBarColorOnPlay: 1
+  bumpScaleAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.3
+      value: 1.05
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  bumpColorAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.3
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  applyBumpIntensityMultiplier: 0
+  bumpIntensityMultiplier:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  onBump:
+    m_PersistentCalls:
+      m_Calls: []
+  onBumpIntensity:
+    m_PersistentCalls:
+      m_Calls: []
+  onBarMovementDecreasingStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onBarMovementDecreasingStop:
+    m_PersistentCalls:
+      m_Calls: []
+  onBarMovementIncreasingStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onBarMovementIncreasingStop:
+    m_PersistentCalls:
+      m_Calls: []
+  percentageText: {fileID: 0}
+  textPrefix: 
+  textSuffix: 
+  textValueMultiplier: 1
+  textFormat: '{000}'
+  displayTotal: 0
+  totalSeparator: ' / '
+  debugNewTargetValue: 0
+  barProgress: 0
+  barTarget: 0
+  delayBarIncreaseProgress: 0
+  delayBarDecreaseProgress: 0
 --- !u!1 &3659849435329170245
 GameObject:
   m_ObjectHideFlags: 0

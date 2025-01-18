@@ -12,6 +12,7 @@ namespace Pancake.UI
     /// Add this bar to an object and link it to a bar (possibly the same object the script is on), and you'll be able to resize the bar object based on a current value, located between a min and max value.
     /// See the HealthBar.cs script for a use case
     /// </summary>
+    [EditorIcon("icon_progressbar")]
     public class UIProgressBar : GameComponent
     {
         public Transform foregroundBar;
@@ -34,22 +35,22 @@ namespace Pancake.UI
         [Space] [FoldoutGroup("Forceground Bar")] public bool lerpForegroundBar = true;
 
         [FoldoutGroup("Forceground Bar")] [ShowIf(nameof(lerpForegroundBar)), Indent, LabelText("Speed Increasing")]
-        public float lerpFbSpeedIncreasing = 15f;
+        public float lerpForegroundBarSpeedIncreasing = 15f;
 
         [FoldoutGroup("Forceground Bar")] [ShowIf(nameof(lerpForegroundBar)), Indent, LabelText("Speed Decreasing")]
-        public float lerpFbSpeedDecreasing = 15f;
+        public float lerpForegroundBarSpeedDecreasing = 15f;
 
         [FoldoutGroup("Forceground Bar")] [ShowIf(nameof(lerpForegroundBar)), Indent, LabelText("Duration Increasing")]
-        public float lerpFbDurationIncreasing = 0.2f;
+        public float lerpForegroundBarDurationIncreasing = 0.2f;
 
         [FoldoutGroup("Forceground Bar")] [ShowIf(nameof(lerpForegroundBar)), Indent, LabelText("Duration Decreasing")]
-        public float lerpFbDurationDecreasing = 0.2f;
+        public float lerpForegroundBarDurationDecreasing = 0.2f;
 
         [FoldoutGroup("Forceground Bar")] [ShowIf(nameof(lerpForegroundBar)), Indent, LabelText("Curve Increasing")]
-        public AnimationCurve lerpFbCurveIncreasing = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+        public AnimationCurve lerpForegroundBarCurveIncreasing = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
         [FoldoutGroup("Forceground Bar")] [ShowIf(nameof(lerpForegroundBar)), Indent, LabelText("Curve Decreasing")]
-        public AnimationCurve lerpFbCurveDecreasing = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+        public AnimationCurve lerpForegroundBarCurveDecreasing = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
 
         [Space] [FoldoutGroup("Delayed Bar Decreasing")] public float decreasingDelay = 1f;
@@ -117,22 +118,16 @@ namespace Pancake.UI
         [Space] [FoldoutGroup("Debug", expanded: true)] [Range(0f, 1f)]
         public float debugNewTargetValue;
 
-        [FoldoutGroup("Debug", expanded: true)] public bool debugUpdateBarButton;
-        [FoldoutGroup("Debug", expanded: true)] public bool debugSetBarButton;
-        [FoldoutGroup("Debug", expanded: true)] public bool testBumpButton;
-        [FoldoutGroup("Debug", expanded: true)] public bool plus10PercentButton;
-        [FoldoutGroup("Debug", expanded: true)] public bool minus10PercentButton;
-
-        [Space] [FoldoutGroup("Debug Read Only", expanded: true)] [Range(0f, 1f), ReadOnly]
+        [Space] [FoldoutGroup("Debug", expanded: true)] [Range(0f, 1f), ReadOnly]
         public float barProgress;
 
-        [FoldoutGroup("Debug Read Only", expanded: true)] [Range(0f, 1f), ReadOnly]
+        [FoldoutGroup("Debug", expanded: true)] [Range(0f, 1f), ReadOnly]
         public float barTarget;
 
-        [FoldoutGroup("Debug Read Only", expanded: true)] [Range(0f, 1f), ReadOnly]
+        [FoldoutGroup("Debug", expanded: true)] [Range(0f, 1f), ReadOnly]
         public float delayBarIncreaseProgress;
 
-        [FoldoutGroup("Debug Read Only", expanded: true)] [Range(0f, 1f), ReadOnly]
+        [FoldoutGroup("Debug", expanded: true)] [Range(0f, 1f), ReadOnly]
         public float delayBarDecreaseProgress;
 
         protected bool initialized;
@@ -492,9 +487,9 @@ namespace Pancake.UI
             if (direction < 0)
             {
                 newFill = ComputeNewFill(lerpForegroundBar,
-                    lerpFbSpeedDecreasing,
-                    lerpFbDurationDecreasing,
-                    lerpFbCurveDecreasing,
+                    lerpForegroundBarSpeedDecreasing,
+                    lerpForegroundBarDurationDecreasing,
+                    lerpForegroundBarCurveDecreasing,
                     0f,
                     percentLastTimeBarWasUpdated,
                     out t1);
@@ -538,9 +533,9 @@ namespace Pancake.UI
                 if (delayedBarIncreasing == null)
                 {
                     newFill = ComputeNewFill(lerpForegroundBar,
-                        lerpFbSpeedIncreasing,
-                        lerpFbDurationIncreasing,
-                        lerpFbCurveIncreasing,
+                        lerpForegroundBarSpeedIncreasing,
+                        lerpForegroundBarDurationIncreasing,
+                        lerpForegroundBarCurveIncreasing,
                         0f,
                         percentLastTimeBarWasUpdated,
                         out t2);
@@ -556,9 +551,9 @@ namespace Pancake.UI
                     if (time - lastUpdateTimestamp > increasingDelay)
                     {
                         newFillDelayed = ComputeNewFill(lerpIncreasingDelayedBar,
-                            lerpFbSpeedIncreasing,
-                            lerpFbDurationIncreasing,
-                            lerpFbCurveIncreasing,
+                            lerpForegroundBarSpeedIncreasing,
+                            lerpForegroundBarDurationIncreasing,
+                            lerpForegroundBarCurveIncreasing,
                             increasingDelay,
                             currentDelayedBarDecreasingProgress,
                             out t2);

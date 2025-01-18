@@ -1,4 +1,5 @@
 using Pancake.AI;
+using Pancake.Component;
 using Pancake.Game.Interfaces;
 using Sisus.Init;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace Pancake.Game
     public class Player : MonoBehaviour<IPlayerStat>
     {
         [SerializeField] private StringConstant contextDataKey;
+        [SerializeField] private HealthBarComponent healthBar;
         private IPlayerStat _stat;
         private AIBrain _brain;
 
@@ -24,11 +26,17 @@ namespace Pancake.Game
 
         private void Start()
         {
-            _stat.Health = _stat.MaxHealth;
+            _stat.UpdateHealth(_stat.MaxHealth - _stat.Health);
             _brain = GetComponent<AIBrain>();
         }
 
-        private void OnEnable() { Brain.updateContext += UpdateContext; }
+        private void OnHealthChanged(int amount) { healthBar.UpdateBar(_stat.Health, 0f, _stat.MaxHealth, true); }
+
+        private void OnEnable()
+        {
+            Brain.updateContext += UpdateContext;
+            _stat.OnHealthChanged += OnHealthChanged;
+        }
 
         private void UpdateContext(AIContext context)
         {
@@ -36,7 +44,11 @@ namespace Pancake.Game
             context.SetData(contextDataKey.Value, normalized);
         }
 
-        private void OnDisable() { Brain.updateContext -= UpdateContext; }
+        private void OnDisable()
+        {
+            Brain.updateContext -= UpdateContext;
+            _stat.OnHealthChanged -= OnHealthChanged;
+        }
 
         private void OnTriggerEnter(Collider other)
         {

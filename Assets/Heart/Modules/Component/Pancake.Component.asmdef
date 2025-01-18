@@ -9,7 +9,8 @@
         "GUID:3b570a5146f9d4f0fa107ed4559471a3",
         "GUID:3aa1866a824b5472da50fe142777d95f",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:2953aa809c908034bb137ea43ba7735d"
+        "GUID:2953aa809c908034bb137ea43ba7735d",
+        "GUID:71a2e5fd62742b447a45a06bf18f9a7d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -23,11 +24,6 @@
             "name": "com.annulusgames.lit-motion",
             "expression": "1.0.0",
             "define": "PANCAKE_LITMOTION"
-        },
-        {
-            "name": "jp.hadashikick.vitalrouter",
-            "expression": "1.0.0",
-            "define": "PANCAKE_ROUTER"
         }
     ],
     "noEngineReferences": false
