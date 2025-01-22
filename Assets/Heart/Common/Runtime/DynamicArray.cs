@@ -12,7 +12,7 @@ namespace Pancake.Common
         [SerializeField] public T[] items;
         public int Count => Length;
         [field: SerializeField, ReadOnly] public int Length { get; set; }
-        public int TotalLength => items.Length;
+        public int Capacity => items.Length;
         private const int DEFAULT_CAPACITY = 10;
         private const int MINIMUM_PADDING = 5;
 
@@ -30,7 +30,7 @@ namespace Pancake.Common
 
         public void Add(T item)
         {
-            if (Length + 1 > TotalLength) ResizeMaintain(TotalLength + CalculatePadding(TotalLength));
+            if (Length + 1 > Capacity) ResizeMaintain(Capacity + CalculatePadding(Capacity));
 
             this[Length] = item;
             Length++;
@@ -44,7 +44,7 @@ namespace Pancake.Common
 
         public void ResizeMaintain(int capacity)
         {
-            if (capacity <= TotalLength) return;
+            if (capacity <= Capacity) return;
 
             var original = items;
             items = new T[capacity];
@@ -61,7 +61,7 @@ namespace Pancake.Common
 
         public void Assign(IEnumerable<T> items, int count)
         {
-            if (count > TotalLength) ResizeNew(count + CalculatePadding(count));
+            if (count > Capacity) ResizeNew(count + CalculatePadding(count));
 
             var i = 0;
             foreach (var item in items)

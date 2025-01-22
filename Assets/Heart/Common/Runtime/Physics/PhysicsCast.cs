@@ -23,9 +23,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -51,9 +51,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -87,9 +87,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -132,9 +132,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -164,9 +164,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -194,9 +194,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -226,9 +226,9 @@ namespace Pancake.Common
                     mask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -263,9 +263,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -293,9 +293,9 @@ namespace Pancake.Common
                     layerMask,
                     queryTriggerInteraction);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;

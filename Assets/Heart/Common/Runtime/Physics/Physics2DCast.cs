@@ -37,9 +37,9 @@ namespace Pancake.Common
                     results.items,
                     maxDistance);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -64,9 +64,9 @@ namespace Pancake.Common
             {
                 count = Physics2D.Linecast(start, end, contactFilter, results.items);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -114,9 +114,9 @@ namespace Pancake.Common
                     results.items,
                     distance);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -168,9 +168,9 @@ namespace Pancake.Common
                     results.items,
                     distance);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -208,9 +208,9 @@ namespace Pancake.Common
                     contactFilter,
                     results.items);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -250,9 +250,9 @@ namespace Pancake.Common
                     results.items,
                     distance);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -281,9 +281,9 @@ namespace Pancake.Common
             {
                 count = Physics2D.OverlapArea(pointA, pointB, contactFilter, results.items);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -329,9 +329,9 @@ namespace Pancake.Common
                     contactFilter,
                     results.items);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -360,9 +360,9 @@ namespace Pancake.Common
             {
                 count = Physics2D.OverlapCircle(point, radius, contactFilter, results.items);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
@@ -387,9 +387,9 @@ namespace Pancake.Common
             {
                 count = Physics2D.OverlapPoint(point, contactFilter, results.items);
 
-                if (results.TotalLength > count) break;
+                if (results.Capacity > count) break;
 
-                results.ResizeMaintain(results.TotalLength + results.CalculatePadding(results.TotalLength));
+                results.ResizeMaintain(results.Capacity + results.CalculatePadding(results.Capacity));
             }
 
             results.Length = count;
