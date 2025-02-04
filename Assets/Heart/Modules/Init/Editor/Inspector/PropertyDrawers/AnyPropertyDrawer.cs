@@ -1,4 +1,4 @@
-﻿//#define DEBUG_ENABLED
+﻿#define DEBUG_ENABLED
 #define DEBUG_CROSS_SCENE_REFERENCES
 
 using System;
@@ -372,7 +372,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			// Elements with foldouts are drawn better, when not drawing PrefixLabel manually,
 			// so prefer that, if type dropdown does not need to be drawn.
-			if(!drawTypeDropdownButton && !draggingAssignableObject && valueProperty.propertyType is not SerializedPropertyType.ObjectReference)
+			if(!drawTypeDropdownButton && !draggingAssignableObject && valueProperty?.propertyType is not SerializedPropertyType.ObjectReference)
 			{
 				if(TryGetNullArgumentGuardBasedControlTint(out Color setGUIColor))
 				{
@@ -387,9 +387,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 
 			// Arrays and lists are drawn better, when not drawing PrefixLabel manually.
-			if(valueProperty.isArray
-				// SerializedProperty.isArray is true for string fields! Skip those.
-				&& valueProperty.propertyType != SerializedPropertyType.String)
+			if(valueProperty is not null && valueProperty.isArray
+			   // SerializedProperty.isArray is true for string fields! Skip those.
+			   && valueProperty.propertyType != SerializedPropertyType.String)
 			{
 				var dropdownRect = position;
 				float labelWidth = EditorGUIUtility.labelWidth;
@@ -467,7 +467,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				label = GUIContent.none;
 			}
 
-			if(valueProperty.propertyType != SerializedPropertyType.ManagedReference)
+			if(valueProperty?.propertyType != SerializedPropertyType.ManagedReference)
 			{
 				EditorGUI.indentLevel = 0;
 				if(drawTypeDropdownButton)
@@ -1327,7 +1327,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					CurrentlyDrawnItemNullGuardResult = NullGuardResult.Passed;
 				}
 
-				if(referenceProperty.objectReferenceValue is _Null nullObject && nullObject && valueProperty.propertyType == SerializedPropertyType.ManagedReference)
+				// This can happen if Unity can't serialize the field with the SerializeReference attribute.
+				var valuePropertyIsNull = valueProperty is null; 
+				if(referenceProperty.objectReferenceValue is _Null nullObject && nullObject && !valuePropertyIsNull && valueProperty.propertyType == SerializedPropertyType.ManagedReference)
 				{
 					valueProperty.SetValue(null);
 				}
@@ -1341,7 +1343,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					shouldRebuildButtons = true;
 				}
 				
-				object managedValue = valueProperty is null || valueProperty.propertyType == SerializedPropertyType.ObjectReference ? null : valueProperty.GetValue();
+				object managedValue = valuePropertyIsNull || valueProperty.propertyType == SerializedPropertyType.ObjectReference ? null : valueProperty.GetValue();
 				bool managedValueIsNull = managedValue is null;
 				drawObjectField = GetShouldDrawObjectField(managedValueIsNull);
 				drawNullOption = !isService && !valueType.IsValueType && ((canBeUnityObject && canBeNonUnityObject) || TryGetValue(out _, out _) == -1);
@@ -1350,7 +1352,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
 					RebuildDefiningTypeAndDiscardButtons(out drawTypeDropdownButton, out drawDiscardButton);
 					#if DEV_MODE && DEBUG_ENABLED
-					Debug.Log($"{valueType.Name}.drawTypeDropdownButton:{drawTypeDropdownButton}, propertyType:{valueProperty.propertyType}, drawObjectField:{drawObjectField}");
+					Debug.Log($"{valueType?.Name}.drawTypeDropdownButton:{drawTypeDropdownButton}, propertyType:{valueProperty?.propertyType.ToString() ?? "n/a"}, drawObjectField:{drawObjectField}");
 					#endif
 				}
 
@@ -1414,7 +1416,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						return false;
 					}
 
-					if(valueProperty is null || valueProperty.propertyType == SerializedPropertyType.ObjectReference)
+					if(valuePropertyIsNull || valueProperty.propertyType == SerializedPropertyType.ObjectReference)
 					{
 						return true;
 					}
@@ -1453,7 +1455,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 
 				var prefixLabel = GUIContent.none;
-				var managedValue = valueProperty?.GetValue();
+				var valuePropertyIsNull = valueProperty is null;
+				var managedValue = valuePropertyIsNull ? null : valueProperty.GetValue();
 				bool managedValueIsNull = managedValue is null;
 				var instanceType = !managedValueIsNull ? managedValue.GetType()
 									: typeof(Object).IsAssignableFrom(valueType) ? valueType
@@ -1471,7 +1474,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(!managedValueIsNull && (valueProperty.isExpanded || valueHasChildProperties || TypeUtility.IsSerializableByUnity(instanceType)))
 				{
-					typeDropdownButton = new TypeDropdownButton(GUIContent.none, new GUIContent(buttonText), typeOptions, selectedTypes, OnSelectedItemChanged, menuTitle, GetItemContent);
+					typeDropdownButton = new(GUIContent.none, new GUIContent(buttonText), typeOptions, selectedTypes, OnSelectedItemChanged, menuTitle, GetItemContent);
 					discardValueButton = null;
 					drawTypeDropdownButton = true;
 					drawDiscardButton = false;
@@ -1480,7 +1483,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(!hasMoreThanOneNonValueProviderOption || (managedValueIsNull && drawObjectField))
 				{
-					typeDropdownButton = new TypeDropdownButton(GUIContent.none, GUIContent.none, typeOptions, selectedTypes, OnSelectedItemChanged, menuTitle, GetItemContent);
+					typeDropdownButton = new(GUIContent.none, GUIContent.none, typeOptions, selectedTypes, OnSelectedItemChanged, menuTitle, GetItemContent);
 					discardValueButton = null;
 					drawTypeDropdownButton = true;
 					drawDiscardButton = false;
@@ -1646,15 +1649,21 @@ namespace Sisus.Init.EditorOnly.Internal
 				#if DEV_MODE
 				Debug.Assert(setType is null || valueType.IsAssignableFrom(setType) || typeof(Object).IsAssignableFrom(setType));
 				#endif
-
+				
+				var valuePropertyIsNull = valueProperty is null;
+				
 				if(setType is null)
 				{
-					valueProperty.managedReferenceValue = null;
+					if(!valuePropertyIsNull)
+					{
+						valueProperty.managedReferenceValue = null;
+					}
+
 					referenceProperty.objectReferenceValue = null;
 				}
 				else if(typeof(Object).IsAssignableFrom(setType))
 				{
-					if(valueProperty.propertyType == SerializedPropertyType.ManagedReference)
+					if(!valuePropertyIsNull && valueProperty.propertyType == SerializedPropertyType.ManagedReference)
 					{
 						valueProperty.managedReferenceValue = null;
 					}
@@ -1686,7 +1695,7 @@ namespace Sisus.Init.EditorOnly.Internal
 						referenceProperty.objectReferenceValue = useSingleSharedInstance ? singleSharedInstance : ScriptableObject.CreateInstance(setType);
 					}
 				}
-				else if(valueProperty.propertyType != SerializedPropertyType.ManagedReference)
+				else if(!valuePropertyIsNull && valueProperty.propertyType != SerializedPropertyType.ManagedReference)
 				{
 					if(setType == typeof(int))
 					{
@@ -1731,12 +1740,20 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 				else if(typeof(Type).IsAssignableFrom(setType))
 				{
-					valueProperty.managedReferenceValue = new _Type(setType, null);
+					if(!valuePropertyIsNull)
+					{
+						valueProperty.managedReferenceValue = new _Type(setType, null);
+					}
+
 					referenceProperty.objectReferenceValue = null;
 				}
 				else
 				{
-					valueProperty.managedReferenceValue = InitializerEditorUtility.CreateInstance(setType);
+					if(!valuePropertyIsNull)
+					{
+						valueProperty.managedReferenceValue = InitializerEditorUtility.CreateInstance(setType);
+					}
+
 					referenceProperty.objectReferenceValue = null;
 				}
 
@@ -1949,9 +1966,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				var menu = new GenericMenu();
 			
-				if(valueProperty.GetValue() is object value && !value.GetType().IsValueType)
+				if(valueProperty?.GetValue() is { } value && !value.GetType().IsValueType)
 				{
-					menu.AddItem(new GUIContent("Set Null"), false, ()=>
+					menu.AddItem(new("Set Null"), false, ()=>
 					{
 						valueProperty.SetValue(null);
 						referenceProperty.objectReferenceValue = null;
@@ -1959,14 +1976,14 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 				else if(referenceProperty.objectReferenceValue)
 				{
-					menu.AddItem(new GUIContent("Set Null"), false, ()=>referenceProperty.objectReferenceValue = null);
+					menu.AddItem(new("Set Null"), false, ()=>referenceProperty.objectReferenceValue = null);
 				}
 				else if(isService)
 				{
-					menu.AddItem(new GUIContent("Set Null"), false, ()=>referenceProperty.objectReferenceValue = ScriptableObject.CreateInstance<_Null>());
+					menu.AddItem(new("Set Null"), false, ()=>referenceProperty.objectReferenceValue = ScriptableObject.CreateInstance<_Null>());
 				}
 
-				menu.AddItem(new GUIContent("Copy Property Path"), false, ()=> GUIUtility.systemCopyBuffer = valueProperty.propertyPath.Substring(valueProperty.propertyPath.LastIndexOf('.')));
+				menu.AddItem(new("Copy Property Path"), false, ()=> GUIUtility.systemCopyBuffer = valueProperty.propertyPath.Substring(valueProperty.propertyPath.LastIndexOf('.')));
 
 				menu.DropDown(rect);
 			}

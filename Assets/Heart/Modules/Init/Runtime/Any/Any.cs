@@ -904,7 +904,7 @@ namespace Sisus.Init
 			{
 				var crossSceneTarget = crossSceneReference.Value;
 				#if DEV_MODE
-				Debug.Log($"CrossSceneReference {crossSceneTarget.name} ({crossSceneTarget.GetType().Name}) isCrossScene was false. Changing into a direct reference.");
+				Debug.Log($"CrossSceneReference {crossSceneTarget?.name} ({crossSceneTarget?.GetType().Name}) isCrossScene was false. Changing into a direct reference.");
 				#endif
 
 				reference = crossSceneTarget;

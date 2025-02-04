@@ -1,4 +1,4 @@
-#define DEBUG_SERVICE_PROVIDERS
+//#define DEBUG_SERVICE_PROVIDERS
 
 using System;
 using System.Collections.Generic;
@@ -1410,20 +1410,24 @@ namespace Sisus.Init
 			if(!typeof(TService).IsValueType)
 			{
 				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
-				if(ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var serviceInfo))
-				{
-					#if UNITY_EDITOR
-					if(EditorOnly.ThreadSafe.Application.IsPlaying)
-					#endif
-						_ = ServiceInjector.LazyInit(serviceInfo, typeof(TService));
-				}
-				#endif
 
 				#if UNITY_EDITOR
-				if(ServiceAttributeUtility.definingTypes.ContainsKey(typeof(TService)))
+				if(ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TService), out var serviceInfo)
+				   && serviceInfo.ConcreteOrDefiningType.IsInstanceOfType(test))
 				{
 					return true;
 				}
+				#endif
+				
+				if(
+					#if UNITY_EDITOR
+					EditorOnly.ThreadSafe.Application.IsPlaying &&
+					#endif
+					ServiceInjector.TryGetUninitializedServiceInfo(typeof(TService), out var uninitializedServiceInfo))
+				{
+					_ = ServiceInjector.LazyInit(uninitializedServiceInfo, typeof(TService));
+				}
+
 				#endif
 
 				if(ReferenceEquals(test, Service<TService>.Instance))

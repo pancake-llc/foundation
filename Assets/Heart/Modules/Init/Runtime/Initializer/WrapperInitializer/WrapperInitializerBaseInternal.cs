@@ -6,7 +6,6 @@ using UnityEngine;
 using static Sisus.Init.Internal.InitializerUtility;
 using static Sisus.NullExtensions;
 using Object = UnityEngine.Object;
-using System.Reflection;
 #if UNITY_EDITOR
 using Sisus.Init.EditorOnly;
 #endif
@@ -162,15 +161,14 @@ namespace Sisus.Init.Internal
 		}
 
 		/// <summary>
-		/// Returns an awaitable task for initializing the client object of type <see cref="TClient"/>
-		/// with the arguments specified by this initializer.
+		/// Returns an awaitable task for initializing the wrapped object with the arguments specified by this initializer.
 		/// <para>
 		/// The method will wait until all dependencies of the client are ready, and only then initialize the target.
 		/// For example, if one of the dependencies is an addressable asset, the method can wait until the asset
 		/// has finished loading, and then pass it to the client's Init method.
 		/// </para>
 		/// <para>
-		/// Note that if any dependency requires asynchronous loading, and the <paramref name="client"/> is a
+		/// Note that if any dependency requires asynchronous loading, and the <paramref name="target"/> is a
 		/// component attached to an active scene object, then initialization event functions like Awake, OnEnable
 		/// and Start can get called for the target before initialization has finished.
 		/// </para>
@@ -184,7 +182,7 @@ namespace Sisus.Init.Internal
 		/// </para>
 		/// <para>
 		/// If <paramref name="target"/> is <see langword="null"/>,
-		/// then this method attaches a new component of type <see cref="TClient"/> to this <see cref="GameObject"/>,
+		/// then this method attaches a new component to this <see cref="GameObject"/>,
 		/// initializes it, and returns it.
 		/// </para>
 		/// </summary>
@@ -267,7 +265,7 @@ namespace Sisus.Init.Internal
 			#endif
 
 			#if DEBUG && UNITY_2023_1_OR_NEWER
-			if(target && target.didAwake && target.GetType().GetCustomAttribute<ExecuteAlways>() is null)
+			if(target && target.didAwake && !target.GetType().IsDefined(typeof(ExecuteAlways), false))
 			{
 				Debug.LogWarning($"{GetType().Name}.Awake was called after target {target.GetType().Name}.Awake has already executed! You can add the [InitAfter(typeof({target.GetType().Name}))] attribute to the {GetType().Name} class to make sure it is initialized before its client.");
 			}
@@ -407,9 +405,9 @@ namespace Sisus.Init.Internal
 		bool IInitializerEditorOnly.WasJustReset { get; set; }
 		bool IInitializerEditorOnly.IsAsync => IsAsync;
 		void IInitializerEditorOnly.SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) => SetReleaseArgumentOnDestroy(argument, shouldRelease);
-		void IInitializerEditorOnly.SetIsArgumentAsync(Arguments argument, bool isAsync) => SetReleaseArgumentOnDestroy(argument, isAsync);
+		void IInitializerEditorOnly.SetIsArgumentAsync(Arguments argument, bool isAsync) => SetIsArgumentAsync(argument, isAsync);
 		private protected virtual void SetReleaseArgumentOnDestroy(Arguments argument, bool shouldRelease) { }
-		private protected virtual void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider) { }
+		private protected virtual void SetIsArgumentAsync(Arguments argument, bool isAsyncValueProvider) { }
 		private protected abstract NullGuardResult EvaluateNullGuard();
 
 		private protected abstract void Reset();

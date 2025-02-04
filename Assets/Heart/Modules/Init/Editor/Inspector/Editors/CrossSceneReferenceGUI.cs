@@ -193,7 +193,7 @@ namespace Sisus.Init.EditorOnly
 				clipRect.x += 2f;
 				clipRect.y += 2f;
 				clipRect.width -= 4f;
-				clipRect.height -= 4f;
+				clipRect.height -= 3f;
 				GUI.BeginClip(clipRect);
 				overlayRect.x = -2f;
 				overlayRect.y = -2f;

@@ -44,7 +44,7 @@ namespace Sisus.Init
 
 			if(!targetUnfoldedness.ContainsKey(targetType))
 			{
-				targetUnfoldedness.Add(targetType, new Dictionary<string, bool>());
+				targetUnfoldedness.Add(targetType, new());
 			}
 
 			rootFields = GetRuntimeFields(targetType, baseType);
@@ -69,7 +69,7 @@ namespace Sisus.Init
 						fields.Add(field);
 					}
 				}
-				
+
 				type = type.BaseType;
 			}
 			while(type != stopAtBaseType && !TypeUtility.IsNullOrBaseType(type) && (stopAtBaseType == null || !stopAtBaseType.IsGenericTypeDefinition || !type.IsGenericType || type.GetGenericTypeDefinition() != stopAtBaseType));
@@ -79,13 +79,13 @@ namespace Sisus.Init
 
 		private static bool ShouldDrawAsRuntimeField([DisallowNull] FieldInfo field)
 		{
-			if(field.IsDefined(typeof(HideInInspector)) || field.IsDefined(typeof(SerializeField)))
+			if(field.IsDefined(typeof(HideInInspector)) || field.IsDefined(typeof(SerializeField)) || field.IsDefined(typeof(SerializeReference)))
 			{
 				return false;
 			}
 
 			var fieldType = field.FieldType;
-			return field.IsNotSerialized || field.IsInitOnly || field.IsPrivate || fieldType.IsAbstract || fieldType.IsSerializable;
+			return field.IsNotSerialized || field.IsInitOnly || field.IsPrivate || fieldType.IsAbstract || !fieldType.IsSerializable;
 		}
 
 		public void Draw()
@@ -96,7 +96,12 @@ namespace Sisus.Init
 
 			if(ShouldDraw())
 			{
+				EditorGUILayout.BeginHorizontal();
+				GUILayout.Space(-14f);
+				EditorGUILayout.BeginVertical();
 				DrawRuntimeMembers();
+				EditorGUILayout.EndVertical();
+				EditorGUILayout.EndHorizontal();
 			}
 
 			#if DEV_MODE
@@ -380,7 +385,7 @@ namespace Sisus.Init
 			{
 				return;
 			}
-			
+
 			EditorGUI.indentLevel++;
 
 			var callsField = typeof(UnityEventBase).GetField("m_Calls", AllDeclaredInstance);
@@ -415,7 +420,7 @@ namespace Sisus.Init
 			{
 				return;
 			}
-			
+
 			EditorGUI.indentLevel++;
 
 			foreach(Delegate invocationItem in @delegate.GetInvocationList())

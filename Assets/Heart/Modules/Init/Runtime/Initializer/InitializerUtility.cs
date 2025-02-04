@@ -317,6 +317,16 @@ namespace Sisus.Init.Internal
 			}
 			else if(argument.reference)
 			{
+				#if UNITY_EDITOR
+				if(AssetDatabase.Contains(argument.reference))
+				{
+					#if DEV_MODE
+					Debug.LogError("HandleDisposeValue target '{argument.reference}' was an asset ('{AssetDatabase.GetAssetPath(argument.reference)}').");
+					#endif
+					return;
+				}
+				#endif
+
 				Object.Destroy(argument.reference);
 			}
 		}

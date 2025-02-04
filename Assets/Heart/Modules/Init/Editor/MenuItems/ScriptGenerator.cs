@@ -21,9 +21,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			"namespace {1}\r\n" +
 			"{{\r\n" +
 			"\t/// <summary>\r\n" +
-			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// Initializer for the <see cref=\"{3}\"/> {4}.\r\n" +
 			"\t/// </summary>\r\n" +
-			"\tinternal sealed class {2}Initializer : {4}<{2}, {5}>\r\n" +
+			"\tinternal sealed class {2} : {5}<{3}, {6}>\r\n" +
 			"\t{{\r\n" +
 			"\t\t#if UNITY_EDITOR\r\n" +
 			"\t\t/// <summary>\r\n" +
@@ -37,7 +37,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			"\t\t/// </summary>\r\n" +
 			"\t\tprivate sealed class Init\r\n" +
 			"\t\t{{\r\n" +
-			"{6}" +
+			"{7}" +
 			"\t\t}}\r\n" +
 			"\t\t#endif\r\n" +
 			"\t}}\r\n" +
@@ -48,11 +48,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			"namespace {1}\r\n" +
 			"{{\r\n" +
 			"\t/// <summary>\r\n" +
-			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// Initializer for the <see cref=\"{3}\"/> {4}.\r\n" +
 			"\t/// </summary>\r\n" +
-			"\tinternal sealed class {2}Initializer : {4}<{2}, {5}>\r\n" +
+			"\tinternal sealed class {2} : {5}<{3}, {6}>\r\n" +
 			"\t{{\r\n" +
-			"{6}" +
+			"{7}" +
 			"\t}}\r\n" +
 			"}}\r\n";
 
@@ -61,9 +61,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			"namespace {1}\r\n" +
 			"{{\r\n" +
 			"\t/// <summary>\r\n" +
-			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// Initializer for the <see cref=\"{3}\"/> {4}.\r\n" +
 			"\t/// </summary>\r\n" +
-			"\tinternal sealed class {2}Initializer : {4}<{5}>\r\n" +
+			"\tinternal sealed class {2} : {5}<{6}>\r\n" +
 			"\t{{\r\n" +
 			"\t\t#if UNITY_EDITOR\r\n" +
 			"\t\t/// <summary>\r\n" +
@@ -77,11 +77,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			"\t\t/// </summary>\r\n" +
 			"\t\tprivate sealed class Init\r\n" +
 			"\t\t{{\r\n" +
-			"{6}" +
+			"{7}" +
 			"\t\t}}\r\n" +
 			"\t\t#endif\r\n" +
 			"\r\n" +
-			"\t\tprotected override {2} CreateWrappedObject({7}) => new({8});\r\n" +
+			"\t\tprotected override {3} CreateWrappedObject({8}) => new({9});\r\n" +
 			"\t}}\r\n" +
 			"}}\r\n";
 
@@ -92,13 +92,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			"namespace {1}\r\n" +
 			"{{\r\n" +
 			"\t/// <summary>\r\n" +
-			"\t/// Initializer for the <see cref=\"{2}\"/> {3}.\r\n" +
+			"\t/// Initializer for the <see cref=\"{3}\"/> {4}.\r\n" +
 			"\t/// </summary>\r\n" +
-			"\tinternal sealed class {2}Initializer : {4}<{5}>\r\n" +
+			"\tinternal sealed class {2} : {5}<{6}>\r\n" +
 			"\t{{\r\n" +
-			"{6}" +
+			"{7}" +
 			"\r\n" +
-			"\t\tprotected override {2} CreateWrappedObject({7}) => new({8});\r\n" +
+			"\t\tprotected override {3} CreateWrappedObject({8}) => new({9});\r\n" +
 			"\t\t}}\r\n" +
 			"}}\r\n";
 
@@ -107,9 +107,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			"namespace {1}\r\n" +
 			"{{\r\n" +
 			"\t/// <summary>\r\n" +
-			"\t/// Initializer for the <see cref=\"{2}\"/> component.\r\n" +
+			"\t/// Initializer for the <see cref=\"{3}\"/> component.\r\n" +
 			"\t/// </summary>\r\n" +
-			"\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
+			"\tinternal sealed class {2} : {4}<{3}, {5}>\r\n" +
 			"\t{{\r\n" +
 			"\t\t#if UNITY_EDITOR\r\n" +
 			"\t\t/// <summary>\r\n" +
@@ -123,13 +123,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			"\t\t/// </summary>\r\n" +
 			"\t\tprivate sealed class Init\r\n" +
 			"\t\t{{\r\n" +
-			"{5}" +
+			"{6}" +
 			"\t\t}}\r\n" +
 			"\t\t#endif\r\n" +
 			"\r\n" +
-			"\t\tprotected override void InitTarget({6})\r\n" +
+			"\t\tprotected override void InitTarget({7})\r\n" +
 			"\t\t{{\r\n" +
-			"{7}\t\t}}\r\n" +
+			"{8}\t\t}}\r\n" +
 			"\t}}\r\n" +
 			"}}\r\n";
 
@@ -138,9 +138,9 @@ namespace Sisus.Init.EditorOnly.Internal
 			"namespace {1}\r\n" +
 			"{{\r\n" +
 			"\t/// <summary>\r\n" +
-			"\t/// Initializer for a <see cref=\"{2}\"/> in a <see cref=\"UIDocument\"/>.\r\n" +
+			"\t/// Initializer for a <see cref=\"{3}\"/> in a <see cref=\"UIDocument\"/>.\r\n" +
 			"\t/// </summary>\r\n" +
-			"\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
+			"\tinternal sealed class {2} : {4}<{3}, {5}>\r\n" +
 			"\t{{\r\n" +
 			"\t\t#if UNITY_EDITOR\r\n" +
 			"\t\t/// <summary>\r\n" +
@@ -154,13 +154,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			"\t\t/// </summary>\r\n" +
 			"\t\tprivate sealed class Init\r\n" +
 			"\t\t{{\r\n" +
-			"{5}" +
+			"{6}" +
 			"\t\t}}\r\n" +
 			"\t\t#endif\r\n" +
 			"\r\n" +
-			"\t\tprotected override void InitTarget({6})\r\n" +
+			"\t\tprotected override void InitTarget({7})\r\n" +
 			"\t\t{{\r\n" +
-			"{7}\t\t}}\r\n" +
+			"{8}\t\t}}\r\n" +
 			"\t}}\r\n" +
 			"}}\r\n";
 
@@ -350,6 +350,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static string CreateInitializer(string initializerPath, Type clientType = null)
 		{
+			string initializerTypeAsString = Path.GetFileNameWithoutExtension(initializerPath);
 			string clientTypeAsString, @namespace;
 			Type[] parametersTypes;
 
@@ -454,7 +455,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						if(int.TryParse(name.Substring(name.Length - 1), out int intSuffix))
 						{
-							name = name.Substring(0, name.Length - 1) + (intSuffix + 1).ToString();
+							name = name.Substring(0, name.Length - 1) + (intSuffix + 1);
 						}
 						else
 						{
@@ -476,18 +477,23 @@ namespace Sisus.Init.EditorOnly.Internal
 						namespaces.Add(typeof(SerializeField).Namespace);
 
 						string fieldName = char.ToLowerInvariant(name[0]) + name.Substring(1);
+						if(reservedKeywords.Contains(fieldName))
+						{
+							fieldName = "@" + name;
+						}
+						
 						string propertyName = GetInitializerBasePropertyName(i, parameterCount);
 						Type serializableType = GetAsUnitySerializableType(parameterType);
 						if(serializableType != parameterType)
 						{
 							string serializableTypeName = NameOf(serializableType, namespaces);
-							members += $"\t\t[SerializeField]\r\n";
+							members += "\t\t[SerializeField]\r\n";
 							members += $"\t\tprivate {serializableTypeName} {fieldName};\r\n";
 							members += $"\t\tprotected override {parameterTypeName} {propertyName} {{ get => {fieldName}; set => {fieldName} = value as {serializableTypeName}; }}\r\n";
 						}
 						else
 						{
-							members += $"\t\t[SerializeField]\r\n";
+							members += "\t\t[SerializeField]\r\n";
 							members += $"\t\tprivate {parameterTypeName} {fieldName};\r\n";
 							members += $"\t\tprotected override {parameterTypeName} {propertyName} {{ get => {fieldName}; set => {fieldName} = value; }}\r\n";
 						}
@@ -534,11 +540,19 @@ namespace Sisus.Init.EditorOnly.Internal
 					humanReadableType = "wrapped object";
 					template = canSerializeAllArgumentsAsReferences ? WrapperInitializerTemplate : WrapperInitializerBaseTemplate;
 
-					string[] parameterNamesLowerCase = argumentTargetMemberNames.Select(n => char.ToLower(n[0]) + n.Substring(1)).ToArray();
+					string[] parameterNamesLowerCase = argumentTargetMemberNames.Select(name => char.ToLower(name[0]) + name.Substring(1)).ToArray();
+					for(int i = 0; i < parameterCount; i++)
+					{
+						var parameterName = parameterNamesLowerCase[i];
+						if(reservedKeywords.Contains(parameterName))
+						{
+							parameterNamesLowerCase[i] = "@" + parameterName;
+						}
+					}
 					string parameterList = string.Join(", ", typeNames.Select((typeName, index) => typeName + " " + parameterNamesLowerCase[index]));
 					string argumentNameList = string.Join(", ", parameterNamesLowerCase);
 
-					string wrapperInitializerCode = string.Format(template, usings, @namespace, clientTypeAsString, humanReadableType, baseClassName, genericArguments, members, parameterList, argumentNameList);
+					string wrapperInitializerCode = string.Format(template, usings, @namespace, initializerTypeAsString, clientTypeAsString, humanReadableType, baseClassName, genericArguments, members, parameterList, argumentNameList);
 					return WriteCodeToFile(initializerPath, wrapperInitializerCode);
 				case InitializerType.PlainOldClassObjectInitializer:
 					baseClassName = canSerializeAllArgumentsAsReferences ? "WrapperInitializer" : "WrapperInitializerBase";
@@ -583,7 +597,7 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					baseClassName = canSerializeAllArgumentsAsReferences ? "VisualElementInitializer" : "VisualElementInitializerBase";
- 					string initializerCode = string.Format(VisualElementInitializerTemplate, usings, @namespace, clientTypeAsString, baseClassName, genericArguments, members, initTargetParameters, "throw new NotImplementedException();");
+ 					string initializerCode = string.Format(VisualElementInitializerTemplate, usings, @namespace, initializerTypeAsString, clientTypeAsString, baseClassName, genericArguments, members, initTargetParameters, "throw new NotImplementedException();");
 					return WriteCodeToFile(initializerPath, initializerCode);
 				default:
 					initTargetParameters = $"{clientTypeAsString} target";
@@ -603,11 +617,11 @@ namespace Sisus.Init.EditorOnly.Internal
 					}
 
 					baseClassName = canSerializeAllArgumentsAsReferences ? "CustomInitializer" : "CustomInitializerBase";
- 					initializerCode = string.Format(CustomInitializerTemplate, usings, @namespace, clientTypeAsString, "CustomInitializer", genericArguments, members, initTargetParameters, initTargetAssignArguments);
+ 					initializerCode = string.Format(CustomInitializerTemplate, usings, @namespace, initializerTypeAsString, clientTypeAsString, baseClassName, genericArguments, members, initTargetParameters, initTargetAssignArguments);
 					return WriteCodeToFile(initializerPath, initializerCode);
 			}
 
-			string code = string.Format(template, usings, @namespace, clientTypeAsString, humanReadableType, baseClassName, genericArguments, members);
+			string code = string.Format(template, usings, @namespace, initializerTypeAsString, clientTypeAsString, humanReadableType, baseClassName, genericArguments, members);
 			return WriteCodeToFile(initializerPath, code);
 
 			static string WriteCodeToFile(string initializerPath, string code)
@@ -800,26 +814,26 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		internal static string CreateWrapper(string assetPath, MonoScript script)
 		{
-			var @class = script == null ? null : script.GetClass();
+			var @class = !script ? null : script.GetClass();
 			string className = @class != null ? NameOfWithoutIllegalCharacters(@class) : Path.GetFileNameWithoutExtension(assetPath);
 			var @namespace = @class?.Namespace ?? "MyNamespace";
 			return CreateWrapper(assetPath, className, @namespace);
 		}
 
-		internal static string CreateWrapper(string forScriptAtPath, string className, string @namespace)
+		internal static string CreateWrapper(string forScriptAtPath, string wrappedObjectTypeName, string @namespace)
 		{
-			string inspectorTitle = ObjectNames.NicifyVariableName(className);
-			string code = string.Format(WrapperTemplate, @namespace, className, inspectorTitle);
 			string path = forScriptAtPath;
 			path = Path.GetDirectoryName(path);
-			string filename = className + "Component.cs";
-			path = Path.Combine(path, className + "Component.cs");
+			string filename = wrappedObjectTypeName + "Component.cs";
+			path = Path.Combine(path, wrappedObjectTypeName + "Component.cs");
 
 			if(File.Exists(path) && !EditorUtility.DisplayDialog("Overwrite Existing File?", $"The file '{filename}' already exists at the path '{path}'.\n\nWould you like to overwrite it?", "Overwrite", "Cancel"))
 			{
 				return path;
 			}
 
+			string inspectorTitle = ObjectNames.NicifyVariableName(wrappedObjectTypeName);
+			string code = string.Format(WrapperTemplate, @namespace, wrappedObjectTypeName, inspectorTitle);
 			File.WriteAllText(path, code);
 			AssetDatabase.ImportAsset(path);
 

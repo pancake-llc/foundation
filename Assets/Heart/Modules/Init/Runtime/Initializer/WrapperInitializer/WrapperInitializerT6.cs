@@ -162,7 +162,7 @@ namespace Sisus.Init
 			}
 		}
 
-		private protected sealed override void SetIsArgumentAsyncValueProvider(Arguments argument, bool isAsyncValueProvider)
+		private protected sealed override void SetIsArgumentAsync(Arguments argument, bool isAsyncValueProvider)
 		{
 			var setValue = asyncArguments.WithFlag(argument, isAsyncValueProvider);
 			if(asyncArguments != setValue)

@@ -43,6 +43,14 @@ namespace Sisus.Shared.EditorOnly
 			#if DEV_MODE
 			using var x = getValueMarker.Auto();
 			#endif
+			
+			#if UNITY_6000_0_OR_NEWER
+			// boxedValue does not support arrays or lists. source: https://docs.unity3d.com/ScriptReference/SerializedProperty-boxedValue.html
+			if(!serializedProperty.isArray || serializedProperty.propertyType is not SerializedPropertyType.Generic) // SerializedPropertyType.Generic is needed to filter out string fields (isArray is true for them).
+			{
+				return serializedProperty.boxedValue;
+			}
+			#endif
 
 			switch(serializedProperty.propertyType)
 			{
