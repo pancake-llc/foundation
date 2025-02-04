@@ -1523,7 +1523,7 @@ namespace Pancake.Common
             source.offsetMin = Vector2.zero;
             source.offsetMax = Vector2.zero;
             source.pivot = new Vector2(0.5f, 0.5f);
-            source.rotation = Quaternion.identity;
+            source.localRotation = Quaternion.identity;
             source.localScale = Vector3.one;
         }
 
