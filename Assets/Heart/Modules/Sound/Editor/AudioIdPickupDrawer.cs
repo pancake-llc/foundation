@@ -1,6 +1,10 @@
-﻿using Pancake.Sound;
+﻿using System.Linq;
+using Pancake.Common;
+using Pancake.Linq;
+using Pancake.Sound;
 using PancakeEditor.Common;
 using Sirenix.OdinInspector.Editor;
+using Sirenix.Utilities.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +28,7 @@ namespace PancakeEditor.Sound
             EditorGUIUtility.labelWidth = 150;
 
             var buttonRect = new Rect(position.x + position.width * 0.4f, position.y, position.width * 0.6f, position.height);
-            var buttonText = "Select type...";
+            var buttonText = "Select Audio...";
             var buttonColor = Uniform.Error;
 
             if (!string.IsNullOrEmpty(value.id))
@@ -49,32 +53,24 @@ namespace PancakeEditor.Sound
             GUI.backgroundColor = buttonColor;
             if (GUI.Button(buttonRect, buttonText))
             {
-                var menu = new GenericMenu();
                 var allAudioAsset = ProjectDatabase.FindAll<AudioData>();
+                var selector = new GenericSelector<AudioData>("Select Audio", allAudioAsset, false, item => item.name);
 
-                menu.AddItem(new GUIContent("None"),
-                    _selectedId == string.Empty,
-                    () =>
-                    {
-                        value.id = string.Empty;
-                        value.name = string.Empty;
-                        _selectedId = string.Empty;
-                    });
+                selector.SetSelection(allAudioAsset.Filter(t => t.id == _selectedId));
 
-                for (var i = 0; i < allAudioAsset.Count; i++)
+                selector.SelectionConfirmed += selection =>
                 {
-                    var audioData = allAudioAsset[i];
-                    menu.AddItem(new GUIContent($"{audioData.name}"),
-                        audioData.id == _selectedId,
-                        () =>
-                        {
-                            value.id = audioData.id;
-                            value.name = audioData.name;
-                            _selectedId = audioData.id;
-                        });
-                }
+                    var audioDatas = selection as AudioData[] ?? selection.ToArray();
+                    if (audioDatas.IsNullOrEmpty()) return;
 
-                menu.DropDown(buttonRect);
+                    var audioData = audioDatas[0];
+                    value.id = audioData.id;
+                    value.name = audioData.name;
+                    _selectedId = audioData.id;
+                    GUIHelper.RequestRepaint();
+                };
+
+                selector.ShowInPopup();
             }
 
             GUI.backgroundColor = originalColor;

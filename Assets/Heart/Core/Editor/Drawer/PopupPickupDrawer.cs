@@ -6,8 +6,10 @@ using UnityEditor;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Pancake.Common;
 using Sirenix.OdinInspector.Editor;
-using Editor = PancakeEditor.Common.Editor;
+using Sirenix.Utilities.Editor;
 
 namespace PancakeEditor
 {
@@ -28,7 +30,7 @@ namespace PancakeEditor
             float prev = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 150;
 
-            _selectedId = string.IsNullOrEmpty(value) ? "Select type..." : value;
+            _selectedId = string.IsNullOrEmpty(value) ? "Select Popup..." : value;
 
             var buttonRect = new Rect(position.x + position.width * 0.4f, position.y, position.width * 0.6f, position.height);
             var buttonColor = string.IsNullOrEmpty(value) ? Uniform.Error : new Color(0.05f, 0.61f, 0.53f, 0.31f);
@@ -38,24 +40,30 @@ namespace PancakeEditor
 
             if (GUI.Button(buttonRect, _selectedId))
             {
-                var menu = new GenericMenu();
-
-                menu.AddItem(new GUIContent("None (-1)"), string.IsNullOrEmpty(value), () => ValueEntry.SmartValue = string.Empty);
+                var result = new List<Type>();
 
                 var type = GetTypeByFullName();
                 if (type != null)
                 {
-                    var result = GetSubClasses(type);
-
-                    for (var i = 0; i < result.Count; i++)
-                    {
-                        int cacheIndex = i;
-                        bool isSelected = value == result[cacheIndex].Name;
-                        menu.AddItem(new GUIContent(result[cacheIndex].Name), isSelected, () => ValueEntry.SmartValue = result[cacheIndex].Name);
-                    }
+                    result.Clear();
+                    result.AddRange(GetSubClasses(type));
                 }
 
-                menu.DropDown(new Rect(Editor.CurrentEvent.MousePosition, Vector2.zero));
+                var selector = new GenericSelector<Type>("Select Popup", result, false, item => item.Name);
+                selector.SetSelection(result.Filter(t => t.Name == _selectedId));
+                selector.SelectionConfirmed += selection =>
+                {
+                    var datas = selection as Type[] ?? selection.ToArray();
+                    if (datas.IsNullOrEmpty()) return;
+
+                    var data = datas[0];
+                    value = data.Name;
+                    _selectedId = value;
+                    ValueEntry.SmartValue = value;
+                    GUIHelper.RequestRepaint();
+                };
+
+                selector.ShowInPopup();
             }
 
             GUI.backgroundColor = defaultColor;
