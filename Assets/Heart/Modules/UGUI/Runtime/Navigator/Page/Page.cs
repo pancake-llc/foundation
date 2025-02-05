@@ -14,7 +14,7 @@ namespace Pancake.UI
     public class Page : GameComponent, IPageLifecycleEvent
     {
         [SerializeField] private bool usePrefabNameAsId = true;
-        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
+        [field: SerializeField, HideIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
         [SerializeField] private int order;
         [SerializeField] protected List<TransitionAnimation> pushEnterAnimations = new();
