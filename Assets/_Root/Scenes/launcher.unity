@@ -390,7 +390,7 @@ MonoBehaviour:
     value:
       rid: -2
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
   references:
     version: 2
     RefIds:

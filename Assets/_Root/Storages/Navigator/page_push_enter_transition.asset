@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: page_push_enter_transition
   m_EditorClassIdentifier: 
   delay: 0
-  duration: 0.02
+  duration: 0.5
   ease: 0
-  beforeAlignment: 5
+  beforeAlignment: 2
   beforeScale: {x: 1, y: 1, z: 1}
-  beforeAlpha: 1
+  beforeAlpha: 0.5
   afterAlignment: 5
   afterScale: {x: 1, y: 1, z: 1}
   afterAlpha: 1

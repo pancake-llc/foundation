@@ -16,8 +16,8 @@ MonoBehaviour:
   sheetExitAnim: {fileID: 11400000, guid: bde288037461bd94ca605aa3ca0655b3, type: 2}
   pagePushEnterAnim: {fileID: 11400000, guid: fa3cd04e59daaf148abea4bdad176a7f, type: 2}
   pagePushExitAnim: {fileID: 11400000, guid: 2ab4040e3313f0a448a536db30c724a9, type: 2}
-  pagePopEnterAnim: {fileID: 0}
-  pagePopExitAnim: {fileID: 0}
+  pagePopEnterAnim: {fileID: 11400000, guid: d807e105bca10f147a0e48109906361b, type: 2}
+  pagePopExitAnim: {fileID: 11400000, guid: 746152d32c41fcd4badc6dd2086fab07, type: 2}
   popupEnterAnim: {fileID: 11400000, guid: 28b13bd66827cd240b4af6122a1f19e7, type: 2}
   popupExitAnim: {fileID: 11400000, guid: dded410eaa5f9d041900de170ac72b89, type: 2}
   popupBackdropEnterAnim: {fileID: 0}
