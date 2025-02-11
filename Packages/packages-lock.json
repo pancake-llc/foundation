@@ -8,7 +8,7 @@
       "hash": "e6f7f118c7b4c244b3369be17471d91f87114211"
     },
     "com.annulusgames.lit-motion": {
-      "version": "https://github.com/yn01dev/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v2.0.0",
+      "version": "https://github.com/yn01dev/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v2.0.1",
       "depth": 0,
       "source": "git",
       "dependencies": {
@@ -16,7 +16,7 @@
         "com.unity.collections": "1.5.1",
         "com.unity.mathematics": "1.0.1"
       },
-      "hash": "3f3ebe94f77d2f08c85d2e6100314d05e57fe9e7"
+      "hash": "79e1b02d7df49d55721e427bf41a7b655c675462"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10",

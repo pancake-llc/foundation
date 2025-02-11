@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.annulusgames.debug-ui": "https://github.com/pancake-llc/DebugUI.git?path=src/DebugUI/Assets/DebugUI",
-    "com.annulusgames.lit-motion": "https://github.com/yn01dev/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v2.0.0",
+    "com.annulusgames.lit-motion": "https://github.com/yn01dev/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v2.0.1",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10",
     "com.google.external-dependency-manager": "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.183",
     "com.unity.2d.sprite": "1.0.0",
