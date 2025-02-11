@@ -1,11 +1,11 @@
 ﻿//#define SHOW_REF_TAGS_IN_INSPECTOR
 
 using System.Collections.Generic;
+using Sisus.Init.Internal;
 using UnityEngine;
 using Id = Sisus.Init.Internal.Id;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
-using Sisus.Init.Internal;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
@@ -13,7 +13,7 @@ using UnityEditor.SceneManagement;
 namespace Sisus.Init
 {
 	[DefaultExecutionOrder(ExecutionOrder.Referenceable)]
-	internal sealed class RefTag : MonoBehaviour, IInitializable<Object>
+	internal sealed class RefTag : MonoBehaviour, IInitializable<Object>, IIdentifiable
 	{
 		private static readonly Dictionary<Id, Object> activeObjects = new();
 		private static readonly Dictionary<Id, List<Object>> activeClones = new(); // one prefab can have more than one instance
@@ -45,6 +45,7 @@ namespace Sisus.Init
 
 		public Id Guid => guid;
 		public Object Target => target;
+		Id IIdentifiable.Id => guid;
 
 		void IInitializable<Object>.Init(Object target)
 		{

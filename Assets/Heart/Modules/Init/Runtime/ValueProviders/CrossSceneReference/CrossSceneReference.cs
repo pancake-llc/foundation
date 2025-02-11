@@ -23,33 +23,23 @@ namespace Sisus.Init.Internal
 		, ISerializationCallbackReceiver
 		#endif
 	{
-		[SerializeField, HideInInspector]
-		private Id guid;
-
-		[SerializeField]
-		internal bool isCrossScene;
-
-		#if DEBUG || INIT_ARGS_SAFE_MODE // To make this persist through builds, could store in a separate ScriptableObject asset instead? Or just take the hit in increased build size.
 		#pragma warning disable CS0414
 		[SerializeField, SearchContext("", SearchViewFlags.TableView | SearchViewFlags.Borderless)]
-		private Object target;
-		[SerializeField]
-		private string targetName;
-		[SerializeField]
-		private string globalObjectIdSlow;
-		[SerializeField]
-		private string sceneName;
-		[SerializeField]
-		private string sceneOrAssetGuid;
-		[SerializeField]
-		private Texture icon;
+		internal Object target;
+
+		[SerializeField, HideInInspector] internal Id guid;
+		[SerializeField] internal bool isCrossScene;
+		[SerializeField] internal string targetName;
+		[SerializeField] internal string globalObjectIdSlow;
+		[SerializeField] internal string sceneName;
+		[SerializeField] internal string sceneOrAssetGuid;
+		[SerializeField] internal Texture icon;
 		#pragma warning restore CS0414
-		#endif
 
 		#if UNITY_EDITOR
 		#pragma warning disable CS0414
 		[SerializeField]
-		private SceneAsset sceneAsset;
+		internal SceneAsset sceneAsset;
 		#pragma warning restore CS0414
 		#endif
 

@@ -8,9 +8,9 @@ namespace Sisus.Init.Internal
 	/// A persistent and globally unique identifier which can be serialized by Unity.
 	/// </summary>
 	[StructLayout(LayoutKind.Sequential), Serializable]
-	internal struct Id : IFormattable, IEquatable<Id>
+	public struct Id : IFormattable, IEquatable<Id>
 	{
-		public static readonly Id Empty = new Id();
+		public static readonly Id Empty = new();
 
 		[SerializeField] private int a;
 		[SerializeField] private short b;

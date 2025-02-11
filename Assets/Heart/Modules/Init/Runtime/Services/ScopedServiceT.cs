@@ -59,7 +59,7 @@ namespace Sisus.Init
 		}
 		#endif
 
-		internal static bool IsServiceFor([DisallowNull] Component client, [DisallowNull] TService test)
+		public static bool IsServiceFor([DisallowNull] Component client, [DisallowNull] TService test)
 		{
 			#if DEV_MODE
 			Debug.Assert(client is not null, "ScopedService<T>.IsServiceFor called with null client.");

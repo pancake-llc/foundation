@@ -1,4 +1,4 @@
-//#define DEBUG_SERVICE_PROVIDERS
+#define DEBUG_SERVICE_PROVIDERS
 
 using System;
 using System.Collections.Generic;

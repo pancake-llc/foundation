@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using Sisus.Init.EditorOnly.Internal;
 using Sisus.Init.Internal;
+using Sisus.Shared.EditorOnly;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.Search;
@@ -13,9 +14,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 using Debug = UnityEngine.Debug;
+using static Sisus.NullExtensions;
 
 namespace Sisus.Init.EditorOnly
 {
+	/// <summary>
+	/// Responsible for drawing GUI for <see cref="CrossSceneReference"/>. 
+	/// </summary>
 	internal sealed class CrossSceneReferenceGUI : IDisposable
 	{
 		private static GUIContent sceneIcon;
@@ -39,24 +44,18 @@ namespace Sisus.Init.EditorOnly
 			anyType = typeof(Any<>).MakeGenericType(objectType);
 		}
 
+		/// <summary>
+		/// Draw GUI for <see cref="CrossSceneReference"/> or <see cref="CrossSceneRef"/>.
+		/// </summary>
 		public void OnGUI(Rect position, SerializedProperty referenceProperty, GUIContent label)
 		{
-			referenceProperty.serializedObject.Update();
+			UpdateSerializedObjects(referenceProperty, ref serializedObject);
 
-			var crossSceneReference = referenceProperty.objectReferenceValue;
-			if(!crossSceneReference)
+			var crossSceneReference = GetCrossSceneReferenceObject(referenceProperty);
+			if(crossSceneReference == Null)
 			{
 				EditorGUI.PropertyField(position, referenceProperty, label);
 				return;
-			}
-
-			if(serializedObject == null || serializedObject.targetObject != crossSceneReference)
-			{
-				serializedObject = new SerializedObject(crossSceneReference);
-			}
-			else
-			{
-				serializedObject.Update();
 			}
 
 			Id guid;
@@ -69,15 +68,15 @@ namespace Sisus.Init.EditorOnly
 			bool isCrossScene;
 			Texture icon;
 
-			guidProperty = serializedObject.FindProperty(nameof(guid));
-			targetProperty = serializedObject.FindProperty(nameof(target));
-			targetNameProperty = serializedObject.FindProperty(nameof(targetName));
-			globalObjectIdSlowProperty = serializedObject.FindProperty(nameof(globalObjectIdSlow));
-			sceneAssetProperty = serializedObject.FindProperty(nameof(sceneAsset));
-			sceneNameProperty = serializedObject.FindProperty(nameof(sceneName));
-			sceneOrAssetGuidProperty = serializedObject.FindProperty(nameof(sceneOrAssetGuid));
-			isCrossSceneProperty = serializedObject.FindProperty(nameof(isCrossScene));
-			iconProperty = serializedObject.FindProperty(nameof(icon));
+			guidProperty = serializedObject.FindProperty(nameof(CrossSceneReference.guid));
+			targetProperty = serializedObject.FindProperty(nameof(CrossSceneReference.target));
+			targetNameProperty = serializedObject.FindProperty(nameof(CrossSceneReference.targetName));
+			globalObjectIdSlowProperty = serializedObject.FindProperty(nameof(CrossSceneReference.globalObjectIdSlow));
+			sceneAssetProperty = serializedObject.FindProperty(nameof(CrossSceneReference.sceneAsset));
+			sceneNameProperty = serializedObject.FindProperty(nameof(CrossSceneReference.sceneName));
+			sceneOrAssetGuidProperty = serializedObject.FindProperty(nameof(CrossSceneReference.sceneOrAssetGuid));
+			isCrossSceneProperty = serializedObject.FindProperty(nameof(CrossSceneReference.isCrossScene));
+			iconProperty = serializedObject.FindProperty(nameof(CrossSceneReference.icon));
 
 			target = targetProperty.objectReferenceValue;
 			targetName = targetNameProperty.stringValue;
@@ -88,7 +87,7 @@ namespace Sisus.Init.EditorOnly
 			isCrossScene = isCrossSceneProperty.boolValue;
 			icon = iconProperty.objectReferenceValue as Texture;
 
-			sceneIcon ??= new GUIContent(EditorGUIUtility.IconContent("SceneAsset Icon"));
+			sceneIcon ??= new(EditorGUIUtility.IconContent("SceneAsset Icon"));
 
 			EditorGUI.BeginProperty(position, label, targetProperty);
 
@@ -306,6 +305,35 @@ namespace Sisus.Init.EditorOnly
 				}
 
 				return false;
+			}
+		}
+
+		private static object GetCrossSceneReferenceObject(SerializedProperty crossSceneReferenceProperty) => crossSceneReferenceProperty.GetValue();
+
+		private static void UpdateSerializedObjects(SerializedProperty crossSceneReferenceProperty, ref SerializedObject serializedObject)
+		{
+			crossSceneReferenceProperty.serializedObject.Update();
+
+			if(crossSceneReferenceProperty.propertyType is not SerializedPropertyType.ObjectReference)
+			{
+				serializedObject = crossSceneReferenceProperty.serializedObject;
+				return;
+			}
+
+			var crossSceneReferenceScriptableObject = crossSceneReferenceProperty.objectReferenceValue;
+			if(!crossSceneReferenceScriptableObject)
+			{
+				serializedObject = null;
+				return;
+			}
+
+			if(serializedObject == null || serializedObject.targetObject != crossSceneReferenceScriptableObject)
+			{
+				serializedObject = new(crossSceneReferenceScriptableObject);
+			}
+			else
+			{
+				serializedObject.Update();
 			}
 		}
 

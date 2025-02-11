@@ -640,6 +640,8 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			void OnTypeSelected(Type selectedType)
 			{
+				Undo.RecordObject(service, "Set Service Type");
+
 				if(ServiceTag.Remove(service, selectedType))
 				{
 					return;

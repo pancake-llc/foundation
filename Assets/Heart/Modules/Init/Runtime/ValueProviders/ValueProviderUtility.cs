@@ -78,15 +78,15 @@ namespace Sisus.Init.ValueProviders
 		}
 
 		public static bool TryGetValueProviderValue<TValue>([AllowNull] object potentialValueProvider, [NotNullWhen(true), MaybeNullWhen(false)] out TValue value) => potentialValueProvider switch
-        {
-        	// Prefer non-async value provider interfaces over async ones
-        	IValueProvider<TValue> valueProvider => valueProvider.TryGetFor(null, out value),
-        	IValueByTypeProvider valueProvider => valueProvider.TryGetFor(null, out value),
-        	IValueProvider valueProvider when valueProvider.TryGetFor(null, out var objectValue) && Find.In(objectValue, out value) => true,
-        	IValueProviderAsync<TValue> valueProvider => TryGetFromAwaitableIfCompleted(valueProvider.GetForAsync(null), out value),
-        	IValueByTypeProviderAsync valueProvider => TryGetFromAwaitableIfCompleted(valueProvider.GetForAsync<TValue>(null), out value),
+		{
+			// Prefer non-async value provider interfaces over async ones
+			IValueProvider<TValue> valueProvider => valueProvider.TryGetFor(null, out value),
+			IValueByTypeProvider valueProvider => valueProvider.TryGetFor(null, out value),
+			IValueProvider valueProvider when valueProvider.TryGetFor(null, out var objectValue) && Find.In(objectValue, out value) => true,
+			IValueProviderAsync<TValue> valueProvider => TryGetFromAwaitableIfCompleted(valueProvider.GetForAsync(null), out value),
+			IValueByTypeProviderAsync valueProvider => TryGetFromAwaitableIfCompleted(valueProvider.GetForAsync<TValue>(null), out value),
 			_ => None(out value)
-        };
+		};
 
 		public static TValue GetFromAwaitableIfCompleted<TValue>
 		(
