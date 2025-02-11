@@ -12,6 +12,7 @@ namespace PancakeEditor.Sound
 {
     public class AudioIdPickupDrawer : OdinValueDrawer<AudioId>
     {
+        private static AudioData noneAudioData;
         private string _selectedId;
 
         protected override void DrawPropertyLayout(GUIContent label)
@@ -49,11 +50,13 @@ namespace PancakeEditor.Sound
                 }
             }
 
-            var originalColor = GUI.backgroundColor;
+            var defaultColor = GUI.backgroundColor;
             GUI.backgroundColor = buttonColor;
             if (GUI.Button(buttonRect, buttonText))
             {
                 var allAudioAsset = ProjectDatabase.FindAll<AudioData>();
+                InitNoneOption();
+                allAudioAsset.Insert(0, noneAudioData);
                 var selector = new GenericSelector<AudioData>("Select Audio", allAudioAsset, false, item => item.name);
 
                 selector.SetSelection(allAudioAsset.Filter(t => t.id == _selectedId));
@@ -64,19 +67,32 @@ namespace PancakeEditor.Sound
                     if (audioDatas.IsNullOrEmpty()) return;
 
                     var audioData = audioDatas[0];
-                    value.id = audioData.id;
-                    value.name = audioData.name;
+                    
+                    ValueEntry.SmartValue = new AudioId
+                    {
+                        id = audioData.id,
+                        name = !string.IsNullOrEmpty(audioData.id) ? audioData.name : string.Empty
+                    };
+                    
                     _selectedId = audioData.id;
+                    Undo.RecordObject(ValueEntry.Property.Tree.UnitySerializedObject.targetObject, "Changed AudioId");
+                    ValueEntry.ApplyChanges();
                     GUIHelper.RequestRepaint();
                 };
 
                 selector.ShowInPopup();
             }
 
-            GUI.backgroundColor = originalColor;
-
+            GUI.backgroundColor = defaultColor;
             EditorGUIUtility.labelWidth = prev;
-            ValueEntry.SmartValue = value;
+        }
+
+        private void InitNoneOption()
+        {
+            if (noneAudioData != null) return;
+            noneAudioData = ScriptableObject.CreateInstance<AudioData>();
+            noneAudioData.id = "";
+            noneAudioData.name = "none";
         }
     }
 }
