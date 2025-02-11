@@ -58,9 +58,8 @@ namespace PancakeEditor
                     if (datas.IsNullOrEmpty()) return;
 
                     var data = datas[0];
-                    value = data.Name;
-                    _selectedId = value;
-                    ValueEntry.SmartValue = value;
+                    ValueEntry.SmartValue = data.Name;
+                    _selectedId = data.Name;
                     GUIHelper.RequestRepaint();
                 };
 
