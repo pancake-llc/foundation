@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 namespace Pancake.Notification
 {
     [EditorIcon("icon_notification")]
-    public class NotificationPrepare : GameComponent
+    public class NotificationBigPicturePrepare : GameComponent
     {
 #if UNITY_ANDROID
         [SerializeField] private ScriptableNotification[] notificationVariables;
