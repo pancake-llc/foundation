@@ -7,12 +7,12 @@ namespace Pancake.StatModifier
     {
         public event Action<StatModifier> OnDispose = delegate { };
 
-        public StringConstant StatType { get; }
+        public string StatType { get; }
         public IModifier Modifier { get; }
         public bool MarkedForRemoval { get; internal set; }
         private readonly CountdownTimer _timer;
 
-        public StatModifier(StringConstant statType, IModifier modifier, float duration = 0f)
+        public StatModifier(string statType, IModifier modifier, float duration = 0f)
         {
             StatType = statType;
             Modifier = modifier;

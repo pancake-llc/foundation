@@ -6,7 +6,7 @@ namespace Pancake.StatModifier
     [Service(typeof(IStatModifierFactory))]
     public class StatModifierFactory : IStatModifierFactory
     {
-        public StatModifier Create(EModifierType modifierType, StringConstant statType, float value, float duration = 0f)
+        public StatModifier Create(EModifierType modifierType, string statType, float value, float duration = 0f)
         {
             IModifier modifier = modifierType switch
             {

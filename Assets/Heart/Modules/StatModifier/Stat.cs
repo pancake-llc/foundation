@@ -3,7 +3,7 @@
     public class Stat
     {
         private readonly float _value;
-        private readonly StringConstant _statType;
+        private readonly string _statType;
 
         public StatMediator Mediator { get; }
 
@@ -17,7 +17,7 @@
             }
         }
 
-        public Stat(StatMediator mediator, StringConstant statType, float value)
+        public Stat(StatMediator mediator, string statType, float value)
         {
             Mediator = mediator;
             _value = value;

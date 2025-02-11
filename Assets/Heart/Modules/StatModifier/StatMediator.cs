@@ -6,7 +6,7 @@ namespace Pancake.StatModifier
     public class StatMediator
     {
         private readonly List<StatModifier> _modifiers = new();
-        private readonly Dictionary<StringConstant, List<StatModifier>> _modifiersCache = new();
+        private readonly Dictionary<string, List<StatModifier>> _modifiersCache = new();
         private readonly IModifierStrategyOrder _order = new ModifierNormalStrategyOrder();
 
         public void PerformQuery(object sender, Query query)
@@ -19,7 +19,7 @@ namespace Pancake.StatModifier
             query.value = _order.Apply(_modifiersCache[query.statType], query.value);
         }
 
-        private void InvalidateCache(StringConstant statType) { _modifiersCache.Remove(statType); }
+        private void InvalidateCache(string statType) { _modifiersCache.Remove(statType); }
 
         private void InternalOnDispose(StatModifier modifier)
         {
