@@ -17,78 +17,86 @@ namespace PancakeEditor
 
         public static void OnInspectorGUI()
         {
-#if PANCAKE_FIREBASE_ANALYTIC
-            Uniform.DrawInstalled("analytic 12.4.1");
-            EditorGUILayout.Space();
-#endif
-
-#if PANCAKE_FIREBASE_REMOTECONFIG
-            Uniform.DrawInstalled("remote config 12.4.1");
-            EditorGUILayout.Space();
-#endif
-
-#if PANCAKE_FIREBASE_MESSAGING
-            Uniform.DrawInstalled("messaging 12.4.1");
-            EditorGUILayout.Space();
-#endif
-
-#if PANCAKE_FIREBASE_CRASHLYTIC
-            Uniform.DrawInstalled("crashlytic 12.4.1");
-            EditorGUILayout.Space();
-#endif
-
-#if !PANCAKE_FIREBASE_ANALYTIC
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Analytic", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            var analytic = RegistryManager.IsInstalled("com.google.firebase.analytics");
+            if (analytic.Item1)
             {
-                RegistryManager.AddPackage("com.google.firebase.analytics", "https://github.com/firebase-unity/firebase-analytics.git#12.4.1");
-                RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.4.1");
-                RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.183");
-                RegistryManager.Resolve();
+                Uniform.DrawInstalled($"Firebase Analytic {analytic.Item2}");
+                EditorGUILayout.Space();
+            }
+            else
+            {
+                GUI.enabled = !EditorApplication.isCompiling;
+                if (GUILayout.Button("Install Firebase Analytic", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                {
+                    RegistryManager.AddPackage("com.google.firebase.analytics", "https://github.com/firebase-unity/firebase-analytics.git");
+                    RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git");
+                    RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm");
+                    RegistryManager.Resolve();
+                }
+
+                GUI.enabled = true;
             }
 
-            GUI.enabled = true;
-#endif
-
-
-#if !PANCAKE_FIREBASE_REMOTECONFIG
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Remote Config", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            var remoteConfig = RegistryManager.IsInstalled("com.google.firebase.remote-config");
+            if (remoteConfig.Item1)
             {
-                RegistryManager.AddPackage("com.google.firebase.remote-config", "https://github.com/firebase-unity/firebase-remote-config.git#12.4.1");
-                RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.4.1");
-                RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.183");
-                RegistryManager.Resolve();
+                Uniform.DrawInstalled($"Firebase Remote Config {remoteConfig.Item2}");
+                EditorGUILayout.Space();
+            }
+            else
+            {
+                GUI.enabled = !EditorApplication.isCompiling;
+                if (GUILayout.Button("Install Firebase Remote Config", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                {
+                    RegistryManager.AddPackage("com.google.firebase.remote-config", "https://github.com/firebase-unity/firebase-remote-config.git");
+                    RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git");
+                    RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm");
+                    RegistryManager.Resolve();
+                }
+
+                GUI.enabled = true;
             }
 
-            GUI.enabled = true;
-#endif
-
-#if !PANCAKE_FIREBASE_MESSAGING
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Messaging", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            var message = RegistryManager.IsInstalled("com.google.firebase.messaging");
+            if (message.Item1)
             {
-                RegistryManager.AddPackage("com.google.firebase.messaging", "https://github.com/firebase-unity/firebase-messaging.git#12.4.1");
-                RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.4.1");
-                RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.183");
-                RegistryManager.Resolve();
+                Uniform.DrawInstalled($"Firebase Messaging {message.Item2}");
+                EditorGUILayout.Space();
+            }
+            else
+            {
+                GUI.enabled = !EditorApplication.isCompiling;
+                if (GUILayout.Button("Install Firebase Messaging", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                {
+                    RegistryManager.AddPackage("com.google.firebase.messaging", "https://github.com/firebase-unity/firebase-messaging.git");
+                    RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git");
+                    RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm");
+                    RegistryManager.Resolve();
+                }
+
+                GUI.enabled = true;
             }
 
-            GUI.enabled = true;
-#endif
 
-#if !PANCAKE_FIREBASE_CRASHLYTIC
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Crashlytic", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            var crashlytic = RegistryManager.IsInstalled("com.google.firebase.crashlytics");
+            if (crashlytic.Item1)
             {
-                RegistryManager.AddPackage("com.google.firebase.crashlytics", "https://github.com/firebase-unity/firebase-crashlytics.git#12.4.1");
-                RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#12.4.1");
-                RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.183");
-                RegistryManager.Resolve();
+                Uniform.DrawInstalled($"Firebase Crashlytics {crashlytic.Item2}");
+                EditorGUILayout.Space();
             }
+            else
+            {
+                GUI.enabled = !EditorApplication.isCompiling;
+                if (GUILayout.Button("Install Firebase Crashlytic", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                {
+                    RegistryManager.AddPackage("com.google.firebase.crashlytics", "https://github.com/firebase-unity/firebase-crashlytics.git");
+                    RegistryManager.AddPackage("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git");
+                    RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm");
+                    RegistryManager.Resolve();
+                }
 
-            GUI.enabled = true;
-#endif
+                GUI.enabled = true;
+            }
 
 #if UNITY_ANDROID
             GUILayout.Space(16);
@@ -138,22 +146,23 @@ namespace PancakeEditor
             }
 #endif
 
-#if PANCAKE_FIREBASE_ANALYTIC || PANCAKE_FIREBASE_REMOTECONFIG || PANCAKE_FIREBASE_MESSAGING || PANCAKE_FIREBASE_CRASHLYTIC
-            GUILayout.FlexibleSpace();
-            var previousColor = GUI.backgroundColor;
-            GUI.backgroundColor = Uniform.Red_500;
-            if (GUILayout.Button("Uninstall All Firebase Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            if (analytic.Item1 || remoteConfig.Item1 || message.Item1 || crashlytic.Item1)
             {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Firebase", "Are you sure you want to uninstall all firebase package ?", "Yes", "No");
-                if (confirmDelete)
+                GUILayout.FlexibleSpace();
+                var previousColor = GUI.backgroundColor;
+                GUI.backgroundColor = Uniform.Red_500;
+                if (GUILayout.Button("Uninstall All Firebase Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
-                    RegistryManager.RemoveAllPackagesStartWith("com.google.firebase.");
-                    RegistryManager.Resolve();
+                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Firebase", "Are you sure you want to uninstall all firebase package ?", "Yes", "No");
+                    if (confirmDelete)
+                    {
+                        RegistryManager.RemoveAllPackagesStartWith("com.google.firebase.");
+                        RegistryManager.Resolve();
+                    }
                 }
-            }
 
-            GUI.backgroundColor = previousColor;
-#endif
+                GUI.backgroundColor = previousColor;
+            }
         }
     }
 }

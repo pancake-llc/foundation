@@ -43,26 +43,6 @@
             "define": "PANCAKE_ADJUST"
         },
         {
-            "name": "com.google.firebase.analytics",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_ANALYTIC"
-        },
-        {
-            "name": "com.google.firebase.remote-config",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_REMOTECONFIG"
-        },
-        {
-            "name": "com.google.firebase.messaging",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_MESSAGING"
-        },
-        {
-            "name": "com.google.firebase.crashlytics",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_CRASHLYTIC"
-        },
-        {
             "name": "com.google.play.review",
             "expression": "1.8.0",
             "define": "PANCAKE_IN_APP_REVIEW"
