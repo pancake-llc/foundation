@@ -234,7 +234,7 @@ namespace PancakeEditor
                 RegistryManager.AddPackage("com.google.play.review", "https://github.com/pancake-llc/in-app-review.git#1.8.3");
                 RegistryManager.AddPackage("com.google.play.core", "https://github.com/pancake-llc/google-play-core.git#1.8.5");
                 RegistryManager.AddPackage("com.google.play.common", "https://github.com/pancake-llc/google-play-common.git#1.9.2");
-                RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.183");
+                RegistryManager.AddPackage("com.google.external-dependency-manager", "https://github.com/googlesamples/unity-jar-resolver.git?path=upm");
                 RegistryManager.Resolve();
             }
 
