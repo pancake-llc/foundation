@@ -66,9 +66,6 @@ namespace Pancake.Monetization
                 case ApplovinReward applovinReward:
                     applovinReward.completedCallback = onCompleted;
                     return unit;
-                case ApplovinRewardInter applovinRewardInter:
-                    applovinRewardInter.completedCallback = onCompleted;
-                    return unit;
             }
 
             return unit;
@@ -92,9 +89,6 @@ namespace Pancake.Monetization
                     return unit;
                 case ApplovinReward applovinReward:
                     applovinReward.skippedCallback = onSkipped;
-                    return unit;
-                case ApplovinRewardInter applovinRewardInter:
-                    applovinRewardInter.skippedCallback = onSkipped;
                     return unit;
             }
 

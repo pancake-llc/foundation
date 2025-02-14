@@ -43,7 +43,7 @@ namespace Pancake.Notification
             if (string.IsNullOrEmpty(smallIcon)) smallIcon = "icon_0";
             if (string.IsNullOrEmpty(largeIcon)) largeIcon = "icon_1";
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && PANCAKE_NOTIFICATION
 
             Unity.Notifications.Android.BigPictureStyle? bigPictureStyle = null;
             if (bigPicture)
@@ -61,23 +61,23 @@ namespace Pancake.Notification
                 smallIcon,
                 bigPictureStyle,
                 repeat);
-#elif UNITY_IOS
+#elif UNITY_IOS && PANCAKE_NOTIFICATION
 			NotificationIOS.Schedule(identifier, title, "", text, timeOffset, repeat);
 #endif
         }
 
         internal static void CancelAllScheduled()
         {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && PANCAKE_NOTIFICATION
             NotificationAndroid.CancelAllScheduled();
-#elif UNITY_IOS
+#elif UNITY_IOS && PANCAKE_NOTIFICATION
 			NotificationIOS.CancelAllScheduled();
 #endif
         }
 
         internal static void ClearBadgeCounteriOS()
         {
-#if UNITY_IOS
+#if UNITY_IOS && PANCAKE_NOTIFICATION
 			NotificationIOS.ClearBadgeCounter();
 #endif
         }

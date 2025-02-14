@@ -24,6 +24,11 @@
             "name": "com.applovin.mediation.ads",
             "expression": "8.0.0",
             "define": "PANCAKE_APPLOVIN"
+        },
+        {
+            "name": "com.google.ads.mobile",
+            "expression": "9.2.0",
+            "define": "PANCAKE_ADMOB"
         }
     ],
     "noEngineReferences": false

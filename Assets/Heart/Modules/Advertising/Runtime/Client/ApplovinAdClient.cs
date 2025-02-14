@@ -14,7 +14,6 @@ namespace Pancake.Monetization
             AdSettings.ApplovinBanner.paidedCallback = AppTracking.TrackRevenue;
             AdSettings.ApplovinInter.paidedCallback = AppTracking.TrackRevenue;
             AdSettings.ApplovinReward.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.ApplovinRewardInter.paidedCallback = AppTracking.TrackRevenue;
             AdSettings.ApplovinAppOpen.paidedCallback = AppTracking.TrackRevenue;
             LoadInterstitial();
             LoadRewarded();
@@ -41,12 +40,9 @@ namespace Pancake.Monetization
 
         public override bool IsRewardedReady() { return AdSettings.ApplovinReward.IsReady(); }
 
-        public override void LoadRewardedInterstitial()
-        {
-            if (!IsRewardedInterstitialReady()) AdSettings.ApplovinRewardInter.Load();
-        }
+        public override void LoadRewardedInterstitial() { }
 
-        public override bool IsRewardedInterstitialReady() { return AdSettings.ApplovinRewardInter.IsReady(); }
+        public override bool IsRewardedInterstitialReady() { return false; }
 
         internal void ShowAppOpen()
         {

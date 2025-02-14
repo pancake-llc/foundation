@@ -38,11 +38,6 @@
             "define": "PANCAKE_IAP"
         },
         {
-            "name": "com.unity.mobile.notifications",
-            "expression": "2.1.0",
-            "define": "PANCAKE_NOTIFICATION"
-        },
-        {
             "name": "com.adjust.sdk",
             "expression": "5.0.3",
             "define": "PANCAKE_ADJUST"
@@ -68,11 +63,6 @@
             "define": "PANCAKE_FIREBASE_CRASHLYTIC"
         },
         {
-            "name": "com.google.external-dependency-manager",
-            "expression": "1.2.169",
-            "define": "PANCAKE_GOOGLE_EDM"
-        },
-        {
             "name": "com.google.play.review",
             "expression": "1.8.0",
             "define": "PANCAKE_IN_APP_REVIEW"
@@ -83,54 +73,9 @@
             "define": "PANCAKE_ATT"
         },
         {
-            "name": "com.coffee.ui-particle",
-            "expression": "4.0.0",
-            "define": "PANCAKE_PARTICLE_EFFECT_UGUI"
-        },
-        {
-            "name": "com.coffee.ui-effect",
-            "expression": "3.2.0",
-            "define": "PANCAKE_UI_EFFECT"
-        },
-        {
-            "name": "com.pancake.play-asset-delivery",
-            "expression": "1.0.0",
-            "define": "PANCAKE_PLAY_ASSET_DELIVERY"
-        },
-        {
-            "name": "com.unity.addressables",
-            "expression": "1.18.2",
-            "define": "PANCAKE_ADDRESSABLE"
-        },
-        {
             "name": "com.esotericsoftware.spine.spine-unity",
             "expression": "3.8.0",
             "define": "PANCAKE_SPINE"
-        },
-        {
-            "name": "com.unity.services.leaderboards",
-            "expression": "1.0.0",
-            "define": "PANCAKE_LEADERBOARD"
-        },
-        {
-            "name": "com.unity.services.cloudsave",
-            "expression": "2.0.0",
-            "define": "PANCAKE_CLOUDSAVE"
-        },
-        {
-            "name": "com.unity.performance.profile-analyzer",
-            "expression": "1.2.0",
-            "define": "PANCAKE_PROFILE_ANALYZER"
-        },
-        {
-            "name": "com.unity.test-framework.performance",
-            "expression": "1.0.9-preview",
-            "define": "PANCAKE_TEST_PERFORMANCE"
-        },
-        {
-            "name": "com.lupidan.apple-signin-unity",
-            "expression": "1.4.0",
-            "define": "PANCAKE_APPLE_SIGNIN"
         }
     ],
     "noEngineReferences": false

@@ -47,9 +47,22 @@ namespace Pancake.Notification
         [SerializeField, ShowIf(nameof(overrideIcon)), LabelText("  Large Icon")]
         internal string largeIcon = "icon_1";
 
-
         [SerializeField] private NotificationData[] datas;
 
+#if UNITY_EDITOR
+        [OnInspectorGUI]
+        private void DrawWarningBox()
+        {
+            if (IsNotificationInstalled())
+            {
+                UnityEditor.EditorGUILayout.HelpBox(
+                    "🚨 Unity Local Notification Package not installed!\nFollow these steps:\n1) Press Ctrl + W\n2)Select Other Package\n3) Press Install Unity Local Notification",
+                    UnityEditor.MessageType.Warning);
+            }
+        }
+
+        private bool IsNotificationInstalled() => !PancakeEditor.Common.RegistryManager.IsInstalled("com.unity.mobile.notifications").Item1;
+#endif
 
         public void Send()
         {

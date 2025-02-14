@@ -32,7 +32,6 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _applovinBannerProperty;
         private SerializedProperty _applovinInterProperty;
         private SerializedProperty _applovinRewardProperty;
-        private SerializedProperty _applovinRewardInterProperty;
         private SerializedProperty _applovinAppOpenProperty;
 
         private const string APPLOVIN_REGISTRY_NAME = "AppLovin MAX Unity";
@@ -61,7 +60,6 @@ namespace Pancake.MonetizationEditor
             _applovinBannerProperty = serializedObject.FindProperty("applovinBanner");
             _applovinInterProperty = serializedObject.FindProperty("applovinInter");
             _applovinRewardProperty = serializedObject.FindProperty("applovinReward");
-            _applovinRewardInterProperty = serializedObject.FindProperty("applovinRewardInter");
             _applovinAppOpenProperty = serializedObject.FindProperty("applovinAppOpen");
         }
 
@@ -78,8 +76,8 @@ namespace Pancake.MonetizationEditor
             EditorGUILayout.PropertyField(_gdprTestModeProperty, new GUIContent("GDPR Test Mode"));
             if (_gdprProperty.boolValue)
             {
-                bool umpSdkInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.Ump.dll");
-                if (!umpSdkInstalled)
+                var googleMobileAd = RegistryManager.IsInstalled("com.google.ads.mobile");
+                if (!googleMobileAd.Item1)
                 {
                     EditorGUILayout.HelpBox(
                         "GDPR is currently implemented using the UMP SDK provided in the Admob SDK so if you use GDPR you need to install the Admob SDK. you need to leave admob client blank to avoid admob init if you only use Applovin to show ads.\\nRemember to enable Delay app measurement in GoogleMobileAds settings.",
@@ -87,15 +85,17 @@ namespace Pancake.MonetizationEditor
                 }
             }
 
-            GUILayout.Space(4);
-
             if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Admob)
             {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-                GUI.backgroundColor = Uniform.Green_500;
-                EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
-                GUI.backgroundColor = Color.white;
+                var googleMobileAd = RegistryManager.IsInstalled("com.google.ads.mobile");
 
+                if (googleMobileAd.Item1)
+                {
+                    string versionInstalled = RegistryManager.GetVersionByPackageJson("com.google.ads.mobile");
+                    Uniform.DrawInstalled($"Admob v{versionInstalled}", new RectOffset(0, 0, 6, 0));
+                    GUILayout.Space(4);
+
+#if PANCAKE_ADMOB
                 EditorGUILayout.BeginHorizontal();
 
                 GUI.backgroundColor = Uniform.Green_500;
@@ -105,10 +105,8 @@ namespace Pancake.MonetizationEditor
                 }
 
                 GUI.backgroundColor = Uniform.Red_500;
-                if (GUILayout.Button("Uninstall Admob SDK", GUILayout.Height(24)))
+                if (GUILayout.Button("Uninstall Google Mobile Ads", GUILayout.Height(24)))
                 {
-                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB")) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
-
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GoogleMobileAds"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GoogleMobileAds.meta"));
 
@@ -129,6 +127,9 @@ namespace Pancake.MonetizationEditor
 
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
+                    
+                    RegistryManager.RemovePackage("com.google.ads.mobile");
+                    RegistryManager.Resolve();
                 }
 
                 GUI.backgroundColor = Color.white;
@@ -136,11 +137,6 @@ namespace Pancake.MonetizationEditor
 
                 var currentRect = EditorGUILayout.GetControlRect(false, 0);
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Import Mediation", GUILayout.Height(24)))
-                {
-                    DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob mediation");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob-mediation.unitypackage"), false);
-                }
 
                 if (GUILayout.Button("Take Test Id", GUILayout.Height(24)))
                 {
@@ -229,114 +225,80 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.PropertyField(_admobRewardProperty, new GUIContent("Rewarded"));
                 EditorGUILayout.PropertyField(_admobRewardInterProperty, new GUIContent("Inter Rewarded"));
                 EditorGUILayout.PropertyField(_admobAppOpenProperty, new GUIContent("App Open"));
-#else
-                GUI.backgroundColor = Uniform.Warning;
-                EditorGUILayout.HelpBox("Admob plugin not found", MessageType.Warning);
-                GUI.backgroundColor = Color.white;
-
-                EditorGUILayout.Space();
-                EditorGUILayout.BeginHorizontal();
-
-                bool googleMobileAdsInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.dll");
-                var contentInstallLabel = "Install Admob SDK v9.4.0 (1)";
-                if (googleMobileAdsInstalled)
-                {
-                    GUI.backgroundColor = Uniform.Green_500;
-                    contentInstallLabel = "Admob SDK v9.4.0 Installed (1)";
+#endif
                 }
                 else
                 {
+                    GUI.backgroundColor = Uniform.Green_500;
+
+                    if (GUILayout.Button("Install Google Mobile Ads", GUILayout.Height(24)))
+                    {
+                        DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob sdk");
+                        RegistryManager.AddPackage("com.google.ads.mobile",
+                            "https://github.com/googleads/googleads-mobile-unity.git?path=packages/com.google.ads.mobile");
+                        RegistryManager.Resolve();
+                    }
+
                     GUI.backgroundColor = Color.white;
                 }
 
-                if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
-                {
-                    DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob.unitypackage"), false);
-                }
-
-                var previousColor = GUI.color;
-                if (googleMobileAdsInstalled) GUI.color = Uniform.Green_500;
-
-                GUI.enabled = googleMobileAdsInstalled;
-                GUILayout.Label(" =====> ", GUILayout.Width(52), GUILayout.Height(24));
-                GUI.color = previousColor;
-                GUI.backgroundColor = Color.white;
-
-                if (GUILayout.Button("Add Admob Symbol (2)", GUILayout.Height(24)))
-                {
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB"))
-                    {
-                        ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
-                        AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
-                    }
-                }
-
                 GUI.enabled = true;
                 GUI.backgroundColor = Color.white;
-                EditorGUILayout.EndHorizontal();
-#endif
             }
             else if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Applovin)
             {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-                GUI.backgroundColor = Uniform.Green_500;
-                EditorGUILayout.HelpBox("Applovin plugin was imported. Please click Open AppLovin Integration and enter SDK key", MessageType.Info);
-                GUI.backgroundColor = Color.white;
-
-                EditorGUILayout.BeginHorizontal();
-
-                GUI.backgroundColor = Uniform.Green_500;
-                if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
+                var applovin = RegistryManager.IsInstalled(APPLOVIN_PACKAGE_NAME);
+                if (applovin.Item1)
                 {
-                    EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
-                }
+#if PANCAKE_APPLOVIN
+                    Uniform.DrawInstalled($"AppLovin v{applovin.Item2}", new RectOffset(0, 0, 6, 0));
 
-                GUI.backgroundColor = Uniform.Red_500;
-                if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
-                {
-                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
-                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
-                    AssetDatabase.SaveAssets();
+                    GUILayout.Space(4);
+                    EditorGUILayout.BeginHorizontal();
 
-                    RegistryManager.RemoveAllPackagesStartWith("com.applovin.mediation.");
-                    RegistryManager.RemoveScopedRegistry(APPLOVIN_REGISTRY_NAME);
+                    GUI.backgroundColor = Uniform.Green_500;
+                    if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
+                    {
+                        EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
+                    }
 
-                    RegistryManager.Resolve();
-                }
+                    GUI.backgroundColor = Uniform.Red_500;
+                    if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
+                    {
+                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
+                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
+                        AssetDatabase.SaveAssets();
 
-                GUI.backgroundColor = Color.white;
-                EditorGUILayout.EndHorizontal();
+                        RegistryManager.RemoveAllPackagesStartWith("com.applovin.mediation.");
+                        RegistryManager.RemoveScopedRegistry(APPLOVIN_REGISTRY_NAME);
 
-                EditorGUILayout.PropertyField(_applovinEnableMaxAdReviewProperty, new GUIContent("Enable MAX Ad Review"));
-                AppLovinSettings.Instance.QualityServiceEnabled = _applovinEnableMaxAdReviewProperty.boolValue;
-                EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
-                EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
-                EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
-                EditorGUILayout.PropertyField(_applovinRewardInterProperty, new GUIContent("Inter Rewarded"));
-                EditorGUILayout.PropertyField(_applovinAppOpenProperty, new GUIContent("App Open"));
-#else
-                GUI.backgroundColor = Uniform.Warning;
-                EditorGUILayout.HelpBox("Applovin plugin not found", MessageType.Warning);
-                GUI.backgroundColor = Color.white;
+                        RegistryManager.Resolve();
+                    }
 
-                EditorGUILayout.Space();
-                EditorGUILayout.BeginHorizontal();
+                    GUI.backgroundColor = Color.white;
+                    EditorGUILayout.EndHorizontal();
 
-                GUI.enabled = !EditorApplication.isCompiling;
-                if (GUILayout.Button("Install Applovin", GUILayout.Height(24)))
-                {
-                    _ = InstallApplovin();
-                }
-
-                GUI.enabled = true;
-                GUI.backgroundColor = Color.white;
-                EditorGUILayout.EndHorizontal();
-
+                    EditorGUILayout.PropertyField(_applovinEnableMaxAdReviewProperty, new GUIContent("Enable MAX Ad Review"));
+                    AppLovinSettings.Instance.QualityServiceEnabled = _applovinEnableMaxAdReviewProperty.boolValue;
+                    EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
+                    EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
+                    EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
+                    EditorGUILayout.PropertyField(_applovinAppOpenProperty, new GUIContent("App Open"));
 #endif
-            }
+                }
+                else
+                {
+                    GUI.enabled = !EditorApplication.isCompiling;
+                    GUI.backgroundColor = Uniform.Green_500;
+                    if (GUILayout.Button("Install Applovin", GUILayout.Height(24)))
+                    {
+                        _ = InstallApplovin();
+                    }
 
+                    GUI.enabled = true;
+                    GUI.backgroundColor = Color.white;
+                }
+            }
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -346,24 +308,7 @@ namespace Pancake.MonetizationEditor
             RegistryManager.AddScopedRegistry(APPLOVIN_REGISTRY_NAME, APPLOVIN_REGISTRY_URL, AppLovinRegistryScopes);
             RegistryManager.Resolve();
 
-            string version = await GetLatestVersionApplovinMediation();
-            if (string.IsNullOrEmpty(version)) return;
-
-            RegistryManager.AddPackage(APPLOVIN_PACKAGE_NAME, version);
-            RegistryManager.Resolve();
-        }
-
-        private static async Task<string> GetLatestVersionApplovinMediation()
-        {
-            var request = Client.Search(APPLOVIN_PACKAGE_NAME);
-            while (!request.IsCompleted)
-            {
-                await Task.Delay(100);
-            }
-
-            if (request.Status != StatusCode.Success) return "";
-
-            return request.Result.First().versions.latestCompatible;
+            await RegistryManager.InstallLastVersionForPacakge(APPLOVIN_PACKAGE_NAME);
         }
     }
 }

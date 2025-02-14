@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Pancake.Linq;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -62,7 +64,6 @@ namespace PancakeEditor.Common
 
             Write(json);
         }
-
 
         public static (bool, string) IsInstalled(string name)
         {
@@ -139,7 +140,43 @@ namespace PancakeEditor.Common
             return (false, "");
         }
 
-
         private static void Write(JObject json) { File.WriteAllText(Manifest, json.ToString()); }
+
+        private static async Task<string> GetLatestVersionForPacakge(string package)
+        {
+            var request = Client.Search(package);
+            while (!request.IsCompleted)
+            {
+                await Task.Delay(100);
+            }
+
+            if (request.Status != StatusCode.Success) return "";
+
+            return request.Result.First().versions.latestCompatible;
+        }
+
+        public static async Task InstallLastVersionForPacakge(string package)
+        {
+            string version = await GetLatestVersionForPacakge(package);
+            if (string.IsNullOrEmpty(version)) return;
+
+            AddPackage(package, version);
+            Resolve();
+        }
+
+        public static string GetVersionByPackageJson(string namePackage)
+        {
+            var upmPath = $"Packages/{namePackage}/package.json";
+            string path = Path.GetFullPath(upmPath);
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(Path.GetFullPath(upmPath));
+                var jsonObject = JObject.Parse(json);
+                var version = jsonObject["version"]?.ToString();
+                return version;
+            }
+
+            return "1.0.0";
+        }
     }
 }

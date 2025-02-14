@@ -118,15 +118,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.mobile.notifications": {
-      "version": "2.4.0",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.androidjni": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.4",
       "depth": 1,

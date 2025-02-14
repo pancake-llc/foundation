@@ -210,7 +210,7 @@ namespace Pancake.Monetization
         {
             return AdSettings.CurrentNetwork switch
             {
-                EAdNetwork.Applovin => AdSettings.ApplovinRewardInter,
+                EAdNetwork.Applovin => null,
                 _ => AdSettings.AdmobRewardInter,
             };
         }

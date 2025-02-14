@@ -19,41 +19,41 @@ namespace PancakeEditor
 
             GUILayout.Space(4);
 
-#if PANCAKE_PROFILE_ANALYZER
-            UninstallProfileAnalyzer();
-#else
-            InstallProfileAnalyzer();
-#endif
+            var analyzer = RegistryManager.IsInstalled("com.unity.performance.profile-analyzer");
+            if (analyzer.Item1) UninstallProfileAnalyzer(analyzer.Item2);
+            else InstallProfileAnalyzer();
 
             GUILayout.Space(4);
 
-#if PANCAKE_NOTIFICATION
-            UninstallNotification();
-#else
-            InstallNotification();
-#endif
-
-#if PANCAKE_TEST_PERFORMANCE
-            Uninstall("Test Performance 3.0.3", "com.unity.test-framework.performance");
-#else
-            InstallTestPerformance();
-#endif
+            var noti = RegistryManager.IsInstalled("com.unity.mobile.notifications");
+            if (noti.Item1) UninstallNotification(noti.Item2);
+            else InstallNotification();
 
             GUILayout.Space(4);
 
-#if PANCAKE_PARTICLE_EFFECT_UGUI
-            Uninstall("Particle Effect For UGUI 4.10.7", "com.coffee.ui-particle");
-#else
-            InstallParticleEffectUGUI();
-#endif
+            var testFramework = RegistryManager.IsInstalled("com.unity.test-framework.performance");
+            if (testFramework.Item1) UninstallTestPerformance(true, testFramework.Item2);
+            else InstallTestPerformance();
 
             GUILayout.Space(4);
 
-#if PANCAKE_UI_EFFECT
-            Uninstall("UI Effect 5.4.0", "com.coffee.ui-effect");
-#else
-            InstallUIEffect();
-#endif
+            var particle = RegistryManager.IsInstalled("com.coffee.ui-particle");
+            if (particle.Item1)
+            {
+                string version = RegistryManager.GetVersionByPackageJson("com.coffee.ui-particle");
+                Uninstall($"Particle Effect For UGUI {version}", "com.coffee.ui-particle");
+            }
+            else InstallParticleEffectUGUI();
+
+            GUILayout.Space(4);
+
+            var uiEffect = RegistryManager.IsInstalled("com.coffee.ui-effect");
+            if (uiEffect.Item1)
+            {
+                string version = RegistryManager.GetVersionByPackageJson("com.coffee.ui-effect");
+                Uninstall($"UI Effect {version}", "com.coffee.ui-effect");
+            }
+            else InstallUIEffect();
 
             GUILayout.Space(4);
 
@@ -81,7 +81,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.10.7");
+                RegistryManager.AddPackage("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git");
                 RegistryManager.Resolve();
             }
 
@@ -93,29 +93,28 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git?path=Packages/src#5.4.0");
+                RegistryManager.AddPackage("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git?path=Packages/src");
                 RegistryManager.Resolve();
             }
 
             GUI.enabled = true;
         }
 
-        private static void InstallProfileAnalyzer()
+        private static async void InstallProfileAnalyzer()
         {
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Profiler Analyzer", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.unity.performance.profile-analyzer", "1.2.2");
-                RegistryManager.Resolve();
+                await RegistryManager.InstallLastVersionForPacakge("com.unity.performance.profile-analyzer");
             }
 
             GUI.enabled = true;
         }
 
-        private static void UninstallProfileAnalyzer()
+        private static void UninstallProfileAnalyzer(string version)
         {
             EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Profile Analyzer 1.2.2", new RectOffset(0, 0, 6, 0));
+            Uniform.DrawInstalled($"Profile Analyzer {version}", new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Open Dashboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
@@ -142,35 +141,63 @@ namespace PancakeEditor
             EditorGUILayout.EndHorizontal();
         }
 
-        private static void InstallTestPerformance()
+        private static async void InstallTestPerformance()
         {
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Test Performance", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.unity.test-framework.performance", "3.0.3");
-                RegistryManager.Resolve();
+                await RegistryManager.InstallLastVersionForPacakge("com.unity.test-framework.performance");
             }
 
             GUI.enabled = true;
         }
 
-        private static void InstallNotification()
+        private static void UninstallTestPerformance(bool status, string version)
+        {
+            EditorGUILayout.BeginHorizontal();
+            if (status) Uniform.DrawInstalled($"Test Performance {version}", new RectOffset(0, 0, 6, 0));
+            else
+            {
+                if (RegistryManager.IsInstalled("com.unity.collections").Item1)
+                {
+                    Uniform.DrawInstalled($"Test Performance 3.0.3", new RectOffset(0, 0, 6, 0));
+                }
+            }
+
+            GUI.backgroundColor = Uniform.Red_500;
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
+            {
+                bool confirmDelete =
+                    EditorUtility.DisplayDialog("Uninstall Test Performance", $"Are you sure you want to uninstall Test Performance package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.RemovePackage("com.unity.test-framework.performance");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private static async void InstallNotification()
         {
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.AddPackage("com.unity.mobile.notifications", "2.4.0");
-                RegistryManager.Resolve();
+                await RegistryManager.InstallLastVersionForPacakge("com.unity.mobile.notifications");
             }
 
             GUI.enabled = true;
         }
 
-        private static void UninstallNotification()
+        private static void UninstallNotification(string version)
         {
             EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Notification 2.4.0", new RectOffset(0, 0, 6, 0));
 
+            Uniform.DrawInstalled($"Notification {version}", new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
 
