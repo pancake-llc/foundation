@@ -9,10 +9,18 @@ namespace Pancake.Common
     [Serializable]
     public class DynamicArray<T> : IReadonlyDynamicArray<T>, IReadOnlyCovariantDynamicArray<T>
     {
-        [SerializeField] public T[] items;
-        public int Count => Length;
-        [field: SerializeField, ReadOnly] public int Length { get; set; }
+        [SerializeField] internal T[] items;
+
+        /// <summary>
+        /// Number of elements in the array.
+        /// </summary>
+        [field: SerializeField, ReadOnly] public int Length { get; internal set; }
+
+        /// <summary>
+        /// Allocated size of the array.
+        /// </summary>
         public int Capacity => items.Length;
+
         private const int DEFAULT_CAPACITY = 10;
         private const int MINIMUM_PADDING = 5;
 
@@ -34,6 +42,26 @@ namespace Pancake.Common
 
             this[Length] = item;
             Length++;
+        }
+
+        public void AddRange(T[] items)
+        {
+            int addedSize = items.Length;
+            if (Length + items.Length > Capacity) ResizeMaintain(Capacity + CalculatePadding(Capacity) + addedSize);
+            for (var i = 0; i < addedSize; i++)
+            {
+                this[Length++] = items[i];
+            }
+        }
+
+        public void AddRange(List<T> items)
+        {
+            int addedSize = items.Count;
+            if (Length + items.Count > Capacity) ResizeMaintain(Capacity + CalculatePadding(Capacity) + addedSize);
+            for (var i = 0; i < addedSize; i++)
+            {
+                this[Length++] = items[i];
+            }
         }
 
         public void ResizeNew(int capacity)
@@ -77,7 +105,7 @@ namespace Pancake.Common
         {
             var insertIndex = 0;
 
-            for (var i = 0; i < Count; i++)
+            for (var i = 0; i < Length; i++)
             {
                 var item = this[i];
                 if (filter(item))
@@ -103,6 +131,7 @@ namespace Pancake.Common
             items[Length] = default; // Clear last item
         }
 
-        public int CalculatePadding(int currentCapacity, int segment = 4) => (currentCapacity / segment).Max(MINIMUM_PADDING); // 25% of current capacity or minimum MINIMUM_PADDING
+        public int CalculatePadding(int currentCapacity, int segment = 4) =>
+            (currentCapacity / segment).Max(MINIMUM_PADDING); // 25% of current capacity or minimum MINIMUM_PADDING
     }
 }
