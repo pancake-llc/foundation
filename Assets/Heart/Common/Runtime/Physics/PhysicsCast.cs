@@ -60,6 +60,46 @@ namespace Pancake.Common
             return results;
         }
 
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.RaycastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<RaycastHit> RaycastNonAlloc(
+            Ray ray,
+            float maxDistance = float.PositiveInfinity,
+            int layerMask = -5,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return RaycastNonAlloc(ray,
+                DynamicArray<RaycastHit>.Get(),
+                maxDistance,
+                layerMask,
+                queryTriggerInteraction);
+        }
+
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.RaycastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<RaycastHit> RaycastNonAlloc(
+            Vector3 origin,
+            Vector3 direction,
+            float maxDistance = float.PositiveInfinity,
+            int layerMask = -5,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return RaycastNonAlloc(origin,
+                direction,
+                DynamicArray<RaycastHit>.Get(),
+                maxDistance,
+                layerMask,
+                queryTriggerInteraction);
+        }
+
         #endregion
 
         #region BoxCast
@@ -105,6 +145,42 @@ namespace Pancake.Common
                 Quaternion.identity);
         }
 
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.BoxCastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<RaycastHit> BoxCastNonAlloc(
+            Vector3 center,
+            Vector3 halfExtents,
+            Vector3 direction,
+            Quaternion orientation,
+            float maxDistance = float.PositiveInfinity,
+            int layerMask = -5,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return BoxCastNonAlloc(center,
+                halfExtents,
+                direction,
+                DynamicArray<RaycastHit>.Get(),
+                orientation,
+                maxDistance,
+                layerMask,
+                queryTriggerInteraction);
+        }
+
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.BoxCastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<RaycastHit> BoxCastNonAlloc(Vector3 center, Vector3 halfExtents, Vector3 direction)
+        {
+            return BoxCastNonAlloc(center, halfExtents, direction, DynamicArray<RaycastHit>.Get());
+        }
+
         #endregion
 
         #region CapsuleCast
@@ -139,6 +215,31 @@ namespace Pancake.Common
 
             results.Length = count;
             return results;
+        }
+
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.CapsuleCastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<RaycastHit> CapsuleCastNonAlloc(
+            Vector3 point1,
+            Vector3 point2,
+            float radius,
+            Vector3 direction,
+            float maxDistance = float.PositiveInfinity,
+            int layerMask = -5,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return CapsuleCastNonAlloc(point1,
+                point2,
+                radius,
+                direction,
+                DynamicArray<RaycastHit>.Get(),
+                maxDistance,
+                layerMask,
+                queryTriggerInteraction);
         }
 
         #endregion
@@ -203,6 +304,50 @@ namespace Pancake.Common
             return results;
         }
 
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.RaycastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<RaycastHit> SphereCastNonAlloc(
+            Ray ray,
+            float radius,
+            float maxDistance = float.PositiveInfinity,
+            int layerMask = -5,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return SphereCastNonAlloc(ray,
+                radius,
+                DynamicArray<RaycastHit>.Get(),
+                maxDistance,
+                layerMask,
+                queryTriggerInteraction);
+        }
+
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.RaycastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<RaycastHit> SphereCastNonAlloc(
+            Vector3 origin,
+            float radius,
+            Vector3 direction,
+            float maxDistance = float.PositiveInfinity,
+            int layerMask = -5,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return SphereCastNonAlloc(origin,
+                radius,
+                direction,
+                DynamicArray<RaycastHit>.Get(),
+                maxDistance,
+                layerMask,
+                queryTriggerInteraction);
+        }
+
         #endregion
 
         #region OverlapBox
@@ -240,6 +385,38 @@ namespace Pancake.Common
             return OverlapBoxNonAlloc(center, halfExtents, results, Quaternion.identity);
         }
 
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.OverlapBoxNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<Collider> OverlapBoxNonAlloc(
+            Vector3 center,
+            Vector3 halfExtents,
+            Quaternion orientation,
+            int mask = -1,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return OverlapBoxNonAlloc(center,
+                halfExtents,
+                DynamicArray<Collider>.Get(),
+                orientation,
+                mask,
+                queryTriggerInteraction);
+        }
+
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.RaycastNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<Collider> OverlapBoxNonAlloc(Vector3 center, Vector3 halfExtents)
+        {
+            return OverlapBoxNonAlloc(center, halfExtents, DynamicArray<Collider>.Get());
+        }
+
         #endregion
 
         #region OverlapCapsule
@@ -272,6 +449,27 @@ namespace Pancake.Common
             return results;
         }
 
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.OverlapCapsuleNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<Collider> OverlapCapsuleNonAlloc(
+            Vector3 point0,
+            Vector3 point1,
+            float radius,
+            int layerMask = -1,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return OverlapCapsuleNonAlloc(point0,
+                point1,
+                radius,
+                DynamicArray<Collider>.Get(),
+                layerMask,
+                queryTriggerInteraction);
+        }
+
         #endregion
 
         #region OverlapSphere
@@ -300,6 +498,25 @@ namespace Pancake.Common
 
             results.Length = count;
             return results;
+        }
+
+        /// <summary>
+        /// Remember call dispose when DynamicArray create auto using pool
+        /// <code>var results = PhysicsCast.OverlapSphereNonAlloc(transform.position, Vector3.forward);
+        /// ...
+        /// results.Dispose();</code>
+        /// </summary>
+        public static IReadonlyDynamicArray<Collider> OverlapSphereNonAlloc(
+            Vector3 position,
+            float radius,
+            int layerMask = -1,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            return OverlapSphereNonAlloc(position,
+                radius,
+                DynamicArray<Collider>.Get(),
+                layerMask,
+                queryTriggerInteraction);
         }
 
         #endregion

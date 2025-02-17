@@ -76,7 +76,7 @@ namespace Pancake.Common
 
             var original = items;
             items = new T[capacity];
-            Array.Copy(original, items, original.Length);
+            Array.Copy(original, items, Length); // Copy only valid elements
         }
 
         public T this[int index] { get => items[index]; set => items[index] = value; }
@@ -133,5 +133,28 @@ namespace Pancake.Common
 
         public int CalculatePadding(int currentCapacity, int segment = 4) =>
             (currentCapacity / segment).Max(MINIMUM_PADDING); // 25% of current capacity or minimum MINIMUM_PADDING
+
+        public static DynamicArray<T> Get() { return DynamicArrayPool<T>.Get(); }
+
+        public void Dispose()
+        {
+            Array.Clear(items, 0, Length);
+            DynamicArrayPool<T>.Return(this);
+        }
+    }
+
+    internal static class DynamicArrayPool<T>
+    {
+        private static readonly Stack<DynamicArray<T>> Pool = new();
+
+        internal static DynamicArray<T> Get() { return Pool.Count > 0 ? Pool.Pop() : new DynamicArray<T>(); }
+
+        internal static void Return(DynamicArray<T> array)
+        {
+            array.Length = 0;
+            Pool.Push(array);
+        }
+
+        internal static void Clear() { Pool.Clear(); }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Pancake.Common
 {
-    public interface IReadonlyDynamicArray<T> : IEnumerable<T>
+    public interface IReadonlyDynamicArray<T> : IEnumerable<T>, IDisposable
     {
         public int Length { get; }
         public int Capacity { get; }
