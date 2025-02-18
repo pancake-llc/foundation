@@ -7,6 +7,7 @@ namespace Pancake.Elm
         private readonly IUpdater<TModel, TMessage> _updater;
         private readonly IRenderer<TModel, TMessage> _renderer;
         private readonly Func<TModel, Sub<IMessenger<TMessage>>> _subscription;
+        private readonly Dispatcher<TMessage> _dispatcher;
         private TModel _model;
         private Sub<IMessenger<TMessage>> _currentSubscription;
 
@@ -21,13 +22,14 @@ namespace Pancake.Elm
             IRenderer<TModel, TMessage> renderer,
             Func<TModel, Sub<IMessenger<TMessage>>> subscription)
         {
+            _dispatcher = Dispath;
             _updater = updater;
             _renderer = renderer;
             _subscription = subscription;
             var (model, cmd) = init.Invoke();
             _model = model;
-            cmd.Execute(Dispath);
-            _renderer.Init(Dispath);
+            cmd.Execute(_dispatcher);
+            _renderer.Init(_dispatcher);
             _renderer.Render(_model);
             UpdateSubscription();
         }
@@ -41,7 +43,7 @@ namespace Pancake.Elm
                 _model = model;
             }
 
-            cmd.Execute(Dispath);
+            cmd.Execute(_dispatcher);
             UpdateSubscription();
         }
 

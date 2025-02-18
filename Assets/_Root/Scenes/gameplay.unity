@@ -3234,8 +3234,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ae65fefc724aea89e60cf2152f954c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view: {fileID: 2103284060}
-  counter: 5
+  render: {fileID: 2103284060}
+  initCounter: 7
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
