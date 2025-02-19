@@ -2,6 +2,9 @@
 {
     public enum ECounterType
     {
-        Increase
+        Increase,
+        Decrease,
+        Tick,
+        Nothing
     }
 }

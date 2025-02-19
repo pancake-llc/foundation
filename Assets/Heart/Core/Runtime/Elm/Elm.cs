@@ -9,10 +9,10 @@ namespace Pancake.Elm
         private readonly Func<TModel, Sub<IMessenger<TMessage>>> _subscription;
         private readonly Dispatcher<TMessage> _dispatcher;
         private TModel _model;
-        private Sub<IMessenger<TMessage>> _currentSubscription;
+        private readonly Sub<IMessenger<TMessage>> _currentSubscription;
 
         public Elm(Func<(TModel, Cmd<TMessage>)> init, IUpdater<TModel, TMessage> updater, IRenderer<TModel, TMessage> renderer)
-            : this(init, updater, renderer, _ => Sub<IMessenger<TMessage>>.None)
+            : this(init, updater, renderer, _ => Sub<IMessenger<TMessage>>.Batch(Array.Empty<Sub<IMessenger<TMessage>>>()))
         {
         }
 
@@ -31,7 +31,8 @@ namespace Pancake.Elm
             cmd.Execute(_dispatcher);
             _renderer.Init(_dispatcher);
             _renderer.Render(_model);
-            UpdateSubscription();
+            _currentSubscription = _subscription(_model);
+            _currentSubscription.OnWatch += Dispath;
         }
 
         private void Dispath(IMessenger<TMessage> msg)
@@ -47,12 +48,6 @@ namespace Pancake.Elm
             UpdateSubscription();
         }
 
-        private void UpdateSubscription()
-        {
-            if (_currentSubscription != null) _currentSubscription.OnWatch -= Dispath;
-
-            _currentSubscription = _subscription(_model);
-            _currentSubscription.OnWatch += Dispath;
-        }
+        private void UpdateSubscription() { _currentSubscription.UpdateEffect(_subscription(_model).Effect); }
     }
 }
