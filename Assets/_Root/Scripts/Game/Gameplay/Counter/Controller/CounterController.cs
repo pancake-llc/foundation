@@ -1,5 +1,5 @@
 ﻿using System;
-using Pancake.Common;
+using LitMotion;
 using Pancake.Elm;
 using UnityEngine;
 
@@ -11,79 +11,66 @@ namespace Pancake.Game
         [SerializeField] private int initCounter;
 
         private Elm<CounterModel, ECounterType> _counter;
+        private TimeSubscription _timeSubscription;
+        private KeyboardSubscription _keyboardSubscription;
 
         private void Start()
         {
-            _counter = new Elm<CounterModel, ECounterType>(() => (new CounterModel {number = initCounter}, Cmd<ECounterType>.none), new CounterUpdater(), render, CreateSubscription());
-            
-            
-            Func<CounterModel, Sub<IMessenger<ECounterType>>> CreateSubscription()
-            {
-                var timeSub = new Sub<DateTime>(new TimeSubscription())
-                    .Map<IMessenger<ECounterType>>(time => new CounterTickMsg());
+            _timeSubscription = new TimeSubscription();
+            _keyboardSubscription = new KeyboardSubscription();
+            //var sub = new Sub<IMessenger<ECounterType>>(_timeSubscription);
+            var sub = Sub<IMessenger<ECounterType>>.Batch(new Sub<IMessenger<ECounterType>>[] {new(_timeSubscription), new(_keyboardSubscription)});
+            _counter = new Elm<CounterModel, ECounterType>(() => (new CounterModel {number = initCounter}, Cmd<ECounterType>.none),
+                new CounterUpdater(),
+                render,
+                _ => sub);
 
-                var keyboardSub = new Sub<string>(new KeyboardSubscription())
-                    .Map<IMessenger<ECounterType>>(key =>
+
+            Sub<ECounterType> map = new Sub<IMessenger<ECounterType>>(_timeSubscription).Map(m => m.GetMessage());
+        }
+    }
+
+    public class TimeSubscription : IEffect<IMessenger<ECounterType>>
+    {
+        private event Action<IMessenger<ECounterType>> OnOccurrence;
+
+        public void Add(Action<IMessenger<ECounterType>> handler) => OnOccurrence += handler;
+
+        public void Remove(Action<IMessenger<ECounterType>> handler) => OnOccurrence -= handler;
+
+        public TimeSubscription()
+        {
+            LMotion.Create(0, 0, 1f)
+                .WithLoops(-1)
+                .WithOnLoopComplete(_ =>
+                {
+                    Debug.Log("Called TimeSubscription After 1s");
+                    OnOccurrence?.Invoke(new CounterIncreaseMsg());
+                })
+                .RunWithoutBinding();
+        }
+    }
+
+    public class KeyboardSubscription : IEffect<IMessenger<ECounterType>>
+    {
+        private event Action<IMessenger<ECounterType>> OnOccurrence;
+
+        public void Add(Action<IMessenger<ECounterType>> handler) => OnOccurrence += handler;
+
+        public void Remove(Action<IMessenger<ECounterType>> handler) => OnOccurrence -= handler;
+
+        public KeyboardSubscription()
+        {
+            LMotion.Create(0, 0, 1f)
+                .WithLoops(-1)
+                .Bind(_ =>
+                {
+                    if (Input.GetKeyDown(KeyCode.Space))
                     {
-                        if (key == "I") return new CounterIncreaseMsg();
-                        if (key == "D") return new CounterDecreaseMsg();
-
-                        return new CounterNothingMsg();
-                    });
-
-                return _ => Sub<IMessenger<ECounterType>>.Batch(new[] { timeSub, keyboardSub });
-            }
-            
-        }
-    }
-    
-    public class TimeSubscription : IEffect<DateTime>
-    {
-        private Timer _timer;
-
-        public void Add(Action<DateTime> handler)
-        {
-            _timer = new CountdownTimer(5);
-            _timer.Start();
-            _timer.onTimerStart += () =>
-            {
-                Debug.Log("Startt");
-                handler(DateTime.Now);
-            };
-            _timer.onTimerStop += () =>
-            {
-                Debug.Log("stop");
-                
-                handler(DateTime.Now);
-            };
-        }
-
-        public void Remove(Action<DateTime> handler)
-        {
-            _timer.Stop();
-        }
-    }
-
-    public class KeyboardSubscription : IEffect<string>
-    {
-        public void Add(Action<string> handler)
-        {
-           Debug.Log("Listening for key presses...");
-            //while (true)
-            {
-                if (Input.GetKeyDown(KeyCode.I))
-                {
-                    handler("I");
-                }else if (Input.GetKeyDown(KeyCode.D))
-                {
-                    handler("D");
-                }
-            }
-        }
-
-        public void Remove(Action<string> handler)
-        {
-            // Không cần làm gì trong trường hợp này
+                        Debug.Log("Pressed Space");
+                        OnOccurrence.Invoke(new CounterDecreaseMsg());
+                    }
+                });
         }
     }
 }

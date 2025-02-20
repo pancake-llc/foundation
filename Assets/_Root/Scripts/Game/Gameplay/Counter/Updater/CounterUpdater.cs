@@ -6,11 +6,12 @@ namespace Pancake.Game
     {
         public (CounterModel, Cmd<ECounterType>) Update(IMessenger<ECounterType> msg, CounterModel model)
         {
-            switch (msg)
+            return msg switch
             {
-                case CounterIncreaseMsg: return (new CounterModel {number = model.number + 1}, Cmd<ECounterType>.none);
-                default: return (new CounterModel(), Cmd<ECounterType>.none);
-            }
+                CounterIncreaseMsg => (new CounterModel {number = model.number + 1}, Cmd<ECounterType>.none),
+                CounterDecreaseMsg => (new CounterModel {number = model.number - 1}, Cmd<ECounterType>.none),
+                _ => (new CounterModel {number = model.number}, Cmd<ECounterType>.none)
+            };
         }
     }
 }
