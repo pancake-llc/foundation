@@ -2,7 +2,7 @@
   "name": "com.pancake.heart",
   "displayName": "Heart",
   "description": "The heart of the world tree, use for make game in Unity3D",
-  "version": "3.1.6",
+  "version": "3.2.0",
   "unity": "6000.0",
   "category": "core",
   "author": {
@@ -17,13 +17,11 @@
   "dependencies": {
     "com.unity.ugui": "2.0.0",
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.burst": "1.8.18",
-    "com.unity.collections": "2.5.1",
+    "com.unity.burst": "1.8.19",
+    "com.unity.collections": "2.5.2",
     "com.unity.serialization": "3.1.2",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
-    "com.unity.addressables": "2.3.1",
-    "com.unity.mobile.notifications": "2.4.0",
-    "com.unity.services.core": "1.13.0"
+    "com.unity.addressables": "2.3.16"
   },
   "repository": {
     "type": "git",

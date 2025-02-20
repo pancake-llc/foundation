@@ -38,7 +38,7 @@ You can choose one of the following ways
 2, for only install heart as package module ----> add directly in `manifest.json` in folder `Packages/manifest.json`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#3.1.6",
+"com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#3.2.0",
 ```
 
 
@@ -76,7 +76,7 @@ You can choose one of the following ways
 graph TD;
     Core-->DI;
     Core-->EventSystem;
-    Core-->MVP;
+    Core-->Elm;
 ```
 
 # Usages
