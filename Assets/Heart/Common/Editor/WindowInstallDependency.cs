@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Pancake.Common;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace PancakeEditor.Common
@@ -27,11 +26,18 @@ namespace PancakeEditor.Common
             GUI.enabled = isStillMissingPackage;
             if (GUILayout.Button("Install All"))
             {
+                foreach (string key in Dependencies.Keys)
+                {
+                    RegistryManager.AddPackage(key, Dependencies[key]);
+                }
+
+                foreach (string key in SubDependencies.Keys)
+                {
+                    RegistryManager.AddPackage(key, Dependencies[key]);
+                }
+
                 Close();
-                var urls = new List<string>();
-                urls.AddRange(Dependencies.Values);
-                urls.AddRange(SubDependencies.Values);
-                Client.AddAndRemove(urls.ToArray());
+                RegistryManager.Resolve();
             }
 
             GUI.enabled = true;
