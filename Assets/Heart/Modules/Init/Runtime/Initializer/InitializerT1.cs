@@ -13,15 +13,11 @@ namespace Sisus.Init
 	/// </para>
 	/// <para>
 	/// The argument gets injected to the <typeparamref name="TClient">client</typeparamref>
-	/// during the <see cref="Awake"/> event.
+	/// during the Awake event.
 	/// </para>
 	/// <para>
 	/// The client receives the argument via the <see cref="IInitializable{TArgument}.Init">Init</see>
 	/// method where it can be assigned to a member field or property.
-	/// </para>
-	/// <para>
-	/// After the argument has been injected the <see cref="Initializer{,}"/> is removed from the
-	/// <see cref="GameObject"/> that holds it.
 	/// </para>
 	/// </summary>
 	/// <typeparam name="TClient"> Type of the initialized client component. </typeparam>

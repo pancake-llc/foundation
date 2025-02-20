@@ -27,7 +27,7 @@ namespace Sisus.Init.EditorOnly.Internal
 	internal static class EditorServiceTagUtility
 	{
 		internal static Component openSelectTagsMenuFor;
-		private static readonly GUIContent serviceLabel = new("Service", "An instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent serviceLabel = new("Service", "A service of this type is available.\n\nIt can be acquired automatically during initialization.");
 		private static readonly GUIContent blankLabel = new(" ");
 		private static readonly HashSet<Type> definingTypesBuilder = new();
 		private static readonly Dictionary<object, Type[]> objectDefiningTypesCache = new();
@@ -172,10 +172,6 @@ namespace Sisus.Init.EditorOnly.Internal
 			static void AddServiceDefiningTypes([AllowNull] Component clientOrNull, [DisallowNull] object service, [DisallowNull] HashSet<Type> definingTypes)
 			{
 				Type concreteType = service.GetType();
-				foreach(var definingType in ServiceAttributeUtility.GetDefiningTypes(concreteType))
-				{
-					definingTypes.Add(definingType);
-				}
 
 				for(var typeOrBaseType = concreteType; !TypeUtility.IsNullOrBaseType(typeOrBaseType); typeOrBaseType = typeOrBaseType.BaseType)
 				{
@@ -302,7 +298,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		}
 
 		/// <param name="anyProperty"> SerializedProperty of <see cref="Any{T}"/> or some other type field. </param>
-		internal static bool Draw(Rect controlRect, SerializedProperty anyProperty, GUIContent label = null, bool serviceExists = true)
+		internal static bool Draw(Rect controlRect, SerializedProperty anyProperty = null, GUIContent label = null, bool serviceExists = true)
 		{
 			label ??= serviceLabel;
 			float maxWidth = Styles.ServiceTag.CalcSize(label).x;

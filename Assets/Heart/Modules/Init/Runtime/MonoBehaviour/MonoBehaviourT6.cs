@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Sisus.Init.Internal;
@@ -113,6 +112,7 @@ namespace Sisus.Init
 		}
 		#endif
 
+		/// <inheritdoc/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected override bool Init(Context context)
 		{
@@ -149,6 +149,13 @@ namespace Sisus.Init
 			Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 
 			initState = InitState.Initialized;
+		}
+
+		void IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>.Validate(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			ValidateArguments(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+			#endif
 		}
 	}
 }

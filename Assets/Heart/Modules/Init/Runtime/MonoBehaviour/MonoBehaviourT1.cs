@@ -101,6 +101,19 @@ namespace Sisus.Init
 		}
 		#endif
 
+		/// <summary>
+		/// Requests the object to try and acquire the object that it depends on and initialize itself.
+		/// </summary>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate the dependency and initialize itself, or has already
+		/// successfully initialized itself previously; otherwise, <see langword="false"/>.
+		/// </returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected override bool Init(Context context)
 		{
@@ -136,6 +149,13 @@ namespace Sisus.Init
 			Init(argument);
 
 			initState = InitState.Initialized;
+		}
+
+		void IArgs<TArgument>.Validate(TArgument argument)
+		{
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			ValidateArgument(argument);
+			#endif
 		}
 	}
 }

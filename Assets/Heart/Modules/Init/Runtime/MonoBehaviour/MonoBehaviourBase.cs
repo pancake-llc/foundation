@@ -141,7 +141,20 @@ namespace Sisus.Init
 			
 			return success;
 		}
-		
+
+		/// <summary>
+		/// Requests the object to try and acquire all the objects that it depends on and initialize itself.
+		/// </summary>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize itself, or has already
+		/// successfully initialized itself previously; otherwise, <see langword="false"/>.
+		/// </returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected abstract bool Init(Context context);
 
@@ -185,12 +198,7 @@ namespace Sisus.Init
 		/// </summary>
 		/// <param name="argument"> The argument to test. </param>
 		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE"), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected void ThrowIfNull<TArgument>(TArgument argument)
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(argument == Null) throw new ArgumentNullException(typeof(TArgument).Name, $"Init argument of type {TypeUtility.ToString(typeof(TArgument))} passed to {TypeUtility.ToString(GetType())} was null.");
-			#endif
-		}
+		protected void ThrowIfNull<TArgument>(TArgument argument) => InvalidInitArgumentsException.ThrowIfNull(this, typeof(TArgument));
 
 		/// <summary>
 		/// Checks if the <paramref name="argument"/> is <see langword="null"/> and logs an assertion message to the console if it is.
@@ -203,7 +211,7 @@ namespace Sisus.Init
 		protected void AssertNotNull<TArgument>(TArgument argument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(argument == Null) Debug.LogAssertion($"Init argument of type {TypeUtility.ToString(typeof(TArgument))} passed to {TypeUtility.ToString(GetType())} was null.", this);
+			if(argument == Null) Debug.LogAssertion(InvalidInitArgumentsException.Null(this, typeof(TArgument)).Message, this);
 			#endif
 		}
 
@@ -226,7 +234,7 @@ namespace Sisus.Init
 		/// if an argument is <see cref="Null">null</see>.
 		/// <example>
 		/// <code>
-		/// protected override void ValidateArguments(IInputManager inputManager)
+		/// protected override void ValidateArgument(IInputManager inputManager)
 		/// {
 		///		AssertNotNull(inputManager);
 		/// }
@@ -242,7 +250,12 @@ namespace Sisus.Init
 		protected virtual void ValidateArgument<TArgument>(TArgument argument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(argument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, argument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -284,8 +297,13 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -328,9 +346,14 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -374,10 +397,15 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -422,11 +450,16 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -472,12 +505,17 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, sixthArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -524,13 +562,18 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
-			AssertNotNull(seventhArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, sixthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, seventhArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -578,14 +621,19 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
-			AssertNotNull(seventhArgument);
-			AssertNotNull(eighthArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, sixthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, seventhArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, eighthArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 		
@@ -634,15 +682,20 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
-			AssertNotNull(seventhArgument);
-			AssertNotNull(eighthArgument);
-			AssertNotNull(ninthArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, sixthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, seventhArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, eighthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, ninthArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 		
@@ -692,16 +745,21 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
-			AssertNotNull(seventhArgument);
-			AssertNotNull(eighthArgument);
-			AssertNotNull(ninthArgument);
-			AssertNotNull(tenthArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, sixthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, seventhArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, eighthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, ninthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, tenthArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 		
@@ -752,17 +810,22 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
-			AssertNotNull(seventhArgument);
-			AssertNotNull(eighthArgument);
-			AssertNotNull(ninthArgument);
-			AssertNotNull(tenthArgument);
-			AssertNotNull(eleventhArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, sixthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, seventhArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, eighthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, ninthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, tenthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, eleventhArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 
@@ -814,18 +877,23 @@ namespace Sisus.Init
 		protected virtual void ValidateArguments<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument)
 		{
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-			AssertNotNull(firstArgument);
-			AssertNotNull(secondArgument);
-			AssertNotNull(thirdArgument);
-			AssertNotNull(fourthArgument);
-			AssertNotNull(fifthArgument);
-			AssertNotNull(sixthArgument);
-			AssertNotNull(seventhArgument);
-			AssertNotNull(eighthArgument);
-			AssertNotNull(ninthArgument);
-			AssertNotNull(tenthArgument);
-			AssertNotNull(eleventhArgument);
-			AssertNotNull(twelfthArgument);
+			InvalidInitArgumentsException exception = null;
+			InvalidInitArgumentsException.ValidateNotNull(this, firstArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, secondArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, thirdArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fourthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, fifthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, sixthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, seventhArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, eighthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, ninthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, tenthArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, eleventhArgument, ref exception);
+			InvalidInitArgumentsException.ValidateNotNull(this, twelfthArgument, ref exception);
+			if(exception is not null)
+			{
+				throw exception;
+			}
 			#endif
 		}
 		

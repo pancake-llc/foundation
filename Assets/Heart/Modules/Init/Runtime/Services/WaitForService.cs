@@ -9,7 +9,7 @@ namespace Sisus.Init
 	/// until a service that it requires becomes available.
 	/// </summary>
 	#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
-	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Class | Is.Interface, WhereNone = Is.BuiltIn, Order = 100f, Tooltip = "This service is expected to become available for the client at runtime.\n\nService can be a component that has the Service Tag, or an Object registered as a service in a Services component, that is located in another scene or prefab.\n\nThe service could also be manually registered at runtime using " + nameof(Service) + "." + nameof(Service.Set) + ".")]
+	[ValueProviderMenu(MENU_NAME, WhereAny = Is.Class | Is.Interface, WhereNone = Is.BuiltIn, Order = 100f, Tooltip = "This service is expected to become available for the client at runtime.\n\nService can be a component that has the Service Tag, or an Object registered as a service in a Services component, that is located in another scene or prefab. The service can also be manually registered at runtime using " + nameof(Service) + "." + nameof(Service.Set) + ".\n\nInitialization will be delayed until the service has become available.")]
 	#endif
 	#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
 	[CreateAssetMenu(fileName = MENU_NAME, menuName = ValueProviderUtility.CREATE_ASSET_MENU_GROUP + MENU_NAME, order = 1010)]

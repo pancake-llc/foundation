@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Sisus.Init.ValueProviders;
 using UnityEngine;
 using static Sisus.NullExtensions;
-
-namespace Sisus.Init.Internal
-{ }
 
 namespace Sisus.Init
 {

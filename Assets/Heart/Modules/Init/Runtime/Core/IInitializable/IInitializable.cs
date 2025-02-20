@@ -1,5 +1,4 @@
-﻿using Sisus.Init.Internal;
-using Sisus.Init.ValueProviders;
+﻿using Sisus.Init.ValueProviders;
 using UnityEngine;
 
 namespace Sisus.Init
@@ -18,14 +17,16 @@ namespace Sisus.Init
 		bool HasInitializer { get; }
 
 		/// <summary>
-		/// Requests the object to try and acquire its own dependencies and initialize itself.
+		/// Requests the object to try and acquire all the objects that it depends on and initialize itself.
+		/// <remarks>
+		/// <seealso cref="IInitializableExtensions.Init{TInitializable, TArgument}"/> can be used to implement this method
+		/// in a single line.
+		/// </remarks>
 		/// </summary>
-		/// <param name="context">
-		/// The context from which a method is being called.
-		/// <para>
+		/// <param name="context"> The context from which a method is being called. <para>
 		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
 		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
-		/// reliability reasons it is recommended to do these operations in edit mode only, and cache the results.
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
 		/// </para>
 		/// </param>
 		/// <returns>
@@ -476,21 +477,21 @@ namespace Sisus.Init
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
 	{
 		/// <summary>
-		/// Initializes the object with seven objects that it depends on.
+		/// Initializes the object with eight objects that it depends on.
 		/// <para>
 		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
 		/// </para>
 		/// <para>
-		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> <see cref="Init"/> gets called during the Awake event
+		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/> <see cref="Init"/> gets called during the Awake event
 		/// when the instance is being loaded at runtime and during the Reset event when the script is added to a GameObject in edit mode.
 		/// If the GameObject is inactive causing the Awake event to never get fired, then the <see cref="Init"/> method is called immediately
 		/// after the object has been created.
 		/// </para>
 		/// <para>
-		/// For classes that derive from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> <see cref="Init"/> also gets called during the Awake event.
+		/// For classes that derive from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/> <see cref="Init"/> also gets called during the Awake event.
 		/// </para>
 		/// <para>
-		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
+		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
 		/// (after Awake and OnEnable but before Start) when an instance is created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/> or
 		/// <see cref="AddComponent"/>.
 		/// </para>
@@ -543,6 +544,39 @@ namespace Sisus.Init
 	/// <typeparam name="TNinthArgument"> Type of the ninth argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
 	{
+		/// <summary>
+		/// Initializes the object with nine objects that it depends on.
+		/// <para>
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/> <see cref="Init"/> gets called during the Awake event
+		/// when the instance is being loaded at runtime and during the Reset event when the script is added to a GameObject in edit mode.
+		/// If the GameObject is inactive causing the Awake event to never get fired, then the <see cref="Init"/> method is called immediately
+		/// after the object has been created.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/> <see cref="Init"/> also gets called during the Awake event.
+		/// </para>
+		/// <para>
+		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
+		/// (after Awake and OnEnable but before Start) when an instance is created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/> or
+		/// <see cref="AddComponent"/>.
+		/// </para>
+		/// <para>
+		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
+		/// such as in the constructor or during the Awake event, using <see cref="InitArgs.TryGet{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/>.
+		/// </para>
+		/// </summary>
+		/// <param name="firstArgument"> First argument used during initialization of the component. </param>
+		/// <param name="secondArgument"> Second argument used during initialization of the component. </param>
+		/// <param name="thirdArgument"> Third argument used during initialization of the component. </param>
+		/// <param name="fourthArgument"> Fourth argument used during initialization of the component. </param>
+		/// <param name="fifthArgument"> Fifth argument used during initialization of the component. </param>
+		/// <param name="sixthArgument"> Sixth argument used during initialization of the component. </param>
+		/// <param name="seventhArgument"> Seventh argument used during initialization of the component. </param>
+		/// <param name="eighthArgument"> Eighth argument used during initialization of the component. </param>
+		/// <param name="ninthArgument"> Ninth argument used during initialization of the component. </param>
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument);
 	}
 	
@@ -580,9 +614,43 @@ namespace Sisus.Init
 	/// <typeparam name="TTenthArgument"> Type of the tenth argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
 	{
+		/// <summary>
+		/// Initializes the object with ten objects that it depends on.
+		/// <para>
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/> <see cref="Init"/> gets called during the Awake event
+		/// when the instance is being loaded at runtime and during the Reset event when the script is added to a GameObject in edit mode.
+		/// If the GameObject is inactive causing the Awake event to never get fired, then the <see cref="Init"/> method is called immediately
+		/// after the object has been created.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/> <see cref="Init"/> also gets called during the Awake event.
+		/// </para>
+		/// <para>
+		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
+		/// (after Awake and OnEnable but before Start) when an instance is created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/> or
+		/// <see cref="AddComponent"/>.
+		/// </para>
+		/// <para>
+		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
+		/// such as in the constructor or during the Awake event, using <see cref="InitArgs.TryGet{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/>.
+		/// </para>
+		/// </summary>
+		/// <param name="firstArgument"> First argument used during initialization of the component. </param>
+		/// <param name="secondArgument"> Second argument used during initialization of the component. </param>
+		/// <param name="thirdArgument"> Third argument used during initialization of the component. </param>
+		/// <param name="fourthArgument"> Fourth argument used during initialization of the component. </param>
+		/// <param name="fifthArgument"> Fifth argument used during initialization of the component. </param>
+		/// <param name="sixthArgument"> Sixth argument used during initialization of the component. </param>
+		/// <param name="seventhArgument"> Seventh argument used during initialization of the component. </param>
+		/// <param name="eighthArgument"> Eighth argument used during initialization of the component. </param>
+		/// <param name="ninthArgument"> Ninth argument used during initialization of the component. </param>
+		/// <param name="tenthArgument"> Tenth argument used during initialization of the component. </param>
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument);
 	}
-	
+
 	/// <summary>
 	/// Represents an object which can be <see cref="Init">initialized</see> using eleven arguments.
 	/// <para>
@@ -618,6 +686,41 @@ namespace Sisus.Init
 	/// <typeparam name="TEleventhArgument"> Type of the eleventh argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
 	{
+		/// <summary>
+		/// Initializes the object with eleven objects that it depends on.
+		/// <para>
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/> <see cref="Init"/> gets called during the Awake event
+		/// when the instance is being loaded at runtime and during the Reset event when the script is added to a GameObject in edit mode.
+		/// If the GameObject is inactive causing the Awake event to never get fired, then the <see cref="Init"/> method is called immediately
+		/// after the object has been created.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/> <see cref="Init"/> also gets called during the Awake event.
+		/// </para>
+		/// <para>
+		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
+		/// (after Awake and OnEnable but before Start) when an instance is created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/> or
+		/// <see cref="AddComponent"/>.
+		/// </para>
+		/// <para>
+		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
+		/// such as in the constructor or during the Awake event, using <see cref="InitArgs.TryGet{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/>.
+		/// </para>
+		/// </summary>
+		/// <param name="firstArgument"> First argument used during initialization of the component. </param>
+		/// <param name="secondArgument"> Second argument used during initialization of the component. </param>
+		/// <param name="thirdArgument"> Third argument used during initialization of the component. </param>
+		/// <param name="fourthArgument"> Fourth argument used during initialization of the component. </param>
+		/// <param name="fifthArgument"> Fifth argument used during initialization of the component. </param>
+		/// <param name="sixthArgument"> Sixth argument used during initialization of the component. </param>
+		/// <param name="seventhArgument"> Seventh argument used during initialization of the component. </param>
+		/// <param name="eighthArgument"> Eighth argument used during initialization of the component. </param>
+		/// <param name="ninthArgument"> Ninth argument used during initialization of the component. </param>
+		/// <param name="tenthArgument"> Tenth argument used during initialization of the component. </param>
+		/// <param name="eleventhArgument"> Eleventh argument used during initialization of the component. </param>
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument);
 	}
 
@@ -657,6 +760,41 @@ namespace Sisus.Init
 	/// <typeparam name="TTwelfthArgument"> Type of the twelfth argument accepted by the <see cref="Init"/> method. </typeparam>
 	public interface IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument> : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
 	{
+		/// <summary>
+		/// Initializes the object with twelve objects that it depends on.
+		/// <para>
+		/// You can think of the <see cref="Init"/> method as a parameterized constructor alternative for <see cref="Object"/>-derived classes.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="MonoBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/> <see cref="Init"/> gets called during the Awake event
+		/// when the instance is being loaded at runtime and during the Reset event when the script is added to a GameObject in edit mode.
+		/// If the GameObject is inactive causing the Awake event to never get fired, then the <see cref="Init"/> method is called immediately
+		/// after the object has been created.
+		/// </para>
+		/// <para>
+		/// For classes that derive from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/> <see cref="Init"/> also gets called during the Awake event.
+		/// </para>
+		/// <para>
+		/// For other classes that implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/> <see cref="Init"/> gets called automatically at the end of initialization
+		/// (after Awake and OnEnable but before Start) when an instance is created using <see cref="InstantiateExtensions.Instantiate{TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/> or
+		/// <see cref="AddComponent"/>.
+		/// </para>
+		/// <para>
+		/// It is also possible for the initialized object to retrieve the argument at any earlier stage of its initialization process,
+		/// such as in the constructor or during the Awake event, using <see cref="InitArgs.TryGet{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/>.
+		/// </para>
+		/// </summary>
+		/// <param name="firstArgument"> First argument used during initialization of the component. </param>
+		/// <param name="secondArgument"> Second argument used during initialization of the component. </param>
+		/// <param name="thirdArgument"> Third argument used during initialization of the component. </param>
+		/// <param name="fourthArgument"> Fourth argument used during initialization of the component. </param>
+		/// <param name="fifthArgument"> Fifth argument used during initialization of the component. </param>
+		/// <param name="sixthArgument"> Sixth argument used during initialization of the component. </param>
+		/// <param name="seventhArgument"> Seventh argument used during initialization of the component. </param>
+		/// <param name="eighthArgument"> Eighth argument used during initialization of the component. </param>
+		/// <param name="ninthArgument"> Ninth argument used during initialization of the component. </param>
+		/// <param name="tenthArgument"> Tenth argument used during initialization of the component. </param>
+		/// <param name="twelfthArgument"> Twelfth argument used during initialization of the component. </param>
 		void Init(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument);
 	}
 }

@@ -2,14 +2,11 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Sisus.Init.Internal;
 using Sisus.Init.ValueProviders;
 using UnityEngine;
-using static Sisus.NullExtensions;
 using Object = UnityEngine.Object;
-using Debug = UnityEngine.Debug;
 
 namespace Sisus.Init
 {
@@ -585,7 +582,10 @@ namespace Sisus.Init
 		}
 
 		/// <summary>
-		/// Retrieves an argument provided for the client object using the <see cref="Set{TClient, TArgument}"/> function.
+		/// Retrieves initialization argument that has been provided for the <see cref="client"/>.
+		/// <para>
+		/// The argument can be provided using the <see cref="Set{TClient, TArgument}"/> method, or by registering it as a <see cref="Service">service</see>.
+		/// </para>
 		/// <para>
 		/// When called in the context of the <see cref="Context.Reset">Reset</see> event in edit mode and the <typeparamref name="TClient"/> class has the
 		/// the <see cref="InitOnResetAttribute">AutoInit attribute</see> or a <see cref="RequireComponent">RequireComponent attribute</see> for the argument it accepts,
@@ -625,9 +625,17 @@ namespace Sisus.Init
 			{
 				if(client is Component component && InitializerUtility.HasCustomInitArguments(component))
 				{
+					#if DEV_MODE && DEBUG_ENABLED
+					Debug.Log($"InitArgs.TryGet<{clientType.Name}, {typeof(TArgument).Name}>: <color=red>False</color> - args of size {args.Count} did contain an entry for the client, but ignoring because HasCustomInitArguments was true for the client.", client as Object);
+					#endif
+
 					argument = default;
 					return false;
 				}
+
+				#if DEV_MODE && DEBUG_ENABLED
+				Debug.Log($"Argument of type {TypeUtility.ToString(typeof(TArgument))} for client {TypeUtility.ToString(typeof(TClient))} found via Service.TryGetFor: {argument}", client as Object);
+				#endif
 
 				return true;
 			}
@@ -653,7 +661,7 @@ namespace Sisus.Init
 			#endif
 
 			#if DEV_MODE && DEBUG_ENABLED
-			Debug.Log($"InitArgs.TryGet<{clientType.Name}, {typeof(TArgument).Name}>: <color=red>False</color> - args of size {args.Count} did not contain an entry for the client.\ndictionary contents: {string.Join(", ", args.Keys)}.", client as Object);
+			Debug.Log($"InitArgs.TryGet<{TypeUtility.ToString(clientType)}, {TypeUtility.ToString(typeof(TArgument))}>: <color=red>False</color> - args of size {args.Count} did not contain an entry for the client.\ndictionary contents: {string.Join(", ", args.Keys)}.", client as Object);
 			#endif
 
 			argument = default;
@@ -1976,818 +1984,414 @@ namespace Sisus.Init
 			twelfthArgument = default;
 			return false;
 		}
-		
+
 		/// <summary>
-		/// Validates that the provided initialization argument is not null, if Null Argument Guard is enabled for the client.
+		/// Acquire the service that the <see paramref="client"/> depends on and pass it to its
+		/// <see cref="IInitializable{TArgument}.Init"/> method.
 		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the argument. </param>
-		/// <param name="argument"> The argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the argument. </typeparam>
-		/// <typeparam name="TArgument"> The type of the argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TArgument>
-			(Context context, [DisallowNull] TClient client, TArgument argument)
-			where TClient : IArgs<TArgument>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TArgument>(TClient client, Context context = Context.MainThread) where TClient : IInitializable<TArgument>
 		{
+			if(!TryGet(context, client, out TArgument argument))
+			{
+				return false;
+			}
+
 			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
+			if(client is not MonoBehaviour<TArgument>)
 			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
+				client.Validate(argument);
 			}
 			#endif
 
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(argument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument)
-			where TClient : IArgs<TFirstArgument, TSecondArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		/// <typeparam name="TSixthArgument"> The type of the sixth argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			if(sixthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSixthArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth argument to validate. </param>
-		/// <param name="seventhArgument"> The seventh argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		/// <typeparam name="TSixthArgument"> The type of the sixth argument. </typeparam>
-		/// <typeparam name="TSeventhArgument"> The type of the seventh argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			if(sixthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSixthArgument)), Find.GameObjectOf(client));
-			if(seventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSeventhArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth argument to validate. </param>
-		/// <param name="seventhArgument"> The seventh argument to validate. </param>
-		/// <param name="eighthArgument"> The eighth argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		/// <typeparam name="TSixthArgument"> The type of the sixth argument. </typeparam>
-		/// <typeparam name="TSeventhArgument"> The type of the seventh argument. </typeparam>
-		/// <typeparam name="TEighthArgument"> The type of the eighth argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			if(sixthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSixthArgument)), Find.GameObjectOf(client));
-			if(seventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSeventhArgument)), Find.GameObjectOf(client));
-			if(eighthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TEighthArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth argument to validate. </param>
-		/// <param name="seventhArgument"> The seventh argument to validate. </param>
-		/// <param name="eighthArgument"> The eighth argument to validate. </param>
-		/// <param name="ninthArgument"> The ninth argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		/// <typeparam name="TSixthArgument"> The type of the sixth argument. </typeparam>
-		/// <typeparam name="TSeventhArgument"> The type of the seventh argument. </typeparam>
-		/// <typeparam name="TEighthArgument"> The type of the eighth argument. </typeparam>
-		/// <typeparam name="TNinthArgument"> The type of the ninth argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			if(sixthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSixthArgument)), Find.GameObjectOf(client));
-			if(seventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSeventhArgument)), Find.GameObjectOf(client));
-			if(eighthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TEighthArgument)), Find.GameObjectOf(client));
-			if(ninthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TNinthArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth argument to validate. </param>
-		/// <param name="seventhArgument"> The seventh argument to validate. </param>
-		/// <param name="eighthArgument"> The eighth argument to validate. </param>
-		/// <param name="ninthArgument"> The ninth argument to validate. </param>
-		/// <param name="tenthArgument"> The tenth argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		/// <typeparam name="TSixthArgument"> The type of the sixth argument. </typeparam>
-		/// <typeparam name="TSeventhArgument"> The type of the seventh argument. </typeparam>
-		/// <typeparam name="TEighthArgument"> The type of the eighth argument. </typeparam>
-		/// <typeparam name="TNinthArgument"> The type of the ninth argument. </typeparam>
-		/// <typeparam name="TTenthArgument"> The type of the tenth argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			if(sixthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSixthArgument)), Find.GameObjectOf(client));
-			if(seventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSeventhArgument)), Find.GameObjectOf(client));
-			if(eighthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TEighthArgument)), Find.GameObjectOf(client));
-			if(ninthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TNinthArgument)), Find.GameObjectOf(client));
-			if(tenthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TTenthArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth argument to validate. </param>
-		/// <param name="seventhArgument"> The seventh argument to validate. </param>
-		/// <param name="eighthArgument"> The eighth argument to validate. </param>
-		/// <param name="ninthArgument"> The ninth argument to validate. </param>
-		/// <param name="tenthArgument"> The tenth argument to validate. </param>
-		/// <param name="eleventhArgument"> The eleventh argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		/// <typeparam name="TSixthArgument"> The type of the sixth argument. </typeparam>
-		/// <typeparam name="TSeventhArgument"> The type of the seventh argument. </typeparam>
-		/// <typeparam name="TEighthArgument"> The type of the eighth argument. </typeparam>
-		/// <typeparam name="TNinthArgument"> The type of the ninth argument. </typeparam>
-		/// <typeparam name="TTenthArgument"> The type of the tenth argument. </typeparam>
-		/// <typeparam name="TEleventhArgument"> The type of the eleventh argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			if(sixthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSixthArgument)), Find.GameObjectOf(client));
-			if(seventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSeventhArgument)), Find.GameObjectOf(client));
-			if(eighthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TEighthArgument)), Find.GameObjectOf(client));
-			if(ninthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TNinthArgument)), Find.GameObjectOf(client));
-			if(tenthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TTenthArgument)), Find.GameObjectOf(client));
-			if(eleventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TEleventhArgument)), Find.GameObjectOf(client));
-			#endif
-		}
-		
-		/// <summary>
-		/// Validates that the provided initialization arguments are not null, if Null Argument Guard is enabled for the client.
-		/// </summary>
-		/// <param name="context"> The initialization phase during which the method is being called. </param>
-		/// <param name="client"> The object that received the arguments. </param>
-		/// <param name="firstArgument"> The first argument to validate. </param>
-		/// <param name="secondArgument"> The second argument to validate. </param>
-		/// <param name="thirdArgument"> The third  argument to validate. </param>
-		/// <param name="fourthArgument"> The fourth argument to validate. </param>
-		/// <param name="fifthArgument"> The fifth argument to validate. </param>
-		/// <param name="sixthArgument"> The sixth argument to validate. </param>
-		/// <param name="seventhArgument"> The seventh argument to validate. </param>
-		/// <param name="eighthArgument"> The eighth argument to validate. </param>
-		/// <param name="ninthArgument"> The ninth argument to validate. </param>
-		/// <param name="tenthArgument"> The tenth argument to validate. </param>
-		/// <param name="eleventhArgument"> The eleventh argument to validate. </param>
-		/// <param name="twelfthArgument"> The twelfth argument to validate. </param>
-		/// <typeparam name="TClient"> The type of the object that received the arguments. </typeparam>
-		/// <typeparam name="TFirstArgument"> The type of the first argument. </typeparam>
-		/// <typeparam name="TSecondArgument"> The type of the second argument. </typeparam>
-		/// <typeparam name="TThirdArgument"> The type of the third argument. </typeparam>
-		/// <typeparam name="TFourthArgument"> The type of the fourth argument. </typeparam>
-		/// <typeparam name="TFifthArgument"> The type of the fifth argument. </typeparam>
-		/// <typeparam name="TSixthArgument"> The type of the sixth argument. </typeparam>
-		/// <typeparam name="TSeventhArgument"> The type of the seventh argument. </typeparam>
-		/// <typeparam name="TEighthArgument"> The type of the eighth argument. </typeparam>
-		/// <typeparam name="TNinthArgument"> The type of the ninth argument. </typeparam>
-		/// <typeparam name="TTenthArgument"> The type of the tenth argument. </typeparam>
-		/// <typeparam name="TEleventhArgument"> The type of the eleventh argument. </typeparam>
-		/// <typeparam name="TTwelfthArgument"> The type of the twelfth argument. </typeparam>
-		[Conditional("DEBUG"), Conditional("INIT_ARGS_SAFE_MODE")]
-		#if UNITY_EDITOR
-		async
-		#endif
-		public static void Validate<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
-			(Context context, [DisallowNull] TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument, TSeventhArgument seventhArgument, TEighthArgument eighthArgument, TNinthArgument ninthArgument, TTenthArgument tenthArgument, TEleventhArgument eleventhArgument, TTwelfthArgument twelfthArgument)
-				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
-		{
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-
-			#if UNITY_EDITOR
-			if(context.TryDetermineIsEditMode(out bool editMode))
-			{
-				if(editMode)
-				{
-					return;
-				}
-
-				if(!context.IsUnitySafeContext())
-				{
-					await Until.UnitySafeContext();
-				}
-			}
-			else
-			{
-				await Until.UnitySafeContext();
-
-				if(!Application.isPlaying)
-				{
-					return;
-				}
-			}
-			#endif
-
-			if(!InitializerUtility.ShouldSelfGuardAgainstNull(client))
-			{
-				return;
-			}
-			
-			if(firstArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFirstArgument)), Find.GameObjectOf(client));
-			if(secondArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSecondArgument)), Find.GameObjectOf(client));
-			if(thirdArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TThirdArgument)), Find.GameObjectOf(client));
-			if(fourthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFourthArgument)), Find.GameObjectOf(client));
-			if(fifthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TFifthArgument)), Find.GameObjectOf(client));
-			if(sixthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSixthArgument)), Find.GameObjectOf(client));
-			if(seventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TSeventhArgument)), Find.GameObjectOf(client));
-			if(eighthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TEighthArgument)), Find.GameObjectOf(client));
-			if(ninthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TNinthArgument)), Find.GameObjectOf(client));
-			if(tenthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TTenthArgument)), Find.GameObjectOf(client));
-			if(eleventhArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TEleventhArgument)), Find.GameObjectOf(client));
-			if(twelfthArgument == Null) Debug.LogAssertion(GetNullArgumentGuardFailedMessage(client, typeof(TTwelfthArgument)), Find.GameObjectOf(client));
-			#endif
+			client.Init(argument);
+			return true;
 		}
 
-		private static string GetNullArgumentGuardFailedMessage(object client, Type argumentType) =>  $"Init argument of type {TypeUtility.ToString(argumentType)} passed to {TypeUtility.ToString(client.GetType())} was null.";
+		/// <summary>
+		/// Acquire the two services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument>(TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument>)
+			{
+				client.Validate(firstArgument, secondArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the three services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the four services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the five services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the six services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the seven services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the eight services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the nine services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the ten services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument, out TTenthArgument tenthArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the eleven services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument, out TTenthArgument tenthArgument, out TEleventhArgument eleventhArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument, eleventhArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument, eleventhArgument);
+			return true;
+		}
+
+		/// <summary>
+		/// Acquire the twelve services that the <see paramref="client"/> depends on and pass them to its
+		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}.Init"/> method.
+		/// </summary>
+		/// <param name="client">
+		/// The object to initialize. It must implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument}"/>.
+		/// </param>
+		/// <param name="context"> The context from which a method is being called. <para>
+		/// Many objects that implement <see cref="IInitializable"/> are only able to acquire their own dependencies
+		/// when <see cref="Context.EditMode"/> or <see cref="Context.Reset"/> is used in Edit Mode. For performance and
+		/// reliability reasons it is recommended to do these operations in Edit Mode only, and cache the results.
+		/// </para>
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if was able to locate all dependencies and initialize the client with them; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>(this TClient client, Context context = Context.MainThread) where TClient : IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>
+		{
+			if(!TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument, out TSeventhArgument seventhArgument, out TEighthArgument eighthArgument, out TNinthArgument ninthArgument, out TTenthArgument tenthArgument, out TEleventhArgument eleventhArgument, out TTwelfthArgument twelfthArgument))
+			{
+				return false;
+			}
+
+			#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(client is not MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument, TEighthArgument, TNinthArgument, TTenthArgument, TEleventhArgument, TTwelfthArgument>)
+			{
+				client.Validate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument, eleventhArgument, twelfthArgument);
+			}
+			#endif
+
+			client.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument, seventhArgument, eighthArgument, ninthArgument, tenthArgument, eleventhArgument, twelfthArgument);
+			return true;
+		}
 
 		/// <summary>
 		/// Clears argument provided for client of type <typeparamref name="TClient"/> using the <see cref="Set{TClient, TArgument}"/> function

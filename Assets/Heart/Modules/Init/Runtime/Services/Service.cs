@@ -21,11 +21,19 @@ using UnityEngine.ResourceManagement.ResourceLocations;
 namespace Sisus.Init
 {
 	/// <summary>
-	/// Utility that clients can use to retrieve services that are accessible to them.
+	/// Utility class that clients can use to retrieve services that are accessible to them.
 	/// <para>
-	/// A service can be located from <see cref="Services"/> components found in the active scenes
-	/// which are accessible to the client or from the globally shared <see cref="Service{TService}.Instance"/>
-	/// which can be accessed by any client.
+	/// <see cref="Get{TService}"/> and <see cref="TryGet{TService}"/> can be used to acquire global services,
+	/// while <see cref="GetFor{TService}(Component)"/> and <see cref="TryGetFor{TService}(Component, out TService)"/>
+	/// can be used to acquire local services specific to a particular client.
+	/// </para>
+	/// <para>
+	/// Services can be registered automatically using the <see cref="ServiceAttribute"/>, or manually using the
+	/// <see cref="Set{TService}"/> and <see cref="AddFor{TService}(Clients, TService, Component)"/> methods.
+	/// </para>
+	/// <para>
+	/// Services can also be registered using the Inspector by selecting the "Make Service Of Type..." context menu item,
+	/// or by dragging and dropping components onto a <see cref="Services"/> component. 
 	/// </para>
 	/// </summary>
 	public static class Service
@@ -1385,7 +1393,7 @@ namespace Sisus.Init
 		/// </param>
 		public static void RemoveInstanceChangedListener<TService>(ServiceChangedHandler<TService> method) => ServiceChanged<TService>.listeners -= method;
 
-		internal static bool IsServiceFor<TService>([DisallowNull] Component client, [DisallowNull] TService test)
+		public static bool IsServiceFor<TService>([DisallowNull] Component client, [DisallowNull] TService test)
 		{
 			#if DEV_MODE
 			Debug.Assert(client is not null, "Service.IsServiceFor called with null client");
@@ -1412,9 +1420,12 @@ namespace Sisus.Init
 				#if !INIT_ARGS_DISABLE_SERVICE_INJECTION
 
 				#if UNITY_EDITOR
-				if(ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TService), out var serviceInfo)
-				   && serviceInfo.ConcreteOrDefiningType.IsInstanceOfType(test))
+				if(!EditorOnly.ThreadSafe.Application.IsPlaying
+					&& ServiceAttributeUtility.definingTypes.TryGetValue(typeof(TService), out var serviceInfo)
+					&& serviceInfo.ConcreteOrDefiningType.IsInstanceOfType(test)
+					&& IsServiceInEditMode(serviceInfo, test))
 				{
+					
 					return true;
 				}
 				#endif
@@ -1472,7 +1483,7 @@ namespace Sisus.Init
 			return ScopedService<TService>.IsService(value) || ReferenceEquals(Service<TService>.Instance, value);
 		}
 
-		public static bool IsServiceOrServiceProviderFor<TService>([DisallowNull] Component client, [DisallowNull] object test)
+		internal static bool IsServiceOrServiceProviderFor<TService>([DisallowNull] Component client, [DisallowNull] object test)
 		{
 			if(test is TService service && IsServiceFor(client, service))
 			{
@@ -1598,7 +1609,7 @@ namespace Sisus.Init
 			}
 		}
 
-		internal static bool IsAccessibleTo([AllowNull] Component client, [DisallowNull] Component service, Clients accessibility)
+		internal static bool IsAccessibleTo([AllowNull] Component client, [DisallowNull] Component registerer, Clients accessibility)
 		{
 			if(!client)
 			{
@@ -1607,7 +1618,7 @@ namespace Sisus.Init
 
 			#if UNITY_EDITOR
 			// Skip services from prefabs. This can help avoid AmbiguousMatchWarning issues.
-			if(client.gameObject.scene.IsValid() && (!service.gameObject.scene.IsValid() || (UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() is var prefabStage && prefabStage && service.gameObject.scene == prefabStage.scene)))
+			if(client.gameObject.scene.IsValid() && (!registerer.gameObject.scene.IsValid() || (UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() is var prefabStage && prefabStage && registerer.gameObject.scene == prefabStage.scene)))
 			{
 				return false;
 			}
@@ -1616,9 +1627,9 @@ namespace Sisus.Init
 			switch(accessibility)
 			{
 				case Clients.InGameObject:
-					return service.transform == client.transform;
+					return registerer.transform == client.transform;
 				case Clients.InChildren:
-					var serviceTransform = service.transform;
+					var serviceTransform = registerer.transform;
 					for(var t = client.transform; t; t = t.parent)
 					{
 						if(ReferenceEquals(t, serviceTransform))
@@ -1629,8 +1640,8 @@ namespace Sisus.Init
 
 					return false;
 				case Clients.InParents:
-					var clientTransform = service.transform;
-					for(var t = service.transform; t; t = t.parent)
+					var clientTransform = registerer.transform;
+					for(var t = registerer.transform; t; t = t.parent)
 					{
 						if(ReferenceEquals(t, clientTransform))
 						{
@@ -1640,17 +1651,93 @@ namespace Sisus.Init
 
 					return false;
 				case Clients.InHierarchyRootChildren:
-					return ReferenceEquals(service.transform.root, client.transform.root);
+					return ReferenceEquals(registerer.transform.root, client.transform.root);
 				case Clients.InScene:
-					return client.gameObject.scene.handle == service.gameObject.scene.handle;
+					return client.gameObject.scene.handle == registerer.gameObject.scene.handle;
 				case Clients.InAllScenes:
 				case Clients.Everywhere:
 					return true;
 				default:
-					Debug.LogError($"Unrecognized {nameof(Clients)} value: {accessibility}.", service);
+					Debug.LogError($"Unrecognized {nameof(Clients)} value: {accessibility}.", registerer);
 					return false;
 			}
 		}
+
+		#if UNITY_EDITOR
+		private static bool IsServiceInEditMode<TService>(ServiceInfo serviceInfo, TService test)
+		{
+			if(serviceInfo.FindFromScene)
+			{
+				if(!TryGetGameObject(test, out var gameObject) || !gameObject.scene.IsValid())
+				{
+					return false;
+				}
+				
+				if(serviceInfo.SceneName is { } sceneName && gameObject.scene.name != sceneName)
+				{
+					return false;
+				}
+				
+				var sceneBuildIndex = serviceInfo.SceneBuildIndex;
+				if(sceneBuildIndex != -1 && gameObject.scene.buildIndex != sceneBuildIndex)
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+			if(serviceInfo.ResourcePath is { } resourcePath)
+			{
+				if(!TryGetGameObject(test, out var gameObject))
+				{
+					return false;
+				}
+				
+				if(UnityEditor.AssetDatabase.GetAssetPath(gameObject) is { Length: > 0 } assetPath)
+				{
+					return assetPath.EndsWith("Resources/" + resourcePath + ".prefab", StringComparison.OrdinalIgnoreCase);
+				}
+
+				if(!gameObject.IsOpenInPrefabStage())
+				{
+					return false;
+				}
+
+				assetPath = UnityEditor.PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(gameObject);
+				return assetPath.EndsWith("Resources/" + resourcePath + ".prefab", StringComparison.OrdinalIgnoreCase);
+			}
+			
+			#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+			if(serviceInfo.AddressableKey is { } addressableKey)
+			{
+				if(!TryGetGameObject(test, out var gameObject))
+				{
+					return false;
+				}
+				
+				if(UnityEditor.AssetDatabase.GetAssetPath(gameObject) is { Length: > 0} assetPath)
+				{
+					var guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
+					var entry = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(guid);
+					return entry is not null && entry.address == addressableKey;
+				}
+
+				if(UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) is { } prefabStage
+				   && ReferenceEquals(gameObject, prefabStage.prefabContentsRoot))
+				{
+					var guid = UnityEditor.AssetDatabase.AssetPathToGUID(prefabStage.assetPath);
+					var entry = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(guid);
+					return entry is not null && entry.address == addressableKey;
+				}
+
+				return false;
+			}
+			#endif
+
+			return false;
+		}
+		#endif
 
 		#if UNITY_EDITOR
 		internal struct ActiveServiceInfo : IEquatable<ActiveServiceInfo>

@@ -28,7 +28,6 @@ namespace Sisus.Init.EditorOnly
 		private readonly Type objectType;
 		private readonly Type anyType;
 		private SerializedObject serializedObject;
-		private SerializedProperty guidProperty;
 		private SerializedProperty targetProperty;
 		private SerializedProperty targetNameProperty;
 		private SerializedProperty globalObjectIdSlowProperty;
@@ -58,7 +57,6 @@ namespace Sisus.Init.EditorOnly
 				return;
 			}
 
-			Id guid;
 			Object target;
 			string targetName;
 			string globalObjectIdSlow;
@@ -68,7 +66,6 @@ namespace Sisus.Init.EditorOnly
 			bool isCrossScene;
 			Texture icon;
 
-			guidProperty = serializedObject.FindProperty(nameof(CrossSceneReference.guid));
 			targetProperty = serializedObject.FindProperty(nameof(CrossSceneReference.target));
 			targetNameProperty = serializedObject.FindProperty(nameof(CrossSceneReference.targetName));
 			globalObjectIdSlowProperty = serializedObject.FindProperty(nameof(CrossSceneReference.globalObjectIdSlow));

@@ -12,15 +12,12 @@ namespace Sisus.Init
 	/// The arguments can be assigned using the inspector and are serialized as part of the client's scene or prefab asset.
 	/// </para>
 	/// <para>
-	/// The arguments get injected to the <typeparamref name="TClient">client</typeparamref> during the <see cref="Awake"/> event.
+	/// The arguments get injected to the <typeparamref name="TClient">client</typeparamref> during the Awake event.
 	/// </para>
 	/// <para>
 	/// The client receives the arguments via the
 	/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument, TSeventhArgument}.Init">Init</see>
 	/// method where they can be assigned to member fields or properties.
-	/// </para>
-	/// <para>
-	/// After the arguments have been injected the <see cref="Initializer{,,,,,,,}"/> is removed from the <see cref="GameObject"/> that holds it.
 	/// </para>
 	/// </summary>
 	/// <typeparam name="TClient"> Type of the initialized client component. </typeparam>
