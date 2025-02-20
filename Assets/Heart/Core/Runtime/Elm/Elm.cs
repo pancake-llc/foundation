@@ -12,7 +12,7 @@ namespace Pancake.Elm
         private readonly Sub<IMessenger<TMessage>> _currentSubscription;
 
         public Elm(Func<(TModel, Cmd<TMessage>)> init, IUpdater<TModel, TMessage> updater, IRenderer<TModel, TMessage> renderer)
-            : this(init, updater, renderer, _ => Sub<IMessenger<TMessage>>.Batch(Array.Empty<Sub<IMessenger<TMessage>>>()))
+            : this(init, updater, renderer, _ => Sub<IMessenger<TMessage>>.None)
         {
         }
 
