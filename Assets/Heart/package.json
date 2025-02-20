@@ -21,7 +21,8 @@
     "com.unity.collections": "2.5.2",
     "com.unity.serialization": "3.1.2",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
-    "com.unity.addressables": "2.3.16"
+    "com.unity.addressables": "2.3.16",
+    "com.unity.services.core": "1.14.0"
   },
   "repository": {
     "type": "git",
