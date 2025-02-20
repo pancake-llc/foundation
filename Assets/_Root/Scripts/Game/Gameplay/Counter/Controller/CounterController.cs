@@ -20,7 +20,7 @@ namespace Pancake.Game
             _keyboardSubscription = new KeyboardSubscription();
             //var sub = new Sub<IMessenger<ECounterType>>(_timeSubscription);
             var sub = Sub<IMessenger<ECounterType>>.Batch(new Sub<IMessenger<ECounterType>>[] {new(_timeSubscription), new(_keyboardSubscription)});
-            _counter = new Elm<CounterModel, ECounterType>(() => (new CounterModel {number = initCounter}, Cmd<ECounterType>.none),
+            _counter = new Elm<CounterModel, ECounterType>(() => (new CounterModel {number = initCounter}, Cmd<ECounterType>.None),
                 new CounterUpdater(),
                 render,
                 _ => sub);

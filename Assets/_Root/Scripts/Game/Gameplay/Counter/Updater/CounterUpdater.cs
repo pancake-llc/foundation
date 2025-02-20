@@ -8,9 +8,9 @@ namespace Pancake.Game
         {
             return msg switch
             {
-                CounterIncreaseMsg => (new CounterModel {number = model.number + 1}, Cmd<ECounterType>.none),
-                CounterDecreaseMsg => (new CounterModel {number = model.number - 1}, Cmd<ECounterType>.none),
-                _ => (new CounterModel {number = model.number}, Cmd<ECounterType>.none)
+                CounterIncreaseMsg => (new CounterModel {number = model.number + 1}, Cmd<ECounterType>.None),
+                CounterDecreaseMsg => (new CounterModel {number = model.number - 1}, Cmd<ECounterType>.None),
+                _ => (new CounterModel {number = model.number}, Cmd<ECounterType>.None)
             };
         }
     }

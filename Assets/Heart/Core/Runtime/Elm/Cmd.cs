@@ -7,7 +7,7 @@ namespace Pancake.Elm
         private readonly Action<Dispatcher<T>> _task;
         public Cmd(Action<Dispatcher<T>> task) { _task = task; }
 
-        public static Cmd<T> none = new(_ => { });
+        public static readonly Cmd<T> None = new(_ => { });
 
         public static Cmd<T> Batch(Cmd<T>[] cmds)
         {
