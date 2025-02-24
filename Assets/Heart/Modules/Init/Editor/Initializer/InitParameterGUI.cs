@@ -67,13 +67,23 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				anyProperty.serializedObject.Update();
 				var any = anyProperty.GetValue();
-				var anyType = any.GetType();
-				if(!hasSerializedValueMethods.TryGetValue(anyType, out MethodInfo method))
+				if(any?.GetType() is { } anyType && anyType.IsGenericType && anyType.GetGenericTypeDefinition() == typeof(Any<>))
 				{
-					method = anyType.GetMethod("HasSerializedValue", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-					hasSerializedValueMethods.Add(anyType, method);
+					if(!hasSerializedValueMethods.TryGetValue(anyType, out MethodInfo method))
+					{
+						method = anyType.GetMethod("HasSerializedValue", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						hasSerializedValueMethods.Add(anyType, method);
+#if DEV_MODE
+						if(method is null) Debug.LogError(Init.Internal.TypeUtility.ToString(anyType));
+#endif
+					}
+					
+					hasSerializedValue = (bool)method.Invoke(any, null);
 				}
-				hasSerializedValue = (bool)method.Invoke(any, null);
+				else
+				{
+					hasSerializedValue = any is not null;
+				}
 			}
 			else
 			{
