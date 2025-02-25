@@ -2059,7 +2059,17 @@ namespace Sisus.Init.Internal
 		public static void OnInitializableReset(MonoBehaviour initializable)
 		{
 			var type = initializable.GetType();
-			foreach(var initializerOnGameObject in initializable.GetComponents<IInitializer>())
+			var initializersOnGameObject = initializable.GetComponents<IInitializer>();
+			
+			foreach(var initializerOnGameObject in initializersOnGameObject)
+			{
+				if(ReferenceEquals(initializerOnGameObject.Target, initializable))
+				{
+					return;
+				}
+			}
+			
+			foreach(var initializerOnGameObject in initializersOnGameObject)
 			{
 				if(!initializerOnGameObject.Target && initializerOnGameObject.TargetIsAssignableOrConvertibleToType(type))
 				{

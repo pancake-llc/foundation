@@ -410,6 +410,9 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			if(initializerScript is null)
 			{
+				#if DEV_MODE
+				Debug.LogWarning($"AssetDatabase.LoadAssetAtPath<MonoScript>({initializerPath}) returned null");
+				#endif
 				return;
 			}
 

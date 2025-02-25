@@ -153,10 +153,12 @@ namespace Sisus.Init.EditorOnly
 
 			var value = EditorPrefs.GetString(InitializerGUI.SetInitializerTargetOnScriptsReloadedEditorPrefsKey);
 			EditorPrefs.DeleteKey(InitializerGUI.SetInitializerTargetOnScriptsReloadedEditorPrefsKey);
-
 			int i = value.IndexOf(':');
 			if(i <= 0)
 			{
+				#if DEV_MODE
+				Debug.LogWarning($"\"{value}\".IndexOf(':'): {i}");
+				#endif
 				return;
 			}
 
@@ -164,26 +166,38 @@ namespace Sisus.Init.EditorOnly
 			string initializerAssetPath = AssetDatabase.GUIDToAssetPath(initializerAssetGuid);
 			if(string.IsNullOrEmpty(initializerAssetPath))
 			{
+				#if DEV_MODE
+				Debug.LogWarning($"GUIDToAssetPath({initializerAssetGuid}) returned null or empty");
+				#endif
 				return;
 			}
 
 			var initializerScript = AssetDatabase.LoadAssetAtPath<MonoScript>(initializerAssetPath);
 			if(!initializerScript)
 			{
+				#if DEV_MODE
+				Debug.LogWarning($"LoadAssetAtPath<MonoScript>({initializerAssetPath}) returned null");
+				#endif
 				return;
 			}
 
 			var initializerType = initializerScript.GetClass();
 			if(initializerType is null)
 			{
+				#if DEV_MODE
+				Debug.LogWarning($"{initializerScript.name}.GetClass() was null");
+				#endif
 				return;
 			}
-            
+
 			var targetIds = value.Substring(i + 1).Split(';');
 			foreach(var idString in targetIds)
 			{
 				if(!int.TryParse(idString, out int id))
 				{
+					#if DEV_MODE
+					Debug.LogWarning($"!int.TryParse({idString})");
+					#endif
 					continue;
 				}
 
@@ -194,7 +208,7 @@ namespace Sisus.Init.EditorOnly
 				{
 					var gameObject = component.gameObject;
 					var initializerComponent = gameObject.GetComponent(initializerType);
-					if(!initializerComponent || initializerComponent is not IInitializer initializer || !initializer.TargetIsAssignableOrConvertibleToType(component.GetType()) || initializer.Target != null)
+					if(!initializerComponent || initializerComponent is not IInitializer initializer || !initializer.TargetIsAssignableOrConvertibleToType(component.GetType()) || initializer.Target)
 					{
 						continue;
 					}

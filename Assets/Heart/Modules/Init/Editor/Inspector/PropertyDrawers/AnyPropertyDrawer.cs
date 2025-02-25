@@ -1,4 +1,4 @@
-﻿#define DEBUG_ENABLED
+﻿//#define DEBUG_ENABLED
 #define DEBUG_CROSS_SCENE_REFERENCES
 
 using System;
