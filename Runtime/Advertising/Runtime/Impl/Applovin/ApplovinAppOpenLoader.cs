@@ -34,9 +34,6 @@ namespace Pancake.Monetization
         private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
         {
             _client.InvokeAppOpenAdRevenuePaid(info);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(info);
-#endif
         }
 
         private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo info) { _client.InvokeAppOpenAdFaildToLoaded(); }

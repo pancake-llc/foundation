@@ -29,9 +29,6 @@ namespace Pancake.Monetization
         private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
         {
             _client.InvokeRewardedInterstitialAdRevenuePaid(info);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(info);  
-#endif
         }
 
         private void OnAdReceivedReward(string unit, MaxSdkBase.Reward reward, MaxSdkBase.AdInfo info) { _client.InvokeRewardedInterstitialAdReceivedReward(reward); }

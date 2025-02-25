@@ -55,9 +55,6 @@ namespace Pancake.Monetization
         private void OnPaidHandleEvent(object sender, AdValueEventArgs e)
         {
             OnPaidEvent.Invoke(this, sender, e);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(e, unit.Id);  
-#endif
         }
 
         private void OnAdDidRecordImpression(object sender, EventArgs e) { OnRecordImpressionEvent.Invoke(this, sender, e); }
