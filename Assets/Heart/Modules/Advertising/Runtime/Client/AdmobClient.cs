@@ -24,11 +24,23 @@ namespace Pancake.Monetization
                 });
             });
 
-            AdSettings.AdmobBanner.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.AdmobInter.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.AdmobReward.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.AdmobRewardInter.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.AdmobAppOpen.paidedCallback = AppTracking.TrackRevenue;
+            if (AdSettings.AutoTrackRevenue)
+            {
+                AdSettings.AdmobBanner.paidedCallback = AppTracking.TrackRevenue;
+                AdSettings.AdmobInter.paidedCallback = AppTracking.TrackRevenue;
+                AdSettings.AdmobReward.paidedCallback = AppTracking.TrackRevenue;
+                AdSettings.AdmobRewardInter.paidedCallback = AppTracking.TrackRevenue;
+                AdSettings.AdmobAppOpen.paidedCallback = AppTracking.TrackRevenue;
+            }
+            else
+            {
+                AdSettings.AdmobBanner.paidedCallback = null;
+                AdSettings.AdmobInter.paidedCallback = null;
+                AdSettings.AdmobReward.paidedCallback = null;
+                AdSettings.AdmobRewardInter.paidedCallback = null;
+                AdSettings.AdmobAppOpen.paidedCallback = null;
+            }
+
             RegisterAppStateChange();
             LoadInterstitial();
             LoadRewarded();

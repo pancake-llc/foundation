@@ -11,10 +11,21 @@ namespace Pancake.Monetization
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
             MaxSdk.InitializeSdk();
-            AdSettings.ApplovinBanner.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.ApplovinInter.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.ApplovinReward.paidedCallback = AppTracking.TrackRevenue;
-            AdSettings.ApplovinAppOpen.paidedCallback = AppTracking.TrackRevenue;
+            if (AdSettings.AutoTrackRevenue)
+            {
+                AdSettings.ApplovinBanner.paidedCallback = AppTracking.TrackRevenue;
+                AdSettings.ApplovinInter.paidedCallback = AppTracking.TrackRevenue;
+                AdSettings.ApplovinReward.paidedCallback = AppTracking.TrackRevenue;
+                AdSettings.ApplovinAppOpen.paidedCallback = AppTracking.TrackRevenue;
+            }
+            else
+            {
+                AdSettings.ApplovinBanner.paidedCallback = null;
+                AdSettings.ApplovinInter.paidedCallback = null;
+                AdSettings.ApplovinReward.paidedCallback = null;
+                AdSettings.ApplovinAppOpen.paidedCallback = null;
+            }
+
             LoadInterstitial();
             LoadRewarded();
             LoadRewardedInterstitial();

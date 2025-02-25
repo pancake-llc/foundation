@@ -7,12 +7,14 @@ using GoogleMobileAds.Ump.Api;
 
 using UnityEngine;
 using Pancake.Common;
+using UnityEngine.Events;
 
 namespace Pancake.Monetization
 {
     [EditorIcon("icon_manager")]
     public class Advertising : GameComponent
     {
+        public UnityEvent onAfterInitializedEvent;
         private static event Action<string> ChangeNetworkEvent;
         private static event Action<bool> ChangePreventDisplayAppOpenEvent;
         private static event Action ShowGdprAgainEvent;
@@ -26,7 +28,7 @@ namespace Pancake.Monetization
         private AdClient _adClient;
 
         /// <summary>
-        /// prevent show app open ad, it will become true when interstitial or rewarded was showed
+        /// prevent show app open ad, it will become true when interstitial or rewarded was show
         /// </summary>
         internal static bool isShowingAd;
 
@@ -78,6 +80,8 @@ namespace Pancake.Monetization
             if (_autoLoadAdCoroutine != null) StopCoroutine(_autoLoadAdCoroutine);
             _autoLoadAdCoroutine = IeAutoLoadAll();
             StartCoroutine(_autoLoadAdCoroutine);
+            
+            onAfterInitializedEvent?.Invoke();
         }
 
 #if PANCAKE_ADMOB

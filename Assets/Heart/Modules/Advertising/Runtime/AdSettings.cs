@@ -9,6 +9,7 @@ namespace Pancake.Monetization
         [Range(5, 100), SerializeField] private float adCheckingInterval = 8f;
         [Range(5, 100), SerializeField] private float adLoadingInterval = 15f;
         [SerializeField] private EAdNetwork currentNetwork = EAdNetwork.Applovin;
+        [SerializeField] private bool autoTrackRevenue;
         [SerializeField] private bool gdpr;
         [SerializeField] private bool gdprTestMode;
 
@@ -44,5 +45,6 @@ namespace Pancake.Monetization
         public static EAdNetwork CurrentNetwork { get => Instance.currentNetwork; set => Instance.currentNetwork = value; }
         public static bool Gdpr => Instance.gdpr;
         public static bool GdprTestMode => Instance.gdprTestMode;
+        public static bool AutoTrackRevenue => Instance.autoTrackRevenue;
     }
 }

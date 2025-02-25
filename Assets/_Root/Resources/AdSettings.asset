@@ -15,6 +15,7 @@ MonoBehaviour:
   adCheckingInterval: 8
   adLoadingInterval: 15
   currentNetwork: 1
+  autoTrackRevenue: 0
   gdpr: 0
   gdprTestMode: 0
   admobEnableTestMode: 0

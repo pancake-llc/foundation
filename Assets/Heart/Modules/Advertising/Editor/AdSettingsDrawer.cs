@@ -20,6 +20,7 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _currentNetworkProperty;
         private SerializedProperty _gdprProperty;
         private SerializedProperty _gdprTestModeProperty;
+        private SerializedProperty _autoTrackRevenueProperty;
         private SerializedProperty _admobEnableTestModeProperty;
         private SerializedProperty _admobDevicesTestProperty;
         private SerializedProperty _admobBannerProperty;
@@ -48,6 +49,7 @@ namespace Pancake.MonetizationEditor
             _currentNetworkProperty = serializedObject.FindProperty("currentNetwork");
             _gdprProperty = serializedObject.FindProperty("gdpr");
             _gdprTestModeProperty = serializedObject.FindProperty("gdprTestMode");
+            _autoTrackRevenueProperty = serializedObject.FindProperty("autoTrackRevenue");
             _admobEnableTestModeProperty = serializedObject.FindProperty("admobEnableTestMode");
             _admobDevicesTestProperty = serializedObject.FindProperty("admobDevicesTest");
             _admobBannerProperty = serializedObject.FindProperty("admobBanner");
@@ -74,6 +76,7 @@ namespace Pancake.MonetizationEditor
             EditorGUILayout.PropertyField(_currentNetworkProperty);
             EditorGUILayout.PropertyField(_gdprProperty, new GUIContent("GDPR"));
             EditorGUILayout.PropertyField(_gdprTestModeProperty, new GUIContent("GDPR Test Mode"));
+            EditorGUILayout.PropertyField(_autoTrackRevenueProperty, new GUIContent("Auto Track Revenue"));
             if (_gdprProperty.boolValue)
             {
                 var googleMobileAd = RegistryManager.IsInstalled("com.google.ads.mobile");
