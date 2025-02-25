@@ -22,6 +22,13 @@ namespace Pancake.Common
         
         public static float Time(ETimeMode mode) => mode == ETimeMode.Normal ? UnityEngine.Time.time : UnityEngine.Time.unscaledTime;
 
+        public static long AvailableFreeSpace()
+        {
+            string path = Application.persistentDataPath;
+            var drive = new System.IO.DriveInfo(System.IO.Path.GetPathRoot(path));
+            return drive.AvailableFreeSpace;
+        }
+
         public static void AddListener(EUpdateMode mode, Action action)
         {
             switch (mode)
