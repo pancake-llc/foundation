@@ -15,16 +15,6 @@ namespace Pancake.Common
         [Conditional("UNITY_EDITOR")]
         public static void Draw(this Vector3[] self, float? size, Color? color = null) => DebugDraw.Points(self, size, Quaternion.identity, color);
 
-        /// <summary>  Draw an arrow indicating the forward direction. </summary>
-        [Conditional("UNITY_EDITOR")]
-        public static void Draw(this Transform self, float length = 1.0f, Color? color = null) =>
-            DebugDraw.Arrow(self.position,
-                self.rotation,
-                length,
-                DebugDraw.ARROW_TIP_SIZE,
-                DebugDraw.ARROW_WIDTH,
-                color);
-
         /// <summary> Draw bounds. </summary>
         [Conditional("UNITY_EDITOR")]
         public static void Draw(this Bounds self, Color? color = null) => DebugDraw.Bounds(self, color);

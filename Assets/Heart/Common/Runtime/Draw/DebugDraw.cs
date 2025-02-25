@@ -16,21 +16,16 @@ namespace Pancake.Common
         private const float LINE_GAP_SIZE = 0.05f;
         private const float OCCLUDED_COLOR = 0.1f;
         private const float POINT_SIZE = 0.5f;
-        internal const float ARROW_WIDTH = 0.5f;
         private const float RAY_LENGTH = 1000f;
-        private const float DIAMOND_SIZE = 0.5f;
-        internal const float ARROW_TIP_SIZE = 0.25f;
         internal const float HIT_RADIUS = 0.1f;
         internal const float HIT_LENGTH = 0.25f;
         internal static readonly Color HitColor = new(1f, 0.94f, 0.54f);
         private static readonly Color LineColor = new(0.45f, 0.45f, 0.45f);
-        private static readonly Color ArrowColor = new(0.98f, 0.45f, 0.09f);
         private static readonly Color RayColor = new(0.96f, 0.62f, 0.04f);
         private static readonly Color CircleColor = new(0.39f, 0.45f, 0.55f);
         private static readonly Color CubeColor = new(0.39f, 0.45f, 0.55f);
         private static readonly Color SphereColor = new(0.39f, 0.45f, 0.55f);
         private static readonly Color ArcColor = new(0.39f, 0.45f, 0.55f);
-        private static readonly Color DiamondColor = new(0.39f, 0.45f, 0.55f);
         private static readonly Color ConeColor = new(0.39f, 0.45f, 0.55f);
         private static readonly Color BoundsColor = new(0.39f, 0.45f, 0.55f);
         private static readonly Color AxisXColor = Color.red;
@@ -620,36 +615,6 @@ namespace Pancake.Common
             }
         }
 
-        /// <summary> Draw a line using an arrow. </summary>
-        [Conditional("UNITY_EDITOR")]
-        public static void Arrow(Vector3 position, Vector3 direction, float length = 1.0f, float? size = null, float? width = null, Color? color = null)
-        {
-            float sideLen = length - length * (size ?? ARROW_TIP_SIZE);
-            var widthOffset = Vector3.Cross(direction, Vector3.up) * (width ?? ARROW_WIDTH);
-            var tip = position + direction * length;
-            var upCornerInRight = position - widthOffset * 0.3f + direction * sideLen;
-            var upCornerInLeft = position + widthOffset * 0.3f + direction * sideLen;
-            var upCornerOutRight = position - widthOffset * 0.5f + direction * sideLen;
-            var upCornerOutLeft = position + widthOffset * 0.5f + direction * sideLen;
-
-            Line(position, upCornerInRight, Quaternion.identity, color ?? ArrowColor);
-            Line(upCornerInRight, upCornerOutRight, Quaternion.identity, color ?? ArrowColor);
-            Line(upCornerOutRight, tip, Quaternion.identity, color ?? ArrowColor);
-            Line(tip, upCornerOutLeft, Quaternion.identity, color ?? ArrowColor);
-            Line(upCornerOutLeft, upCornerInLeft, Quaternion.identity, color ?? ArrowColor);
-            Line(upCornerInLeft, position, Quaternion.identity, color ?? ArrowColor);
-        }
-
-        /// <summary> Draw a line using an arrow. </summary>
-        [Conditional("UNITY_EDITOR")]
-        public static void Arrow(Vector3 position, Quaternion rotation, float length = 1.0f, float? size = null, float? width = null, Color? color = null) =>
-            Arrow(position,
-                rotation * Vector3.forward,
-                length,
-                size,
-                width,
-                color);
-
         /// <summary> Draw a ray. </summary>
         [Conditional("UNITY_EDITOR")]
         public static void Ray(Vector3 position, Quaternion rotation, Color? color = null) =>
@@ -834,31 +799,6 @@ namespace Pancake.Common
         [Conditional("UNITY_EDITOR")]
         public static void Cube(Vector3 center, float size, Quaternion? rotation = null, Color? color = null) =>
             Cube(center, Vector3.one * size, rotation, color ?? CubeColor);
-
-        /// <summary> Draw a wire diamond. </summary>
-        [Conditional("UNITY_EDITOR")]
-        public static void Diamond(Vector3 center, float size, Quaternion rotation, Color color, bool continuous)
-        {
-            var u = center + Vector3.up * size;
-            var d = center + Vector3.down * size;
-            var r = center + Vector3.right * size;
-            var l = center + Vector3.left * size;
-            var f = center + Vector3.forward * size;
-            var b = center + Vector3.back * size;
-
-            Lines(new[] {u, r, f, u, f, l, u, l, b, u, b, r}, rotation, color, continuous);
-
-            Lines(new[] {d, f, r, d, r, b, d, b, l, d, l, f}, rotation, color, continuous);
-        }
-
-        /// <summary> Draw a wire diamond. </summary>
-        [Conditional("UNITY_EDITOR")]
-        public static void Diamond(Vector3 center, float? size = null, Quaternion? rotation = null, Color? color = null, bool continuous = true) =>
-            Diamond(center,
-                size ?? DIAMOND_SIZE,
-                rotation ?? Quaternion.identity,
-                color ?? DiamondColor,
-                continuous);
 
         /// <summary> Draw a wire cone. </summary>
         [Conditional("UNITY_EDITOR")]
