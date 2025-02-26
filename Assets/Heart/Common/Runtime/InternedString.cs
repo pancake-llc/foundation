@@ -25,6 +25,11 @@ namespace Pancake.Common
     {
         public readonly string source;
 
+        /// <summary>
+        /// InternedString is designed for the purpose of being used as a key, so they are kept in a Dictionary
+        /// If you want to use them for other purposes that require creating many different InternedStrings,
+        /// so you need to have memory management measures such as using WeakReference.
+        /// </summary>
         private static readonly Dictionary<string, InternedString> Container = new();
 
         /// <summary>Returns a <see cref="InternedString"/> containing the `value`.</summary>
@@ -65,7 +70,7 @@ namespace Pancake.Common
         }
 
         /// <summary>Returns a <see cref="InternedString"/> containing the `value` if one has already been created.</summary>
-        /// <remarks>The `value` is case sensitive.</remarks>
+        /// <remarks>The `value` is case-sensitive.</remarks>
         public static bool TryGet(string value, out InternedString result)
         {
             if (value is not null && Container.TryGetValue(value, out result)) return true;
