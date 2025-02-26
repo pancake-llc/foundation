@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 5941d468ff0bf7442b67d97172aec080
+timeCreated: 1466009450
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 59805
+  packageName: IMDraw
+  packageVersion: 1.4.6
+  assetPath: Assets/IMDraw/IMGizmos.cs
+  uploadId: 714834
