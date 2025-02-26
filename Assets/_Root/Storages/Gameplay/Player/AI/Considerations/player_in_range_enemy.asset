@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4562f414e9541b8a9455285a5833742, type: 3}
   m_Name: player_in_range_enemy
   m_EditorClassIdentifier: 
-  maxDistance: 10
+  maxDistance: 20
   maxAngle: 180
   tag: {fileID: 11400000, guid: 434fa1b93046c28429582b3d3055b9e8, type: 2}
   curve:

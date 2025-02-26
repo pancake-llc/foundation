@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4562f414e9541b8a9455285a5833742, type: 3}
   m_Name: player_in_range_health
   m_EditorClassIdentifier: 
-  maxDistance: 10
+  maxDistance: 20
   maxAngle: 360
   tag: {fileID: 11400000, guid: c0fa7b94df926df4bb3ab7d0632234f5, type: 2}
   curve:
