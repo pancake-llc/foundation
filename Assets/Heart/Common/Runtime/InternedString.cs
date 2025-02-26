@@ -26,9 +26,7 @@ namespace Pancake.Common
         public readonly string source;
 
         /// <summary>
-        /// InternedString is designed for the purpose of being used as a key, so they are kept in a Dictionary
-        /// If you want to use them for other purposes that require creating many different InternedStrings,
-        /// so you need to have memory management measures such as using WeakReference.
+        /// In Unity? WeakReference is usually not needed, since games usually have a fixed set of strings.
         /// </summary>
         private static readonly Dictionary<string, InternedString> Container = new();
 
