@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+
 namespace Pancake
 {
     public abstract class ScriptableConstant<T> : ScriptableObject
@@ -26,5 +27,10 @@ namespace Pancake
         }
 
         public static implicit operator T(ScriptableConstant<T> variable) => variable.Value;
+
+
+#if UNITY_EDITOR
+        [SerializeField, TextArea(2, 25)] private string developerNote;
+#endif
     }
 }

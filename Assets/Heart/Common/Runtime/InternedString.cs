@@ -23,7 +23,7 @@ namespace Pancake.Common
     /// </remarks>
     public class InternedString : IComparable<InternedString>, IConvertable<string>
     {
-        public readonly string source;
+        public readonly string data;
 
         /// <summary>
         /// In Unity? WeakReference is usually not needed, since games usually have a fixed set of strings.
@@ -78,7 +78,7 @@ namespace Pancake.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private InternedString(string value) => source = value;
+        private InternedString(string value) => data = value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator InternedString(string value) => Get(value);
@@ -92,16 +92,20 @@ namespace Pancake.Common
         /// even if they contain the same <see cref="String"/>.
         /// </remarks>
         internal static InternedString Unique(string value) => new(value);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int CompareTo(InternedString other) => data.CompareTo(other?.data);
 
-        string IConvertable<string>.Convert() => source;
+        #region convert
+
+        string IConvertable<string>.Convert() => data;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() => source;
+        public override string ToString() => data;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator string(InternedString value) => value?.source;
+        public static implicit operator string(InternedString value) => value?.data;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int CompareTo(InternedString other) => source.CompareTo(other?.source);
+        #endregion
     }
 }

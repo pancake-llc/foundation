@@ -1,13 +1,16 @@
 fileFormatVersion: 2
-guid: 7b17bd34e7023b043ac32029481b4a85
+guid: 7c803bddd00de974fb1a92e464b15013
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6955536104118301043
-    second: so_dark_setting_0
+      213: -3934857587175775308
+    second: so_orange_key_0
   - first:
-      213: 5285475264928801944
-    second: so_dark_setting_1
+      213: -5884379164214138556
+    second: so_orange_key_1
+  - first:
+      213: -7058888088081955000
+    second: so_orange_key_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
