@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: player_default_base_hp
   m_EditorClassIdentifier: 
   baseValue: 12
-  statType: {fileID: 11400000, guid: 2103199d39ed5db4f94384db2e6ec0e1, type: 2}
+  statType: {fileID: 11400000, guid: e8c3a404c92ae944da5823b2f77e2dc7, type: 2}

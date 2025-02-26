@@ -28,14 +28,14 @@ namespace Pancake.Game.UI
 
         private DailyRewardData _data;
         private Action _refreshAllElement;
-        private Func<EDailyRewardType, StringConstant> _getFxColelctType;
+        private Func<EDailyRewardType, string> _getFxColelctType;
 
         public int Day => _data.day;
 
         public void Setup(
             DailyRewardData data,
             Func<EDailyRewardType, DayRewardComponent> getObjectRewardFunc,
-            Func<EDailyRewardType, StringConstant> getFxColelctType,
+            Func<EDailyRewardType, string> getFxColelctType,
             Color claimableColor,
             Action refreshAllElement)
         {
@@ -118,7 +118,7 @@ namespace Pancake.Game.UI
                 if (reward.typeReward == EDailyRewardType.Coin) pos += Vector3.left * 3f;
                 else pos += Vector3.left * 1.5f;
 
-                Messenger<VfxMagnetMessage>.Raise(new VfxMagnetMessage(_getFxColelctType?.Invoke(reward.typeReward).Value, pos, reward.amount));
+                Messenger<VfxMagnetMessage>.Raise(new VfxMagnetMessage(_getFxColelctType?.Invoke(reward.typeReward), pos, reward.amount));
             }
 
             if (UserData.GetDailyRewardDay() == 7)

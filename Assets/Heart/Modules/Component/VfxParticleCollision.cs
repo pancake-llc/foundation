@@ -10,7 +10,7 @@ namespace Pancake.Component
     [EditorIcon("icon_default")]
     public class VfxParticleCollision : GameComponent
     {
-        public StringConstant type;
+        public StringKey type;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
         public Dictionary<int, int> numberParticleMap;
 
@@ -48,7 +48,7 @@ namespace Pancake.Component
 
         private void OnParticleCollision(GameObject particle)
         {
-            Messenger<UpdateCurrencyWithValueMessage>.Raise(new UpdateCurrencyWithValueMessage(type.Value, _segmentValue));
+            Messenger<UpdateCurrencyWithValueMessage>.Raise(new UpdateCurrencyWithValueMessage(type.Name, _segmentValue));
 
             if (enabledSound) audioCollision.Play();
         }
@@ -65,7 +65,7 @@ namespace Pancake.Component
                 externalForcesModule.RemoveAllInfluences();
                 externalForcesModule.enabled = false;
                 _returnEvent.Invoke(gameObject);
-                if (_isFxInstanceEmpty.Invoke()) Messenger<UpdateCurrencyMessage>.Raise(new UpdateCurrencyMessage(type.Value));
+                if (_isFxInstanceEmpty.Invoke()) Messenger<UpdateCurrencyMessage>.Raise(new UpdateCurrencyMessage(type.Name));
             }
         }
     }

@@ -54,7 +54,7 @@ namespace Pancake.AI
 #endif
         }
 
-        public override Transform GetClosestTarget(StringConstant tag)
+        public override Transform GetClosestTarget(StringKey tag)
         {
             if (_count == 0) return null;
 
@@ -65,11 +65,11 @@ namespace Pancake.AI
             {
                 if (newTagSystem)
                 {
-                    if (!_hits[i].gameObject.HasTag(tag.Value)) continue;
+                    if (!_hits[i].gameObject.HasTag(tag.Name)) continue;
                 }
                 else
                 {
-                    if (!_hits[i].CompareTag(tag.Value)) continue;
+                    if (!_hits[i].CompareTag(tag.Name)) continue;
                 }
 
                 float distanceToTarget = Vector3.Distance(_hits[i].transform.position, currentPosition);

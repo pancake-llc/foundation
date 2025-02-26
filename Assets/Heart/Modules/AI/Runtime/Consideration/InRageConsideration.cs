@@ -10,7 +10,7 @@ namespace Pancake.AI
     {
         public float maxDistance = 10f;
         public float maxAngle = 360f;
-        public StringConstant tag;
+        public StringKey tag;
         public AnimationCurve curve;
 
         public override float Evaluate(AIContext context)

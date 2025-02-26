@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using System.Linq;
+using Pancake.Common;
 using UnityEngine;
 
 namespace Pancake.ExTag
@@ -10,67 +9,15 @@ namespace Pancake.ExTag
     [EditorIcon("icon_enum")]
     public class Tag : GameComponent
     {
-        /// <summary>
-        /// Get the tags associated with this GameObject as `StringConstants` in a `ReadOnlyList&lt;T&gt;`.
-        /// </summary>
-        /// <value>The tags associated with this GameObject as `StringConstants` in a `ReadOnlyList&lt;T&gt;`.</value>
-        public ReadOnlyList<StringConstant> Tags
-        {
-            get
-            {
-                if (_readOnlyTags == null || _readOnlyTags.Count != _sortedTags.Values.Count)
-                {
-                    _readOnlyTags = new ReadOnlyList<StringConstant>(_sortedTags.Values);
-                }
-
-                return _readOnlyTags;
-            }
-            private set => _readOnlyTags = value;
-        }
-
-        private ReadOnlyList<StringConstant> _readOnlyTags;
-
-        [SerializeField] private List<StringConstant> tags = new();
-
-        private SortedList<string, StringConstant> _sortedTags = new();
-
+        [SerializeField] private List<StringKey> tags = new();
         private static readonly Dictionary<string, List<GameObject>> TaggedGameObjects = new();
-
         private static readonly Dictionary<GameObject, Tag> TagInstances = new();
         private static Action onInitialization;
 
-        #region Serialization
-
-        protected override void OnBeforeSerialize()
-        {
-#if UNITY_EDITOR
-            if (!EditorApplication.isPlaying && !EditorApplication.isUpdating && !EditorApplication.isCompiling) return;
-#endif
-            tags.Clear();
-            foreach (var kvp in _sortedTags)
-            {
-                tags.Add(kvp.Value);
-            }
-        }
-
         protected override void OnAfterDeserialize()
         {
-            _sortedTags = new SortedList<string, StringConstant>();
-
-            for (int i = 0; i != tags.Count; i++)
-            {
-                if (tags[i] == null || tags[i].Value == null) continue;
-                if (_sortedTags.ContainsKey(tags[i].Value))
-                {
-                    Debug.Log($"Same key [\"{tags[i].Value}\"] already exist!");
-                    continue;
-                }
-
-                _sortedTags.Add(tags[i].Value, tags[i]);
-            }
+            tags.RemoveAll(t => t == null);
         }
-
-        #endregion
 
         #region Lifecycles
 
@@ -81,18 +28,16 @@ namespace Pancake.ExTag
                 TaggedGameObjects.Clear();
                 TagInstances.Clear();
                 var tagsInScene = FindObjectsByType<Tag>(FindObjectsSortMode.None);
-
-                for (var i = 0; i < tagsInScene.Length; ++i)
+                if (tagsInScene.IsNullOrEmpty()) return;
+                
+                foreach (var t in tagsInScene)
                 {
-                    var t = tagsInScene[i];
-                    var tagCount = t.Tags.Count;
-                    var go = tagsInScene[i].gameObject;
+                    var go = t.gameObject;
                     TagInstances.TryAdd(go, t);
-                    for (var y = 0; y < tagCount; ++y)
+                    foreach (var key in t.tags)
                     {
-                        var stringConstant = t.Tags[y];
-                        if (stringConstant == null) continue;
-                        var v = stringConstant.Value;
+                        if (key == null) continue;
+                        var v = key.Name;
                         if (!TaggedGameObjects.ContainsKey(v)) TaggedGameObjects.Add(v, new List<GameObject>());
                         TaggedGameObjects[v].Add(go);
                     }
@@ -106,12 +51,10 @@ namespace Pancake.ExTag
         protected void OnDisable()
         {
             if (TagInstances.ContainsKey(gameObject)) TagInstances.Remove(gameObject);
-            for (var i = 0; i < Tags.Count; i++)
+            foreach (var key in tags.ToList())
             {
-                var stringConstant = Tags[i];
-                if (stringConstant == null) continue;
-                var v = stringConstant.Value;
-                if (TaggedGameObjects.TryGetValue(v, out var o)) o.Remove(gameObject);
+                if (key == null) continue;
+                if (TaggedGameObjects.TryGetValue(key.Name, out var o)) o.Remove(gameObject);
             }
         }
 
@@ -135,27 +78,21 @@ namespace Pancake.ExTag
         /// </summary>
         /// <param name="tag"></param>
         /// <returns>`true` if the tag exists, otherwise `false`.</returns>
-        public bool HasTag(string tag)
-        {
-            if (tag == null) return false;
-            return _sortedTags.ContainsKey(tag);
-        }
+        public bool HasTag(string tag) => !string.IsNullOrEmpty(tag) && tags.Exists(k => k.Name == tag);
 
         /// <summary>
         /// Add a tag to this `GameObject`.
         /// </summary>
         /// <param name="tag">The tag to add as a `StringContant`.</param>
-        public void AddTag(StringConstant tag)
+        public void AddTag(StringKey tag)
         {
-            if (tag == null || tag.Value == null) return;
-            if (_sortedTags.ContainsKey(tag.Value)) return;
-            _sortedTags.Add(tag.Value, tag);
-
-            Tags = new ReadOnlyList<StringConstant>(_sortedTags.Values);
+            if (tag == null || tag.Name == null) return;
+            if (HasTag(tag.Name)) return;
+            tags.Add(tag);
 
             // Update static accessors:
-            if (!TaggedGameObjects.ContainsKey(tag.Value)) TaggedGameObjects.Add(tag.Value, new List<GameObject>());
-            TaggedGameObjects[tag.Value].Add(this.gameObject);
+            if (!TaggedGameObjects.ContainsKey(tag.Name)) TaggedGameObjects.Add(tag.Name, new List<GameObject>());
+            TaggedGameObjects[tag.Name].Add(this.gameObject);
         }
 
         /// <summary>
@@ -165,10 +102,8 @@ namespace Pancake.ExTag
         public void RemoveTag(string tag)
         {
             if (tag == null) return;
-            if (!_sortedTags.ContainsKey(tag)) return;
-            _sortedTags.Remove(tag);
-
-            Tags = new ReadOnlyList<StringConstant>(_sortedTags.Values);
+            if (!HasTag(tag)) return;
+            tags.RemoveAll(k => k.Name == tag);
 
             // Update static accessors:
             if (!TaggedGameObjects.TryGetValue(tag, out var list)) return; // this should never happen
@@ -182,8 +117,7 @@ namespace Pancake.ExTag
         /// <returns>The first `GameObject` with the provided tag found. If no `GameObject`is found, it returns `null`.</returns>
         public static GameObject FindByTag(string tag)
         {
-            if (!TaggedGameObjects.TryGetValue(tag, out var list)) return null;
-            return list.Count < 1 ? null : TaggedGameObjects[tag][0];
+            return TaggedGameObjects.TryGetValue(tag, out var list) && list.Count > 0 ? list[0] : null;
         }
 
         /// <summary>
@@ -214,7 +148,7 @@ namespace Pancake.ExTag
         /// <returns>
         /// Returns the `UATags` component. Returns `null` if the `GameObject` does not have a `UATags` component or if the `GameObject` is disabled.
         /// </returns>
-        public static Tag GetTagsForGameObject(GameObject go) { return TagInstances.GetValueOrDefault(go); }
+        public static Tag GetTagsForGameObject(GameObject go) => TagInstances.GetValueOrDefault(go);
 
         /// <summary>
         /// Retrieves all tags for a given `GameObject`. A faster alternative to `gameObject.GetComponen&lt;UATags&gt;().Tags`.
@@ -223,7 +157,7 @@ namespace Pancake.ExTag
         /// <returns>
         /// A `ReadOnlyList&lt;T&gt;` of tags stored as `StringContant`s. Returns `null` if the `GameObject` does not have any tags or if the `GameObject` is disabled.
         /// </returns>
-        public static ReadOnlyList<StringConstant> GetTags(GameObject go) { return !TagInstances.TryGetValue(go, out var t) ? null : t.Tags; }
+        public static IReadOnlyList<StringKey> GetTags(GameObject go) { return !TagInstances.TryGetValue(go, out var t) ? null : t.tags.AsReadOnly(); }
 
         private static bool IsInitialized(GameObject go) => TagInstances.ContainsKey(go);
     }

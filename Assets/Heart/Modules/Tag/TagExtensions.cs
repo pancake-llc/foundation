@@ -12,7 +12,7 @@ namespace Pancake.ExTag
         /// <returns>
         /// A `ReadOnlyList&lt;T&gt;` of tags stored as `StringContant`s. Returns `null` if the `GameObject` does not have any tags or if the `GameObject` is disabled.
         /// </returns>
-        public static ReadOnlyList<StringConstant> GetTags(this GameObject go) { return Tag.GetTags(go); }
+        public static IReadOnlyList<StringKey> GetTags(this GameObject go) { return Tag.GetTags(go); }
 
         /// <summary>
         /// Check if the tag provided is associated with this `GameObject`.
@@ -33,7 +33,7 @@ namespace Pancake.ExTag
         /// <param name="go">This `GameObject`</param>
         /// <param name="tag">The tag to search for.</param>
         /// <returns>`true` if the tag exists, otherwise `false`.</returns>
-        public static bool HasTag(this GameObject go, StringConstant tag) { return go.HasTag(tag.Value); }
+        public static bool HasTag(this GameObject go, StringKey tag) { return go.HasTag(tag.Name); }
 
         /// <summary>
         /// Check if any of the tags provided are associated with this `GameObject`.
@@ -58,18 +58,18 @@ namespace Pancake.ExTag
         /// Check if any of the tags provided are associated with this `GameObject`.
         /// </summary>
         /// <param name="go">This `GameObject`</param>
-        /// <param name="stringConstants">The tags to search for.</param>
+        /// <param name="keys">The tags to search for.</param>
         /// <returns>`true` if any of the tags exist, otherwise `false`.</returns>
-        public static bool HasAnyTag(this GameObject go, List<StringConstant> stringConstants)
+        public static bool HasAnyTag(this GameObject go, List<StringKey> keys)
         {
             // basically same method as above, the code is mostly copy and pasted because it's not preferable to convert
             // stringconstants to strings and calling the other method, because of memory allocation
             var tags = Tag.GetTagsForGameObject(go);
             if (tags == null) return false;
 
-            for (var i = 0; i < stringConstants.Count; i++)
+            for (var i = 0; i < keys.Count; i++)
             {
-                if (tags.HasTag(stringConstants[i].Value)) return true;
+                if (tags.HasTag(keys[i].Name)) return true;
             }
 
             return false;
@@ -93,7 +93,7 @@ namespace Pancake.ExTag
         /// </summary>
         /// <param name="go"></param>
         /// <param name="tag"></param>
-        public static void AddTag(this GameObject go, StringConstant tag)
+        public static void AddTag(this GameObject go, StringKey tag)
         {
             var tags = Tag.GetTagsForGameObject(go);
             if (tags == null) return;

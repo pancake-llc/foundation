@@ -759,7 +759,7 @@ MonoBehaviour:
     reference: {fileID: 11400000, guid: f34abdf23624edd458a483aee76c5640, type: 2}
     value: {fileID: 0}
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
 --- !u!1 &3094798943155162434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1848,7 +1848,7 @@ MonoBehaviour:
     reference: {fileID: 11400000, guid: f34abdf23624edd458a483aee76c5640, type: 2}
     value: {fileID: 0}
   disposeArgumentsOnDestroy: 0
-  asyncValueProviderArguments: 0
+  asyncArguments: 0
 --- !u!1 &5087318866934611954
 GameObject:
   m_ObjectHideFlags: 0
@@ -2221,8 +2221,8 @@ MonoBehaviour:
   specialDayElement: {fileID: 817786717654519813}
   scroll: {fileID: 2479288546529336174}
   claimableColor: {r: 0.5372549, g: 0.7490196, b: 0.20392159, a: 1}
-  coinCurrencyType: {fileID: 11400000, guid: 5e9faa2c569639743aa47e77a2804ee5, type: 2}
-  gemCurrencyType: {fileID: 11400000, guid: ec47688ba2fca434a93e02066adf4890, type: 2}
+  coinCurrencyType: {fileID: 11400000, guid: 09a9c013c36c1aa4cb6c38df336af12f, type: 2}
+  gemCurrencyType: {fileID: 11400000, guid: e26659519e785f04b8cf0bf0279e64ee, type: 2}
 --- !u!114 &1378811478956453215
 MonoBehaviour:
   m_ObjectHideFlags: 0

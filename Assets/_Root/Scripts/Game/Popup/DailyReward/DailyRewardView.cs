@@ -20,8 +20,8 @@ namespace Pancake.Game.UI
         [SerializeField] private ScrollRect scroll;
         [SerializeField] private Dictionary<EDailyRewardType, DayRewardComponent> _dayRewards = new();
         [SerializeField] private Color claimableColor;
-        [SerializeField] private StringConstant coinCurrencyType;
-        [SerializeField] private StringConstant gemCurrencyType;
+        [SerializeField] private StringKey coinCurrencyType;
+        [SerializeField] private StringKey gemCurrencyType;
 
         private readonly List<DailyRewardDayElement> _days = new();
 
@@ -77,7 +77,7 @@ namespace Pancake.Game.UI
 
         private DayRewardComponent GetRewardFunc(EDailyRewardType rewardType) { return _dayRewards[rewardType]; }
 
-        private StringConstant GetFxCurrencyType(EDailyRewardType rewardType)
+        private string GetFxCurrencyType(EDailyRewardType rewardType)
         {
             switch (rewardType)
             {

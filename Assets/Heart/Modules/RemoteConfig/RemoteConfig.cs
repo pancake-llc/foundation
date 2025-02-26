@@ -15,11 +15,11 @@ namespace Pancake.Tracking
     public class RemoteConfig : SerializedMonoBehaviour
     {
 #pragma warning disable CS0067 // Event is never used
-        private static event Func<StringConstant, string> GetRemoteConfigValueEvent;
+        private static event Func<StringKey, string> GetRemoteConfigValueEvent;
 #pragma warning restore CS0067 // Event is never used
 
-        [SerializeField] private Dictionary<StringConstant, string> remoteData = new();
-        [SerializeField] private StringConstant remoteAdNetworkKey;
+        [SerializeField] private Dictionary<StringKey, string> remoteData = new();
+        [SerializeField] private StringKey remoteAdNetworkKey;
 
         public bool IsFetchCompleted { get; private set; }
 
@@ -76,14 +76,14 @@ namespace Pancake.Tracking
                 {
                     foreach (var key in remoteData.Keys)
                     {
-                        if (!string.IsNullOrEmpty(key.Value))
+                        if (key != null)
                         {
-                            ConfigValue configValue = FirebaseRemoteConfig.DefaultInstance.GetValue(key.Value);
+                            ConfigValue configValue = FirebaseRemoteConfig.DefaultInstance.GetValue(key.Name);
                             if (configValue.Source == ValueSource.RemoteValue) remoteData[key] = configValue.StringValue;
                         }
                     }
 
-                    if (remoteAdNetworkKey != null && remoteAdNetworkKey.Value != string.Empty) Advertising.ChangeNetwork(remoteData[remoteAdNetworkKey]);
+                    if (remoteAdNetworkKey != null) Advertising.ChangeNetwork(remoteData[remoteAdNetworkKey]);
 
                     IsFetchCompleted = true;
 
@@ -93,9 +93,9 @@ namespace Pancake.Tracking
 
         private void OnDestroy() { GetRemoteConfigValueEvent -= OnGetRemoteConfigValue; }
 
-        private string OnGetRemoteConfigValue(StringConstant arg) => remoteData[arg];
+        private string OnGetRemoteConfigValue(StringKey arg) => remoteData[arg];
 
-        public static string TakeValue(StringConstant arg) => GetRemoteConfigValueEvent?.Invoke(arg);
+        public static string TakeValue(StringKey arg) => GetRemoteConfigValueEvent?.Invoke(arg);
 #endif
     }
 }

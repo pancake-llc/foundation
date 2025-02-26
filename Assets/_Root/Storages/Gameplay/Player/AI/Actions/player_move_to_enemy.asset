@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da17c792adaa4f9e9c752cae444ce83c, type: 3}
   m_Name: player_move_to_enemy
   m_EditorClassIdentifier: 
-  targetTag: {fileID: 11400000, guid: ee0093eb63b65654c88bdb3da91dff0f, type: 2}
+  targetTag: {fileID: 11400000, guid: 434fa1b93046c28429582b3d3055b9e8, type: 2}
   consideration: {fileID: 11400000, guid: f98da5ad0c345ca48a2b81d6ea17b8b0, type: 2}

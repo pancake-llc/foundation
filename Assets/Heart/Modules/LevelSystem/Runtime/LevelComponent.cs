@@ -8,7 +8,7 @@ namespace Pancake.LevelSystem
     [EditorIcon("icon_default")]
     public abstract class LevelComponent : GameComponent
     {
-        [SerializeField] private StringConstant type;
+        [SerializeField] private StringKey type;
         [SerializeField, HideInEditorMode, ReadOnly] protected int originLevelIndex;
         [SerializeField, HideInEditorMode, ReadOnly] protected int currentLevelIndex;
 
@@ -73,7 +73,7 @@ namespace Pancake.LevelSystem
             }
             else
             {
-                LevelInstantiate.RecreateLevelLoaded(type.Value);
+                LevelInstantiate.RecreateLevelLoaded(type.Name);
             }
         }
 #endif

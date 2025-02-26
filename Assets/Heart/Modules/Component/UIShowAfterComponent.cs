@@ -7,9 +7,9 @@ using UnityEngine;
 namespace Pancake.Component
 {
     [EditorIcon("icon_default")]
-    public partial class UIShowAfterComponent : MonoBehaviour
+    public class UIShowAfterComponent : MonoBehaviour
     {
-        [SerializeField] private StringConstant group;
+        [SerializeField] private StringKey group;
         [SerializeField] private RectTransform target;
         [SerializeField] private EFourDirection direction;
 #if PANCAKE_LITMOTION
@@ -32,7 +32,7 @@ namespace Pancake.Component
 
         public void OnShow(UIShowAfterMessage msg)
         {
-            if (!msg.Group.Equals(group.Value)) return;
+            if (!msg.Group.Equals(group.Name)) return;
 #if PANCAKE_LITMOTION
             switch (direction)
             {

@@ -9,11 +9,11 @@ namespace Pancake.AI
     public class CurveConsideration : Consideration
     {
         public AnimationCurve curve;
-        public StringConstant key;
+        public StringKey key;
 
         public override float Evaluate(AIContext context)
         {
-            var value = context.GetData<float>(key.Value);
+            var value = context.GetData<float>(key.Name);
             return curve.Evaluate(value).Clamp01();
         }
 

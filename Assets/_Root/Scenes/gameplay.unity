@@ -928,7 +928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fba5561b31440f4db23ae67025a4a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contextDataKey: {fileID: 11400000, guid: 183f4c545a8d74148ae6afbd73e53a65, type: 2}
+  contextDataKey: {fileID: 11400000, guid: 2cfd9c375ebdef8408ec2eb6a2285528, type: 2}
   healthBar: {fileID: 849094741}
 --- !u!114 &849094738
 MonoBehaviour:
@@ -1010,7 +1010,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  tags: []
+  tags:
+  - {fileID: 11400000, guid: 3465968192410584c8bd0c088f55464d, type: 2}
 --- !u!114 &849094741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1265,7 +1266,7 @@ MonoBehaviour:
   detectOnStart: 1
   newTagSystem: 1
   tags:
-  - {fileID: 11400000, guid: c9849fdbd206eab46a6a61ba7193fae7, type: 2}
+  - {fileID: 11400000, guid: 434fa1b93046c28429582b3d3055b9e8, type: 2}
   radius: 10
   stopAfterFirstHit: 0
   showGizmos: 1
@@ -1709,7 +1710,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  tags: []
+  tags:
+  - {fileID: 11400000, guid: 434fa1b93046c28429582b3d3055b9e8, type: 2}
 --- !u!1 &1258070189
 GameObject:
   m_ObjectHideFlags: 0
@@ -2121,7 +2123,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   tags:
-  - {fileID: 11400000, guid: c9849fdbd206eab46a6a61ba7193fae7, type: 2}
+  - {fileID: 11400000, guid: c0fa7b94df926df4bb3ab7d0632234f5, type: 2}
 --- !u!1 &1510234089
 GameObject:
   m_ObjectHideFlags: 0

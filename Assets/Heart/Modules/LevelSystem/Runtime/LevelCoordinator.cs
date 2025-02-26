@@ -17,7 +17,7 @@ namespace Pancake.LevelSystem
     [EditorIcon("icon_default")]
     public class LevelCoordinator : GameComponent
     {
-        [SerializeField] private StringConstant type;
+        [SerializeField] private StringKey type;
         [SerializeField] private ELoopType loopType = ELoopType.Shuffle;
         [SerializeField, Space] private LevelSetting[] levelSettings;
         [ReadOnly] [SerializeField] private LevelComponent previousLevelLoaded;
@@ -28,7 +28,7 @@ namespace Pancake.LevelSystem
         private readonly List<string> _typeMappingOfSegment = new();
         private static readonly Dictionary<string, LevelDimension> Dimensions = new();
 
-        private int NgNumber { get => Data.Load($"level_{type.Value}_ng_number", 1); set => Data.Save($"level_{type.Value}_ng_number", value); }
+        private int NgNumber { get => Data.Load($"level_{type.Name}_ng_number", 1); set => Data.Save($"level_{type.Name}_ng_number", value); }
         public static int GetCurrentLevelIndex(string type) => Data.Load($"current_level_{type}_index", 0);
 
         public static void SetCurrentLevelIndex(string type, int value)
@@ -46,29 +46,29 @@ namespace Pancake.LevelSystem
         private void Awake()
         {
             // todo: change flow to avoid data not load before use
-            Dimensions[type.Value] = new LevelDimension();
+            Dimensions[type] = new LevelDimension();
             _segmentLength = 0;
             _totalLevel = 0;
             _typeMappingOfSegment.Clear();
 
-            _totalLevel = levelSettings.Filter(s => s).Distinct(s => s.LevelType.Value).Sum(s => s.TotalLevel);
+            _totalLevel = levelSettings.Filter(s => s).Distinct(s => s.LevelType).Sum(s => s.TotalLevel);
             foreach (var levelSetting in levelSettings)
             {
                 _segmentLength += levelSetting.NumberInSegment;
                 // flat map
                 for (var i = 0; i < levelSetting.NumberInSegment; i++)
                 {
-                    _typeMappingOfSegment.Add(levelSetting.LevelType.Value);
+                    _typeMappingOfSegment.Add(levelSetting.LevelType.Name);
                 }
             }
 
-            CheckCacheLevel(GetCurrentLevelIndex(type.Value));
+            CheckCacheLevel(GetCurrentLevelIndex(type));
         }
 
         private void OnEnable()
         {
 #if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
-            var dimesion = Dimensions[type.Value];
+            var dimesion = Dimensions[type];
             dimesion.LoadLevelEvent += OnLoadLevel;
             dimesion.GetNextLevelLoadedEvent += OnGetNextLevel;
             dimesion.GetPreviousLevelLoadedEvent += OnGetPreviousLevel;
@@ -78,11 +78,11 @@ namespace Pancake.LevelSystem
         private void OnDisable()
         {
 #if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
-            var dimesion = Dimensions[type.Value];
+            var dimesion = Dimensions[type];
             dimesion.LoadLevelEvent -= OnLoadLevel;
             dimesion.GetNextLevelLoadedEvent -= OnGetNextLevel;
             dimesion.GetPreviousLevelLoadedEvent -= OnGetPreviousLevel;
-            Dimensions.Remove(type.Value);
+            Dimensions.Remove(type);
 #endif
         }
 
@@ -96,11 +96,11 @@ namespace Pancake.LevelSystem
             int countOfTypeBeforeIndex = CountOfTypeBeforeIndexInSegment(indexInSegment);
 
             int index = IndexInLevelContainer(indexSegment, countOfType, countOfTypeBeforeIndex);
-            var setting = levelSettings.Filter(level => level.LevelType.Value == t).First();
+            var setting = levelSettings.Filter(level => level.LevelType.Name == t).First();
 
             if (currentLevelIndex > _totalLevel - 1)
             {
-                index = index % levelSettings.Filter(level => level.LevelType.Value == t).First().TotalLevel;
+                index = index % levelSettings.Filter(level => level.LevelType.Name == t).First().TotalLevel;
 
                 if (loopType == ELoopType.Shuffle)
                 {

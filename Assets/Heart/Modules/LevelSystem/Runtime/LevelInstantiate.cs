@@ -16,7 +16,7 @@ namespace Pancake.LevelSystem
 
     public class LevelInstantiate : GameComponent
     {
-        [SerializeField] private StringConstant type;
+        [SerializeField] private StringKey type;
         [SerializeField] private Transform root;
         [OdinSerialize] private ITracking[] trackingStartLevels;
 
@@ -24,7 +24,7 @@ namespace Pancake.LevelSystem
 
         public void Awake()
         {
-            Dimensions[type.Value] = new LevelInstantiateDimension();
+            Dimensions[type] = new LevelInstantiateDimension();
             foreach (var t in trackingStartLevels)
             {
                 t.Track();
@@ -32,19 +32,19 @@ namespace Pancake.LevelSystem
 
             LevelComponent levelComponent;
 #if UNITY_EDITOR
-            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type.Value);
+            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type);
 #else
             levelComponent = LevelCoordinator.GetNextLevelLoaded(type.Value);
 #endif
             Instantiate(levelComponent, root, false);
         }
 
-        protected void OnEnable() { RegisterActionRecreateLevel(type.Value, OnRecreateLevelLoaded); }
+        protected void OnEnable() { RegisterActionRecreateLevel(type, OnRecreateLevelLoaded); }
 
         protected void OnDisable()
         {
-            UnRegisterActionRecreateLevel(type.Value, OnRecreateLevelLoaded);
-            Dimensions.Remove(type.Value);
+            UnRegisterActionRecreateLevel(type, OnRecreateLevelLoaded);
+            Dimensions.Remove(type);
         }
 
         private void OnRecreateLevelLoaded()
@@ -52,7 +52,7 @@ namespace Pancake.LevelSystem
             root.RemoveAllChildren(true);
             LevelComponent levelComponent;
 #if UNITY_EDITOR
-            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type.Value);
+            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type);
 #else
             levelComponent = LevelCoordinator.GetNextLevelLoaded(type.Value);
 #endif

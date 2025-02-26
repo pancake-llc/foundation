@@ -9,6 +9,6 @@ namespace Pancake.StatModifier
     public class BaseStat : ScriptableObject
     {
         public float baseValue;
-        public StringConstant statType;
+        public StringKey statType;
     }
 }

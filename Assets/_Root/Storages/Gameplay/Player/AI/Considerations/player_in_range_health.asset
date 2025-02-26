@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDistance: 10
   maxAngle: 360
-  tag: {fileID: 11400000, guid: c9849fdbd206eab46a6a61ba7193fae7, type: 2}
+  tag: {fileID: 11400000, guid: c0fa7b94df926df4bb3ab7d0632234f5, type: 2}
   curve:
     serializedVersion: 2
     m_Curve:

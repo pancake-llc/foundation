@@ -9,7 +9,7 @@ namespace Pancake.Component
     [EditorIcon("icon_default")]
     public class VfxMagnetComponent : GameComponent
     {
-        [SerializeField] private StringConstant type;
+        [SerializeField] private StringKey type;
         [SerializeField] private GameObject fxPrefab;
         [SerializeField] private float fxScale = 1f;
         [SerializeField] private ParticleSystemForceField particleForceField;
@@ -39,7 +39,7 @@ namespace Pancake.Component
 
         private void OnSpawnVfx(VfxMagnetMessage msg)
         {
-            if (msg.Type != type.Value) return;
+            if (msg.Type != type.Name) return;
 
             var fx = fxPrefab.Request();
             var vfxParticleCollision = fx.GetComponent<VfxParticleCollision>();

@@ -9,7 +9,7 @@ namespace Pancake.Component
     [EditorIcon("icon_default")]
     public class UIHideBeforeComponent : MonoBehaviour
     {
-        [SerializeField] private StringConstant group;
+        [SerializeField] private StringKey group;
         [SerializeField] private RectTransform target;
         [SerializeField] private EFourDirection direction;
         [SerializeField] private float value;
@@ -30,7 +30,7 @@ namespace Pancake.Component
 
         private void OnHide(UIHideBeforeMessage msg)
         {
-            if (!msg.Group.Equals(group.Value)) return;
+            if (!msg.Group.Equals(group.Name)) return;
 #if PANCAKE_LITMOTION
             switch (direction)
             {

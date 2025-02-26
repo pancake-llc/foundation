@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Pancake.Common;
 using Pancake.ExTag;
 using Pancake.PlayerLoop;
 using Sirenix.OdinInspector;
@@ -15,7 +16,7 @@ namespace Pancake.AI
         [SerializeField] protected LayerMask layer;
         [SerializeField] private bool detectOnStart = true;
         [SerializeField] protected bool newTagSystem = true;
-        public List<StringConstant> tags = new();
+        public List<StringKey> tags = new();
 
         protected bool isPlaying;
         protected int frames;
@@ -45,7 +46,7 @@ namespace Pancake.AI
 
         public abstract void Pulse();
 
-        public abstract Transform GetClosestTarget(StringConstant tag);
+        public abstract Transform GetClosestTarget(StringKey tag);
 
         public abstract Transform GetClosestTarget();
 
@@ -76,11 +77,11 @@ namespace Pancake.AI
             {
                 if (newTagSystem)
                 {
-                    if (!hit.gameObject.HasTag(t.Value)) continue;
+                    if (!hit.gameObject.HasTag(t.Name)) continue;
                 }
                 else
                 {
-                    if (!hit.CompareTag(t.Value)) continue;
+                    if (!hit.CompareTag(t.Name)) continue;
                 }
 
                 check = true;

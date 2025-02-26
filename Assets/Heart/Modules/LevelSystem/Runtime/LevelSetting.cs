@@ -11,7 +11,7 @@ namespace Pancake.LevelSystem
         [field: SerializeField] public int TotalLevel { get; private set; }
         [field: SerializeField] public int NumberInSegment { get; private set; }
         [field: SerializeField] public string Schema { get; private set; } = "Level_{0}";
-        [field: SerializeField] public StringConstant LevelType { get; private set; }
+        [field: SerializeField] public StringKey LevelType { get; private set; }
         [field: SerializeField] public LevelLoopReplace[] LevelsLoopReplace { get; private set; }
 
 

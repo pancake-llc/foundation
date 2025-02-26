@@ -2157,7 +2157,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  type: {fileID: 11400000, guid: ec47688ba2fca434a93e02066adf4890, type: 2}
+  type: {fileID: 11400000, guid: e26659519e785f04b8cf0bf0279e64ee, type: 2}
   fxPrefab: {fileID: 3977568166496564276, guid: 90036513454dbef4da17f9c6e0536c5f, type: 3}
   fxScale: 0.8
   particleForceField: {fileID: 1438484034}
@@ -2235,7 +2235,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  type: {fileID: 11400000, guid: 5e9faa2c569639743aa47e77a2804ee5, type: 2}
+  type: {fileID: 11400000, guid: 09a9c013c36c1aa4cb6c38df336af12f, type: 2}
   fxPrefab: {fileID: 340891235479404283, guid: e5d9a7099ef53b64f895e04b4ee942b5, type: 3}
   fxScale: 0.8
   particleForceField: {fileID: 1526937254}
