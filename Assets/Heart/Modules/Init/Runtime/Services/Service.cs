@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Sisus.Init.Internal;
 using Sisus.Init.ValueProviders;
 using UnityEngine;
+using UnityEngine.Scripting;
 using static Sisus.NullExtensions;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -1161,6 +1162,7 @@ namespace Sisus.Init
 		/// This same argument should be passed when <see cref="RemoveFrom{TService}(Clients, TService)">removing the instance</see>.
 		/// </para>
 		/// </param>
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component registerer)
 		{
 			#if DEV_MODE
@@ -1174,69 +1176,111 @@ namespace Sisus.Init
 			}
 		}
 
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProvider<TService> serviceProvider, [DisallowNull] Component registerer)
 		{
+			#if DEV_MODE
+			Debug.Assert(serviceProvider != Null);
+			Debug.Assert(registerer);
+			#endif
+
 			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
 			{
 				HandleInstanceChanged(clients, default, serviceProvider);
 			}
 		}
 
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProviderAsync<TService> serviceProvider, [DisallowNull] Component registerer)
 		{
+			#if DEV_MODE
+			Debug.Assert(serviceProvider != Null);
+			Debug.Assert(registerer);
+			#endif
+
 			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
 			{
 				HandleInstanceChanged(clients, default, serviceProvider);
 			}
 		}
-
+		
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProvider serviceProvider, [DisallowNull] Component registerer)
 		{
+			#if DEV_MODE
+			Debug.Assert(serviceProvider != Null);
+			Debug.Assert(registerer);
+			#endif
+
 			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
 			{
 				HandleInstanceChanged(clients, default, serviceProvider);
 			}
 		}
 
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueProviderAsync serviceProvider, [DisallowNull] Component registerer)
 		{
+			#if DEV_MODE
+			Debug.Assert(serviceProvider != Null);
+			Debug.Assert(registerer);
+			#endif
+
 			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
 			{
 				HandleInstanceChanged(clients, default, serviceProvider);
 			}
 		}
 
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueByTypeProvider serviceProvider, [DisallowNull] Component registerer)
 		{
+			#if DEV_MODE
+			Debug.Assert(serviceProvider != Null);
+			Debug.Assert(registerer);
+			#endif
+
 			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
 			{
 				HandleInstanceChanged(clients, default, serviceProvider);
 			}
 		}
 
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] IValueByTypeProviderAsync serviceProvider, [DisallowNull] Component registerer)
 		{
+			#if DEV_MODE
+			Debug.Assert(serviceProvider != Null);
+			Debug.Assert(registerer);
+			#endif
+
 			if(ScopedService<TService>.Add(new ServiceProvider<TService>(serviceProvider), clients, registerer))
 			{
 				HandleInstanceChanged(clients, default, serviceProvider);
 			}
 		}
 
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProvider<TService> serviceProvider, [DisallowNull] Component registerer)
 			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
 
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProviderAsync<TService> serviceProvider, [DisallowNull] Component registerer)
 			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
 
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProvider serviceProvider, [DisallowNull] Component registerer)
 			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
 
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueProviderAsync serviceProvider, [DisallowNull] Component registerer)
 			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
 
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueByTypeProvider serviceProvider, [DisallowNull] Component registerer)
 			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
 
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] IValueByTypeProviderAsync serviceProvider, [DisallowNull] Component registerer)
 			=> RemoveFrom(clients, new ServiceProvider<TService>(serviceProvider), registerer);
 
@@ -1275,6 +1319,7 @@ namespace Sisus.Init
 		/// during their initialization.
 		/// </param>
 		/// <param name="service"> The service component to add. </param>
+		[Preserve]
 		public static void AddFor<TService>(Clients clients, [DisallowNull] TService service) where TService : Component
 		{
 			#if DEV_MODE
@@ -1306,6 +1351,7 @@ namespace Sisus.Init
 		/// <param name="clients"> The availability of the service being removed. </param>
 		/// <param name="service"> The service instance to remove. </param>
 		/// <param name="serviceProvider"> Component that registered the service. </param>
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] TService service, [DisallowNull] Component serviceProvider)
 		{
 			if(ScopedService<TService>.Remove(service, serviceProvider))
@@ -1331,12 +1377,16 @@ namespace Sisus.Init
 		/// </para>
 		/// </typeparam>
 		/// <param name="clients"> The availability of the service being removed. </param>
-		/// <param name="serviceProvider"> Component that registered the service. </param>
-		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] Component serviceProvider)
+		/// <param name="registerer"> Component that registered the service. </param>
+		[Preserve]
+		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] Component registerer)
 		{
-			if(ScopedService<TService>.RemoveFrom(serviceProvider, out TService service))
+			if(ScopedService<TService>.RemoveFrom(registerer, out TService service, out ServiceProvider<TService> serviceProvider))
 			{
-				HandleInstanceChanged(clients, service, default);
+				if(serviceProvider is null)
+				{
+					HandleInstanceChanged(clients, service, default);
+				}
 			}
 		}
 
@@ -1364,6 +1414,7 @@ namespace Sisus.Init
 		/// </typeparam>
 		/// <param name="clients"> The availability of the service being removed. </param>
 		/// <param name="service"> The service component to remove. </param>
+		[Preserve]
 		public static void RemoveFrom<TService>(Clients clients, [DisallowNull] TService service) where TService : Component
 		{
 			if(ScopedService<TService>.Remove(service, service))
@@ -1382,6 +1433,7 @@ namespace Sisus.Init
 		/// <param name="method">
 		/// Method to call when the shared instance of service of type <typeparamref name="TService"/> has changed to a different one.
 		/// </param>
+		[Preserve]
 		public static void AddInstanceChangedListener<TService>(ServiceChangedHandler<TService> method) => ServiceChanged<TService>.listeners += method;
 
 		/// <summary>
@@ -1391,6 +1443,7 @@ namespace Sisus.Init
 		/// <param name="method">
 		/// Method that should no longer be called when the shared instance of service of type <typeparamref name="TService"/> has changed to a different one.
 		/// </param>
+		[Preserve]
 		public static void RemoveInstanceChangedListener<TService>(ServiceChangedHandler<TService> method) => ServiceChanged<TService>.listeners -= method;
 
 		public static bool IsServiceFor<TService>([DisallowNull] Component client, [DisallowNull] TService test)

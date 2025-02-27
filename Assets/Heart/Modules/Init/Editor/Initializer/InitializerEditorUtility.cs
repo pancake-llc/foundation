@@ -189,12 +189,20 @@ namespace Sisus.Init.EditorOnly.Internal
 				}
 			}
 
+			Type[] results = null;
 			foreach(Type interfaceType in initializable.GetType().GetInterfaces())
 			{
-				if(interfaceType.IsGenericType && argumentCountsByIInitializableTypeDefinition.ContainsKey(interfaceType.GetGenericTypeDefinition()))
+				if(interfaceType.IsGenericType
+				&& argumentCountsByIInitializableTypeDefinition.TryGetValue(interfaceType.GetGenericTypeDefinition(), out int argumentCount)
+				&& (results is null || results.Length < argumentCount))
 				{
-					return interfaceType.GetGenericArguments();
+					results = interfaceType.GetGenericArguments();
 				}
+			}
+			
+			if(results is not null)
+			{
+				return results;
 			}
 
 			foreach(Type possibleInitializerType in GetInitializerTypes(initializable.GetType()))

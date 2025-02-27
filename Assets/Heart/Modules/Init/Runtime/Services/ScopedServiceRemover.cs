@@ -161,8 +161,8 @@ namespace Sisus.Init.Internal
 
 		public record Key
 		{
-			public readonly Type definingType;
-			public readonly ServiceProviderType providerType;
+			readonly Type definingType;
+			readonly ServiceProviderType providerType;
 
 			public Key(Type definingType, ServiceProviderType providerType)
 			{

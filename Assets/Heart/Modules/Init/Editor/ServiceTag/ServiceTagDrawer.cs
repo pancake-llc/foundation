@@ -22,13 +22,13 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static readonly Dictionary<Clients, GUIContent> mouseoverLabels = new()
 		{
-			{ Clients.InGameObject, new GUIContent("GameObject") },
-			{ Clients.InChildren, new GUIContent("Children") },
-			{ Clients.InParents, new GUIContent("Parents") },
-			{ Clients.InScene, new GUIContent("Scene") },
-			{ Clients.InAllScenes, new GUIContent("Scenes") },
-			{ Clients.InHierarchyRootChildren, new GUIContent("Root Children") },
-			{ Clients.Everywhere, new GUIContent("Everywhere") },
+			{ Clients.InGameObject, new("GameObject") },
+			{ Clients.InChildren, new("Children") },
+			{ Clients.InParents, new("Parents") },
+			{ Clients.InScene, new("Scene") },
+			{ Clients.InAllScenes, new("Scenes") },
+			{ Clients.InHierarchyRootChildren, new("Root Children") },
+			{ Clients.Everywhere, new("Everywhere") },
 		};
 
 		static ServiceTagDrawer()
@@ -41,10 +41,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static void OnBeforeHeaderGUI(Component[] targets, Rect headerRect, bool headerIsSelected, bool supportsRichText)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 			using var x = beforeHeaderGUIMarker.Auto();
-#endif
-			
+			#endif
+
 			// Draw the Service tag for components that have a ServiceTag,
 			// components whose class has the ServiceAttribute
 			// components listed in a Services component,
@@ -81,7 +81,20 @@ namespace Sisus.Init.EditorOnly.Internal
 						EditorServiceTagUtility.OpenToClientsMenu(serviceOrServiceProvider, tagRect);
 						break;
 					case 1:
-						EditorServiceTagUtility.OpenContextMenuForService(serviceOrServiceProvider, tagRect);
+						Clients clients;
+						if(definingTypes.Length > 0)
+						{
+							if(!ServiceUtility.TryGetClients(serviceOrServiceProvider, definingTypes[0], out clients))
+							{
+								clients = Clients.Everywhere;
+							}
+						}
+						else if(!ServiceUtility.TryGetClients(serviceOrServiceProvider, out clients))
+						{
+							clients = Clients.Everywhere;
+						}
+
+						EditorServiceTagUtility.OpenContextMenuForService(serviceOrServiceProvider, definingTypes.ToArray(), clients, component, tagRect);
 						break;
 					case 2:
 						EditorServiceTagUtility.PingServiceDefiningObject(serviceOrServiceProvider);
@@ -92,10 +105,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static void OnAfterHeaderGUI(Component[] targets, Rect headerRect, bool headerIsSelected, bool supportsRichText)
 		{
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+			#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 			using var x = afterHeaderGUIMarker.Auto();
-#endif
-			
+			#endif
+
 			var component = targets[0];
 			var definingTypes = EditorServiceTagUtility.GetServiceDefiningTypes(component);
 			if(definingTypes.Length == 0)
@@ -262,10 +275,10 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			return false;
 		}
-		
-#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
+
+		#if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 		private static readonly ProfilerMarker beforeHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.BeforeHeaderGUI");
 		private static readonly ProfilerMarker afterHeaderGUIMarker = new(ProfilerCategory.Gui, "ServiceTagDrawer.AfterHeaderGUI");
-#endif
+		#endif
 	}
 }

@@ -340,7 +340,7 @@ namespace Sisus.Init
 
 		public static bool Exists([DisallowNull] Type definingType) => TryGet(definingType, out _);
 
-		public static bool TryGetClients([DisallowNull] Component serviceOrServiceProvider, [DisallowNull] Type definingType, out Clients clients) // would it be better to pass both Component provider and object service as separate instances???
+		public static bool TryGetClients([DisallowNull] Component serviceOrServiceProvider, [DisallowNull] Type definingType, out Clients clients)
 		{
 			if(!definingType.IsInstanceOfType(serviceOrServiceProvider))
 			{
@@ -373,6 +373,45 @@ namespace Sisus.Init
 			}
 
 			return getter.TryGetFor(null, out clients);
+		}
+		
+		public static bool TryGetClients([DisallowNull] Component serviceOrServiceProvider, out Clients clients)
+		{
+			foreach(var serviceTag in serviceOrServiceProvider.gameObject.GetComponentsNonAlloc<ServiceTag>())
+			{
+				if(serviceTag == serviceOrServiceProvider)
+				{
+					clients = serviceTag.ToClients;
+					return true;
+				}
+			}
+
+			foreach(var services in Find.All<Services>())
+			{
+				if(services == serviceOrServiceProvider)
+				{
+					clients = services.toClients;
+					return true;
+				}
+			}
+
+			if(ServiceAttributeUtility.concreteTypes.TryGetValue(serviceOrServiceProvider.GetType(), out var serviceInfo))
+			{
+				clients = serviceInfo.clients;
+				return true;
+			}
+			
+			foreach(var someServiceInfo in ServiceAttributeUtility.definingTypes.Values)
+			{
+				if(someServiceInfo.serviceOrProviderType.IsInstanceOfType(serviceOrServiceProvider))
+				{
+					clients = someServiceInfo.clients;
+					return true;
+				}
+			}
+
+			clients = Clients.Everywhere;
+			return false;
 		}
 
 		/// <summary>
@@ -689,92 +728,6 @@ namespace Sisus.Init
 			Service.TryGetClients<TService>(default, out _);
 			#endif
 		}
-
-		// internal static readonly Dictionary<Type, ServiceProviderType> genericInterfaceToServiceProviderType = new()
-		// {
-		// 	{ typeof(IServiceInitializer<>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializer<,,,,,,,,,,,,>), ServiceProviderType.ServiceInitializer },
-		// 	{ typeof(IServiceInitializerAsync<>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IServiceInitializerAsync<,,,,,,,,,,,,>), ServiceProviderType.ServiceInitializerAsync },
-		// 	{ typeof(IInitializer<>), ServiceProviderType.Initializer },
-		// 	{ typeof(IWrapper<>), ServiceProviderType.Wrapper },
-		// 	{ typeof(IValueProvider<>), ServiceProviderType.IValueProviderT },
-		// 	{ typeof(IValueProviderAsync<>), ServiceProviderType.IValueProviderAsyncT },
-		// };
-
-		// static ServiceProviderType GetServiceProviderType([DisallowNull] object serviceOrServiceProvider, Type definingType)
-		// {
-		// 	var subjectType = serviceOrServiceProvider.GetType();
-		// 	var implementedInterfaces = subjectType.GetInterfaces();
-		// 	for(int i = implementedInterfaces.Length - 1; i >= 0; i--)
-		// 	{
-		// 		var interfaceType = implementedInterfaces[i];
-		// 		if(!interfaceType.IsGenericType)
-		// 		{
-		// 			continue;
-		// 		}
-		//
-		// 		var genericTypeDefinition = interfaceType.GetGenericTypeDefinition();
-		// 		if(!genericInterfaceToServiceProviderType.TryGetValue(genericTypeDefinition, out var valueProviderType))
-		// 		{
-		// 			continue;
-		// 		}
-		//
-		// 		var valueType = interfaceType.GetGenericArguments()[0];
-		// 		if(valueType.IsAbstract || TypeUtility.IsBaseType(valueType) || !definingType.IsAssignableFrom(valueType))
-		// 		{
-		// 			continue;
-		// 		}
-		//
-		// 		return valueProviderType;
-		// 	}
-		//
-		// 	if(definingType.IsAssignableFrom(subjectType))
-		// 	{
-		// 		serviceProviderType = ServiceProviderType.None;
-		// 		concreteType = null;
-		// 		return false;
-		// 	}
-		//
-		// 	#if DEBUG || INIT_ARGS_SAFE_MODE
-		// 	for(int i = attributes.Length - 1; i >= 0; i--)
-		// 	{
-		// 		if(attributes[i].definingType is Type definingType
-		// 		&& !ServiceUtility.IsValidDefiningTypeFor(definingType, subjectType))
-		// 		{
-		// 			string classWithAttributeName = TypeUtility.ToString(subjectType);
-		// 			string definingTypeName = TypeUtility.ToString(definingType);
-		// 			Debug.LogAssertion($"Invalid {nameof(ServiceAttribute)} detected on {classWithAttributeName}. {classWithAttributeName} is not assignable to service defining type {definingTypeName}, and does not implement {nameof(IInitializer)}<{definingTypeName}> or {nameof(IWrapper)}<{definingTypeName}>, IServiceInitializer<{definingTypeName}> or IValueProvider<{definingTypeName}>. Unable to determine concrete type of the service.");
-		// 		}
-		// 	}
-		// 	#endif
-		//
-		// 	serviceProviderType = ServiceProviderType.None;
-		// 	concreteType = null;
-		// 	return false;
-		// }
 
 		public static void RemoveAllServicesProvidedBy(Services serviceProvider)
 		{

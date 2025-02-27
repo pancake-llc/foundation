@@ -47,23 +47,18 @@ namespace Sisus.Init.Internal
 			{
 				definingType = value;
 
+				#if UNITY_EDITOR
+				EditorApplication.delayCall = OnValidateDelayed;
+				EditorApplication.delayCall += OnValidateDelayed;
+				#endif
+
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(value is null)
 				{
-					#if UNITY_EDITOR
-					EditorApplication.delayCall = OnValidateDelayed;
-					EditorApplication.delayCall += OnValidateDelayed;
-					#endif
-
 					Debug.LogWarning($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(DefiningType)} value: null.", gameObject);
 				}
 				else if(service && !IsValidDefiningTypeFor(value, service))
 				{
-					#if UNITY_EDITOR
-					EditorApplication.delayCall = OnValidateDelayed;
-					EditorApplication.delayCall += OnValidateDelayed;
-					#endif
-
 					Debug.LogWarning($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(DefiningType)} value {TypeUtility.ToString(value)}, which is not assignable from service instance type {TypeUtility.ToString(service.GetType())} or an object that it wraps.", gameObject);
 				}
 				#endif
@@ -120,7 +115,16 @@ namespace Sisus.Init.Internal
 		internal Clients ToClients
 		{
 			get => toClients;
-			set => toClients = value;
+
+			set
+			{
+				toClients = value;
+				
+				#if UNITY_EDITOR
+				EditorApplication.delayCall = OnValidateDelayed;
+				EditorApplication.delayCall += OnValidateDelayed;
+				#endif
+			}
 		}
 
 		Component IValueProvider<Component>.Value => toClients == Clients.Everywhere ? service : null;
@@ -399,7 +403,7 @@ namespace Sisus.Init.Internal
 				return;
 			}
 
-			if(DefiningType is not Type definingType)
+			if(DefiningType is not { } definingType)
 			{
 				if(EditorUtility.scriptCompilationFailed)
 				{

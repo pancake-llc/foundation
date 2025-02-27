@@ -130,21 +130,20 @@ namespace Sisus.Init.EditorOnly.Internal
 						}
 
 						var initializerGUI = AddInitializerGUI(initializable, initParameterTypes);
-						initializerGUI.Initializers = Array.Exists(initializers, obj => obj == null) ? Array.Empty<Object>() : initializers;
+						initializerGUI.Initializers = Array.Exists(initializers, obj => !obj) ? Array.Empty<Object>() : initializers;
 					}
 				}
 			}
+			
+			drawInitializerGUI = initializerTypes.Count > 0 && canDrawInitializers && !Application.isPlaying;
 
-			if(initializerGUIs.Count == 0)
+			if(drawInitializerGUI && initializerGUIs.Count == 0)
 			{
-				foreach(TClient initializable in firstInitializables)
-				{
-					AddInitializerGUI(initializable, GetInitArgumentTypes(initializable));
-					break;
-				}
+				var initializerGUI = new InitializerGUI(SerializedObject, Array.Empty<object>(), Array.Empty<Type>(), null, gameObjects);
+				initializerGUI.OnAddInitializerButtonPressedOverride = OnAddButtonPressed;
+				initializerGUI.Changed += OnInitializerGUIChanged;
+				initializerGUIs.Add(initializerGUI);
 			}
-
-			drawInitializerGUI = initializerGUIs.Count > 0 && canDrawInitializers && !Application.isPlaying;
 		}
 
 		protected virtual InitializerGUI AddInitializerGUI(TClient initializable, Type[] initParameterTypes)
@@ -188,8 +187,13 @@ namespace Sisus.Init.EditorOnly.Internal
 			{
 				return;
 			}
+			
+			EditorGUILayout.BeginHorizontal();
+			GUILayout.Space(14f);
 
 			GUILayout.Space(1f);
+			
+			EditorGUILayout.BeginVertical();
 
 			for(int i = 0, lastIndex = initializerGUIs.Count - 1; i <= lastIndex; i++)
 			{
@@ -202,9 +206,15 @@ namespace Sisus.Init.EditorOnly.Internal
 
 				if(i < lastIndex)
 				{ 
-					GUILayout.Space(2f);
+					GUILayout.Space(5f);
 				}
 			}
+			
+			EditorGUILayout.EndVertical();
+			
+			GUILayout.Space(7f);
+			
+			EditorGUILayout.EndHorizontal();
 
 			GUILayout.Label(GUIContent.none, GUILayout.Height(0f));
 			var rect = GUILayoutUtility.GetLastRect();
@@ -212,8 +222,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			rect.height = EditorGUIUtility.singleLineHeight;
 
 			bool hasAtLeastOneInitializer = initializerGUIs.Count > 0 && initializerGUIs[0].Initializers.Length > 0 && initializerGUIs[0].Initializers[0] != null;
-			bool drawAddButton = hasAtLeastOneInitializer && (HasAnyAddableInitializerTypes() || HasAnyInitializablesWithoutAnInitializerClass(Inspected));
-			if(drawAddButton)
+			bool drawAddButtonBelow = hasAtLeastOneInitializer && (HasAnyAddableInitializerTypes() || HasAnyInitializablesWithoutAnInitializerClass());
+			if(drawAddButtonBelow)
 			{
 				DrawAddButton(rect);
 			}
@@ -360,10 +370,13 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		protected abstract void GetInitializablesFromTarget([DisallowNull] TTarget target, List<TClient> addToList);
 
-		private static Type[] GetInitArgumentTypes(object initializable) => TryGetIInitializableType(initializable.GetType(), out Type iinitializableType) ? iinitializableType.GetGenericArguments() : Array.Empty<Type>();
+		private static Type[] GetInitArgumentTypes(object initializable)
+			=> TryGetIInitializableType(initializable.GetType(), out Type iinitializableType)
+			? iinitializableType.GetGenericArguments()
+			: Array.Empty<Type>();
 
 		private static bool TryGetIInitializableType(Type type, out Type iinitializableType)
-        {
+		{
 			foreach(var interfaceType in type.GetInterfaces())
 			{
 				if(InitializerEditorUtility.IsGenericIInitializableType(interfaceType))
@@ -397,7 +410,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			return false;
 		}
 
-		private bool HasAnyInitializablesWithoutAnInitializerClass(TTarget target)
+		private bool HasAnyInitializablesWithoutAnInitializerClass()
 		{
 			GetInitializablesFromTarget(Inspected, tempClientsList);
 

@@ -211,11 +211,11 @@ namespace Sisus.Init.EditorOnly.Internal
 					switch(Event.current.button)
 					{
 						case 0:
-							EditorServiceTagUtility.SelectAllReferencesInScene(service);
+							EditorServiceTagUtility.SelectAllGlobalServiceClientsInScene(service);
 							break;
 						case 1:
 							var menu = new GenericMenu();
-							menu.AddItem(new("Find Clients In Scenes"), false, () => EditorServiceTagUtility.SelectAllReferencesInScene(service));
+							menu.AddItem(new("Find Clients In Scenes"), false, () => EditorServiceTagUtility.SelectAllGlobalServiceClientsInScene(service));
 							menu.ShowAsContext();
 							break;
 					}
@@ -302,11 +302,11 @@ namespace Sisus.Init.EditorOnly.Internal
 					switch(Event.current.button)
 					{
 						case 0:
-							EditorServiceTagUtility.SelectAllReferencesInScene(client);
+							EditorServiceTagUtility.SelectAllGlobalServiceClientsInScene(client);
 							break;
 						case 1:
 							var menu = new GenericMenu();
-							menu.AddItem(new("Find Clients In Scenes"), false, () => EditorServiceTagUtility.SelectAllReferencesInScene(client));
+							menu.AddItem(new("Find Clients In Scenes"), false, () => EditorServiceTagUtility.SelectAllGlobalServiceClientsInScene(client));
 							menu.ShowAsContext();
 							break;
 					}

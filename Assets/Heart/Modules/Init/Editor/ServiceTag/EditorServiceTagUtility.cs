@@ -435,9 +435,29 @@ namespace Sisus.Init.EditorOnly.Internal
 			EditorGUIUtility.PingObject(service);
 			LayoutUtility.ExitGUI();
 		}
+		
+		internal static bool PingServiceFor(Object client, Type serviceType)
+		{
+			if(ServiceUtility.TryGetFor(client, serviceType, out var service) && Find.In(service, out Object unityObject))
+			{
+				PingService(unityObject);
+				return true;
+			}
+			
+			if(Find.Script(serviceType, out var script))
+			{
+				PingService(script);
+				return true;
+			}
 
-		internal static void SelectAllReferencesInScene(object serviceOrServiceProvider)
+			return false;
+		}
+
+		internal static void SelectAllGlobalServiceClientsInScene(object serviceOrServiceProvider)
 			=> Selection.objects = GetServiceDefiningTypes(serviceOrServiceProvider).ToArray().SelectMany(FindAllReferences).Distinct().ToArray();
+
+		internal static void SelectAllReferencesInScene(object serviceOrServiceProvider, Type[] definingTypes, Clients clients, Component registerer)
+			=> Selection.objects = definingTypes.SelectMany(FindAllReferences).Distinct().Where(go => Service.IsAccessibleTo(go.transform, registerer, clients)).ToArray();
 
 		/// <summary>
 		/// Ping MonoScript or GameObject containing the configuration that causes the object, or the value provided by the object
@@ -450,7 +470,7 @@ namespace Sisus.Init.EditorOnly.Internal
 		{
 			// Ping services component that defines the service, if any...
 			var services = Find.All<Services>().FirstOrDefault(s => s.providesServices.Any(i => AreEqual(i.service, serviceOrServiceProvider)));
-			if(services != null)
+			if(services)
 			{
 				EditorGUIUtility.PingObject(services);
 				return;
@@ -461,7 +481,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			if(HasServiceAttribute(serviceOrServiceProviderType))
 			{
 				var scriptWithServiceAttribute = Find.Script(serviceOrServiceProviderType);
-				if(scriptWithServiceAttribute != null)
+				if(scriptWithServiceAttribute)
 				{
 					EditorGUIUtility.PingObject(scriptWithServiceAttribute);
 					return;
@@ -580,11 +600,11 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 		}
 
-		internal static void OpenContextMenuForService(Component serviceOrServiceProvider, Rect tagRect)
+		internal static void OpenContextMenuForService(Component serviceOrServiceProvider, Type[] definingTypes, Clients clients, Component registerer, Rect tagRect)
 		{
 			var menu = new GenericMenu();
 
-			menu.AddItem(new GUIContent("Find Clients In Scenes"), false, () => SelectAllReferencesInScene(serviceOrServiceProvider));
+			menu.AddItem(new GUIContent("Find Clients In Scenes"), false, () => SelectAllReferencesInScene(serviceOrServiceProvider, definingTypes, clients, registerer));
 
 			if(HasServiceTag(serviceOrServiceProvider))
 			{
@@ -731,7 +751,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			for(int c = components.Count - 1; c >= 1; c--)
 			{
 				var component = components[c];
-				if(component == null)
+				if(!component)
 				{
 					continue;
 				}

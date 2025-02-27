@@ -225,7 +225,7 @@ namespace Sisus.Init.EditorOnly
 				parameterGUIs[i].DrawArgumentField(IsNullAllowed, ServicesShown);
 			}
 
-			Editor.DrawPropertiesExcluding(serializedObject, fieldsToExcludeByArgumentCount[parameterGUIs.Length]);
+			DrawPropertiesExcluding(serializedObject, fieldsToExcludeByArgumentCount[parameterGUIs.Length]);
 		}
 
 		private void OnDisable()

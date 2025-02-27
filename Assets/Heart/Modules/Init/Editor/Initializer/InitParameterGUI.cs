@@ -27,7 +27,7 @@ namespace Sisus.Init.EditorOnly.Internal
 			this.label = label;
 			this.anyProperty = anyProperty;
 			Attributes = attributes;
-			isService = ServiceUtility.TryGetFor(anyProperty.serializedObject.targetObject, valueType, out _);
+			isService = AnyPropertyDrawer.IsService(anyProperty.serializedObject.targetObject, valueType);
 
 			NowDrawing = null;
 		}
@@ -73,9 +73,9 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						method = anyType.GetMethod("HasSerializedValue", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 						hasSerializedValueMethods.Add(anyType, method);
-#if DEV_MODE
+						#if DEV_MODE
 						if(method is null) Debug.LogError(Init.Internal.TypeUtility.ToString(anyType));
-#endif
+						#endif
 					}
 					
 					hasSerializedValue = (bool)method.Invoke(any, null);
