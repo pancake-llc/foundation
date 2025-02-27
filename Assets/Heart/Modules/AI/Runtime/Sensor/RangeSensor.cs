@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Pancake.Common;
+#if UNITY_EDITOR
 using Pancake.Draw;
+#endif
 using Pancake.ExTag;
 using Sirenix.OdinInspector;
 using UnityEngine;

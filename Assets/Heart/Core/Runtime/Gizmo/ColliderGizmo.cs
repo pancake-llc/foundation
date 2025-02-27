@@ -1,4 +1,6 @@
-﻿using Pancake.Draw;
+﻿#if UNITY_EDITOR
+using Pancake.Draw;
+#endif
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -23,6 +25,8 @@ namespace Pancake
             }
         }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos() { ImGizmos.Collider(Col, color); }
+#endif
     }
 }
