@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Pancake.Common;
+using Pancake.Draw;
 using Pancake.ExTag;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -17,11 +18,9 @@ namespace Pancake.AI
 
         [SerializeField] private GameObjectUnityEvent detectedEvent;
 
-        private readonly Collider2D[] _hits = new Collider2D[16];
         private readonly HashSet<Collider2D> _hitObjects = new();
-
-        private int _count;
-
+        private DynamicArray<Collider2D> _hits = new();
+        
         public override void Pulse()
         {
             _hitObjects.Clear();
@@ -32,13 +31,12 @@ namespace Pancake.AI
         {
             var legacyFilter = new ContactFilter2D {useTriggers = Physics2D.queriesHitTriggers};
             legacyFilter.SetLayerMask(layer);
-            _count = Physics2D.OverlapCircle(source.GetPositionXY(), radius, legacyFilter, _hits);
-            if (_count <= 0) return;
+            var result = Physics2DCast.OverlapCircleNonAlloc(source.GetPositionXY(), radius, legacyFilter, _hits);
+            if (result.Length <= 0) return;
 
-            for (var i = 0; i < _count; i++)
+            foreach (var col in result)
             {
-                var hit = _hits[i];
-                if (hit != null && hit.transform != source) HandleHit(hit);
+                if (col != null && col.transform != source) HandleHit(col);
             }
         }
 
@@ -61,27 +59,27 @@ namespace Pancake.AI
 
         public override Transform GetClosestTarget(StringKey tag)
         {
-            if (_count == 0) return null;
+            if (_hits.Length == 0) return null;
 
             Transform closestTarget = null;
             float closestDistance = Mathf.Infinity;
             var currentPosition = source.position;
-            for (var i = 0; i < _count; i++)
+            foreach (var col in _hits)
             {
                 if (newTagSystem)
                 {
-                    if (!_hits[i].gameObject.HasTag(tag.Name)) continue;
+                    if (!col.gameObject.HasTag(tag.Name)) continue;
                 }
                 else
                 {
-                    if (!_hits[i].CompareTag(tag.Name)) continue;
+                    if (!col.CompareTag(tag.Name)) continue;
                 }
-                
-                float distanceToTarget = Vector3.Distance(_hits[i].transform.position, currentPosition);
+
+                float distanceToTarget = Vector3.Distance(col.transform.position, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {
                     closestDistance = distanceToTarget;
-                    closestTarget = _hits[i].transform;
+                    closestTarget = col.transform;
                 }
             }
 
@@ -90,18 +88,18 @@ namespace Pancake.AI
 
         public override Transform GetClosestTarget()
         {
-            if (_count == 0) return null;
+            if (_hits.Length == 0) return null;
 
             Transform closestTarget = null;
             float closestDistance = Mathf.Infinity;
             var currentPosition = source.position;
-            for (var i = 0; i < _count; i++)
+            foreach (var col in _hits)
             {
-                float distanceToTarget = Vector3.Distance(_hits[i].transform.position, currentPosition);
+                float distanceToTarget = Vector3.Distance(col.transform.position, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {
                     closestDistance = distanceToTarget;
-                    closestTarget = _hits[i].transform;
+                    closestTarget = col.transform;
                 }
             }
 
@@ -113,11 +111,16 @@ namespace Pancake.AI
         {
             if (source != null && showGizmos)
             {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(source.position, 0.1f);
-
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere(source.position, radius);
+                ImGizmos.WireDisc3D(source.position,
+                    Quaternion.identity,
+                    0.1f,
+                    GizmoDrawAxis.Z,
+                    Color.green);
+                ImGizmos.WireDisc3D(source.position,
+                    Quaternion.identity,
+                    radius,
+                    GizmoDrawAxis.Z,
+                    Color.white);
             }
         }
 #endif

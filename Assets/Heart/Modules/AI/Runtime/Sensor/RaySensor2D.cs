@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Pancake.Common;
+using Pancake.Draw;
 using Pancake.ExTag;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -21,18 +22,18 @@ namespace Pancake.AI
         [Space(8), SerializeField, Required] private Transform source;
         [SerializeField] private GameObjectUnityEvent detectedEvent;
 
-        private readonly RaycastHit2D[] _hits = new RaycastHit2D[16];
+        private DynamicArray<RaycastHit2D> _hits = new();
         private readonly HashSet<Collider2D> _hitObjects = new();
         private int _frames;
         private Vector2 _end;
-        private int _count;
 
         private enum RayDirection
         {
             Left,
             Right,
             Top,
-            Bottom
+            Bottom,
+            GameObject
         }
 
         private enum Shape
@@ -73,6 +74,7 @@ namespace Pancake.AI
                 RayDirection.Right => currentPoint + Vector2.right * range,
                 RayDirection.Top => currentPoint + Vector2.up * range,
                 RayDirection.Bottom => currentPoint + Vector2.down * range,
+                RayDirection.GameObject => currentPoint + (Vector2) source.forward * range,
                 _ => currentPoint
             };
             return endPosition;
@@ -81,19 +83,20 @@ namespace Pancake.AI
         private void Raycast(Vector2 from, Vector2 to)
         {
             var dir = (to - from).normalized;
+            var filter = new ContactFilter2D {useTriggers = Physics2D.queriesHitTriggers};
+            filter.SetLayerMask(layer);
             switch (shape)
             {
                 case Shape.Ray:
-                    _count = Physics2D.RaycastNonAlloc(from,
+                    Physics2DCast.RaycastNonAlloc(from,
                         dir,
+                        filter,
                         _hits,
-                        range,
-                        layer.value);
+                        range);
                     break;
                 case Shape.Circle:
-                    var filter = new ContactFilter2D {useTriggers = Physics2D.queriesHitTriggers};
-                    filter.SetLayerMask(layer);
-                    _count = Physics2D.CircleCast(from,
+
+                    Physics2DCast.CircleCastNonAlloc(from,
                         radius,
                         dir,
                         filter,
@@ -101,13 +104,12 @@ namespace Pancake.AI
                         range);
                     break;
                 case Shape.Box:
-                    var boxFilter = new ContactFilter2D {useTriggers = Physics2D.queriesHitTriggers};
-                    boxFilter.SetLayerMask(layer);
-                    _count = Physics2D.BoxCast(from,
+
+                    Physics2DCast.BoxCastNonAlloc(from,
                         Vector2.one * radius,
                         0f,
                         dir,
-                        boxFilter,
+                        filter,
                         _hits,
                         range);
                     break;
@@ -115,10 +117,9 @@ namespace Pancake.AI
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (_count <= 0) return;
-            for (var i = 0; i < _count; i++)
+            if (_hits.Length <= 0) return;
+            foreach (var hit in _hits)
             {
-                var hit = _hits[i];
                 if (hit.collider != null && hit.collider.transform != source)
                 {
                     HandleHit(hit);
@@ -150,27 +151,27 @@ namespace Pancake.AI
 
         public override Transform GetClosestTarget(StringKey tag)
         {
-            if (_count == 0) return null;
+            if (_hits.Length == 0) return null;
 
             Transform closestTarget = null;
             float closestDistance = Mathf.Infinity;
             var currentPosition = source.GetPositionXY();
-            for (var i = 0; i < _count; i++)
+            foreach (var hit in _hits)
             {
                 if (newTagSystem)
                 {
-                    if (!_hits[i].collider.gameObject.HasTag(tag.Name)) continue;
+                    if (!hit.collider.gameObject.HasTag(tag.Name)) continue;
                 }
                 else
                 {
-                    if (!_hits[i].collider.CompareTag(tag.Name)) continue;
+                    if (!hit.collider.CompareTag(tag.Name)) continue;
                 }
 
-                float distanceToTarget = Vector2.Distance(_hits[i].point, currentPosition);
+                float distanceToTarget = Vector2.Distance(hit.point, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {
                     closestDistance = distanceToTarget;
-                    closestTarget = _hits[i].transform;
+                    closestTarget = hit.transform;
                 }
             }
 
@@ -179,18 +180,18 @@ namespace Pancake.AI
 
         public override Transform GetClosestTarget()
         {
-            if (_count == 0) return null;
+            if (_hits.Length == 0) return null;
 
             Transform closestTarget = null;
             float closestDistance = Mathf.Infinity;
             var currentPosition = source.GetPositionXY();
-            for (var i = 0; i < _count; i++)
+            foreach (var hit in _hits)
             {
-                float distanceToTarget = Vector2.Distance(_hits[i].point, currentPosition);
+                float distanceToTarget = Vector2.Distance(hit.point, currentPosition);
                 if (distanceToTarget < closestDistance)
                 {
                     closestDistance = distanceToTarget;
-                    closestTarget = _hits[i].transform;
+                    closestTarget = hit.transform;
                 }
             }
 
@@ -208,18 +209,15 @@ namespace Pancake.AI
                 switch (shape)
                 {
                     case Shape.Ray:
-                        Gizmos.color = Color.green;
-                        Gizmos.DrawWireSphere(currentPoint, 0.1f);
-                        Gizmos.DrawWireSphere(endPosition, 0.1f);
-
-                        Gizmos.color = Color.yellow;
-                        Gizmos.DrawLine(currentPoint, endPosition);
+                        ImGizmos.WireSphere3D(currentPoint, Quaternion.identity, 0.1f, Color.green);
+                        ImGizmos.WireSphere3D(endPosition, Quaternion.identity, 0.1f, Color.green);
+                        ImGizmos.Line3D(currentPoint, endPosition, Color.yellow);
                         break;
                     case Shape.Circle:
-                        DebugEditor.DrawCircleCast(currentPoint, radius, dir, range);
+                        ImGizmos.DrawCircleCast(currentPoint, radius, dir, range);
                         break;
                     case Shape.Box:
-                        DebugEditor.DrawBoxCast2D(currentPoint,
+                        ImGizmos.DrawBoxCast2D(currentPoint,
                             Vector3.one * radius,
                             0f,
                             dir,

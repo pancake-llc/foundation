@@ -1,4 +1,6 @@
-﻿namespace Pancake.Draw
+﻿using System.Collections.Generic;
+
+namespace Pancake.Draw
 {
 #if UNITY_EDITOR
     using System;
@@ -237,7 +239,6 @@
             RestoreGizmosState();
         }
 
-
         /// <summary>
         /// Draw a wireframe 3D box.
         /// </summary>
@@ -252,6 +253,157 @@
             Gizmos.color = color;
             Gizmos.DrawWireCube(Vector3Zero, size);
             RestoreGizmosState();
+        }
+
+        public static void DrawBoxCast2D(Vector3 origin, Vector3 size, float angle, Vector3 direction, float distance)
+        {
+            direction = new Vector3(direction.x, direction.y);
+            size = new Vector3(size.x, size.y);
+            distance = float.IsPositiveInfinity(distance) ? 1000000f : distance;
+
+            var endPositionOfBox = origin + direction.normalized * distance;
+
+            GetInfoAboutDiagonalsOfBox(size, out float angleOfDiagonal, out float halfOfDiagonalLenght);
+            GetCornersPositionInLsOfBox(angle,
+                angleOfDiagonal,
+                halfOfDiagonalLenght,
+                out var cornerPosition1,
+                out var cornerPosition2,
+                out var cornerPosition3,
+                out var cornerPosition4);
+
+            Gizmos.matrix = Matrix4x4.identity;
+            //We're getting lenght from start to point projected on direction to delete not important lines
+            float dlA = Vector3.Project(cornerPosition1, direction).magnitude;
+            float dlB = Vector3.Project(cornerPosition2, direction).magnitude;
+            float dlC = Vector3.Project(cornerPosition3, direction).magnitude;
+            float dlD = Vector3.Project(cornerPosition4, direction).magnitude;
+
+            if (dlA + dlC < dlB + dlD)
+            {
+                Line3D(origin + cornerPosition1, endPositionOfBox + cornerPosition1, Color.yellow);
+                Line3D(origin + cornerPosition3, endPositionOfBox + cornerPosition3, Color.yellow);
+            }
+            else
+            {
+                Line3D(origin + cornerPosition2, endPositionOfBox + cornerPosition2, Color.yellow);
+                Line3D(origin + cornerPosition4, endPositionOfBox + cornerPosition4, Color.yellow);
+            }
+
+            WireQuad3D(origin,
+                Quaternion.identity,
+                size.x,
+                size.y,
+                GizmoDrawAxis.Z,
+                Color.green);
+            WireQuad3D(endPositionOfBox,
+                Quaternion.identity,
+                size.x,
+                size.y,
+                GizmoDrawAxis.Z,
+                Color.green);
+        }
+
+        public static void DrawBoxCast3D(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation, float maxDistance)
+        {
+            orientation = orientation.Equals(default) ? Quaternion.identity : orientation;
+            if (maxDistance < 0)
+            {
+                Debug.LogWarning(
+                    "<b><size=13><color=#0392CF> In method </color><color=#CD1426FF> DrawBoxCast3D </color><color=#0392CF> - </color> <color=#CD1426FF>maxdistance</color>  <color=#0392CF>must be greater then 0! </color> </size></b>");
+                return;
+            }
+
+            if (halfExtents.x < 0 || halfExtents.y < 0 || halfExtents.z < 0)
+            {
+                Debug.LogWarning(
+                    "<b><size=13> <color=#0392CF>In method</color> <color=#CD1426FF>DrawBoxCast3D</color> <color=#0392CF> components of</color><color=#CD1426FF> halfExtends</color><color=#0392CF> should't be negative! </color> </size></b>");
+            }
+
+            direction = direction.normalized;
+            var endPositionOfCube = direction.normalized * maxDistance + center;
+            var vertexes = new Vector3[8];
+            var a1 = new Vector3(1f * halfExtents.x, 1f * halfExtents.y, 1f * halfExtents.z);
+            var b1 = new Vector3(-1f * halfExtents.x, 1f * halfExtents.y, 1f * halfExtents.z);
+            var c1 = new Vector3(-1f * halfExtents.x, -1f * halfExtents.y, 1f * halfExtents.z);
+            var d1 = new Vector3(1f * halfExtents.x, -1f * halfExtents.y, 1f * halfExtents.z);
+            var a = new Vector3(1f * halfExtents.x, 1f * halfExtents.y, -1f * halfExtents.z);
+            var b = new Vector3(-1f * halfExtents.x, 1f * halfExtents.y, -1f * halfExtents.z);
+            var c = new Vector3(-1f * halfExtents.x, -1f * halfExtents.y, -1f * halfExtents.z);
+            var d = new Vector3(1f * halfExtents.x, -1f * halfExtents.y, -1f * halfExtents.z);
+            vertexes[0] = a1;
+            vertexes[1] = c;
+            vertexes[2] = b1;
+            vertexes[3] = d1;
+            vertexes[4] = a;
+            vertexes[5] = c1;
+            vertexes[6] = d;
+            vertexes[7] = b;
+
+            #region Drawing BoxCast3D
+
+            var lenghtOProjectedVertexesOnDirection = new List<float>(8);
+
+            for (var i = 0; i < 8; i++)
+            {
+                float lenght = Vector3.Project(orientation * vertexes[i], direction).magnitude;
+                lenghtOProjectedVertexesOnDirection.Add(lenght);
+            }
+
+            float min = Mathf.Max(lenghtOProjectedVertexesOnDirection[0],
+                lenghtOProjectedVertexesOnDirection[1],
+                lenghtOProjectedVertexesOnDirection[2],
+                lenghtOProjectedVertexesOnDirection[3],
+                lenghtOProjectedVertexesOnDirection[4],
+                lenghtOProjectedVertexesOnDirection[5],
+                lenghtOProjectedVertexesOnDirection[6],
+                lenghtOProjectedVertexesOnDirection[7]);
+            for (var i = 0; i < 8; i++)
+            {
+                if (!Mathf.Approximately(lenghtOProjectedVertexesOnDirection[i], min))
+                {
+                    Line3D(center + orientation * vertexes[i], endPositionOfCube + orientation * vertexes[i], Color.green);
+                }
+                else if (direction == Vector3.right || direction == Vector3.left || direction == Vector3.up || direction == Vector3.down || direction == Vector3.back ||
+                         direction == Vector3.forward)
+                {
+                    Line3D(center + orientation * vertexes[i], endPositionOfCube + orientation * vertexes[i], Color.green); //orientation == Quaternion.identity &&
+                }
+            }
+
+            WireBox3D(center, Quaternion.identity, halfExtents * 2, Color.yellow);
+            WireBox3D(endPositionOfCube, Quaternion.identity, halfExtents * 2, Color.yellow);
+
+            #endregion
+        }
+
+        /// <summary> /// Gets angle between horizontal line and diagonals and half lenght of diagonal. /// </summary>
+        private static void GetInfoAboutDiagonalsOfBox(Vector2 size, out float angleOfDiagonal, out float halfOfDiagonalLenght)
+        {
+            angleOfDiagonal = Mathf.Atan(size.x / size.y) * Mathf.Rad2Deg;
+            halfOfDiagonalLenght = Mathf.Sqrt(Mathf.Pow(size.x, 2) + Mathf.Pow(size.y, 2)) * 0.5f;
+        }
+
+        private static void GetCornersPositionInLsOfBox(
+            float angle,
+            float angleOfDiagonal,
+            float halfOfDiagonalLenght,
+            out Vector3 cornerPosition1,
+            out Vector3 cornerPosition2,
+            out Vector3 cornerPosition3,
+            out Vector3 cornerPosition4)
+        {
+            cornerPosition1 = new Vector3(-Mathf.Sin(Mathf.Deg2Rad * (angle - angleOfDiagonal)), Mathf.Cos(Mathf.Deg2Rad * (angle - angleOfDiagonal))).normalized *
+                              halfOfDiagonalLenght;
+            cornerPosition2 =
+                new Vector3(-Mathf.Sin(Mathf.Deg2Rad * (angle - 180 + angleOfDiagonal)), Mathf.Cos(Mathf.Deg2Rad * (angle - 180 + angleOfDiagonal))).normalized *
+                halfOfDiagonalLenght;
+            cornerPosition3 =
+                new Vector3(-Mathf.Sin(Mathf.Deg2Rad * (angle - 180 - angleOfDiagonal)), Mathf.Cos(Mathf.Deg2Rad * (angle - 180 - angleOfDiagonal))).normalized *
+                halfOfDiagonalLenght;
+            cornerPosition4 =
+                new Vector3(-Mathf.Sin(Mathf.Deg2Rad * (angle - 360 + angleOfDiagonal)), Mathf.Cos(Mathf.Deg2Rad * (angle - 360 + angleOfDiagonal))).normalized *
+                halfOfDiagonalLenght;
         }
 
         private static void DrawWireDisc()
@@ -297,6 +449,28 @@
             RestoreGizmosState();
         }
 
+        public static void DrawCircleCast(Vector3 origin, float radius, Vector3 direction, float distance)
+        {
+            direction = new Vector3(direction.x, direction.y);
+            distance = float.IsPositiveInfinity(distance) ? 1000000f : distance;
+            var endPositionOfCircle = origin + direction.normalized * distance;
+            var tangent = Vector3.zero;
+            Vector3.OrthoNormalize(ref direction, ref tangent);
+            Line3D(origin + tangent * radius, endPositionOfCircle + tangent * radius, Color.yellow);
+            Line3D(origin - tangent * radius, endPositionOfCircle - tangent * radius, Color.yellow);
+
+            WireDisc3D(origin,
+                Quaternion.identity,
+                radius,
+                GizmoDrawAxis.Z,
+                Color.green);
+            WireDisc3D(endPositionOfCircle,
+                Quaternion.identity,
+                radius,
+                GizmoDrawAxis.Z,
+                Color.green);
+        }
+
         /// <summary>
         /// Draw a wireframe 3D sphere.
         /// </summary>
@@ -313,6 +487,33 @@
             RestoreGizmosState();
         }
 
+        public static void DrawSphereCast3D(Vector3 origin, float radius, Vector3 direction, float maxDistance)
+        {
+            direction = direction.normalized;
+            direction = direction.normalized;
+            var endPositionOfSphere = direction.normalized * maxDistance + origin;
+            var tangentToDirection = Vector3.zero;
+            Vector3.OrthoNormalize(ref direction, ref tangentToDirection);
+            var tangendOffset = tangentToDirection * radius;
+
+            WireSphere3D(origin, Quaternion.identity, radius, Color.green);
+            WireSphere3D(endPositionOfSphere, Quaternion.identity, radius, Color.green);
+
+
+            #region Draw sphere connecting lines
+
+            var basePositionOfLine = tangendOffset;
+            var endPositionOfLine = direction.normalized * maxDistance + tangendOffset;
+            var connectingLinesAngularOffset = Quaternion.AngleAxis(18, direction);
+            for (var i = 0; i < 20; i++)
+            {
+                Line3D(basePositionOfLine, endPositionOfLine, Color.yellow);
+                basePositionOfLine = connectingLinesAngularOffset * basePositionOfLine;
+                endPositionOfLine = connectingLinesAngularOffset * endPositionOfLine;
+            }
+
+            #endregion
+        }
 
         /// <summary>
         /// Draw a wireframe 3D ellipsoid.
@@ -686,7 +887,9 @@
                     x -= size.x * 0.5f;
                     y -= size.y;
                     break;
-                case LabelPivot.LowerLeft: y -= size.y; break;
+                case LabelPivot.LowerLeft:
+                    y -= size.y;
+                    break;
                 case LabelPivot.LowerRight:
                     x -= size.x;
                     y -= size.y;
@@ -696,15 +899,21 @@
                     x -= size.x * 0.5f;
                     y -= size.y * 0.5f;
                     break;
-                case LabelPivot.MiddleLeft: y -= size.y * 0.5f; break;
+                case LabelPivot.MiddleLeft:
+                    y -= size.y * 0.5f;
+                    break;
                 case LabelPivot.MiddleRight:
                     x -= size.x;
                     y -= size.y * 0.5f;
                     break;
 
-                case LabelPivot.UpperCenter: x -= size.x * 0.5f; break;
+                case LabelPivot.UpperCenter:
+                    x -= size.x * 0.5f;
+                    break;
                 //case TextAnchor.UpperLeft: break;
-                case LabelPivot.UpperRight: x -= size.x; break;
+                case LabelPivot.UpperRight:
+                    x -= size.x;
+                    break;
             }
         }
 
@@ -712,9 +921,15 @@
         {
             switch (alignment)
             {
-                case LabelAlignment.Left: sStyle.alignment = TextAnchor.UpperLeft; break;
-                case LabelAlignment.Center: sStyle.alignment = TextAnchor.UpperCenter; break;
-                case LabelAlignment.Right: sStyle.alignment = TextAnchor.UpperRight; break;
+                case LabelAlignment.Left:
+                    sStyle.alignment = TextAnchor.UpperLeft;
+                    break;
+                case LabelAlignment.Center:
+                    sStyle.alignment = TextAnchor.UpperCenter;
+                    break;
+                case LabelAlignment.Right:
+                    sStyle.alignment = TextAnchor.UpperRight;
+                    break;
             }
         }
 
@@ -1191,10 +1406,16 @@
         {
             switch (axis)
             {
-                case 0: outRotation = inRotation * AxisXRotation; break;
+                case 0:
+                    outRotation = inRotation * AxisXRotation;
+                    break;
                 //case 1: outRotation = inRotation; break;
-                case 2: outRotation = inRotation * AxisZRotation; break;
-                default: outRotation = inRotation; break;
+                case 2:
+                    outRotation = inRotation * AxisZRotation;
+                    break;
+                default:
+                    outRotation = inRotation;
+                    break;
             }
         }
 
@@ -1202,8 +1423,12 @@
         {
             switch (axis)
             {
-                case 0: rotation = rotation * AxisXRotation; break;
-                case 2: rotation = rotation * AxisZRotation; break;
+                case 0:
+                    rotation = rotation * AxisXRotation;
+                    break;
+                case 2:
+                    rotation = rotation * AxisZRotation;
+                    break;
             }
         }
 
