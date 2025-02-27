@@ -74,17 +74,16 @@ namespace Pancake.Draw
             if (sSine != null) // Skip if already initialised
                 return;
 
-            int step = 15;
-            int pcount = (360 / step) + 1;
-            int index = 0;
-            float anglef;
+            const int step = 15;
+            const int pcount = 360 / step + 1;
+            var index = 0;
 
             sSine = new float[pcount];
             sCosine = new float[pcount];
 
-            for (int angle = 0; angle <= 360; angle += step)
+            for (var angle = 0; angle <= 360; angle += step)
             {
-                anglef = (float) (angle - 90) * Mathf.Deg2Rad;
+                float anglef = (angle - 90) * Mathf.Deg2Rad;
                 sSine[index] = Mathf.Sin(anglef);
                 sCosine[index] = Mathf.Cos(anglef);
                 ++index;
@@ -232,7 +231,7 @@ namespace Pancake.Draw
         {
             SaveGizmosState();
             //IMDrawRotationHelper.SetRotationAxis(ref rotation, (int)axis);
-            Vector3 scale = new Vector3(sizeX, 0f, sizeY);
+            var scale = new Vector3(sizeX, 0f, sizeY);
             SetGizmoMatrix(ref center, ref rotation, ref scale, axis);
             Gizmos.color = color;
             DrawWireQuad();
@@ -442,7 +441,7 @@ namespace Pancake.Draw
         public static void WireDisc3D(Vector3 origin, Quaternion rotation, float radius, GizmoDrawAxis axis, Color color)
         {
             SaveGizmosState();
-            Vector3 scale = new Vector3(radius, 0f, radius);
+            var scale = new Vector3(radius, 0f, radius);
             SetGizmoMatrix(ref origin, ref rotation, ref scale, axis);
             Gizmos.color = color;
             DrawWireDisc();
@@ -557,7 +556,7 @@ namespace Pancake.Draw
         public static void WireCone3D(Vector3 position, Quaternion rotation, float height, float width, GizmoDrawAxis axis, Color color)
         {
             SaveGizmosState();
-            Vector3 scale = new Vector3(width * 0.5f, height, width * 0.5f);
+            var scale = new Vector3(width * 0.5f, height, width * 0.5f);
             SetGizmoMatrix(ref position, ref rotation, ref scale, axis);
             Gizmos.color = color;
             DrawWireCone3D();
@@ -717,7 +716,7 @@ namespace Pancake.Draw
         public static void WireCylinder3D(Vector3 center, Quaternion rotation, float height, float radius, GizmoDrawAxis axis, Color color)
         {
             SaveGizmosState();
-            Vector3 scale = new Vector3(radius, height, radius);
+            var scale = new Vector3(radius, height, radius);
             SetGizmoMatrix(ref center, ref rotation, ref scale, axis);
             Gizmos.color = color;
             DrawWireCylinder3D();
@@ -753,7 +752,7 @@ namespace Pancake.Draw
                 SaveGizmosState();
                 Gizmos.matrix = Matrix4x4.identity;
                 Gizmos.color = color;
-                Bounds bounds = renderer.bounds;
+                var bounds = renderer.bounds;
                 Gizmos.DrawWireCube(bounds.center, bounds.extents * 2f);
                 RestoreGizmosState();
             }
@@ -761,11 +760,11 @@ namespace Pancake.Draw
 
         private static void GetBoxColliderTransform(BoxCollider collider, out Vector3 pos, out Vector3 scale)
         {
-            Transform tf = collider.transform;
+            var tf = collider.transform;
 
             pos = tf.TransformPoint(collider.center);
 
-            Vector3 boxScale = collider.size;
+            var boxScale = collider.size;
 
             scale = tf.lossyScale;
 
@@ -776,11 +775,11 @@ namespace Pancake.Draw
 
         private static void GetSphereColliderTransform(SphereCollider collider, out Vector3 pos, out float radius)
         {
-            Transform tf = collider.transform;
+            var tf = collider.transform;
 
             pos = tf.TransformPoint(collider.center);
 
-            Vector3 transformScale = tf.lossyScale;
+            var transformScale = tf.lossyScale;
 
             // Note: sphere collider seems to use absolute value of largest component to scale the radius
             if (transformScale.x < 0f) transformScale.x = -transformScale.x;
@@ -800,10 +799,10 @@ namespace Pancake.Draw
 
         private static void GetCapsuleColliderTransform(CapsuleCollider collider, out Vector3 pos, out float height, out float radius)
         {
-            Transform tf = collider.transform;
+            var tf = collider.transform;
             pos = tf.TransformPoint(collider.center);
 
-            Vector3 transformScale = tf.lossyScale;
+            var transformScale = tf.lossyScale;
             if (transformScale.x < 0f) transformScale.x = -transformScale.x;
             if (transformScale.y < 0f) transformScale.y = -transformScale.y;
             if (transformScale.z < 0f) transformScale.z = -transformScale.z;
@@ -840,15 +839,14 @@ namespace Pancake.Draw
             if (collider == null)
                 return;
 
-            Type type = collider.GetType();
+            var type = collider.GetType();
 
-            Transform tf = collider.transform;
+            var tf = collider.transform;
             Vector3 pos;
 
             if (type == typeof(BoxCollider))
             {
-                Vector3 scale;
-                GetBoxColliderTransform(collider as BoxCollider, out pos, out scale);
+                GetBoxColliderTransform(collider as BoxCollider, out pos, out var scale);
                 WireBox3D(pos, tf.rotation, scale, wireColor);
             }
             else if (type == typeof(SphereCollider))
@@ -858,9 +856,8 @@ namespace Pancake.Draw
             }
             else if (type == typeof(CapsuleCollider))
             {
-                CapsuleCollider capsule = collider as CapsuleCollider;
-                float height, radius;
-                GetCapsuleColliderTransform(capsule, out pos, out height, out radius);
+                var capsule = collider as CapsuleCollider;
+                GetCapsuleColliderTransform(capsule, out pos, out float height, out float radius);
                 WireCapsule3D(pos,
                     tf.rotation,
                     height,
@@ -947,7 +944,7 @@ namespace Pancake.Draw
         private static Vector3 WorldToScreenPoint(Camera cam, Vector3 position)
         {
             float pixelsPerPoint = GetPixelsPerPoint();
-            Vector3
+            var
                 screenPoint = cam
                     .WorldToViewportPoint(position); // Note: we don't use WorldToSceenPoint because it is broken and doesn't take into account pixels per point
             screenPoint.x *= cam.pixelWidth / pixelsPerPoint;
@@ -987,7 +984,7 @@ namespace Pancake.Draw
             if (x < -size.x || y < -size.y)
                 return;
 
-            Camera cam = GetEditorSceneCamera();
+            var cam = GetEditorSceneCamera();
 
             if (cam == null)
                 return;
@@ -1032,7 +1029,7 @@ namespace Pancake.Draw
             if (x < -size.x || y < -size.y)
                 return;
 
-            Camera cam = GetEditorSceneCamera();
+            var cam = GetEditorSceneCamera();
 
             if (cam == null)
                 return;
@@ -1071,12 +1068,12 @@ namespace Pancake.Draw
         {
             InitGUI();
 
-            Camera cam = GetEditorSceneCamera();
+            var cam = GetEditorSceneCamera();
 
             if (cam == null)
                 return;
 
-            Vector3 screenPos = WorldToScreenPoint(cam, position);
+            var screenPos = WorldToScreenPoint(cam, position);
 
             if (screenPos.z < 0f || screenPos.z > maxDist)
                 return;
@@ -1111,12 +1108,12 @@ namespace Pancake.Draw
         {
             InitGUI();
 
-            Camera cam = GetEditorSceneCamera();
+            var cam = GetEditorSceneCamera();
 
             if (cam == null)
                 return;
 
-            Vector3 screenPos = WorldToScreenPoint(cam, position);
+            var screenPos = WorldToScreenPoint(cam, position);
 
             if (screenPos.z < 0f || screenPos.z > maxDist)
                 return;
@@ -1167,11 +1164,11 @@ namespace Pancake.Draw
         {
             InitGUI();
 
-            Camera cam = GetEditorSceneCamera();
+            var cam = GetEditorSceneCamera();
 
             if (cam == null) return;
 
-            Vector3 screenPos = WorldToScreenPoint(cam, position);
+            var screenPos = WorldToScreenPoint(cam, position);
 
             if (screenPos.z < 0f || screenPos.z > maxDist) return;
 
@@ -1216,12 +1213,12 @@ namespace Pancake.Draw
         {
             InitGUI();
 
-            Camera cam = GetEditorSceneCamera();
+            var cam = GetEditorSceneCamera();
 
             if (cam == null)
                 return;
 
-            Vector3 screenPos = WorldToScreenPoint(cam, position);
+            var screenPos = WorldToScreenPoint(cam, position);
 
             if (screenPos.z < 0f || screenPos.z > maxDist)
                 return;
@@ -1266,12 +1263,12 @@ namespace Pancake.Draw
         {
             InitGUI();
 
-            Camera cam = GetEditorSceneCamera();
+            var cam = GetEditorSceneCamera();
 
             if (cam == null)
                 return;
 
-            Vector3 screenPos = WorldToScreenPoint(cam, position);
+            var screenPos = WorldToScreenPoint(cam, position);
 
             if (screenPos.z < 0f || screenPos.z > style.maxDrawDistance)
                 return;
@@ -1435,7 +1432,7 @@ namespace Pancake.Draw
         /// <summary>Normalize a quaternion but do not check if it is 0,0,0,0.</summary>
         public static void NormalizeUnchecked(ref Quaternion q)
         {
-            float k = (float) (1.0 / Math.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w));
+            var k = (float) (1.0 / Math.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w));
             q.x *= k;
             q.y *= k;
             q.z *= k;
