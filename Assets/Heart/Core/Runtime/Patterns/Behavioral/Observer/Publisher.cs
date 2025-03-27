@@ -14,11 +14,11 @@ namespace Pancake.Pattern
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(IObserver[] observers) => _observers.AddRange(observers);
+        public void AddObservers(IObserver[] observers) => _observers.Adds(observers);
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(List<IObserver> observers) => _observers.AddRange(observers);
+        public void AddObservers(List<IObserver> observers) => _observers.Adds(observers);
 
         /// <summary> Remove an observer. </summary>
         /// <param name="observer">Observer</param>
@@ -51,11 +51,11 @@ namespace Pancake.Pattern
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(List<IObserver<T>> observers) => _observers.AddRange(observers);
+        public void AddObservers(List<IObserver<T>> observers) => _observers.Adds(observers);
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(IObserver<T>[] observers) => _observers.AddRange(observers);
+        public void AddObservers(IObserver<T>[] observers) => _observers.Adds(observers);
 
         /// <summary> Remove an observer. </summary>
         /// <param name="observer">Observer</param>
@@ -88,11 +88,11 @@ namespace Pancake.Pattern
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(List<IObserver<T0, T1>> observers) => _observers.AddRange(observers);
+        public void AddObservers(List<IObserver<T0, T1>> observers) => _observers.Adds(observers);
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(IObserver<T0, T1>[] observers) => _observers.AddRange(observers);
+        public void AddObservers(IObserver<T0, T1>[] observers) => _observers.Adds(observers);
 
         /// <summary> Remove an observer. </summary>
         /// <param name="observer">Observer</param>
@@ -125,11 +125,11 @@ namespace Pancake.Pattern
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(List<IObserver<T0, T1, T2>> observers) => _observers.AddRange(observers);
+        public void AddObservers(List<IObserver<T0, T1, T2>> observers) => _observers.Adds(observers);
 
         /// <summary> Add observers. </summary>
         /// <param name="observers">Array of observers</param>
-        public void AddObservers(IObserver<T0, T1, T2>[] observers) => _observers.AddRange(observers);
+        public void AddObservers(IObserver<T0, T1, T2>[] observers) => _observers.Adds(observers);
 
         /// <summary> Remove an observer. </summary>
         /// <param name="observer">Observer</param>

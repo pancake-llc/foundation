@@ -64,7 +64,7 @@ namespace Pancake.UI
         {
             Instances.Add(this);
 
-            _callbackReceivers.AddRange(GetComponents<IPopupContainerCallbackReceiver>());
+            _callbackReceivers.Adds(GetComponents<IPopupContainerCallbackReceiver>());
             if (!string.IsNullOrWhiteSpace(displayName)) InstanceCacheByName.Add(displayName, this);
 
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();

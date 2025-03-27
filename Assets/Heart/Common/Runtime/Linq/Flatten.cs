@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pancake.Common;
 
 namespace Pancake.Linq
 {
@@ -20,7 +21,7 @@ namespace Pancake.Linq
 
             foreach (var array in source)
             {
-                result.AddRange(array);
+                result.Adds(array);
             }
 
             return result.ToArray();
@@ -44,7 +45,7 @@ namespace Pancake.Linq
 
             foreach (var array in source)
             {
-                result.AddRange(array);
+                result.Adds(array);
             }
 
             return result;
@@ -64,7 +65,7 @@ namespace Pancake.Linq
 
             foreach (var array in source)
             {
-                result.AddRange(array);
+                result.Adds(array);
             }
 
             return result;

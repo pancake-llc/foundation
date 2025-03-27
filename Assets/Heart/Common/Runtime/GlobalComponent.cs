@@ -62,7 +62,7 @@ namespace Pancake.Common
         {
             if (_timersToAdd.Count > 0)
             {
-                _timers.AddRange(_timersToAdd);
+                _timers.Adds(_timersToAdd);
                 _timersToAdd.Clear();
             }
 
@@ -94,7 +94,7 @@ namespace Pancake.Common
             _localToMainThreads.Clear();
             lock (_toMainThreads)
             {
-                _localToMainThreads.AddRange(_toMainThreads);
+                _localToMainThreads.Adds(_toMainThreads);
                 _toMainThreads.Clear();
                 _isToMainThreadQueueEmpty = true;
             }

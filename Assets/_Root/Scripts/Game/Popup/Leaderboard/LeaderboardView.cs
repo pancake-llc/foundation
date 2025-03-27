@@ -361,7 +361,7 @@ namespace Pancake.Game.UI
             _allTimeData.offset = (_allTimeData.entries.Count - 1).Max(0);
             var scores = await LeaderboardsService.Instance.GetScoresAsync(allTimeTableId,
                 new GetScoresOptions {Limit = _allTimeData.limit, Offset = _allTimeData.offset});
-            _allTimeData.entries.AddRange(scores.Results);
+            _allTimeData.entries.Adds(scores.Results);
             _allTimeData.pageCount = (_allTimeData.entries.Count / (float) _countInOnePage).CeilToInt();
             return true;
         }
@@ -372,7 +372,7 @@ namespace Pancake.Game.UI
         {
             _weeklyData.offset = (_weeklyData.entries.Count - 1).Max(0);
             var scores = await LeaderboardsService.Instance.GetScoresAsync(weeklyTableId, new GetScoresOptions {Limit = _weeklyData.limit, Offset = _weeklyData.offset});
-            _weeklyData.entries.AddRange(scores.Results);
+            _weeklyData.entries.Adds(scores.Results);
             _weeklyData.pageCount = (_weeklyData.entries.Count / (float) _countInOnePage).CeilToInt();
             return true;
         }

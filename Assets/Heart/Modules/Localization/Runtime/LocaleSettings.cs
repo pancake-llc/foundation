@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Pancake.Common;
 using Pancake.Linq;
 using UnityEngine;
 
@@ -26,8 +27,8 @@ namespace Pancake.Localization
             get
             {
                 var languages = new List<Language>();
-                languages.AddRange(Language.BuiltInLanguages);
-                languages.AddRange(AvailableLanguages.Filter(l => l.Custom));
+                languages.Adds(Language.BuiltInLanguages);
+                languages.Adds(AvailableLanguages.Filter(l => l.Custom));
                 return languages;
             }
         }
