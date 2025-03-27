@@ -6,7 +6,7 @@
     "com.google.external-dependency-manager": "https://github.com/googlesamples/unity-jar-resolver.git?path=upm#v1.2.185",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "2.3.16",
-    "com.unity.ai.navigation": "2.0.5",
+    "com.unity.ai.navigation": "2.0.6",
     "com.unity.burst": "1.8.19",
     "com.unity.collections": "2.5.2",
     "com.unity.ide.rider": "3.0.34",
