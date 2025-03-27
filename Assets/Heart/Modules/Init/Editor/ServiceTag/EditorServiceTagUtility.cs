@@ -17,6 +17,10 @@ using Object = UnityEngine.Object;
 using static Sisus.Init.Internal.ServiceTagUtility;
 using static Sisus.NullExtensions;
 
+#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+using UnityEngine.AddressableAssets;
+#endif
+
 #if DEV_MODE && DEBUG && !INIT_ARGS_DISABLE_PROFILING
 using Unity.Profiling;
 #endif
@@ -367,9 +371,66 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			}
 
-			var classWithAttribute = ServiceInjector.GetClassWithServiceAttribute(serviceDefiningType);
-			var script = Find.Script(classWithAttribute ?? serviceDefiningType);
-			if(!script && classWithAttribute != null)
+			var typeToPing = ServiceInjector.GetClassWithServiceAttribute(serviceDefiningType);
+			if(ServiceAttributeUtility.definingTypes.TryGetValue(serviceDefiningType, out var serviceInfo))
+			{
+				typeToPing = serviceInfo.serviceOrProviderType ?? serviceDefiningType;
+				if(serviceInfo.FindFromScene)
+				{
+					if(Find.Any(serviceDefiningType, out var service) && Find.GameObjectOf(service, out GameObject serviceGameObject))
+					{
+						EditorGUIUtility.PingObject(serviceGameObject);
+						LayoutUtility.ExitGUI();
+						return;
+					}
+
+					if(serviceInfo.SceneBuildIndex >= 0)
+					{
+						var sceneAsset = Find.SceneAssetByBuildIndex(serviceInfo.SceneBuildIndex);
+						if(sceneAsset)
+						{
+							EditorGUIUtility.PingObject(sceneAsset);
+							LayoutUtility.ExitGUI();
+							return;
+						}
+					}
+					else if(serviceInfo.SceneName is { Length: > 0 } sceneName)
+					{
+						var sceneAsset = Find.SceneAssetByName(sceneName);
+						EditorGUIUtility.PingObject(sceneAsset);
+						LayoutUtility.ExitGUI();
+					}
+				}
+				else if(serviceInfo.ResourcePath is { Length: > 0 } resourcePath)
+				{
+					var service = Resources.Load<Object>(resourcePath);
+					if(service)
+					{
+						EditorGUIUtility.PingObject(service);
+						LayoutUtility.ExitGUI();
+						return;
+					}
+				}
+				#if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
+				else if(serviceInfo.AddressableKey is { Length: > 0 } addressableKey)
+				{
+					var service = Addressables.LoadAssetAsync<Object>(addressableKey).WaitForCompletion();
+					if(service)
+					{
+						EditorGUIUtility.PingObject(service);
+						LayoutUtility.ExitGUI();
+						return;
+					}
+				}
+				#endif
+			}
+			else
+			{
+				typeToPing = serviceDefiningType;
+			}
+
+			var script = Find.Script(typeToPing);
+			if(!script && typeToPing != serviceDefiningType)
 			{
 				script = Find.Script(serviceDefiningType);
 			}
@@ -381,7 +442,8 @@ namespace Sisus.Init.EditorOnly.Internal
 			}
 			else
 			{
-				Debug.Log($"Could not locate the script that contains the type '{TypeUtility.ToString(classWithAttribute ?? serviceDefiningType)}'.\nThis can happen when the name of the script does not match the type name.", client);
+				EditorApplication.ExecuteMenuItem("Window/General/Console");
+				Debug.Log($"Could not locate the script that contains the type '{TypeUtility.ToString(typeToPing)}'.\nThis can happen when the name of the script does not match the type name.", client);
 			}
 		}
 
@@ -443,10 +505,11 @@ namespace Sisus.Init.EditorOnly.Internal
 				PingService(unityObject);
 				return true;
 			}
-			
-			if(Find.Script(serviceType, out var script))
+
+			var typeToPing = ServiceAttributeUtility.definingTypes.TryGetValue(serviceType, out var serviceInfo) ? serviceInfo.serviceOrProviderType ?? serviceType : serviceType;
+			if(Find.Script(typeToPing, out var scriptToPing))
 			{
-				PingService(script);
+				PingService(scriptToPing);
 				return true;
 			}
 

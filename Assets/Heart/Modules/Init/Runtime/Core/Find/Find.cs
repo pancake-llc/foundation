@@ -15,6 +15,7 @@ using UnityEngine.AddressableAssets;
 #endif
 
 #if UNITY_EDITOR
+using System.IO;
 using UnityEditor;
 #endif
 
@@ -2733,7 +2734,7 @@ namespace Sisus.Init
 				var guids = AssetDatabase.FindAssets("t:" + type.Name);
 				for(int g = guids.Length - 1; g >= 0; g--)
 				{
-					string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
+					var assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, type);
 					if(instance)
 					{
@@ -2743,6 +2744,53 @@ namespace Sisus.Init
 			}
 
 			return default;
+		}
+		#endif
+		
+		#if UNITY_EDITOR
+		/// <summary>
+		/// Loads a scene asset by the given name.
+		/// <remarks>
+		/// This method is only available in the editor.
+		/// </remarks>
+		/// </summary>
+		/// <param name="sceneName"> Name of the scene asset to load. </param>
+		/// <returns> The loaded scene asset, if found; otherwise, <see langword="null"/>. </returns>
+		[return: MaybeNull]
+		public static SceneAsset SceneAssetByName(string sceneName)
+		{
+			var filenameWithExtension = sceneName + ".unity";
+			var guids = AssetDatabase.FindAssets(filenameWithExtension);
+			var assetPaths = guids.Select(AssetDatabase.GUIDToAssetPath).Where(assetPath => string.Equals(Path.GetFileName(assetPath), filenameWithExtension, StringComparison.OrdinalIgnoreCase)).ToArray();
+			if(assetPaths.Length == 0)
+			{
+				return null;
+			}
+
+			if(assetPaths.Length == 1)
+			{
+				return AssetDatabase.LoadAssetAtPath<SceneAsset>(assetPaths[0]);
+			}
+
+			var sceneInBuildSettings = assetPaths.Where(assetPath => SceneUtility.GetBuildIndexByScenePath(assetPath) != -1).SingleOrDefaultNoException();
+			return sceneInBuildSettings is null ? null : AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneInBuildSettings);
+		}
+		#endif
+
+		#if UNITY_EDITOR
+		/// <summary>
+		/// Loads a scene asset by the given build index.
+		/// <remarks>
+		/// This method is only available in the editor.
+		/// </remarks>
+		/// </summary>
+		/// <param name="buildIndex"> Index of the scene in build settings. </param>
+		/// <returns> The loaded scene asset, if found; otherwise, <see langword="null"/>. </returns>
+		[return: MaybeNull]
+		public static SceneAsset SceneAssetByBuildIndex(int buildIndex)
+		{
+			var assetPath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+			return string.IsNullOrEmpty(assetPath) ? null : AssetDatabase.LoadAssetAtPath<SceneAsset>(assetPath);
 		}
 		#endif
 
@@ -2797,7 +2845,7 @@ namespace Sisus.Init
 			{
 				var guid = guids[n];
 				var path = AssetDatabase.GUIDToAssetPath(guid);
-				var filename = System.IO.Path.GetFileNameWithoutExtension(path);
+				var filename = Path.GetFileNameWithoutExtension(path);
 				if(string.Equals(filename, name, StringComparison.OrdinalIgnoreCase))
 				{
 					var scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
@@ -2831,7 +2879,7 @@ namespace Sisus.Init
 				{
 					var guid = guids[n];
 					var path = AssetDatabase.GUIDToAssetPath(guid);
-					var filename = System.IO.Path.GetFileNameWithoutExtension(path);
+					var filename = Path.GetFileNameWithoutExtension(path);
 					if(filename.Length != name.Length) // skip testing exact matches a second time
 					{
 						var scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
@@ -2929,7 +2977,7 @@ namespace Sisus.Init
 				var guids = AssetDatabase.FindAssets("t:" + type.Name);
 				for(int g = guids.Length - 1; g >= 0; g--)
 				{
-					string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
+					var assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, type);
 					if(instance)
 					{
@@ -2984,7 +3032,7 @@ namespace Sisus.Init
 				var guids = AssetDatabase.FindAssets("t:" + findableType.Name);
 				for(int g = guids.Length - 1; g >= 0; g--)
 				{
-					string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
+					var assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, findableType);
 					if(instance)
 					{
@@ -3029,7 +3077,7 @@ namespace Sisus.Init
 					var guids = AssetDatabase.FindAssets("t:prefab");
 					for(int g = guids.Length - 1; g >= 0; g--)
 					{
-						string assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
+						var assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 						var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
 						if(prefab)
 						{
@@ -3047,7 +3095,7 @@ namespace Sisus.Init
 				var guids = AssetDatabase.FindAssets("t:" + type.Name);
 				for(int g = guids.Length - 1; g >= 0; g--)
 				{
-					string assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
+					var assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, type);
 					if(instance)
 					{
@@ -3089,7 +3137,7 @@ namespace Sisus.Init
 					var guids = AssetDatabase.FindAssets("t:prefab");
 					for(int g = guids.Length - 1; g >= 0; g--)
 					{
-						string assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
+						var assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 						var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
 						if(prefab)
 						{
@@ -3107,7 +3155,7 @@ namespace Sisus.Init
 				var guids = AssetDatabase.FindAssets("t:" + findableType.Name);
 				for(int g = guids.Length - 1; g >= 0; g--)
 				{
-					string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
+					var assetPath = AssetDatabase.GUIDToAssetPath(guids[g]);
 					var instance = AssetDatabase.LoadAssetAtPath(assetPath, findableType);
 					if(instance)
 					{

@@ -157,7 +157,7 @@ namespace Sisus.Init.ValueProviders
 			#if UNITY_EDITOR
 			if(!Application.isPlaying)
 			{
-				if(addressableAsset.editorAsset == null)
+				if(!addressableAsset.editorAsset)
 				{
 					return false;
 				}
@@ -192,7 +192,7 @@ namespace Sisus.Init.ValueProviders
 			string setName = name;
 			string key = addressableAsset.RuntimeKey?.ToString();
 
-			if(addressableAsset.editorAsset is Object asset && asset != null)
+			if(addressableAsset.editorAsset is { } asset && asset != null)
 			{
 				setName = asset.name;
 			}

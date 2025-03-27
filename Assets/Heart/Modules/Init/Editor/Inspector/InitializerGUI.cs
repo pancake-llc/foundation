@@ -47,14 +47,18 @@ namespace Sisus.Init.EditorOnly.Internal
 		private const string HideInitSectionUserDataKey = "hideInitSection";
 		private const string NullArgumentGuardUserDataKey = "nullArgumentGuard";
 		private const string DefaultHeaderText = "Init";
-		private const string ClientInitializedDuringOnAfterDeserializeText = "Component will be initialized when the game object is deserialized.";
+		private const string ClientInitializedDuringOnAfterDeserializeText = "Client will be initialized during deserialization.";
+		private static readonly GUIContent ClientInitializedDuringOnAfterDeserializeLabel = new(ClientInitializedDuringOnAfterDeserializeText);
 		private const string SpaceForButtons = "\n\n\n";
 		private const string ClientInitializedDuringOnAfterDeserializeTextWithSpaceForButton = SpaceForButtons + ClientInitializedDuringOnAfterDeserializeText;
-		private const string ClientInitializedWhenBecomesActiveText = "Component will be initialized when the game object becomes active.";
+		private const string ClientInitializedWhenBecomesActiveText = "Client will be initialized when it becomes active.";
+		private static readonly GUIContent ClientInitializedWhenBecomesActiveLabel = new(ClientInitializedWhenBecomesActiveText, "Client will only receive its Init arguments once the game object becomes active.");
 		private const string SomeDependenciesMissingText = "Some services that this object depends on are missing.";
+		private const string SomeDependenciesMissingTooltipNoInitializer = "Potential fixes:\n- Register Missing Services\n- Change Service Availability\n- Attach an Initializer";
+		private const string SomeDependenciesMissingTooltipHasInitializer = "Potential fixes:\n- Register Missing Services\n- Change Service Availability\n- Assign Values Using Inspector\n- Select 'Wait For Service'";
 		private static readonly GUIContent SomeDependenciesMissingLabel = new(SomeDependenciesMissingText);
 		private const string HelpLinkText = "Help";
-		private static readonly GUIContent HelpLinkLabel = new(HelpLinkText);
+		private static readonly GUIContent HelpLinkLabel = new(HelpLinkText, "Open Documentation");
 		private const string HelpLinkURL = "https://docs.sisus.co/init-args/problems-and-solutions/client-not-receiving-services/";
 		
 		private const string ClientInitializedWhenBecomesActiveTextWithSpaceForButton = SpaceForButtons + ClientInitializedWhenBecomesActiveText;
@@ -66,7 +70,8 @@ namespace Sisus.Init.EditorOnly.Internal
 		private static readonly GUIContent useOnAfterDeserializeButtonLabel = new(" Use OnAfterDeserialize", "Initialize target earlier during the OnAfterDeserialize event before the game object becomes active?");
 		private static readonly GUIContent notFoundLabel = new GUIContent("Not Found", "No global service of type Service not found.\n\nIf this is a scene based service that only becomes available at runtime, you can attach an Initializer to this component and then select 'Wait For Service' from the Init argument's dropdown menu.");
 		private const string notFoundTooltip = "No service of type {0} was found.\n\nYou can use [Service(typeof({0}))] to define a global service.\n\nIf {0} only becomes available at runtime, you can attach an Initializer to this component and select 'Wait For Service' from the Init argument's dropdown menu.";
-
+		private static readonly Vector2 IconSize = new(16f, 16f);
+		
 		public static InitializerGUI NowDrawing { get; private set; }
 
 		public event Action<InitializerGUI> Changed;
@@ -577,7 +582,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 		private static bool TryGetCustomHeaderLabel(bool hasInitializers, Object firstInitializer, out string customHeaderText)
 		{
-			if(hasInitializers && firstInitializer.GetType().GetNestedType(EditorOnly.InitializerEditor.InitArgumentMetadataClassName, BindingFlags.Public | BindingFlags.NonPublic) is Type metadata && metadata.GetCustomAttributes<DisplayNameAttribute>().FirstOrDefault() is DisplayNameAttribute displayName)
+			if(hasInitializers && firstInitializer.GetType().GetNestedType(InitializerEditor.InitArgumentMetadataClassName, BindingFlags.Public | BindingFlags.NonPublic) is Type metadata && metadata.GetCustomAttributes<DisplayNameAttribute>().FirstOrDefault() is DisplayNameAttribute displayName)
 			{
 				customHeaderText = displayName.DisplayName;
 				return true;
@@ -717,6 +722,7 @@ namespace Sisus.Init.EditorOnly.Internal
 				EditorGUI.indentLevel = 0;
 
 				var firstInitializerEditorOnly = firstInitializer as IInitializerEditorOnly;
+				var hasInitializerThatProvidesCustomInitArguments = firstInitializerEditorOnly is { ProvidesCustomInitArguments: true };
 
 				HelpBoxMessageType helpBoxMessage;
 				if(mixedInitializers)
@@ -876,9 +882,8 @@ namespace Sisus.Init.EditorOnly.Internal
 				var nullGuardIconRect = addInitializerOrContextMenuRect;
 				nullGuardIconRect.x -= addInitializerOrContextMenuRect.width;
 				nullGuardIconRect.x += 4f;
-
 				NullGuardResult nullGuardResult;
-				if(!allParametersAreServices && firstInitializerEditorOnly != null)
+				if(!allParametersAreServices && hasInitializerThatProvidesCustomInitArguments)
 				{
 					nullGuardResult = NullGuardResult.Passed;
 					try
@@ -937,6 +942,10 @@ namespace Sisus.Init.EditorOnly.Internal
 					ServicesShown = servicesShown;
 					EditorPrefs.SetBool(ServiceVisibilityEditorPrefsKey, servicesShown);
 				}
+				
+				var iconSizeWas = EditorGUIUtility.GetIconSize();
+				// Helps help box warning icons and toolbar icons to be sharp
+				EditorGUIUtility.SetIconSize(IconSize);
 
 				if(isUnfolded)
 				{
@@ -944,23 +953,23 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						if(drawAddInitializerButton && helpBoxMessage.HasFlag(HelpBoxMessageType.TargetInitializedWhenBecomesActive))
 						{
-							DrawHelpBoxes(helpBoxMessage & ~HelpBoxMessageType.TargetInitializedWhenBecomesActive);
+							DrawHelpBoxes(helpBoxMessage & ~HelpBoxMessageType.TargetInitializedWhenBecomesActive, hasInitializerThatProvidesCustomInitArguments);
 							DrawInactiveInitializerHelpBox(HelpBoxMessageType.TargetInitializedWhenBecomesActive);
 						}
 						else if(helpBoxMessage.HasFlag(HelpBoxMessageType.TargetInitializedWhenDeserialized))
 						{
-							DrawHelpBoxes(helpBoxMessage & ~HelpBoxMessageType.TargetInitializedWhenDeserialized);
+							DrawHelpBoxes(helpBoxMessage & ~HelpBoxMessageType.TargetInitializedWhenDeserialized, hasInitializerThatProvidesCustomInitArguments);
 							DrawInactiveInitializerHelpBox(HelpBoxMessageType.TargetInitializedWhenDeserialized);
 						}
 						else
 						{
-							DrawHelpBoxes(helpBoxMessage);
+							DrawHelpBoxes(helpBoxMessage, hasInitializerThatProvidesCustomInitArguments);
 						}
 					}
 
 					GUILayout.Space(3f);
 
-					if(hasInitializers)
+					if(hasInitializerThatProvidesCustomInitArguments)
 					{
 						if(!allParametersAreServices || servicesShown)
 						{
@@ -994,12 +1003,18 @@ namespace Sisus.Init.EditorOnly.Internal
 										#endif
 										EditorServiceTagUtility.OpenContextMenuForServiceOfClient(Target, parameterType, rect);
 									}
-									else
+									else if(!EditorServiceTagUtility.PingServiceFor(Target, parameterType))
 									{
-										#if DEV_MODE
-										Debug.Log($"PingDefiningObject({TypeUtility.ToString(parameterType)})");
-										#endif
-										EditorServiceTagUtility.PingServiceFor(Target, parameterType);
+										EditorApplication.ExecuteMenuItem("Window/General/Console");
+										var type = ServiceAttributeUtility.definingTypes.TryGetValue(parameterType, out var serviceInfo) ? serviceInfo.serviceOrProviderType ?? parameterType : parameterType;
+										if(parameterType == type)
+										{
+											Debug.Log($"{TypeUtility.ToString(parameterType)} is registered as a service using the [Service] attribute. Could not locate its script asset.\nThis can happen when the name of the script does not match the type name.");
+										}
+										else
+										{
+											Debug.Log($"{TypeUtility.ToString(parameterType)} is registered as a service using the [Service] attribute in the class {TypeUtility.ToString(type)}. Could not locate its script asset.\nThis can happen when the name of the script does not match the type name.");
+										}
 									}
 
 									LayoutUtility.ExitGUI();
@@ -1039,9 +1054,6 @@ namespace Sisus.Init.EditorOnly.Internal
 				{
 					GUI.Label(addInitializerOrContextMenuRect, contextMenuIcon);
 				}
-
-				var iconSizeWas = EditorGUIUtility.GetIconSize();
-				EditorGUIUtility.SetIconSize(new Vector2(16f, 16f));
 
 				if(drawNullGuard)
 				{
@@ -1342,80 +1354,103 @@ namespace Sisus.Init.EditorOnly.Internal
 		private void DrawInactiveInitializerHelpBox(HelpBoxMessageType message)
 		{
 			bool usingOnAfterDeserialize = message == HelpBoxMessageType.TargetInitializedWhenDeserialized;
-			string helpBoxText = usingOnAfterDeserialize ? ClientInitializedDuringOnAfterDeserializeTextWithSpaceForButton : ClientInitializedWhenBecomesActiveTextWithSpaceForButton;
-			DrawHelpBox(helpBoxText, MessageType.Info);
+			var helpBoxText = usingOnAfterDeserialize ? ClientInitializedDuringOnAfterDeserializeTextWithSpaceForButton : ClientInitializedWhenBecomesActiveTextWithSpaceForButton;
+			DrawHelpBox(MessageType.Info, new(helpBoxText), height: 75f);
 
 			var helpBoxRect = GUILayoutUtility.GetLastRect();
-			var buttonRect = helpBoxRect;
-			const float textLeftOffset = 35f;
+			var toggleRect = helpBoxRect;
+			const float TogglesLeftOffset = 30f;
 			const float textRightRightOffset = 10f;
-			buttonRect.x += textLeftOffset;
+			toggleRect.x += TogglesLeftOffset;
 			float buttonMaxWidth = helpBoxRect.width - 45f;
-			buttonRect.width -= textLeftOffset + textRightRightOffset;
-			buttonRect.y += 3f;
-			buttonRect.height = EditorGUIUtility.singleLineHeight;
+			toggleRect.width -= TogglesLeftOffset + textRightRightOffset;
+			toggleRect.y += 8f;
+			toggleRect.height = EditorGUIUtility.singleLineHeight;
 
 			var buttonStyle = EditorStyles.radioButton;
 
 			buttonStyle.CalcMinMaxWidth(useOnAfterDeserializeButtonLabel, out float buttonOptimalWidth, out _);
-			buttonRect.width = Mathf.Min(buttonOptimalWidth, buttonMaxWidth);
-			if(GUI.Toggle(buttonRect, usingOnAfterDeserialize, useOnAfterDeserializeButtonLabel, buttonStyle) && !usingOnAfterDeserialize)
+			toggleRect.width = Mathf.Min(buttonOptimalWidth, buttonMaxWidth);
+			if(GUI.Toggle(toggleRect, usingOnAfterDeserialize, useOnAfterDeserializeButtonLabel, buttonStyle) && !usingOnAfterDeserialize)
 			{
 				InitializerEditorUtility.AddInitializer(targets, typeof(InactiveInitializer));
 			}
 
-			buttonRect.y += buttonRect.height;
+			toggleRect.y += toggleRect.height + 2f;
 			buttonStyle.CalcMinMaxWidth(useAwakeButtonLabel, out buttonOptimalWidth, out _);
-			buttonRect.width = Mathf.Min(buttonOptimalWidth, buttonMaxWidth);
-			if(GUI.Toggle(buttonRect, !usingOnAfterDeserialize, useAwakeButtonLabel, buttonStyle) && usingOnAfterDeserialize)
+			toggleRect.width = Mathf.Min(buttonOptimalWidth, buttonMaxWidth);
+			if(GUI.Toggle(toggleRect, !usingOnAfterDeserialize, useAwakeButtonLabel, buttonStyle) && usingOnAfterDeserialize)
 			{
 				LayoutUtility.OnLayoutEvent(RemoveInitializerFromAllTargets);
 			}
 		}
 
-		private static void DrawHelpBoxes(HelpBoxMessageType message)
+		private static void DrawHelpBoxes(HelpBoxMessageType message, bool hasInitializerThatProvidesCustomInitArguments)
 		{
 			if(message.HasFlag(HelpBoxMessageType.TargetHasMissingDependencies))
 			{
-				GUILayout.Space(3f);
-				var helpBoxRect = GUILayoutUtility.GetRect(Screen.width - 55f, 30f, EditorStyles.helpBox);
-				EditorGUI.HelpBox(helpBoxRect, "", MessageType.Warning);
-				var clipRect = helpBoxRect;
-				clipRect.width -= 2f;
-				GUI.BeginClip(clipRect);
-				helpBoxRect.x = 0f;
-				helpBoxRect.y = 0f;
-				const float WarningIconWidth = 28f;
-				var textRect = helpBoxRect; 
-				textRect.x += WarningIconWidth;
-				textRect.width -= WarningIconWidth;
-				GUI.Label(textRect, SomeDependenciesMissingLabel);
-				var helpLinkRect = textRect; 
-				helpLinkRect.x += EditorStyles.label.CalcSize(SomeDependenciesMissingLabel).x;
-				helpLinkRect.y += 5f;
-				helpLinkRect.height = EditorGUIUtility.singleLineHeight;
-				helpLinkRect.width = EditorStyles.label.CalcSize(HelpLinkLabel).x;
-				if(EditorGUI.LinkButton(helpLinkRect, HelpLinkLabel))
-				{
-					Application.OpenURL(HelpLinkURL);
-				}
-				GUI.EndClip();
+				var tooltip = hasInitializerThatProvidesCustomInitArguments ? SomeDependenciesMissingTooltipHasInitializer : SomeDependenciesMissingTooltipNoInitializer;
+				SomeDependenciesMissingLabel.tooltip = tooltip;
+				DrawHelpBox(MessageType.Warning, SomeDependenciesMissingLabel, HelpLinkLabel, HelpLinkURL);
 			}
 			
 			if(message.HasFlag(HelpBoxMessageType.TargetInitializedWhenBecomesActive))
 			{
-				DrawHelpBox(ClientInitializedWhenBecomesActiveText, MessageType.Info);
+				DrawHelpBox(MessageType.Info, ClientInitializedWhenBecomesActiveLabel);
 			}
 			else if(message.HasFlag(HelpBoxMessageType.TargetInitializedWhenDeserialized))
 			{
-				DrawHelpBox(ClientInitializedDuringOnAfterDeserializeText, MessageType.Info);
+				DrawHelpBox(MessageType.Info, ClientInitializedDuringOnAfterDeserializeLabel);
 			}
 		}
 
-		private static void DrawHelpBox(string helpBoxText, MessageType messageType)
+		private static void DrawHelpBox(MessageType type, GUIContent content, GUIContent linkLabel = null, string linkUrl = null, float height = 30f)
 		{
 			GUILayout.Space(3f);
-			EditorGUILayout.HelpBox(helpBoxText, messageType, true);
+			var helpBoxRect = GUILayoutUtility.GetRect(Screen.width - 55f, height, EditorStyles.helpBox);
+			GUI.Label(helpBoxRect, "", EditorStyles.helpBox);
+			var clipRect = helpBoxRect;
+			clipRect.width -= 2f;
+			GUI.BeginClip(clipRect);
+			helpBoxRect.x = 0f;
+			helpBoxRect.y = 0f;
+
+			var iconRect = helpBoxRect;
+			iconRect.x += 5f;
+			iconRect.width = IconWidth;
+			GUIContent icon = type switch
+			{
+				MessageType.Error => Styles.ErrorIcon,
+				MessageType.Warning => Styles.WarningIcon,
+				_ => Styles.InfoIcon,
+			};
+			icon.tooltip = content.tooltip;
+			GUI.Label(iconRect, icon);
+			icon.tooltip = "";
+
+			var textRect = helpBoxRect; 
+			textRect.x += 25f;
+			textRect.width -= 25f;
+
+			var textWidth = EditorStyles.label.CalcSize(content).x;
+			textRect.width = textWidth + 2f;
+			GUI.Label(textRect, content);
+			content.tooltip = "";
+
+			if(linkLabel is not null)
+			{
+				var helpLinkRect = textRect;
+				helpLinkRect.x += textWidth;
+				helpLinkRect.y += 5f;
+				helpLinkRect.height = EditorGUIUtility.singleLineHeight;
+				helpLinkRect.width = EditorStyles.label.CalcSize(linkLabel).x;
+				if(EditorGUI.LinkButton(helpLinkRect, linkLabel))
+				{
+					Application.OpenURL(linkUrl);
+				}
+			}
+
+			GUI.EndClip();
 		}
 
 		bool IsGameObjectInactive()
