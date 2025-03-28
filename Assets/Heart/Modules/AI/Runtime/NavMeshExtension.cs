@@ -180,6 +180,7 @@ namespace Pancake.AI
         public static void Wander(
             this NavMeshAgent agent,
             Func<float> radius,
+            bool isStayInDefaultArea = false,
             bool isContinues = true,
             Func<float> waitTime = null,
             Func<bool> loopWhile = null,
@@ -190,15 +191,18 @@ namespace Pancake.AI
         {
             if (agent == null || !agent.isActiveAndEnabled) return;
 
+            float r = radius();
+            var origin = agent.transform.position;
             if (isContinues) WanderCoroutine();
-            else agent.SetRandomDestination(radius());
-
+            else agent.SetRandomDestination(r);
+            
+            return;
 
             async void WanderCoroutine()
             {
                 while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
                 {
-                    if (agent.SetRandomDestination(radius()))
+                    if (agent.SetRandomDestination(r, isStayInDefaultArea ? origin : null))
                     {
                         onStartMoving?.Invoke();
                         while (!agent.HasReachedDestination() && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
