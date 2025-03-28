@@ -1,6 +1,5 @@
 #if PANCAKE_AI
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -202,12 +201,16 @@ namespace Pancake.AI
                     if (agent.SetRandomDestination(radius()))
                     {
                         onStartMoving?.Invoke();
-                        await C.WaitUntil(agent.HasReachedDestination, cancellationToken);
+                        while (!agent.HasReachedDestination() && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
+                        {
+                            onUpdate?.Invoke();
+                            await Awaitable.EndOfFrameAsync(cancellationToken);
+                        }
+
                         onStopMoving?.Invoke();
                     }
 
                     await Awaitable.WaitForSecondsAsync(waitTime?.Invoke() ?? 1, cancellationToken);
-                    onUpdate?.Invoke();
                 }
             }
         }
@@ -229,30 +232,32 @@ namespace Pancake.AI
 
             async void ChaseTargetCoroutine()
             {
-                var selfPosition = agent.transform.position;
-
-                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
+                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
-                    float distance = distanceToPlayer?.Invoke() ?? agent.transform.Distance(target());
+                    var currentTarget = target();
+                    if (currentTarget == null) return;
 
-                    if (minDistanceKeep == null || maxDistanceKeep == null) agent.SetDestination(target().position);
+                    var selfPosition = agent.transform.position;
+                    float distance = distanceToPlayer?.Invoke() ?? Vector3.Distance(selfPosition, currentTarget.position);
+
+                    if (minDistanceKeep == null || maxDistanceKeep == null) agent.SetDestination(currentTarget.position);
                     else
                     {
                         if (distance < minDistanceKeep())
                         {
-                            var directionToMoveWhenTooCloseToPlayer = (target().position - selfPosition).normalized;
-                            var positionToMove = selfPosition + (directionToMoveWhenTooCloseToPlayer * -1 * (maxDistanceKeep() - distance));
+                            var moveDirection = (currentTarget.position - selfPosition).normalized;
+                            var positionToMove = selfPosition + moveDirection * -1 * (maxDistanceKeep() - distance);
                             var path = new NavMeshPath();
-                            if (agent.CalculatePath(positionToMove, path))
-                                agent.SetDestination(positionToMove);
+                            if (agent.CalculatePath(positionToMove, path) && path.status == NavMeshPathStatus.PathComplete) agent.SetDestination(positionToMove);
                         }
-                        else agent.SetDestination(target().position);
+                        else agent.SetDestination(currentTarget.position);
                     }
 
-                    if (delayBetweenSettingDestination == null) await Awaitable.EndOfFrameAsync(cancellationToken);
-                    else await Awaitable.WaitForSecondsAsync(delayBetweenSettingDestination.Invoke(), cancellationToken);
-
                     onUpdate?.Invoke();
+
+                    float delay = delayBetweenSettingDestination?.Invoke() ?? 0;
+                    if (delay > 0) await Awaitable.WaitForSecondsAsync(delay, cancellationToken);
+                    else await Awaitable.NextFrameAsync(cancellationToken);
                 }
             }
         }
@@ -272,19 +277,20 @@ namespace Pancake.AI
 
             async void FleeFromTargetCoroutine()
             {
-                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
+                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
+                    var currentTarget = target();
+                    if (currentTarget == null) return;
+
                     float fleeDistanceValue = fleeDistance?.Invoke() ?? 10;
-                    var fleeDirection = (agent.transform.position - target().position).normalized;
+                    var fleeDirection = (agent.transform.position - currentTarget.position).normalized;
                     var fleePosition = agent.transform.position + fleeDirection * fleeDistanceValue;
 
-                    if (NavMesh.SamplePosition(fleePosition, out var hit, fleeDistanceValue, NavMesh.AllAreas))
-                    {
-                        agent.SetDestination(hit.position);
-                    }
+                    if (NavMesh.SamplePosition(fleePosition, out var hit, fleeDistanceValue, NavMesh.AllAreas)) agent.SetDestination(hit.position);
+
+                    onUpdate?.Invoke();
 
                     await Awaitable.EndOfFrameAsync(cancellationToken);
-                    onUpdate?.Invoke();
                 }
             }
         }
@@ -306,18 +312,24 @@ namespace Pancake.AI
 
             async void PatrolWaypointsCoroutine()
             {
+                var waypointsList = waypoints?.Invoke();
+                if (waypointsList == null || waypointsList.Count == 0) return;
                 var currentWaypointIndex = 0;
 
-                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
+                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
-                    var currentWaypoint = waypoints()[currentWaypointIndex];
+                    var currentWaypoint = waypointsList[currentWaypointIndex];
                     agent.SetDestination(currentWaypoint.position);
                     onStartMoving?.Invoke();
-                    await C.WaitUntil(() => agent.HasReachedDestination(currentWaypoint.position, tolerance), cancellationToken);
+                    while (!agent.HasReachedDestination(currentWaypoint.position, tolerance) && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
+                    {
+                        onUpdate?.Invoke();
+                        await Awaitable.EndOfFrameAsync(cancellationToken);
+                    }
+
                     onStopMoving?.Invoke();
                     await Awaitable.WaitForSecondsAsync(waitTime?.Invoke() ?? 1, cancellationToken);
                     currentWaypointIndex = followWaypointOrder?.Invoke() ?? true ? (currentWaypointIndex + 1) % waypoints().Count : Random.Range(0, waypoints().Count);
-                    onUpdate?.Invoke();
                 }
             }
         }
