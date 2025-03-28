@@ -8,7 +8,7 @@ namespace Pancake
 {
     [RequireComponent(typeof(Collider))]
     [EditorIcon("icon_gizmo")]
-    public sealed class ColliderGizmo : GizmoObject
+    public sealed class GizmoCollider : GizmoObject
     {
         [InfoBox("This script will only exist on the editor. Don't worry it will be automatically removed during the build process")]
         public Color color = Color.yellow;

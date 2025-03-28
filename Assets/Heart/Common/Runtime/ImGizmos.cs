@@ -862,6 +862,7 @@ namespace Pancake.Draw
                     tf.rotation,
                     height,
                     radius,
+                    // ReSharper disable once PossibleNullReferenceException
                     (GizmoDrawAxis) capsule.direction,
                     wireColor);
             }
@@ -956,7 +957,7 @@ namespace Pancake.Draw
         // Fix for Unity issue where GUI elements are offset in Y-axis proportional to font size
         private static void DoLabelPositionCorrection(int fontSize, ref float screenY)
         {
-            screenY -= (float) fontSize * 0.09f; // This line can be commented out to avoid correction
+            screenY -= fontSize * 0.09f; // This line can be commented out to avoid correction
         }
 
         /// <summary>
