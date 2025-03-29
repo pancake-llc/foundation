@@ -126,39 +126,6 @@ namespace Pancake.AI
             }
         }
 
-        public static NavMeshAgent PatrolDestination(this NavMeshAgent agent, List<Vector3> patrolPath, float tolerance = 1f)
-        {
-            if (agent == null || patrolPath == null || patrolPath.Count == 0) return null;
-
-            var currentWaypoint = patrolPath[0];
-            if (Vector3.Distance(agent.transform.position, currentWaypoint) <= tolerance)
-            {
-                int nextIndex = (patrolPath.IndexOf(currentWaypoint) + 1) % patrolPath.Count;
-                currentWaypoint = patrolPath[nextIndex];
-            }
-
-            agent.SetDestination(currentWaypoint);
-            return agent;
-        }
-
-        /// <summary>
-        /// Call it from a loop
-        /// </summary>
-        public static NavMeshAgent PatrolDestination(this NavMeshAgent agent, List<Transform> patrolPath, float tolerance = 1f)
-        {
-            if (agent == null || patrolPath == null || patrolPath.Count == 0) return null;
-
-            var currentWaypoint = patrolPath[0];
-            if (Vector3.Distance(agent.transform.position, currentWaypoint.position) <= tolerance)
-            {
-                int nextIndex = (patrolPath.IndexOf(currentWaypoint) + 1) % patrolPath.Count;
-                currentWaypoint = patrolPath[nextIndex];
-            }
-
-            agent.SetDestination(currentWaypoint.position);
-            return agent;
-        }
-
         public static NavMeshAgent AddKnockBack(this NavMeshAgent agent, Transform target, float force, bool useSetDestination = false)
         {
             if (agent == null || target == null) return null;
