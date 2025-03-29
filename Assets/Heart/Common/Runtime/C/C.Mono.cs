@@ -1494,9 +1494,9 @@ namespace Pancake.Common
 
         public static float Distance(this Transform transform, Vector3 target) => Vector3.Distance(transform.position, target);
 
-        public static float DistanceWithoutHeight(this Transform transform, Transform target) => Vector3.Distance(transform.position.WithY(0), target.position.WithY(0));
+        public static float DistanceWithoutY(this Transform transform, Transform target) => Vector3.Distance(transform.position.WithY(0), target.position.WithY(0));
 
-        public static float DistanceWithoutHeight(this Transform transform, Vector3 target) => Vector3.Distance(transform.position.WithY(0), target.WithY(0));
+        public static float DistanceWithoutY(this Transform transform, Vector3 target) => Vector3.Distance(transform.position.WithY(0), target.WithY(0));
 
         #endregion
 

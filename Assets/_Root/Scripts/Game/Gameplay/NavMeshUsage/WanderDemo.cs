@@ -12,27 +12,31 @@ namespace Pancake.Game.NavMeshUsage
     {
         public NavMeshAgent agent;
         public bool isStayInDefaultArea;
+        public float increaseAngularSpeed = 1500f;
         private CancellationTokenSource _cts;
-        
+
         private Vector3 _defaultPosition;
 
         private void Start()
         {
             _cts = new CancellationTokenSource();
-            agent.Wander(radius: () => 5f, // Wandering radius
-                isContinues: true, // Infinite loop
-                isStayInDefaultArea: isStayInDefaultArea, // Move only within the initial radius area
-                waitTime: () => 2f, // Stop 2 seconds after arriving
-                loopWhile: () => gameObject.activeSelf, // Continue moving while gameObject exists
-                onStartMoving: () => Debug.Log("Start moving"),
-                onStopMoving: () => Debug.Log("Stop moving"),
-                onUpdate: () => Debug.Log("Updating"),
-                cancellationToken: _cts.Token);
+            agent.IncreaseAngularSpeed(increaseAngularSpeed)
+                .Wander(radius: () => 5f, // Wandering radius
+                    isContinues: true, // Infinite loop
+                    isStayInDefaultArea: isStayInDefaultArea, // Move only within the initial radius area
+                    waitTime: () => 2f, // Stop 2 seconds after arriving
+                    loopWhile: () => gameObject.activeSelf, // Continue moving while gameObject exists
+                    onStartMoving: () => Debug.Log("Start moving"),
+                    onStopMoving: () => Debug.Log("Stop moving"),
+                    onUpdate: () => Debug.Log("Updating"),
+                    cancellationToken: _cts.Token);
 
             _defaultPosition = transform.position;
         }
 
-        private void OnDestroy() { _cts.Cancel(); }
+        private void OnDestroy() { CancelWander(); }
+
+        public void CancelWander() { _cts.Cancel(); }
 
         private void OnDrawGizmos()
         {

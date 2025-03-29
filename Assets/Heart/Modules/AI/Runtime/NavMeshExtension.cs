@@ -73,11 +73,19 @@ namespace Pancake.AI
             return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance;
         }
 
-        public static bool HasReachedDestination(this NavMeshAgent agent, Transform destination, float tolerence = 0.1f) =>
-            agent.transform.Distance(destination) < tolerence;
+        public static bool HasReachedDestination(this NavMeshAgent agent, Transform destination, float tolerence = 0.1f, bool ignoreYAxis = false)
+        {
+            if (ignoreYAxis) return agent.transform.DistanceWithoutY(destination) < tolerence;
 
-        public static bool HasReachedDestination(this NavMeshAgent agent, Vector3 destination, float tolerence = 0.1f) =>
-            agent.transform.Distance(destination) < tolerence;
+            return agent.transform.Distance(destination) < tolerence;
+        }
+
+        public static bool HasReachedDestination(this NavMeshAgent agent, Vector3 destination, float tolerence = 0.1f, bool ignoreYAxis = false)
+        {
+            if (ignoreYAxis) return agent.transform.DistanceWithoutY(destination) < tolerence;
+
+            return agent.transform.Distance(destination) < tolerence;
+        }
 
         public static bool SetRandomDestination(this NavMeshAgent agent, float radius, Vector3? origin = null, int areaMask = NavMesh.AllAreas, int numberQuery = 3)
         {
@@ -97,25 +105,30 @@ namespace Pancake.AI
             return false;
         }
 
-        public static async Task SmoothSpeedChange(this NavMeshAgent agent, float targetSpeed, float duration)
+        public static NavMeshAgent SmoothSpeedChange(this NavMeshAgent agent, float targetSpeed, float duration, CancellationToken cancellationToken = default)
         {
-            if (agent == null) return;
+            if (agent == null) return null;
             float startSpeed = agent.speed;
             var elapsedTime = 0f;
-            while (elapsedTime < duration)
-            {
-                if (agent == null) return;
-                agent.speed = Mathf.Lerp(startSpeed, targetSpeed, elapsedTime / duration);
-                elapsedTime += Time.deltaTime;
-                await Awaitable.EndOfFrameAsync();
-            }
+            Routine(cancellationToken);
+            return agent;
 
-            agent.speed = targetSpeed;
+            async void Routine(CancellationToken cancellationToken)
+            {
+                while (elapsedTime < duration)
+                {
+                    agent.speed = Mathf.Lerp(startSpeed, targetSpeed, elapsedTime / duration);
+                    elapsedTime += Time.deltaTime;
+                    await Awaitable.EndOfFrameAsync(cancellationToken);
+                }
+
+                agent.speed = targetSpeed;
+            }
         }
 
-        public static void PatrolDestination(this NavMeshAgent agent, List<Vector3> patrolPath, float tolerance = 1f)
+        public static NavMeshAgent PatrolDestination(this NavMeshAgent agent, List<Vector3> patrolPath, float tolerance = 1f)
         {
-            if (agent == null || patrolPath == null || patrolPath.Count == 0) return;
+            if (agent == null || patrolPath == null || patrolPath.Count == 0) return null;
 
             var currentWaypoint = patrolPath[0];
             if (Vector3.Distance(agent.transform.position, currentWaypoint) <= tolerance)
@@ -125,14 +138,15 @@ namespace Pancake.AI
             }
 
             agent.SetDestination(currentWaypoint);
+            return agent;
         }
 
         /// <summary>
         /// Call it from a loop
         /// </summary>
-        public static void PatrolDestination(this NavMeshAgent agent, List<Transform> patrolPath, float tolerance = 1f)
+        public static NavMeshAgent PatrolDestination(this NavMeshAgent agent, List<Transform> patrolPath, float tolerance = 1f)
         {
-            if (agent == null || patrolPath == null || patrolPath.Count == 0) return;
+            if (agent == null || patrolPath == null || patrolPath.Count == 0) return null;
 
             var currentWaypoint = patrolPath[0];
             if (Vector3.Distance(agent.transform.position, currentWaypoint.position) <= tolerance)
@@ -142,11 +156,12 @@ namespace Pancake.AI
             }
 
             agent.SetDestination(currentWaypoint.position);
+            return agent;
         }
 
         public static NavMeshAgent AddKnockBack(this NavMeshAgent agent, Transform target, float force, bool useSetDestination = false)
         {
-            if (agent == null || target == null) return agent;
+            if (agent == null || target == null) return null;
 
             agent.ResetPath();
             var selfPosition = agent.transform.position;
@@ -160,24 +175,31 @@ namespace Pancake.AI
             return agent;
         }
 
-        public static async void SetTemporarySpeed(this NavMeshAgent agent, float temporarySpeed, float duration, CancellationToken cancellationToken = default)
+        public static NavMeshAgent SetTemporarySpeed(this NavMeshAgent agent, float temporarySpeed, float duration, CancellationToken cancellationToken = default)
         {
-            if (agent == null || !agent.isActiveAndEnabled) return;
-            await TemporarySpeedCoroutine(agent, temporarySpeed, duration);
-            return;
+            if (agent == null || !agent.isActiveAndEnabled) return null;
+            TemporarySpeed(agent, temporarySpeed, duration, cancellationToken);
+            return agent;
 
-            async Task TemporarySpeedCoroutine(NavMeshAgent agent, float temporarySpeed, float duration)
+            async void TemporarySpeed(NavMeshAgent agent, float temporarySpeed, float duration, CancellationToken cancellationToken)
             {
                 float originalSpeed = agent.speed;
                 agent.speed = temporarySpeed;
 
-                await Awaitable.WaitForSecondsAsync(duration, cancellationToken);
+                try
+                {
+                    await Awaitable.WaitForSecondsAsync(duration, cancellationToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
 
                 if (agent != null && agent.isActiveAndEnabled) agent.speed = originalSpeed;
             }
         }
 
-        public static void Wander(
+        public static NavMeshAgent Wander(
             this NavMeshAgent agent,
             Func<float> radius,
             bool isStayInDefaultArea = false,
@@ -189,16 +211,16 @@ namespace Pancake.AI
             Action onUpdate = null,
             CancellationToken cancellationToken = default)
         {
-            if (agent == null || !agent.isActiveAndEnabled) return;
+            if (agent == null || !agent.isActiveAndEnabled) return null;
 
             float r = radius();
             var origin = agent.transform.position;
-            if (isContinues) WanderCoroutine();
+            if (isContinues) WanderAround(cancellationToken);
             else agent.SetRandomDestination(r);
-            
-            return;
 
-            async void WanderCoroutine()
+            return agent;
+
+            async void WanderAround(CancellationToken cancellationToken)
             {
                 while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
                 {
@@ -208,7 +230,14 @@ namespace Pancake.AI
                         while (!agent.HasReachedDestination() && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
                         {
                             onUpdate?.Invoke();
-                            await Awaitable.EndOfFrameAsync(cancellationToken);
+                            try
+                            {
+                                await Awaitable.EndOfFrameAsync(cancellationToken);
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                return;
+                            }
                         }
 
                         onStopMoving?.Invoke();
@@ -219,7 +248,7 @@ namespace Pancake.AI
             }
         }
 
-        public static void Chase(
+        public static NavMeshAgent Chase(
             this NavMeshAgent agent,
             Func<Transform> target,
             Func<float> minDistanceKeep,
@@ -230,11 +259,11 @@ namespace Pancake.AI
             Action onUpdate = null,
             CancellationToken cancellationToken = default)
         {
-            if (agent == null || !agent.isActiveAndEnabled || target == null) return;
-            ChaseTargetCoroutine();
-            return;
+            if (agent == null || !agent.isActiveAndEnabled || target == null) return null;
+            ChaseTarget(cancellationToken);
+            return agent;
 
-            async void ChaseTargetCoroutine()
+            async void ChaseTarget(CancellationToken cancellationToken)
             {
                 while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
@@ -266,7 +295,7 @@ namespace Pancake.AI
             }
         }
 
-        public static void Flee(
+        public static NavMeshAgent Flee(
             this NavMeshAgent agent,
             Func<Transform> target = null,
             Func<float> fleeDistance = null,
@@ -274,12 +303,12 @@ namespace Pancake.AI
             Action onUpdate = null,
             CancellationToken cancellationToken = default)
         {
-            if (agent == null || !agent.isActiveAndEnabled || target == null) return;
-            FleeFromTargetCoroutine();
+            if (agent == null || !agent.isActiveAndEnabled || target == null) return null;
+            FleeFromTarget(cancellationToken);
 
-            return;
+            return agent;
 
-            async void FleeFromTargetCoroutine()
+            async void FleeFromTarget(CancellationToken cancellationToken)
             {
                 while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
@@ -299,36 +328,45 @@ namespace Pancake.AI
             }
         }
 
-        public static void Patroll(
+        public static NavMeshAgent Patroll(
             this NavMeshAgent agent,
             Func<List<Transform>> waypoints,
             float tolerance = 0.1f,
             Func<float> waitTime = null,
             Func<bool> followWaypointOrder = null,
             Func<bool> loopWhile = null,
+            Func<bool> ignoreYAxis = null,
             Action onStartMoving = null,
             Action onStopMoving = null,
             Action onUpdate = null,
             CancellationToken cancellationToken = default)
         {
-            PatrolWaypointsCoroutine();
-            return;
+            PatrolWaypoints(cancellationToken);
+            return agent;
 
-            async void PatrolWaypointsCoroutine()
+            async void PatrolWaypoints(CancellationToken cancellationToken)
             {
                 var waypointsList = waypoints?.Invoke();
                 if (waypointsList == null || waypointsList.Count == 0) return;
                 var currentWaypointIndex = 0;
+                bool ignoreY = ignoreYAxis?.Invoke() ?? false;
 
                 while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
                     var currentWaypoint = waypointsList[currentWaypointIndex];
                     agent.SetDestination(currentWaypoint.position);
                     onStartMoving?.Invoke();
-                    while (!agent.HasReachedDestination(currentWaypoint.position, tolerance) && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
+                    while (!agent.HasReachedDestination(currentWaypoint.position, tolerance, ignoreY) && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
                     {
                         onUpdate?.Invoke();
-                        await Awaitable.EndOfFrameAsync(cancellationToken);
+                        try
+                        {
+                            await Awaitable.EndOfFrameAsync(cancellationToken);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            return;
+                        }
                     }
 
                     onStopMoving?.Invoke();
@@ -338,18 +376,18 @@ namespace Pancake.AI
             }
         }
 
-        public static void ContinuesAvoidObstaclesWhile(
+        public static NavMeshAgent ContinuesAvoidObstaclesWhile(
             this NavMeshAgent agent,
             LayerMask obstacleMask,
             float avoidanceRadius,
             Func<bool> condition = null,
             CancellationToken cancellationToken = default)
         {
-            if (agent == null || !agent.isActiveAndEnabled) return;
-            AvoidObstaclesCoroutine();
-            return;
+            if (agent == null || !agent.isActiveAndEnabled) return null;
+            AvoidObstacles(cancellationToken);
+            return agent;
 
-            async void AvoidObstaclesCoroutine()
+            async void AvoidObstacles(CancellationToken cancellationToken)
             {
                 while (agent != null && agent.isActiveAndEnabled && (condition?.Invoke() ?? true))
                 {
