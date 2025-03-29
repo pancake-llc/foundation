@@ -353,10 +353,14 @@ namespace Pancake.AI
 
                 while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
+                    if (currentWaypointIndex < 0 || currentWaypointIndex >= waypointsList.Count) currentWaypointIndex = 0;
                     var currentWaypoint = waypointsList[currentWaypointIndex];
+                    if (currentWaypoint == null) continue;
+                    if (agent == null || !agent.isActiveAndEnabled) return;
                     agent.SetDestination(currentWaypoint.position);
                     onStartMoving?.Invoke();
-                    while (!agent.HasReachedDestination(currentWaypoint.position, tolerance, ignoreY) && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
+                    while (!agent.HasReachedDestination(currentWaypoint.position, tolerance, ignoreY) && agent.isActiveAndEnabled &&
+                           !cancellationToken.IsCancellationRequested)
                     {
                         onUpdate?.Invoke();
                         try
@@ -371,7 +375,9 @@ namespace Pancake.AI
 
                     onStopMoving?.Invoke();
                     await Awaitable.WaitForSecondsAsync(waitTime?.Invoke() ?? 1, cancellationToken);
-                    currentWaypointIndex = followWaypointOrder?.Invoke() ?? true ? (currentWaypointIndex + 1) % waypoints().Count : Random.Range(0, waypoints().Count);
+                    currentWaypointIndex = followWaypointOrder?.Invoke() ?? true
+                        ? (currentWaypointIndex + 1) % waypointsList.Count
+                        : Random.Range(0, waypointsList.Count);
                 }
             }
         }
