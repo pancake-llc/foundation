@@ -1,8 +1,9 @@
-﻿using Pancake.Draw;
+﻿#if UNITY_EDITOR
+using Pancake.Draw;
+#endif
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-#if UNITY_EDITOR
 namespace Pancake
 {
     [EditorIcon("icon_gizmo")]
@@ -14,6 +15,7 @@ namespace Pancake
         [ShowIf(nameof(previewSphereArea))] public float radius;
         [ShowIf(nameof(previewSphereArea)), LabelText("Color")] public Color sphereColor = Color.yellow;
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             if (showName)
@@ -28,6 +30,6 @@ namespace Pancake
 
             if (previewSphereArea) ImGizmos.WireSphere3D(transform.position, transform.rotation, radius, sphereColor);
         }
+#endif
     }
 }
-#endif

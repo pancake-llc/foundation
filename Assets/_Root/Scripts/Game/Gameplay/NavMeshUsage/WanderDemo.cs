@@ -1,6 +1,4 @@
-using System;
 using Pancake.AI;
-using Pancake.Draw;
 
 namespace Pancake.Game.NavMeshUsage
 {
@@ -38,10 +36,12 @@ namespace Pancake.Game.NavMeshUsage
 
         public void CancelWander() { _cts.Cancel(); }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             if (!Application.isPlaying) _defaultPosition = transform.position;
-            ImGizmos.WireSphere3D(_defaultPosition, Quaternion.identity, 5, Color.yellow);
+            Draw.ImGizmos.WireSphere3D(_defaultPosition, Quaternion.identity, 5, Color.yellow);
         }
+#endif
     }
 }
