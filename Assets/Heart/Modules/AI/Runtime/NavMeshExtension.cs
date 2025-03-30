@@ -223,14 +223,29 @@ namespace Pancake.AI
             Func<float> delayBetweenSettingDestination = null,
             Func<bool> loopWhile = null,
             Func<float> distanceToPlayer = null,
+            Func<bool> stopImmediatelyWhenLoseTarget = null,
             Action onUpdate = null,
             CancellationToken cancellationToken = default)
         {
             if (agent == null || !agent.isActiveAndEnabled || target == null) return null;
-            ChaseTarget(cancellationToken);
+            StartChaseLoop(cancellationToken);
             return agent;
+            
+            async void StartChaseLoop(CancellationToken cancellationToken)
+            {
+                while (agent != null && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
+                {
+                    while (!(loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
+                    {
+                        if (stopImmediatelyWhenLoseTarget?.Invoke()?? false) agent.ResetPath();
+                        await Awaitable.NextFrameAsync(cancellationToken);
+                    }
 
-            async void ChaseTarget(CancellationToken cancellationToken)
+                    await ChaseTarget(cancellationToken);
+                }
+            }
+            
+            async Task ChaseTarget(CancellationToken cancellationToken)
             {
                 while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
                 {
