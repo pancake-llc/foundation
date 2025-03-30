@@ -119,7 +119,14 @@ namespace Pancake.AI
                 {
                     agent.speed = Mathf.Lerp(startSpeed, targetSpeed, elapsedTime / duration);
                     elapsedTime += Time.deltaTime;
-                    await Awaitable.EndOfFrameAsync(cancellationToken);
+                    try
+                    {
+                        await Awaitable.EndOfFrameAsync(cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ignored
+                    }
                 }
 
                 agent.speed = targetSpeed;
@@ -157,9 +164,9 @@ namespace Pancake.AI
                 {
                     await Awaitable.WaitForSecondsAsync(duration, cancellationToken);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
-                    return;
+                    // ignored
                 }
 
                 if (agent != null && agent.isActiveAndEnabled) agent.speed = originalSpeed;
@@ -194,23 +201,30 @@ namespace Pancake.AI
                     if (agent.SetRandomDestination(r, isStayInDefaultArea ? origin : null))
                     {
                         onStartMoving?.Invoke();
-                        while (!agent.HasReachedDestination() && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
+                        while (!cancellationToken.IsCancellationRequested && !agent.HasReachedDestination() && agent.isActiveAndEnabled)
                         {
                             onUpdate?.Invoke();
                             try
                             {
                                 await Awaitable.EndOfFrameAsync(cancellationToken);
                             }
-                            catch (TaskCanceledException)
+                            catch (OperationCanceledException)
                             {
-                                return;
+                                // ignored
                             }
                         }
 
                         onStopMoving?.Invoke();
                     }
 
-                    await Awaitable.WaitForSecondsAsync(waitTime?.Invoke() ?? 1, cancellationToken);
+                    try
+                    {
+                        await Awaitable.WaitForSecondsAsync(waitTime?.Invoke() ?? 1, cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ignored
+                    }
                 }
             }
         }
@@ -230,24 +244,24 @@ namespace Pancake.AI
             if (agent == null || !agent.isActiveAndEnabled || target == null) return null;
             StartChaseLoop(cancellationToken);
             return agent;
-            
+
             async void StartChaseLoop(CancellationToken cancellationToken)
             {
-                while (agent != null && agent.isActiveAndEnabled && !cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && agent != null && agent.isActiveAndEnabled)
                 {
-                    while (!(loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
+                    while (!cancellationToken.IsCancellationRequested && !(loopWhile?.Invoke() ?? true))
                     {
-                        if (stopImmediatelyWhenLoseTarget?.Invoke()?? false) agent.ResetPath();
+                        if (stopImmediatelyWhenLoseTarget?.Invoke() ?? false) agent.ResetPath();
                         await Awaitable.NextFrameAsync(cancellationToken);
                     }
 
                     await ChaseTarget(cancellationToken);
                 }
             }
-            
+
             async Task ChaseTarget(CancellationToken cancellationToken)
             {
-                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
                 {
                     var currentTarget = target();
                     if (currentTarget == null) return;
@@ -271,8 +285,15 @@ namespace Pancake.AI
                     onUpdate?.Invoke();
 
                     float delay = delayBetweenSettingDestination?.Invoke() ?? 0;
-                    if (delay > 0) await Awaitable.WaitForSecondsAsync(delay, cancellationToken);
-                    else await Awaitable.NextFrameAsync(cancellationToken);
+                    try
+                    {
+                        if (delay > 0) await Awaitable.WaitForSecondsAsync(delay, cancellationToken);
+                        else await Awaitable.NextFrameAsync(cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ignored
+                    }
                 }
             }
         }
@@ -292,7 +313,7 @@ namespace Pancake.AI
 
             async void FleeFromTarget(CancellationToken cancellationToken)
             {
-                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
                 {
                     var currentTarget = target();
                     if (currentTarget == null) return;
@@ -305,7 +326,14 @@ namespace Pancake.AI
 
                     onUpdate?.Invoke();
 
-                    await Awaitable.EndOfFrameAsync(cancellationToken);
+                    try
+                    {
+                        await Awaitable.EndOfFrameAsync(cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ignored
+                    }
                 }
             }
         }
@@ -333,7 +361,7 @@ namespace Pancake.AI
                 var currentWaypointIndex = 0;
                 bool ignoreY = ignoreYAxis?.Invoke() ?? false;
 
-                while (agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true) && !cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && agent != null && agent.isActiveAndEnabled && (loopWhile?.Invoke() ?? true))
                 {
                     if (currentWaypointIndex < 0 || currentWaypointIndex >= waypointsList.Count) currentWaypointIndex = 0;
                     var currentWaypoint = waypointsList[currentWaypointIndex];
@@ -341,22 +369,30 @@ namespace Pancake.AI
                     if (agent == null || !agent.isActiveAndEnabled) return;
                     agent.SetDestination(currentWaypoint.position);
                     onStartMoving?.Invoke();
-                    while (!agent.HasReachedDestination(currentWaypoint.position, tolerance, ignoreY) && agent.isActiveAndEnabled &&
-                           !cancellationToken.IsCancellationRequested)
+                    while (!cancellationToken.IsCancellationRequested && !agent.HasReachedDestination(currentWaypoint.position, tolerance, ignoreY) &&
+                           agent.isActiveAndEnabled)
                     {
                         onUpdate?.Invoke();
                         try
                         {
                             await Awaitable.EndOfFrameAsync(cancellationToken);
                         }
-                        catch (TaskCanceledException)
+                        catch (OperationCanceledException)
                         {
-                            return;
+                            // ignored
                         }
                     }
 
                     onStopMoving?.Invoke();
-                    await Awaitable.WaitForSecondsAsync(waitTime?.Invoke() ?? 1, cancellationToken);
+                    try
+                    {
+                        await Awaitable.WaitForSecondsAsync(waitTime?.Invoke() ?? 1, cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ignored
+                    }
+
                     currentWaypointIndex = followWaypointOrder?.Invoke() ?? true
                         ? (currentWaypointIndex + 1) % waypointsList.Count
                         : Random.Range(0, waypointsList.Count);
@@ -394,7 +430,14 @@ namespace Pancake.AI
                         if (NavMesh.SamplePosition(newDestination, out var hit, avoidanceRadius, NavMesh.AllAreas)) agent.SetDestination(hit.position);
                     }
 
-                    await Awaitable.EndOfFrameAsync(cancellationToken);
+                    try
+                    {
+                        await Awaitable.EndOfFrameAsync(cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ignored
+                    }
                 }
             }
         }

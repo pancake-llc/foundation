@@ -26,11 +26,11 @@ namespace Pancake.Game.NavMeshUsage
                 delayBetweenSettingDestination: () => 0.5f, // Update route every 0.5 seconds
                 loopWhile: () => alwayChase || Vector3.Distance(agent.transform.position, player.position) <= distancePlayerToChase,
                 distanceToPlayer: () => Vector3.Distance(agent.transform.position, player.position),
-                stopImmediatelyWhenLoseTarget: ()=> true,
+                stopImmediatelyWhenLoseTarget: () => true,
                 onUpdate: () => Debug.Log("Chasing the player..."),
                 cancellationToken: _cts.Token);
         }
-        
+
         private void OnDestroy() { CancelChase(); }
 
         public void CancelChase() { _cts.Cancel(); }
